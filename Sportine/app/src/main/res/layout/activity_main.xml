@@ -31,4 +31,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/mobile_navigation" />
 
+    <fragment
+        android:id="@+id/navigation_buscar"
+        android:name="com.example.sportine.ui.buscar.BuscarFragment"
+        android:label="@string/title_buscar" />
+    <fragment
+        android:id="@+id/navigation_perfil"
+        android:name="com.example.sportine.ui.perfil.PerfilFragment"
+        android:label="@string/title_perfil" />
 </androidx.constraintlayout.widget.ConstraintLayout>
