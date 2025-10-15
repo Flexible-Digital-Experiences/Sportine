@@ -23,4 +23,10 @@
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
 
+    <fragment
+        android:id="@+id/navigation_stats"
+        android:name="com.example.sportine.ui.estadisticas.EstadisticasFragment"
+        android:label="Estadisticas"
+        tools:layout="@layout/fragment_estadisticas" />
+
 </navigation>
