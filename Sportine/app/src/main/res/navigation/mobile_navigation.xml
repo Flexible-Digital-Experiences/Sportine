@@ -75,7 +75,7 @@
         android:id="@+id/navigation_editar_tarjeta"
         android:name="com.example.sportine.ui.Editartarjeta.EditarTarjetaFragment"
         android:label="Editar Tarjeta"
-        tools:layout="@layout/fragment_editar_tarjeta"/>
+        tools:layout="@layout/fragment_editar_tarjeta">
 
     <fragment
         android:id="@+id/navigation_agregar_forma_pago"
@@ -94,5 +94,7 @@
         android:name="com.example.sportine.ui.social.SocialFragment"
         android:label="@string/title_social"
         tools:layout="@layout/fragment_social" />
+    </fragment>
+
 
 </navigation>
