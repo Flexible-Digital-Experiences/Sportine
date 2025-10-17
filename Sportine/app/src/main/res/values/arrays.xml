@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="sexo_options">
+        <item>Sexo</item>
+        <item>Masculino</item>
+        <item>Femenino</item>
+    </string-array>
+
+
+    <string-array name="estado_options">
+        <item>Estado</item>
+        <item>Aguascalientes</item>
+        <item>Baja California</item>
+        <item>Baja California Sur</item>
+        <item>Campeche</item>
+        <item>Chiapas</item>
+        <item>Chihuahua</item>
+        <item>Ciudad de México</item>
+        <item>Coahuila</item>
+        <item>Colima</item>
+        <item>Durango</item>
+        <item>Guanajuato</item>
+        <item>Guerrero</item>
+        <item>Hidalgo</item>
+        <item>Jalisco</item>
+        <item>México</item>
+        <item>Michoacán</item>
+        <item>Morelos</item>
+        <item>Nayarit</item>
+        <item>Nuevo León</item>
+        <item>Oaxaca</item>
+        <item>Puebla</item>
+        <item>Querétaro</item>
+        <item>Quintana Roo</item>
+        <item>San Luis Potosí</item>
+        <item>Sinaloa</item>
+        <item>Sonora</item>
+        <item>Tabasco</item>
+        <item>Tamaulipas</item>
+        <item>Tlaxcala</item>
+        <item>Veracruz</item>
+        <item>Yucatán</item>
+        <item>Zacatecas</item>
+    </string-array>
+
+
+    <string-array name="ciudad_options">
+        <item>Ciudad</item>
+        <item>Ciudad de México</item>
+        <item>Guadalajara</item>
+        <item>Monterrey</item>
+        <item>Puebla</item>
+        <item>Tijuana</item>
+        <item>León</item>
+        <item>Juárez</item>
+        <item>Querétaro</item>
+        <item>Mérida</item>
+        <item>Toluca</item>
+    </string-array>
+
+    <string-array name="pais_options">
+        <item>Pais</item>
+        <item>México</item>
+        <item>Estados Unidos</item>
+        <item>Canadá</item>
+        <item>España</item>
+        <item>Argentina</item>
+        <item>Colombia</item>
+        <item>Chile</item>
+        <item>Perú</item>
+    </string-array>
+
+    <string name="nivel_prompt">Selecciona nivel</string>
+    <string name="deportes_prompt">Selecciona deporte</string>
+    <string name="edad_prompt">Selecciona edad</string>
+    <string name="genero_prompt">Selecciona género</string>
+
+</resources>

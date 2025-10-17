@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/nav_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Header con flecha y título -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp">
+
+                <ImageView
+                    android:id="@+id/btnBack"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_flechaatras"
+                    android:contentDescription="Volver"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="AGREGAR TARJETA"
+                    android:textColor="#000"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05"
+                    android:layout_centerInParent="true"/>
+            </RelativeLayout>
+
+            <!-- Separador superior -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#E0E0E0"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Label: Datos de la tarjeta -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Datos de la"
+                android:textColor="#666"
+                android:textSize="13dp"
+                android:layout_gravity="center_horizontal"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tarjeta"
+                android:textColor="#666"
+                android:textSize="13dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"/>
+
+            <!-- Separador inferior del título -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#E0E0E0"
+                android:layout_marginBottom="20dp"/>
+
+            <!-- Campos del formulario -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Número de tarjeta -->
+                <EditText
+                    android:id="@+id/etNumeroTarjeta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Número de tarjeta"
+                    android:textSize="14dp"
+                    android:textColorHint="#999"
+                    android:textColor="#666"
+                    android:background="@null"
+                    android:paddingBottom="8dp"
+                    android:inputType="number"
+                    android:maxLength="16"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#000"
+                    android:layout_marginBottom="20dp"/>
+
+                <!-- Fecha de caducidad -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/etFechaCaducidad"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Fecha de caducidad"
+                        android:textSize="14dp"
+                        android:textColorHint="#999"
+                        android:textColor="#666"
+                        android:background="@null"
+                        android:paddingBottom="8dp"
+                        android:inputType="date"
+                        android:focusable="false"
+                        android:clickable="true"/>
+
+                    <ImageView
+                        android:id="@+id/btnCalendario"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_calendario"
+                        android:contentDescription="Calendario"/>
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#000"
+                    android:layout_marginBottom="20dp"/>
+
+                <!-- Nombre del titular -->
+                <EditText
+                    android:id="@+id/etNombreTitular"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nombre del titular"
+                    android:textSize="14dp"
+                    android:textColorHint="#999"
+                    android:textColor="#666"
+                    android:background="@null"
+                    android:paddingBottom="8dp"
+                    android:inputType="textPersonName"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#000"
+                    android:layout_marginBottom="20dp"/>
+
+                <!-- Apellidos del titular -->
+                <EditText
+                    android:id="@+id/etApellidosTitular"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Apellidos del titular"
+                    android:textSize="14dp"
+                    android:textColorHint="#999"
+                    android:textColor="#666"
+                    android:background="@null"
+                    android:paddingBottom="8dp"
+                    android:inputType="textPersonName"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#000"
+                    android:layout_marginBottom="20dp"/>
+
+                <!-- Dirección de Facturación -->
+                <EditText
+                    android:id="@+id/etDireccionFacturacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Dirección de Facturación"
+                    android:textSize="14dp"
+                    android:textColorHint="#999"
+                    android:textColor="#666"
+                    android:background="@null"
+                    android:paddingBottom="8dp"
+                    android:inputType="textPostalAddress"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#000"
+                    android:layout_marginBottom="20dp"/>
+
+                <!-- Localidad -->
+                <EditText
+                    android:id="@+id/etLocalidad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Localidad"
+                    android:textSize="14dp"
+                    android:textColorHint="#999"
+                    android:textColor="#666"
+                    android:background="@null"
+                    android:paddingBottom="8dp"
+                    android:inputType="text"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#000"
+                    android:layout_marginBottom="20dp"/>
+
+                <!-- Código postal -->
+                <EditText
+                    android:id="@+id/etCodigoPostal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Código postal"
+                    android:textSize="14dp"
+                    android:textColorHint="#999"
+                    android:textColor="#666"
+                    android:background="@null"
+                    android:paddingBottom="8dp"
+                    android:inputType="number"
+                    android:maxLength="5"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#000"
+                    android:layout_marginBottom="20dp"/>
+
+                <!-- País (Spinner) -->
+                <Spinner
+                    android:id="@+id/spinnerPais"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="30dp"
+                    android:paddingBottom="8dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#000"
+                    android:layout_marginBottom="20dp"/>
+
+                <!-- Teléfono -->
+                <EditText
+                    android:id="@+id/etTelefono"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Teléfono"
+                    android:textSize="14dp"
+                    android:textColorHint="#999"
+                    android:textColor="#666"
+                    android:background="@null"
+                    android:paddingBottom="8dp"
+                    android:inputType="phone"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#000"
+                    android:layout_marginBottom="30dp"/>
+            </LinearLayout>
+
+            <!-- Botón Agregar tarjeta -->
+            <Button
+                android:id="@+id/btnAgregarTarjeta"
+                android:layout_width="200dp"
+                android:layout_height="55dp"
+                android:text="Agregar&#10;tarjeta"
+                android:textColor="@color/white"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                android:backgroundTint="#66BB6A"
+                android:textAllCaps="false"
+                android:layout_gravity="center_horizontal"/>
+            <!-- El &#10 es un salto de linea -->
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Bottom Navigation View -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/windowBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
