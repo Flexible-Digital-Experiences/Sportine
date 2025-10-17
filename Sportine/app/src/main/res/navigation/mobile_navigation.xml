@@ -29,4 +29,63 @@
         android:label="Estadisticas"
         tools:layout="@layout/fragment_estadisticas" />
 
+    <fragment
+        android:id="@+id/navigation_perfil"
+        android:name="com.example.sportine.ui.Perfil.PerfilFragment"
+        android:label="Perfil"
+        tools:layout="@layout/fragment_perfil" >
+        <action
+            android:id="@+id/action_perfil_to_configuracion"
+            app:destination="@id/navigation_configuracion"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_perfil_to_completar_datos"
+            app:destination="@id/navigation_completar_datos_usuario" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_configuracion"
+        android:name="com.example.sportine.ui.Configuracion.ConfiguracionFragment"
+        android:label="Configuración"
+        tools:layout="@layout/fragment_configuracion">
+
+        <action
+            android:id="@+id/action_configuracion_to_modificar"
+            app:destination="@id/navigation_modificar_datos"/>
+
+        <action
+            android:id="@+id/action_configuracion_to_editar_tarjeta"
+            app:destination="@id/navigation_editar_tarjeta"/>
+
+        <action
+            android:id="@+id/action_configuracion_to_agregar_pago"
+            app:destination="@id/navigation_agregar_forma_pago"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_modificar_datos"
+        android:name="com.example.sportine.ui.ModificarDatosAlumno.ModificarDatosAlumnoFragment"
+        android:label="Modificar Datos"
+        tools:layout="@layout/fragment_modificar_datos_alumno"/>
+
+    <fragment
+        android:id="@+id/navigation_editar_tarjeta"
+        android:name="com.example.sportine.ui.Editartarjeta.EditarTarjetaFragment"
+        android:label="Editar Tarjeta"
+        tools:layout="@layout/fragment_editar_tarjeta"/>
+
+    <fragment
+        android:id="@+id/navigation_agregar_forma_pago"
+        android:name="com.example.sportine.ui.Agregarformapago.AgregarformapagoFragment"
+        android:label="Agregar Forma de Pago"
+        tools:layout="@layout/fragment_agregarformapago"/>
+    <fragment
+        android:id="@+id/navigation_completar_datos_usuario"
+        android:name="com.example.sportine.ui.Completardatosusuario.CompletardatosusuarioFragment"
+        android:label="Completar Datos"
+        tools:layout="@layout/fragment_completardatosusuario" />
+
 </navigation>

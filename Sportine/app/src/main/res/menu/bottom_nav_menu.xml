@@ -20,4 +20,9 @@
         android:id="@+id/navigation_stats"
         android:icon="@drawable/ic_estadisticas"
         android:title="Estadísticas" />
+
+    <item
+        android:id="@+id/navigation_perfil"
+        android:icon="@drawable/ic_perfil"
+        android:title="Perfil" />
 </menu>
