@@ -88,4 +88,11 @@
         android:label="Completar Datos"
         tools:layout="@layout/fragment_completardatosusuario" />
 
+
+    <fragment
+        android:id="@+id/navigation_social"
+        android:name="com.example.sportine.ui.social.SocialFragment"
+        android:label="@string/title_social"
+        tools:layout="@layout/fragment_social" />
+
 </navigation>
