@@ -26,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
                 R.id.navigation_home,
                 R.id.navigation_notifications,
                 R.id.navigation_stats,
-                R.id.navigation_perfil
+                R.id.navigation_perfil,
+                R.id.navigation_buscar
         ).build();
 
         NavController navController = Navigation.findNavController(
