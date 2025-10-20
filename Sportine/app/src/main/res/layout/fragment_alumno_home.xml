@@ -1,0 +1,320 @@
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAFAFA"
+    android:fillViewport="true"
+    tools:context=".ui.usuarios.home.HomeFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="24dp">
+
+        <!-- Tarjeta de bienvenida -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_bienvenida"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+            android:backgroundTint="#FFFFFF"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_logo"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    app:cardCornerRadius="32dp"
+                    app:cardElevation="0dp"
+                    android:backgroundTint="#F0F4FF"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <ImageView
+                        android:id="@+id/img_logo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/logo_sportine"
+                        android:contentDescription="descripcion_logo"
+                        android:padding="12dp"
+                        android:scaleType="fitCenter" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <LinearLayout
+                    android:id="@+id/layout_texto_bienvenida"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintStart_toEndOf="@id/card_logo"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/card_logo"
+                    app:layout_constraintBottom_toBottomOf="@id/card_logo">
+
+                    <TextView
+                        android:id="@+id/text_saludo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="texto_bienvenida"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="#1A1A1A"
+                        android:fontFamily="sans-serif-medium"
+                        tools:text="Hola de nuevo, Alumno!" />
+
+                    <TextView
+                        android:id="@+id/text_mensaje"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="mensaje"
+                        android:textSize="14sp"
+                        android:textColor="#6B7280"
+                        tools:text="¿Listo para mejorar hoy?" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
+
+        <!-- Fecha -->
+        <LinearLayout
+            android:id="@+id/layout_fecha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@id/card_bienvenida"
+            app:layout_constraintStart_toStartOf="parent">
+
+
+
+            <View
+                android:layout_width="3dp"
+                android:layout_height="20dp"
+                android:background="#3B82F6"
+                android:layout_marginEnd="10dp" />
+
+            <TextView
+                android:id="@+id/text_fecha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="default_fecha"
+                android:textColor="#6B7280"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-medium"
+                tools:text="12 de octubre de 2025" />
+
+        </LinearLayout>
+
+        <!-- RecyclerView de deportes (ESCALABLE) -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_deportes"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_entrenamientos"
+            tools:itemCount="10"
+            tools:listitem="@layout/item_alumno_deporte_seccion"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/text_entrenamientos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="texto_bienvenida"
+            android:textColor="#1A1A1A"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_fecha"
+            tools:text="Entrenamientos" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
+
+    <!-- ================================================================ -->
+    <!-- item_deporte_seccion.xml - SECCIÓN POR DEPORTE -->
+    <!-- ================================================================ -->
+    <!--
+    <?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="24dp">
+
+        <TextView
+            android:id="@+id/text_nombre_deporte"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fútbol"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#1A1A1A"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginBottom="12dp"
+            tools:text="Fútbol" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_entrenamientos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            tools:listitem="@layout/item_entrenamiento"
+            tools:itemCount="2" />
+
+    </LinearLayout>
+    -->
+
+    <!-- ================================================================ -->
+    <!-- item_entrenamiento.xml - TARJETA DE ENTRENAMIENTO (MOLDE REUTILIZABLE) -->
+    <!-- ================================================================ -->
+    <!--
+    <?xml version="1.0" encoding="utf-8"?>
+    <com.google.android.material.card.MaterialCardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="#E5E7EB"
+        android:backgroundTint="#FFFFFF"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_imagen"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                android:backgroundTint="#F3F4F6"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <ImageView
+                    android:id="@+id/img_entrenamiento"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_entrenamiento"
+                    android:contentDescription="@string/training_image"
+                    android:scaleType="centerCrop"
+                    android:padding="8dp" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:id="@+id/layout_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintStart_toEndOf="@id/card_imagen"
+                app:layout_constraintEnd_toStartOf="@id/img_flecha"
+                app:layout_constraintTop_toTopOf="@id/card_imagen"
+                app:layout_constraintBottom_toBottomOf="@id/card_imagen">
+
+                <TextView
+                    android:id="@+id/text_titulo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Entrenamiento de resistencia"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1A1A"
+                    android:fontFamily="sans-serif-medium"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    tools:text="Entrenamiento de resistencia" />
+
+                <TextView
+                    android:id="@+id/text_duracion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="45 min • Intermedio"
+                    android:textSize="13sp"
+                    android:textColor="#6B7280"
+                    tools:text="45 min • Intermedio" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center_vertical">
+
+                    <View
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:background="@drawable/circle_indicator" />
+
+                    <TextView
+                        android:id="@+id/text_estado"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="Programado"
+                        android:textSize="12sp"
+                        android:textColor="#10B981"
+                        android:fontFamily="sans-serif-medium"
+                        tools:text="Programado" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/img_flecha"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_chevron_right"
+                android:contentDescription="@string/see_more"
+                app:tint="#9CA3AF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+    -->

@@ -7,33 +7,33 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.sportine.ui.home.HomeFragment"
+        android:name="com.example.sportine.ui.usuarios.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_alumno_home" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.example.sportine.ui.dashboard.DashboardFragment"
+        android:name="com.example.sportine.ui.usuarios.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_alumno_dashboard" />
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.example.sportine.ui.notifications.NotificationsFragment"
+        android:name="com.example.sportine.ui.usuarios.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_alumno_notifications" />
 
     <fragment
         android:id="@+id/navigation_stats"
-        android:name="com.example.sportine.ui.estadisticas.EstadisticasFragment"
+        android:name="com.example.sportine.ui.usuarios.estadisticas.EstadisticasFragment"
         android:label="Estadisticas"
-        tools:layout="@layout/fragment_estadisticas" />
+        tools:layout="@layout/fragment_alumno_estadisticas" />
 
     <fragment
         android:id="@+id/navigation_perfil"
-        android:name="com.example.sportine.ui.Perfil.PerfilFragment"
+        android:name="com.example.sportine.ui.usuarios.perfil.PerfilFragment"
         android:label="Perfil"
-        tools:layout="@layout/fragment_perfil" >
+        tools:layout="@layout/fragment_alumno_perfil" >
         <action
             android:id="@+id/action_perfil_to_configuracion"
             app:destination="@id/navigation_configuracion"
@@ -48,9 +48,9 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_configuracion"
-        android:name="com.example.sportine.ui.Configuracion.ConfiguracionFragment"
+        android:name="com.example.sportine.ui.usuarios.configuracion.ConfiguracionFragment"
         android:label="Configuración"
-        tools:layout="@layout/fragment_configuracion">
+        tools:layout="@layout/fragment_alumno_configuracion">
 
         <action
             android:id="@+id/action_configuracion_to_modificar"
@@ -67,31 +67,31 @@
 
     <fragment
         android:id="@+id/navigation_modificar_datos"
-        android:name="com.example.sportine.ui.ModificarDatosAlumno.ModificarDatosAlumnoFragment"
+        android:name="com.example.sportine.ui.usuarios.modificardatosalumno.ModificarDatosAlumnoFragment"
         android:label="Modificar Datos"
-        tools:layout="@layout/fragment_modificar_datos_alumno"/>
+        tools:layout="@layout/fragment_alumno_modificar_datos"/>
 
     <fragment
         android:id="@+id/navigation_editar_tarjeta"
-        android:name="com.example.sportine.ui.Editartarjeta.EditarTarjetaFragment"
+        android:name="com.example.sportine.ui.usuarios.editartarjeta.EditarTarjetaFragment"
         android:label="Editar Tarjeta"
-        tools:layout="@layout/fragment_editar_tarjeta">
+        tools:layout="@layout/fragment_alumno_editar_tarjeta">
 
     <fragment
         android:id="@+id/navigation_agregar_forma_pago"
-        android:name="com.example.sportine.ui.Agregarformapago.AgregarformapagoFragment"
+        android:name="com.example.sportine.ui.usuarios.agregarformapago.AgregarformapagoFragment"
         android:label="Agregar Forma de Pago"
         tools:layout="@layout/fragment_agregarformapago"/>
     <fragment
         android:id="@+id/navigation_completar_datos_usuario"
-        android:name="com.example.sportine.ui.Completardatosusuario.CompletardatosusuarioFragment"
+        android:name="com.example.sportine.ui.usuarios.completardatosusuario.CompletardatosusuarioFragment"
         android:label="Completar Datos"
         tools:layout="@layout/fragment_completardatosusuario" />
 
 
     <fragment
         android:id="@+id/navigation_social"
-        android:name="com.example.sportine.ui.social.SocialFragment"
+        android:name="com.example.sportine.ui.usuarios.social.SocialFragment"
         android:label="@string/title_social"
         tools:layout="@layout/fragment_social" />
     </fragment>
