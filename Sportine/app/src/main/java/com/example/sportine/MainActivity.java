@@ -24,10 +24,11 @@ public class MainActivity extends AppCompatActivity {
         // Configuración de los destinos principales
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home,
-                R.id.navigation_dashboard,
+                R.id.navigation_social,
                 R.id.navigation_notifications,
                 R.id.navigation_stats,
-                R.id.navigation_perfil
+                R.id.navigation_perfil,
+                R.id.navigation_buscar
         ).build();
 
         NavController navController = Navigation.findNavController(
