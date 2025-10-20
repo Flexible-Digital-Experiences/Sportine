@@ -221,15 +221,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- RecyclerView para las tarjetas de estadísticas (ESCALABLE) -->
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/barChart"
+        <!-- Contenedor para las 3 gráficas -->
+        <LinearLayout
+            android:id="@+id/contenedor_graficas"
             android:layout_width="0dp"
-            android:layout_height="300dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:layout_marginTop="24dp"
             app:layout_constraintTop_toBottomOf="@id/divider_deportes"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <!-- Las 3 tarjetas con gráficas se agregarán dinámicamente aquí -->
+
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
