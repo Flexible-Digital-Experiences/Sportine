@@ -12,12 +12,6 @@
         tools:layout="@layout/fragment_alumno_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.sportine.ui.usuarios.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_alumno_dashboard" />
-
-    <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.sportine.ui.usuarios.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
@@ -76,25 +70,21 @@
         android:name="com.example.sportine.ui.usuarios.editartarjeta.EditarTarjetaFragment"
         android:label="Editar Tarjeta"
         tools:layout="@layout/fragment_alumno_editar_tarjeta">
-
-    <fragment
-        android:id="@+id/navigation_agregar_forma_pago"
-        android:name="com.example.sportine.ui.usuarios.agregarformapago.AgregarformapagoFragment"
-        android:label="Agregar Forma de Pago"
-        tools:layout="@layout/fragment_agregarformapago"/>
+    </fragment> <fragment
+    android:id="@+id/navigation_agregar_forma_pago"
+    android:name="com.example.sportine.ui.usuarios.agregarformapago.AgregarformapagoFragment"
+    android:label="Agregar Forma de Pago"
+    tools:layout="@layout/fragment_alumno_agregar_forma_pago"/>
     <fragment
         android:id="@+id/navigation_completar_datos_usuario"
         android:name="com.example.sportine.ui.usuarios.completardatosusuario.CompletardatosusuarioFragment"
         android:label="Completar Datos"
-        tools:layout="@layout/fragment_completardatosusuario" />
+        tools:layout="@layout/fragment_alumno_completar_datos" />
 
 
     <fragment
         android:id="@+id/navigation_social"
         android:name="com.example.sportine.ui.usuarios.social.SocialFragment"
         android:label="@string/title_social"
-        tools:layout="@layout/fragment_social" />
-    </fragment>
-
-
+        tools:layout="@layout/fragment_alumno_social" />
 </navigation>
