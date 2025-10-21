@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- ScrollView con el contenido del perfil -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp">
+
+            <!-- Header PERFIL -->
+            <TextView
+                android:id="@+id/txtPerfil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PERFIL"
+                android:textColor="#000"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:letterSpacing="0.1"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"/>
+
+            <!-- Icono de configuración -->
+            <ImageView
+                android:id="@+id/btnSettings"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="18dp"
+                android:src="@android:drawable/ic_menu_manage"
+                android:contentDescription="Configuración"/>
+
+            <!-- Contenedor principal centrado -->
+            <LinearLayout
+                android:id="@+id/mainContainer"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtPerfil"
+                android:layout_marginTop="20dp"
+                android:paddingStart="40dp"
+                android:paddingEnd="40dp"
+                android:gravity="center_horizontal">
+
+                <!-- Imagen de perfil con fondo circular azul -->
+                <FrameLayout
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_marginBottom="20dp">
+
+                    <View
+                        android:layout_width="160dp"
+                        android:layout_height="160dp" />
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/image_entrenador"
+                        android:layout_width="140dp"
+                        android:layout_height="140dp"
+                        android:layout_gravity="center"
+                        android:scaleType="centerCrop"
+                        app:shapeAppearanceOverlay="@style/CircularImageView"
+                        tools:src="@tools:sample/avatars" />
+                </FrameLayout>
+
+                <!-- Saludo -->
+                <TextView
+                    android:id="@+id/txtSaludo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hola Alumno"
+                    android:textColor="#000"
+                    android:textSize="26dp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- Separador superior -->
+                <View
+                    android:layout_width="260dp"
+                    android:layout_height="1dp"
+                    android:background="#E0E0E0"
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- Label Deportes -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Deportes"
+                    android:textColor="#666"
+                    android:textSize="12dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Iconos de deportes -->
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp">
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="20dp"
+                        android:contentDescription="Fútbol"
+                        android:src="@drawable/balon_futbol" />
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="20dp"
+                        android:contentDescription="Basquet"
+                        android:src="@drawable/balon_basket" />
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:contentDescription="Tenis"
+                        android:src="@drawable/pelota_tenis" />
+                </LinearLayout>
+
+                <!-- Separador inferior -->
+                <View
+                    android:layout_width="260dp"
+                    android:layout_height="1dp"
+                    android:background="#E0E0E0"
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- Label Datos del Perfil -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Datos del Perfil"
+                    android:textColor="#666"
+                    android:textSize="12dp"
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- Campos de texto con líneas inferiores -->
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginBottom="20dp">
+
+                    <TextView
+                        android:id="@+id/tvNombre"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Nombre"
+                        android:textColorHint="#999"
+                        android:textColor="#666"
+                        android:textSize="14dp"
+                        android:background="@null"
+                        android:paddingBottom="8dp"
+                        android:inputType="textPersonName"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="#000"
+                        android:layout_marginBottom="16dp"/>
+
+                    <TextView
+                        android:id="@+id/tvApellido"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Apellido"
+                        android:textColorHint="#999"
+                        android:textColor="#666"
+                        android:textSize="14dp"
+                        android:background="@null"
+                        android:paddingBottom="8dp"
+                        android:inputType="textPersonName"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="#000"
+                        android:layout_marginBottom="16dp"/>
+
+                    <TextView
+                        android:id="@+id/tvUsername"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Nombre de Usuario"
+                        android:textColorHint="#999"
+                        android:textColor="#666"
+                        android:textSize="14dp"
+                        android:background="@null"
+                        android:paddingBottom="8dp"
+                        android:inputType="text"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="#000"
+                        android:layout_marginBottom="16dp"/>
+
+                    <TextView
+                        android:id="@+id/tvSexo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Sexo"
+                        android:textColorHint="#999"
+                        android:textColor="#666"
+                        android:textSize="14dp"
+                        android:background="@null"
+                        android:paddingBottom="8dp"
+                        android:inputType="text"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="#000"
+                        android:layout_marginBottom="16dp"/>
+
+                    <TextView
+                        android:id="@+id/tvEstado"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Estado"
+                        android:textColorHint="#999"
+                        android:textColor="#666"
+                        android:textSize="14dp"
+                        android:background="@null"
+                        android:paddingBottom="8dp"
+                        android:inputType="text"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="#000"
+                        android:layout_marginBottom="16dp"/>
+
+                    <TextView
+                        android:id="@+id/tvCiudad"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Ciudad"
+                        android:textColorHint="#999"
+                        android:textColor="#666"
+                        android:textSize="14dp"
+                        android:background="@null"
+                        android:paddingBottom="8dp"
+                        android:inputType="text"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="#000"/>
+                </LinearLayout>
+
+                <!-- Botón -->
+                <Button
+                    android:id="@+id/btnCompletar"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="Completar tus datos"
+                    android:textColor="@color/white"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    android:backgroundTint="@color/teal_700"
+                    android:textAllCaps="false"/>
+            </LinearLayout>
+
+            <!-- Badges laterales -->
+            <LinearLayout
+                android:id="@+id/badgeAmigos"
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/mainContainer"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="380dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:text="58"
+                    android:textColor="#000"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:background="@drawable/circulo_verde"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Amigos"
+                    android:textColor="#000"
+                    android:textSize="11dp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/badgeEntrenadores"
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/mainContainer"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="13dp"
+                android:layout_marginTop="480dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:text="3"
+                    android:textColor="#000"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:background="@drawable/circulo_naranja"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Entrenadores"
+                    android:textColor="#000"
+                    android:textSize="11dp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+    <!-- Bottom Navigation View -->
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
