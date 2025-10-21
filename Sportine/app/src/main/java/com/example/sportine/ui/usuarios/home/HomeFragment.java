@@ -7,25 +7,43 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.sportine.databinding.FragmentAlumnoHomeBinding;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
 
     private FragmentAlumnoHomeBinding binding;
 
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
-
         binding = FragmentAlumnoHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
-        //final TextView textView = binding.textHome;
-        //homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
+        // Personalizar textos
+        binding.textFecha.setText("20 de octubre de 2025");
+        binding.textSaludo.setText("Entrenamientos");  // <-- cambiamos a "Entrenamientos"
+        binding.textMensaje.setText("¿Listo para mejorar hoy?");
+
+        // Configurar RecyclerView con tarjetas
+        setupRecyclerDeportes();
+
+        return binding.getRoot();
+    }
+
+    private void setupRecyclerDeportes() {
+        // Lista de deportes de ejemplo
+        List<String> deportes = Arrays.asList("Fútbol", "Natación", "Ciclismo", "Tenis", "Boxeo");
+
+        // Adapter
+        DeportesAdapter adapter = new DeportesAdapter(deportes);
+        binding.recyclerDeportes.setAdapter(adapter);
+
+        // LayoutManager vertical
+        binding.recyclerDeportes.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     @Override
