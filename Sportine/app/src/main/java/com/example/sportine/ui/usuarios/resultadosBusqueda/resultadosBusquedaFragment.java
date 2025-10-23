@@ -1,4 +1,4 @@
-package com.example.sportine.ui.usuarios.buscar;
+package com.example.sportine.ui.usuarios.resultadosBusqueda;
 
 import android.os.Bundle;
 
@@ -14,19 +14,19 @@ import android.widget.ImageButton;
 import com.example.sportine.R;
 import com.google.android.material.card.MaterialCardView;
 
-public class BuscarFragment extends Fragment implements View.OnClickListener {
-MaterialCardView cardEntrenador;
-ImageButton buscar;
+public class resultadosBusquedaFragment extends Fragment implements View.OnClickListener {
+    MaterialCardView cardEntrenador;
+    ImageButton btnback;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_alumno_buscar, container, false);
+        View view = inflater.inflate(R.layout.fragment_alumno_resultados_busqueda, container, false);
 
         // Encuentra la tarjeta
         cardEntrenador = view.findViewById(R.id.card_entrenador);
         cardEntrenador.setOnClickListener (this);
-        buscar = view.findViewById(R.id.iv_search);
-        buscar.setOnClickListener(this);
+        btnback = view.findViewById(R.id.btn_back);
+        btnback.setOnClickListener(this);
         return view;
     }
 
@@ -38,11 +38,10 @@ ImageButton buscar;
             bundle.putString("entrenadorId", "123");
             bundle.putString("entrenadorNombre", "Carlos Rodríguez");
             // Navegar al fragmento de detalle
-            NavController navController = Navigation.findNavController(view);
-            navController.navigate(R.id.action_buscar_to_detallesEntrenador,bundle);
-        } else if (view.getId() == R.id.iv_search) {
-            NavController navController = Navigation.findNavController(view);
-            navController.navigate(R.id.action_navigation_buscar_to_navigation_resultadosBusqueda);
+            NavController navControlle = Navigation.findNavController(view);
+            navControlle.navigate(R.id.action_navigation_buscar_to_navigation_resultadosBusqueda);
+        } else if (view.getId() == R.id.btn_back) {
+            requireActivity().onBackPressed();
         }
     }
 }

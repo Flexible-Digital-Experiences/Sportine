@@ -17,23 +17,39 @@
         android:paddingTop="16dp"
         android:paddingBottom="24dp">
 
+        <!-- Botón de regresar -->
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="-4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Regresar"
+            android:src="@drawable/ic_flechaatras"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#1A1A1A" />
+
         <!-- Barra de búsqueda -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_search"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="28dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            app:cardCornerRadius="24dp"
             app:cardElevation="2dp"
             android:backgroundTint="#E8E8E8"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintBottom_toBottomOf="@id/btn_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_back"
+            app:layout_constraintTop_toTopOf="@id/btn_back">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:padding="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="12dp"
                 android:gravity="center_vertical">
 
                 <EditText
@@ -45,17 +61,18 @@
                     android:hint="Juan"
                     android:textColorHint="#999999"
                     android:textColor="#999999"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:inputType="text"
                     android:imeOptions="actionSearch"
-                    android:paddingEnd="12dp"
+                    android:paddingEnd="8dp"
                     android:paddingStart="0dp" />
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/iv_search"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:src="@drawable/ic_search"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Buscar"
                     app:tint="#999999" />
             </LinearLayout>
@@ -175,9 +192,9 @@
             app:layout_constraintTop_toBottomOf="@id/divider_deportes"
             app:layout_constraintVertical_bias="0.0">
 
-            <!-- AQUÍ SE AGREGARÁN LAS TARJETAS DINÁMICAMENTE -->
-            <!-- Ejemplo de tarjeta estática (puedes eliminarla si agregas dinámicamente) -->
+            <!-- Tarjeta 1 -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_entrenador"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
@@ -185,7 +202,6 @@
                 app:cardCornerRadius="12dp"
                 app:cardElevation="2dp"
                 app:strokeColor="#E5E7EB"
-                android:id="@+id/card_entrenador"
                 app:strokeWidth="1dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -204,9 +220,7 @@
                         app:shapeAppearanceOverlay="@style/CircularImageView"
                         app:strokeColor="#E0E0E0"
                         app:strokeWidth="2dp"
-                        tools:src="@tools:sample/avatars"
-
-                        />
+                        tools:src="@tools:sample/avatars" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -214,10 +228,10 @@
                         android:layout_marginStart="12dp"
                         android:layout_marginEnd="8dp"
                         android:orientation="vertical"
+                        app:layout_constraintEnd_toStartOf="@id/indicador_estado_1"
                         app:layout_constraintStart_toEndOf="@id/image_entrenado"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <!-- Nombre del entrenador -->
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -228,7 +242,6 @@
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
-                        <!-- Calificación con estrellas -->
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -237,7 +250,6 @@
                             android:orientation="horizontal">
 
                             <RatingBar
-                                android:id="@+id/rating_entrenad"
                                 style="@style/Widget.AppCompat.RatingBar.Small"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -259,7 +271,6 @@
                                 android:textStyle="bold" />
                         </LinearLayout>
 
-                        <!-- Número de alumnos -->
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -283,7 +294,6 @@
                                 android:textSize="13sp" />
                         </LinearLayout>
 
-                        <!-- Deportes que imparte -->
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -312,6 +322,7 @@
                     </LinearLayout>
 
                     <View
+                        android:id="@+id/indicador_estado_1"
                         android:layout_width="4dp"
                         android:layout_height="0dp"
                         android:background="#10B981"
@@ -321,292 +332,289 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </com.google.android.material.card.MaterialCardView><com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:backgroundTint="#FFFFFF"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
-            app:strokeColor="#E5E7EB"
-            app:strokeWidth="1dp">
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <!-- Tarjeta 2 -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="#FFFFFF"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:strokeColor="#E5E7EB"
+                app:strokeWidth="1dp">
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/image_entrenad"
-                    android:layout_width="82dp"
-                    android:layout_height="82dp"
-                    android:layout_marginStart="8dp"
-                    android:scaleType="centerCrop"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:shapeAppearanceOverlay="@style/CircularImageView"
-                    app:strokeColor="#E0E0E0"
-                    app:strokeWidth="2dp"
-                    tools:src="@tools:sample/avatars"
-
-                    />
-
-                <LinearLayout
-                    android:layout_width="0dp"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginEnd="8dp"
-                    android:orientation="vertical"
-                    app:layout_constraintStart_toEndOf="@id/image_entrenad"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:padding="16dp">
 
-                    <!-- Nombre del entrenador -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="Entrenador"
-                        android:textColor="#111827"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/image_entrenad"
+                        android:layout_width="82dp"
+                        android:layout_height="82dp"
+                        android:layout_marginStart="8dp"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:shapeAppearanceOverlay="@style/CircularImageView"
+                        app:strokeColor="#E0E0E0"
+                        app:strokeWidth="2dp"
+                        tools:src="@tools:sample/avatars" />
 
-                    <!-- Calificación con estrellas -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <RatingBar
-                            android:id="@+id/rating_entrenador"
-                            style="@style/Widget.AppCompat.RatingBar.Small"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:isIndicator="true"
-                            android:numStars="5"
-                            android:progressBackgroundTint="#E5E7EB"
-                            android:progressTint="#FCD34D"
-                            android:rating="4.5"
-                            android:secondaryProgressTint="#FCD34D"
-                            android:stepSize="0.5" />
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="8dp"
+                        android:orientation="vertical"
+                        app:layout_constraintEnd_toStartOf="@id/indicador_estado_2"
+                        app:layout_constraintStart_toEndOf="@id/image_entrenad"
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
-                            android:text="4.5"
-                            android:textColor="#6B7280"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <!-- Número de alumnos -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:contentDescription="Alumnos"
-                            android:src="@drawable/ic_social_black_24dp"
-                            app:tint="#6B7280" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:text="15/20 alumnos"
-                            android:textColor="#6B7280"
-                            android:textSize="13sp" />
-                    </LinearLayout>
-
-                    <!-- Deportes que imparte -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:contentDescription="Deportes"
-                            android:src="@drawable/ic_ensena"
-                            app:tint="#6B7280" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
                             android:ellipsize="end"
                             android:maxLines="1"
-                            android:text="Fútbol"
-                            android:textColor="#6B7280"
-                            android:textSize="13sp" />
+                            android:text="Entrenador"
+                            android:textColor="#111827"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <RatingBar
+                                style="@style/Widget.AppCompat.RatingBar.Small"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:isIndicator="true"
+                                android:numStars="5"
+                                android:progressBackgroundTint="#E5E7EB"
+                                android:progressTint="#FCD34D"
+                                android:rating="4.5"
+                                android:secondaryProgressTint="#FCD34D"
+                                android:stepSize="0.5" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:text="4.5"
+                                android:textColor="#6B7280"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:contentDescription="Alumnos"
+                                android:src="@drawable/ic_social_black_24dp"
+                                app:tint="#6B7280" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:text="15/20 alumnos"
+                                android:textColor="#6B7280"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:contentDescription="Deportes"
+                                android:src="@drawable/ic_ensena"
+                                app:tint="#6B7280" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:text="Fútbol"
+                                android:textColor="#6B7280"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+
                     </LinearLayout>
 
-                </LinearLayout>
+                    <View
+                        android:id="@+id/indicador_estado_2"
+                        android:layout_width="4dp"
+                        android:layout_height="0dp"
+                        android:background="#10B981"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <View
-                    android:layout_width="4dp"
-                    android:layout_height="0dp"
-                    android:background="#10B981"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-        </com.google.android.material.card.MaterialCardView><com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:backgroundTint="#FFFFFF"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
-            app:strokeColor="#E5E7EB"
-            app:strokeWidth="1dp">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <!-- Tarjeta 3 -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="#FFFFFF"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:strokeColor="#E5E7EB"
+                app:strokeWidth="1dp">
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/image_entrenador"
-                    android:layout_width="82dp"
-                    android:layout_height="82dp"
-                    android:layout_marginStart="8dp"
-                    android:scaleType="centerCrop"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:shapeAppearanceOverlay="@style/CircularImageView"
-                    app:strokeColor="#E0E0E0"
-                    app:strokeWidth="2dp"
-                    tools:src="@tools:sample/avatars"
-
-                    />
-
-                <LinearLayout
-                    android:layout_width="0dp"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginEnd="8dp"
-                    android:orientation="vertical"
-                    app:layout_constraintStart_toEndOf="@id/image_entrenador"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:padding="16dp">
 
-                    <!-- Nombre del entrenador -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="Entrenador"
-                        android:textColor="#111827"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/image_entrenador"
+                        android:layout_width="82dp"
+                        android:layout_height="82dp"
+                        android:layout_marginStart="8dp"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:shapeAppearanceOverlay="@style/CircularImageView"
+                        app:strokeColor="#E0E0E0"
+                        app:strokeWidth="2dp"
+                        tools:src="@tools:sample/avatars" />
 
-                    <!-- Calificación con estrellas -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <RatingBar
-                            style="@style/Widget.AppCompat.RatingBar.Small"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:isIndicator="true"
-                            android:numStars="5"
-                            android:progressBackgroundTint="#E5E7EB"
-                            android:progressTint="#FCD34D"
-                            android:rating="4.5"
-                            android:secondaryProgressTint="#FCD34D"
-                            android:stepSize="0.5" />
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="8dp"
+                        android:orientation="vertical"
+                        app:layout_constraintEnd_toStartOf="@id/indicador_estado_3"
+                        app:layout_constraintStart_toEndOf="@id/image_entrenador"
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
-                            android:text="4.5"
-                            android:textColor="#6B7280"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <!-- Número de alumnos -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:contentDescription="Alumnos"
-                            android:src="@drawable/ic_social_black_24dp"
-                            app:tint="#6B7280" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:text="15/20 alumnos"
-                            android:textColor="#6B7280"
-                            android:textSize="13sp" />
-                    </LinearLayout>
-
-                    <!-- Deportes que imparte -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:contentDescription="Deportes"
-                            android:src="@drawable/ic_ensena"
-                            app:tint="#6B7280" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
                             android:ellipsize="end"
                             android:maxLines="1"
-                            android:text="Fútbol"
-                            android:textColor="#6B7280"
-                            android:textSize="13sp" />
+                            android:text="Entrenador"
+                            android:textColor="#111827"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <RatingBar
+                                style="@style/Widget.AppCompat.RatingBar.Small"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:isIndicator="true"
+                                android:numStars="5"
+                                android:progressBackgroundTint="#E5E7EB"
+                                android:progressTint="#FCD34D"
+                                android:rating="4.5"
+                                android:secondaryProgressTint="#FCD34D"
+                                android:stepSize="0.5" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="6dp"
+                                android:text="4.5"
+                                android:textColor="#6B7280"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:contentDescription="Alumnos"
+                                android:src="@drawable/ic_social_black_24dp"
+                                app:tint="#6B7280" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:text="15/20 alumnos"
+                                android:textColor="#6B7280"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:contentDescription="Deportes"
+                                android:src="@drawable/ic_ensena"
+                                app:tint="#6B7280" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:text="Fútbol"
+                                android:textColor="#6B7280"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+
                     </LinearLayout>
 
-                </LinearLayout>
+                    <View
+                        android:id="@+id/indicador_estado_3"
+                        android:layout_width="4dp"
+                        android:layout_height="0dp"
+                        android:background="#10B981"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <View
-                    android:layout_width="4dp"
-                    android:layout_height="0dp"
-                    android:background="#10B981"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.card.MaterialCardView>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 
