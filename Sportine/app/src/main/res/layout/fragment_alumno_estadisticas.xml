@@ -112,11 +112,10 @@
                         android:padding="8dp">
 
                         <ImageView
-                            android:layout_width="450dp"
+                            android:layout_width="45dp"
                             android:layout_height="45dp"
                             android:contentDescription="Fútbol"
-                            android:src="@drawable/balon_futbol"
-                             />
+                            android:src="@drawable/balon_futbol" />
 
                         <TextView
                             android:layout_width="wrap_content"

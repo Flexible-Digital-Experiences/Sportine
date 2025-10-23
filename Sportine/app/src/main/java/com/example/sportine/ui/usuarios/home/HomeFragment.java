@@ -25,7 +25,7 @@ public class HomeFragment extends Fragment {
 
         // Personalizar textos
         binding.textFecha.setText("20 de octubre de 2025");
-        binding.textSaludo.setText("Entrenamientos");  // <-- cambiamos a "Entrenamientos"
+        binding.textSaludo.setText("Hola de nuevo, Alumno!");
         binding.textMensaje.setText("¿Listo para mejorar hoy?");
 
         // Configurar RecyclerView con tarjetas
@@ -35,8 +35,15 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupRecyclerDeportes() {
-        // Lista de deportes de ejemplo
-        List<String> deportes = Arrays.asList("Fútbol", "Natación", "Ciclismo", "Tenis", "Boxeo");
+        // Lista de deportes de ejemplo (puedes agregar más)
+        List<String> deportes = Arrays.asList(
+                "Fútbol",
+                "Natación",
+                "Beisbol",
+                "Tenis",
+                "Boxeo",
+                "Basket"
+        );
 
         // Adapter
         DeportesAdapter adapter = new DeportesAdapter(deportes);

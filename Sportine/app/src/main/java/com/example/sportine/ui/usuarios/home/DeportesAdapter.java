@@ -38,18 +38,86 @@ public class DeportesAdapter extends RecyclerView.Adapter<DeportesAdapter.Deport
         TextView fecha = holder.itemView.findViewById(R.id.text_fecha);
         ImageView avatar = holder.itemView.findViewById(R.id.image_entrenador);
 
-        // Datos de ejemplo para frontend
+        // Configurar datos según el deporte
         titulo.setText(deporte);
-        nombreEntrenamiento.setText("Entrenamiento de ejemplo");
+
+        // Nombre de entrenamiento personalizado por deporte
+        nombreEntrenamiento.setText(obtenerNombreEntrenamiento(deporte));
+
+        // Fecha de ejemplo
         fecha.setText("20 Oct 2025, 16:00");
 
-        // Avatar de ejemplo (usa tu drawable)
-        avatar.setImageResource(R.drawable.logo_sportine); // reemplaza si quieres otro avatar
+        // Avatar según el deporte
+        avatar.setImageResource(obtenerImagenDeporte(deporte));
     }
 
     @Override
     public int getItemCount() {
         return deportes.size();
+    }
+
+    /**
+     * Devuelve el recurso drawable correspondiente al deporte
+     */
+    private int obtenerImagenDeporte(String deporte) {
+        switch (deporte.toLowerCase()) {
+            case "fútbol":
+            case "futbol":
+                return R.drawable.balon_futbol;
+
+            case "natación":
+            case "natacion":
+                return R.drawable.natacion_logo;
+
+            case "beisbol":
+                return R.drawable.pelota_beisbol;
+
+            case "tenis":
+                return R.drawable.pelota_tenis;
+
+            case "boxeo":
+                return R.drawable.guante_boxeo;
+
+            case "básquetbol":
+            case "basquetbol":
+            case "basket":
+                return R.drawable.balon_basket;
+
+            default:
+                return R.drawable.logo_sportine; // Imagen por defecto
+        }
+    }
+
+    /**
+     * Devuelve un nombre de entrenamiento personalizado según el deporte
+     */
+    private String obtenerNombreEntrenamiento(String deporte) {
+        switch (deporte.toLowerCase()) {
+            case "fútbol":
+            case "futbol":
+                return "Entrenamiento de resistencia y control";
+
+            case "natación":
+            case "natacion":
+                return "Técnica de brazada y velocidad";
+
+            case "beisbol":
+                return "Practica de pitcheo";
+
+            case "tenis":
+                return "Práctica de saque y volea";
+
+            case "boxeo":
+                return "Técnica de golpeo y defensa";
+
+            case "básquetbol":
+            case "basquetbol":
+            case "basket":
+                return "Tiros y jugadas tácticas";
+
+            default:
+                return "Entrenamiento especializado";
+        }
     }
 
     static class DeporteViewHolder extends RecyclerView.ViewHolder {
