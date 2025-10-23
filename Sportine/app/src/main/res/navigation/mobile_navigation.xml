@@ -86,5 +86,30 @@
         android:id="@+id/navigation_social"
         android:name="com.example.sportine.ui.usuarios.social.SocialFragment"
         android:label="@string/title_social"
-        tools:layout="@layout/fragment_alumno_social" />
+        tools:layout="@layout/fragment_alumno_social" >
+
+        <action
+            android:id="@+id/action_social_to_create_post"
+            app:destination="@id/navigation_create_post"
+            app:enterAnim="@anim/slide_in_up"
+            app:exitAnim="@anim/slide_out_down"/>
+
+        <action
+            android:id="@+id/action_social_to_buscar_amigo"
+            app:destination="@id/navigation_buscar_amigo"
+            app:enterAnim="@anim/slide_in_up"
+            app:exitAnim="@anim/slide_out_down"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_create_post"
+        android:name="com.example.sportine.ui.usuarios.social.CreatePostFragment"
+        android:label="Crear Publicación"
+        tools:layout="@layout/fragment_alumno_create_post" />
+
+    <fragment
+        android:id="@+id/navigation_buscar_amigo"
+        android:name="com.example.sportine.ui.usuarios.social.BuscarAmigoFragment"
+        android:label="Buscar Amigo"
+        tools:layout="@layout/fragment_alumno_buscar_amigo" />
 </navigation>
