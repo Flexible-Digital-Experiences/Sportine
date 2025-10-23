@@ -70,7 +70,9 @@
         android:name="com.example.sportine.ui.usuarios.editartarjeta.EditarTarjetaFragment"
         android:label="Editar Tarjeta"
         tools:layout="@layout/fragment_alumno_editar_tarjeta">
-    </fragment> <fragment
+    </fragment>
+
+    <fragment
     android:id="@+id/navigation_agregar_forma_pago"
     android:name="com.example.sportine.ui.usuarios.agregarformapago.AgregarformapagoFragment"
     android:label="Agregar Forma de Pago"
@@ -87,8 +89,7 @@
         android:name="com.example.sportine.ui.usuarios.social.SocialFragment"
         android:label="@string/title_social"
         tools:layout="@layout/fragment_alumno_social" >
-
-        <action
+    <action
             android:id="@+id/action_social_to_create_post"
             app:destination="@id/navigation_create_post"
             app:enterAnim="@anim/slide_in_up"
@@ -112,4 +113,34 @@
         android:name="com.example.sportine.ui.usuarios.social.BuscarAmigoFragment"
         android:label="Buscar Amigo"
         tools:layout="@layout/fragment_alumno_buscar_amigo" />
+  
+    <fragment
+        android:id="@+id/navigation_buscar"
+        android:name="com.example.sportine.ui.usuarios.buscar.BuscarFragment"
+        android:label="Buscar"
+        tools:layout="@layout/fragment_alumno_buscar">
+        <action
+            android:id="@+id/action_buscar_to_detallesEntrenador"
+            app:destination="@id/navigation_detallesEntrenador" />
+        <action
+            android:id="@+id/action_navigation_buscar_to_navigation_resultadosBusqueda"
+            app:destination="@id/navigation_resultadosBusqueda" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_detallesEntrenador"
+        android:name="com.example.sportine.ui.usuarios.detallesEntrenador.DetallesEntrenadorFragment"
+        android:label="detallesEntrenador"
+        tools:layout="@layout/fragment_alumno_ver_detalles_entrenador" />
+
+    <fragment
+        android:id="@+id/navigation_resultadosBusqueda"
+        android:name="com.example.sportine.ui.usuarios.resultadosBusqueda.resultadosBusquedaFragment"
+        android:label="resultadosBuscar"
+        tools:layout="@layout/fragment_alumno_resultados_busqueda" >
+        <action
+            android:id="@id/action_navigation_buscar_to_navigation_resultadosBusqueda"
+            app:destination="@id/navigation_detallesEntrenador" />
+    </fragment>
+
 </navigation>
