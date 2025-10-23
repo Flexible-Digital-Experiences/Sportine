@@ -1,33 +1,33 @@
-package com.example.sportine.ui.usuarios.social;
+package com.example.sportine.ui.usuarios.social; // Asegúrate que el paquete sea el correcto
 
-import android.app.AlertDialog;
+// Se quitaron las importaciones de AlertDialog, EditText, Toast que ya no se usan
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation; // ¡Importante para la navegación!
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.sportine.R;
+import com.example.sportine.R; // Asegúrate de importar tu R
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class SocialFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private SocialFeedAdapter adapter;
     private List<Post> postList;
-    // Las variables 'cardSharePost' y 'cameraIcon' ya no necesitan ser globales,
-    // las declararemos dentro de onCreateView para un código más limpio.
+    // Las variables globales ya no son necesarias aquí
 
     @Nullable
     @Override
@@ -38,7 +38,7 @@ public class SocialFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         postList = new ArrayList<>();
-        // --- TUS PUBLICACIONES ESTÁN AQUÍ, INTACTAS ---
+        // --- INICIO DE TU LÓGICA DE POSTS (Se queda igual) ---
         // ¡Solo asegúrate de que los archivos de imagen existan en res/drawable!
         postList.add(new Post(
                 "Ana",
@@ -66,98 +66,50 @@ public class SocialFragment extends Fragment {
                 "Sportine ● Hace 5m"
         ));
         // Agreguemos más para probar el scroll
-        postList.add(new Post("David", "Nueva rutina de pecho, ¡a darle!", R.drawable.ic_launcher_background, "Sportine ● Hace 2h"));
-        postList.add(new Post("Laura", "¿Alguien para una reta de basket mañana?", R.drawable.ic_launcher_background, "Sportine ● Hace 3h"));
+        postList.add(new Post("David", "Nueva rutina de pecho, ¡a darle!", R.drawable.avatar_user_male, "Sportine ● Hace 2h"));
+        postList.add(new Post("Laura", "¿Alguien para una reta de basket mañana?", R.drawable.avatar_user_female, "Sportine ● Hace 3h"));
+        // --- FIN DE TU LÓGICA DE POSTS ---
 
 
         adapter = new SocialFeedAdapter(postList);
         recyclerView.setAdapter(adapter);
 
-        // Encontrar y configurar el CardView y el ícono para crear nuevas publicaciones
+        // --- INICIO DE LA LÓGICA MODIFICADA ---
+
+        // Configurar el CardView para NAVEGAR a la pantalla CreatePostFragment
         MaterialCardView cardSharePost = view.findViewById(R.id.card_share_post);
-        cardSharePost.setOnClickListener(v -> showCreatePostDialog());
-
-        ImageView cameraIcon = view.findViewById(R.id.iv_camera_icon);
-        cameraIcon.setOnClickListener(v -> showCreatePostDialog());
-
-
-        // --- AQUÍ EMPIEZA EL CÓDIGO NUEVO ---
-
-        // Encuentra el ImageView del ícono de agregar amigo por su ID
-        ImageView addFriendIcon = view.findViewById(R.id.iv_add_friend);
-
-        // Le asigna un OnClickListener para que reaccione al clic
-        addFriendIcon.setOnClickListener(v -> {
-            // Llama al nuevo método que crearemos para mostrar el diálogo
-            showAddFriendDialog();
+        cardSharePost.setOnClickListener(v -> {
+            Navigation.findNavController(view).navigate(R.id.action_social_to_create_post);
         });
 
-        // --- AQUÍ TERMINA EL CÓDIGO NUEVO ---
+        // Configurar el ícono de la cámara para NAVEGAR a la pantalla CreatePostFragment
+        ImageView cameraIcon = view.findViewById(R.id.iv_camera_icon);
+        cameraIcon.setOnClickListener(v -> {
+            Navigation.findNavController(view).navigate(R.id.action_social_to_create_post);
+        });
+
+        // Configurar el ícono de "Agregar Amigo" para NAVEGAR a la pantalla BuscarAmigoFragment
+        ImageView addFriendIcon = view.findViewById(R.id.iv_add_friend);
+        addFriendIcon.setOnClickListener(v -> {
+            // ¡ESTE ES EL CAMBIO! Ya no llama a showAddFriendDialog()
+            Navigation.findNavController(view).navigate(R.id.action_social_to_buscar_amigo);
+        });
+
+        // --- FIN DE LA LÓGICA MODIFICADA ---
 
         return view;
     }
 
-    // Método para mostrar el diálogo de crear publicación
-    private void showCreatePostDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Crear nueva publicación");
+    // --- ¡EL MÉTODO showAddFriendDialog() FUE ELIMINADO! ---
 
-        final EditText input = new EditText(getContext());
-        input.setHint("Escribe tu publicación aquí...");
-        builder.setView(input);
-
-        builder.setPositiveButton("Publicar", (dialog, which) -> {
-            String postMessage = input.getText().toString().trim();
-            if (!postMessage.isEmpty()) {
-                // Simular que el usuario actual es "Yo"
-                String userName = "Emmanuel";
-                int userAvatar = R.drawable.ic_launcher_background; // TODO: Cambia por tu avatar
-
-                // Un formato más consistente con el resto de la app
-                String timestamp = "Sportine ● Ahora";
-
-                Post newPost = new Post(userName, postMessage, userAvatar, timestamp);
-                adapter.addPost(newPost);
-
-                // --- MEJORA AÑADIDA ---
-                // Mueve el scroll hasta arriba para que veas tu nueva publicación al instante
-                recyclerView.scrollToPosition(0);
-
-                Toast.makeText(getContext(), "¡Publicado!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getContext(), "La publicación no puede estar vacía", Toast.LENGTH_SHORT).show();
-            }
-        });
-        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
-
-        builder.show();
-    }
-    private void showAddFriendDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Buscar Amigo");
-        builder.setMessage("Ingresa el nombre de usuario para buscarlo.");
-
-        // Creamos un EditText para que el usuario escriba
-        final EditText input = new EditText(getContext());
-        input.setHint("Nombre de usuario...");
-        builder.setView(input);
-
-        // Configuramos el botón "Buscar"
-        builder.setPositiveButton("Buscar", (dialog, which) -> {
-            String friendName = input.getText().toString().trim();
-            if (!friendName.isEmpty()) {
-                // Por ahora, solo mostramos un mensaje de confirmación
-                Toast.makeText(getContext(), "Buscando a: " + friendName, Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getContext(), "El nombre no puede estar vacío", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Configuramos el botón "Cancelar"
-        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
-
-        // Mostramos el diálogo
-        builder.show();
+    // --- Método para añadir tus posts de ejemplo ---
+    // (Asegúrate de que los nombres de drawable existan en tu proyecto)
+    // Este método es necesario si lo llamas en onCreateView
+    private void addSamplePosts() {
+        // Pega aquí tu lógica para añadir los posts a postList
+        // Ejemplo:
+        // postList.add(new Post("Ana", "Mensaje...", R.drawable.avatar_ana, "Timestamp"));
+        // ...añade todos tus posts...
     }
 
-}
+} // Fin de la clase SocialFragment
