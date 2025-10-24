@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp"
+    android:backgroundTint="#FFFFFF">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- CheckBox personalizado -->
+        <CheckBox
+            android:id="@+id/checkbox_ejercicio"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:button="@null"
+            android:background="@drawable/checkbox_selector"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!-- Contenido del ejercicio -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toEndOf="@id/checkbox_ejercicio"
+            app:layout_constraintEnd_toStartOf="@id/text_duracion"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                android:id="@+id/text_nombre_ejercicio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Calentamiento dinámico"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A1A"
+                android:fontFamily="sans-serif-medium"
+                tools:text="Calentamiento dinámico" />
+
+            <TextView
+                android:id="@+id/text_descripcion_ejercicio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Ejercicios de movilidad articular"
+                android:textSize="13sp"
+                android:textColor="#6B7280"
+                tools:text="Ejercicios de movilidad articular" />
+        </LinearLayout>
+
+        <!-- Duración del ejercicio -->
+        <TextView
+            android:id="@+id/text_duracion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10 min"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#3B82F6"
+            android:fontFamily="sans-serif-medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

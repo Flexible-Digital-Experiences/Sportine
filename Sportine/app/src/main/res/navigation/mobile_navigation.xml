@@ -9,7 +9,17 @@
         android:id="@+id/navigation_home"
         android:name="com.example.sportine.ui.usuarios.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_alumno_home" />
+        tools:layout="@layout/fragment_alumno_home" >
+        <action
+            android:id="@+id/action_home_to_detalles"
+            app:destination="@+id/detallesEntrenamientoFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" >
+
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_notifications"
@@ -143,4 +153,10 @@
             app:destination="@id/navigation_detallesEntrenador" />
     </fragment>
 
+
+    <fragment
+        android:id="@+id/detallesEntrenamientoFragment"
+        android:name="com.example.sportine.ui.usuarios.detallesentrenamiento.DetallesEntrenamientoFragment"
+        android:label="Detalles Entrenamiento"
+        tools:layout="@layout/fragment_alumno_detalles_entrenamiento" />
 </navigation>

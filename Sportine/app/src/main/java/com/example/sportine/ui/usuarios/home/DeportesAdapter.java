@@ -16,9 +16,16 @@ import java.util.List;
 public class DeportesAdapter extends RecyclerView.Adapter<DeportesAdapter.DeporteViewHolder> {
 
     private List<String> deportes;
+    private OnDeporteClickListener listener;
 
-    public DeportesAdapter(List<String> deportes) {
+    // Interfaz para manejar clicks
+    public interface OnDeporteClickListener {
+        void onDeporteClick(String deporte, String tituloEntrenamiento);
+    }
+
+    public DeportesAdapter(List<String> deportes, OnDeporteClickListener listener) {
         this.deportes = deportes;
+        this.listener = listener;
     }
 
     @NonNull
@@ -42,13 +49,21 @@ public class DeportesAdapter extends RecyclerView.Adapter<DeportesAdapter.Deport
         titulo.setText(deporte);
 
         // Nombre de entrenamiento personalizado por deporte
-        nombreEntrenamiento.setText(obtenerNombreEntrenamiento(deporte));
+        String tituloEntrenamiento = obtenerNombreEntrenamiento(deporte);
+        nombreEntrenamiento.setText(tituloEntrenamiento);
 
         // Fecha de ejemplo
         fecha.setText("20 Oct 2025, 16:00");
 
         // Avatar según el deporte
         avatar.setImageResource(obtenerImagenDeporte(deporte));
+
+        // Configurar el click en toda la tarjeta
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onDeporteClick(deporte, tituloEntrenamiento);
+            }
+        });
     }
 
     @Override
@@ -63,28 +78,28 @@ public class DeportesAdapter extends RecyclerView.Adapter<DeportesAdapter.Deport
         switch (deporte.toLowerCase()) {
             case "fútbol":
             case "futbol":
-                return R.drawable.balon_futbol;
+                return R.drawable.avatar_user_male;
 
             case "natación":
             case "natacion":
-                return R.drawable.natacion_logo;
+                return R.drawable.avatar_ana;
 
             case "beisbol":
-                return R.drawable.pelota_beisbol;
+                return R.drawable.avatar_user_female;
 
             case "tenis":
-                return R.drawable.pelota_tenis;
+                return R.drawable.avatar_user_male;
 
             case "boxeo":
-                return R.drawable.guante_boxeo;
+                return R.drawable.avatar_ana;
 
             case "básquetbol":
             case "basquetbol":
             case "basket":
-                return R.drawable.balon_basket;
+                return R.drawable.avatar_user_female;
 
             default:
-                return R.drawable.logo_sportine; // Imagen por defecto
+                return R.drawable.logo_sportine;
         }
     }
 
@@ -102,7 +117,7 @@ public class DeportesAdapter extends RecyclerView.Adapter<DeportesAdapter.Deport
                 return "Técnica de brazada y velocidad";
 
             case "beisbol":
-                return "Practica de pitcheo";
+                return "Práctica de pitcheo";
 
             case "tenis":
                 return "Práctica de saque y volea";

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.sportine.R;
@@ -27,6 +28,7 @@ public class RegistroFragment extends Fragment {
     private TextInputEditText passwordInput;
     private AutoCompleteTextView rolSpinner;
     private Button registroBoton;
+    private ImageView btnBack;  // Agregar esta línea
 
     public RegistroFragment() {
         // Constructor vacío requerido
@@ -49,6 +51,15 @@ public class RegistroFragment extends Fragment {
         passwordInput = view.findViewById(R.id.passwordInput);
         rolSpinner = view.findViewById(R.id.rolSpinner);
         registroBoton = view.findViewById(R.id.registroBoton);
+        btnBack = view.findViewById(R.id.btnBack);  // Agregar esta línea
+
+        // Configurar botón de regresar - Agregar este bloque
+        btnBack.setOnClickListener(v -> {
+            Intent intent = new Intent(requireActivity(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            requireActivity().finish();
+        });
 
         // Configurar spinner de sexo
         String[] sexos = {"Masculino", "Femenino"};
