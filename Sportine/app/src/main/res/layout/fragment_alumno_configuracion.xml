@@ -11,515 +11,483 @@
         android:layout_height="0dp"
         android:background="@color/white"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:fillViewport="true"> <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_flechaatras"
+                android:contentDescription="Volver"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CONFIGURACIÓN" android:textColor="#000"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.1"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_avatar_config"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            app:cardCornerRadius="40dp"
+            app:cardElevation="2dp">
+
+            <ImageView
+                android:id="@+id/iv_avatar_config"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/avatar_user_male"
+                android:contentDescription="Foto de perfil"/>
+
+        </androidx.cardview.widget.CardView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Datos actuales"
+            android:textColor="#666"
+            android:textSize="12sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
-
-            <!-- Header con flecha y título -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
-
-                <ImageView
-                    android:id="@+id/btnBack"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_flechaatras"
-                    android:contentDescription="Volver"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="PERFIL"
-                    android:textColor="#000"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1"
-                    android:layout_centerInParent="true"/>
-            </RelativeLayout>
-
-            <!-- Imagen de perfil con fondo azul y lápiz -->
-            <FrameLayout
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp">
-
-                <View
-                    android:layout_width="140dp"
-                    android:layout_height="140dp" />
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/image_perfil"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_gravity="center"
-                    android:scaleType="centerCrop"
-                    app:shapeAppearanceOverlay="@style/CircularImageView"
-                    tools:src="@tools:sample/avatars"/>
-
-                <!-- Ícono de editar -->
-                <ImageView
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:layout_gravity="bottom|end"
-                    android:layout_marginEnd="5dp"
-                    android:src="@drawable/ic_editimgperf"
-                    android:padding="6dp"
-                    android:contentDescription="Editar foto"/>
-            </FrameLayout>
-
-            <!-- Label Datos actuales -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Datos actuales"
-                android:textColor="#666"
-                android:textSize="12sp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- Grid de campos de texto -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="20dp">
-
-                <!-- Fila 1: Nombre y Sexo -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="12dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="8dp">
-
-                        <TextView
-                            android:id="@+id/tvNombre"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Nombre"
-                            android:textSize="12sp"
-                            android:textColorHint="#999"
-                            android:background="@null"
-                            android:paddingBottom="6dp"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginStart="8dp">
-
-                        <TextView
-                            android:id="@+id/tvSexo"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Sexo"
-                            android:textSize="12sp"
-                            android:textColorHint="#999"
-                            android:background="@null"
-                            android:paddingBottom="6dp"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- Fila 2: Apellido y Estado -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="12dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="8dp">
-
-                        <TextView
-                            android:id="@+id/tvApellido"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Apellido"
-                            android:textSize="12sp"
-                            android:textColorHint="#999"
-                            android:background="@null"
-                            android:paddingBottom="6dp"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginStart="8dp">
-
-                        <TextView
-                            android:id="@+id/tvEstado"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Estado"
-                            android:textSize="12sp"
-                            android:textColorHint="#999"
-                            android:background="@null"
-                            android:paddingBottom="6dp"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- Fila 3: Nombre de Usuario y Ciudad -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="12dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="8dp">
-
-                        <TextView
-                            android:id="@+id/tvUsername"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Nombre de Usuario"
-                            android:textSize="12sp"
-                            android:textColorHint="#999"
-                            android:background="@null"
-                            android:paddingBottom="6dp"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginStart="8dp">
-
-                        <TextView
-                            android:id="@+id/tvCiudad"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Ciudad"
-                            android:textSize="12sp"
-                            android:textColorHint="#999"
-                            android:background="@null"
-                            android:paddingBottom="6dp"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- Fila 4: Contraseña -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="12dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="8dp">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <TextView
-                                android:id="@+id/tvPassword"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="Contraseña"
-                                android:textSize="12sp"
-                                android:textColorHint="#999"
-                                android:background="@null"
-                                android:paddingBottom="6dp"
-                                android:inputType="textPassword"/>
-
-                            <ImageView
-                                android:id="@+id/btnTogglePassword"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:src="@drawable/ic_ojover"
-                                android:contentDescription="Mostrar/Ocultar"/>
-                        </RelativeLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="1dp"
-                        android:layout_weight="1"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Botón Modificar -->
-            <Button
-                android:id="@+id/btnModificar"
-                android:layout_width="180dp"
-                android:layout_height="40dp"
-                android:text="Modificar"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:backgroundTint="#FFA726"
-                android:textAllCaps="false"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp"/>
-
-            <!-- Sección Tema -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tema"
-                android:textColor="#666"
-                android:textSize="12sp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="20dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="12dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Claro"
-                    android:textColor="#000"
-                    android:textSize="14sp"
-                    android:layout_marginEnd="8dp"/>
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="8dp">
 
-                <CheckBox
-                    android:id="@+id/checkClaro"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/tvNombre"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Nombre"
+                        android:textSize="12sp"
+                        android:textColorHint="#999"
+                        android:background="@null"
+                        android:paddingBottom="6dp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#000"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="40dp"/>
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Obscuro"
-                    android:textColor="#000"
-                    android:textSize="14sp"
-                    android:layout_marginEnd="8dp"/>
+                    <TextView
+                        android:id="@+id/tvSexo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Sexo"
+                        android:textSize="12sp"
+                        android:textColorHint="#999"
+                        android:background="@null"
+                        android:paddingBottom="6dp"/>
 
-                <CheckBox
-                    android:id="@+id/checkObscuro"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#000"/>
+                </LinearLayout>
             </LinearLayout>
 
-            <!-- Sección Formas de pago -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Formas"
-                android:textColor="#666"
-                android:textSize="12sp"
-                android:layout_gravity="center_horizontal"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="de pago"
-                android:textColor="#666"
-                android:textSize="12sp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- Tarjetas de pago -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="16dp">
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
 
-                <!-- Tarjeta 1 -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="8dp">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:id="@+id/tvApellido"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Mastercard ****21"
-                        android:textColor="#000"
-                        android:textSize="14sp"/>
+                        android:hint="Apellido"
+                        android:textSize="12sp"
+                        android:textColorHint="#999"
+                        android:background="@null"
+                        android:paddingBottom="6dp"/>
 
-                    <Button
-                        android:layout_width="60dp"
-                        android:layout_height="30dp"
-                        android:text="Editar"
-                        android:textColor="@color/white"
-                        android:textSize="10sp"
-                        android:backgroundTint="#00BCD4"
-                        android:textAllCaps="false"
-                        android:id="@+id/Botonedita1"
-                        android:layout_marginEnd="8dp"/>
-
-                    <Button
-                        android:layout_width="60dp"
-                        android:layout_height="30dp"
-                        android:text="Borrar"
-                        android:textColor="@color/white"
-                        android:textSize="10sp"
-                        android:backgroundTint="#D32F2F"
-                        android:textAllCaps="false"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#000"/>
                 </LinearLayout>
 
-                <!-- Tarjeta 2 -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:id="@+id/tvEstado"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Visa **** 89"
-                        android:textColor="#000"
-                        android:textSize="14sp"/>
+                        android:hint="Estado"
+                        android:textSize="12sp"
+                        android:textColorHint="#999"
+                        android:background="@null"
+                        android:paddingBottom="6dp"/>
 
-                    <Button
-                        android:layout_width="60dp"
-                        android:layout_height="30dp"
-                        android:text="Editar"
-                        android:textColor="@color/white"
-                        android:textSize="10sp"
-                        android:backgroundTint="#00BCD4"
-                        android:textAllCaps="false"
-                        android:id="@+id/Botonedita2"
-                        android:layout_marginEnd="8dp"/>
-
-                    <Button
-                        android:layout_width="60dp"
-                        android:layout_height="30dp"
-                        android:text="Borrar"
-                        android:textColor="@color/white"
-                        android:textSize="10sp"
-                        android:backgroundTint="#D32F2F"
-                        android:textAllCaps="false"/>
-                </LinearLayout>
-
-                <!-- Tarjeta 3 -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Visa **** 76"
-                        android:textColor="#000"
-                        android:textSize="14sp"/>
-
-                    <Button
-                        android:layout_width="60dp"
-                        android:layout_height="30dp"
-                        android:text="Editar"
-                        android:textColor="@color/white"
-                        android:textSize="10sp"
-                        android:backgroundTint="#00BCD4"
-                        android:textAllCaps="false"
-                        android:id="@+id/Botonedita3"
-                        android:layout_marginEnd="8dp"/>
-
-                    <Button
-                        android:layout_width="60dp"
-                        android:layout_height="30dp"
-                        android:text="Borrar"
-                        android:textColor="@color/white"
-                        android:textSize="10sp"
-                        android:backgroundTint="#D32F2F"
-                        android:textAllCaps="false"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#000"/>
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Botón Agregar forma de pago -->
-            <Button
-                android:id="@+id/btnAgregarPago"
-                android:layout_width="200dp"
-                android:layout_height="45dp"
-                android:text="Agregar forma de pago"
-                android:textColor="@color/white"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:backgroundTint="#66BB6A"
-                android:textAllCaps="false"
-                android:layout_gravity="center_horizontal"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
 
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="8dp">
+
+                    <TextView
+                        android:id="@+id/tvUsername"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Nombre de Usuario"
+                        android:textSize="12sp"
+                        android:textColorHint="#999"
+                        android:background="@null"
+                        android:paddingBottom="6dp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#000"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp">
+
+                    <TextView
+                        android:id="@+id/tvCiudad"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Ciudad"
+                        android:textSize="12sp"
+                        android:textColorHint="#999"
+                        android:background="@null"
+                        android:paddingBottom="6dp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#000"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="8dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tvPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Contraseña"
+                            android:textSize="12sp"
+                            android:textColorHint="#999"
+                            android:background="@null"
+                            android:paddingBottom="6dp"
+                            android:inputType="textPassword"/>
+
+                        <ImageView
+                            android:id="@+id/btnTogglePassword"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_ojover"
+                            android:contentDescription="Mostrar/Ocultar"/>
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#000"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"/>
+            </LinearLayout>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/btnModificar"
+            android:layout_width="180dp"
+            android:layout_height="40dp"
+            android:text="Modificar"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:backgroundTint="#FFA726"
+            android:textAllCaps="false"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tema"
+            android:textColor="#666"
+            android:textSize="12sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="12dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Claro"
+                android:textColor="#000"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"/>
+
+            <CheckBox
+                android:id="@+id/checkClaro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="40dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Obscuro"
+                android:textColor="#000"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp"/>
+
+            <CheckBox
+                android:id="@+id/checkObscuro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Formas"
+            android:textColor="#666"
+            android:textSize="12sp"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="de pago"
+            android:textColor="#666"
+            android:textSize="12sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Mastercard ****21"
+                    android:textColor="#000"
+                    android:textSize="14sp"/>
+
+                <Button
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:text="Editar"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:backgroundTint="#00BCD4"
+                    android:textAllCaps="false"
+                    android:id="@+id/Botonedita1"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:text="Borrar"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:backgroundTint="#D32F2F"
+                    android:textAllCaps="false"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Visa **** 89"
+                    android:textColor="#000"
+                    android:textSize="14sp"/>
+
+                <Button
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:text="Editar"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:backgroundTint="#00BCD4"
+                    android:textAllCaps="false"
+                    android:id="@+id/Botonedita2"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:text="Borrar"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:backgroundTint="#D32F2F"
+                    android:textAllCaps="false"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Visa **** 76"
+                    android:textColor="#000"
+                    android:textSize="14sp"/>
+
+                <Button
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:text="Editar"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:backgroundTint="#00BCD4"
+                    android:textAllCaps="false"
+                    android:id="@+id/Botonedita3"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:text="Borrar"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:backgroundTint="#D32F2F"
+                    android:textAllCaps="false"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnAgregarPago"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:text="Agregar forma de pago"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:backgroundTint="#66BB6A"
+            android:textAllCaps="false"
+            android:layout_gravity="center_horizontal"/>
+
+    </LinearLayout>
     </ScrollView>
-
-    <!-- Bottom Navigation View -->
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
