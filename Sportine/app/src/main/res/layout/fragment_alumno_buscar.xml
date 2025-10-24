@@ -285,6 +285,7 @@
                         app:strokeColor="#E0E0E0"
                         app:strokeWidth="2dp"
                         tools:src="@tools:sample/avatars"
+                        android:src="@drawable/avatar_ana"
 
                         />
 
@@ -430,7 +431,7 @@
                         app:strokeColor="#E0E0E0"
                         app:strokeWidth="2dp"
                         tools:src="@tools:sample/avatars"
-
+                        android:src="@drawable/avatar_user_male"
                         />
 
                     <LinearLayout
@@ -575,7 +576,7 @@
                         app:strokeColor="#E0E0E0"
                         app:strokeWidth="2dp"
                         tools:src="@tools:sample/avatars"
-
+                        android:src="@drawable/avatar_user_female"
                         />
 
                     <LinearLayout

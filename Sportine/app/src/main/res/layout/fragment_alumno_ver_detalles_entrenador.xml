@@ -39,7 +39,9 @@
             app:shapeAppearanceOverlay="@style/CircularImageView"
             app:strokeColor="#E0E0E0"
             app:strokeWidth="3dp"
-            tools:src="@tools:sample/avatars" />
+            tools:src="@tools:sample/avatars"
+            android:src="@drawable/avatar_ana"
+            />
 
         <!-- Nombre del entrenador -->
         <TextView
