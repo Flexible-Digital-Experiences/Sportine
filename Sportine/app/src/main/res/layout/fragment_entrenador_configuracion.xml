@@ -304,7 +304,7 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/btnModificar"
+            android:id="@+id/btnModificarentrena"
             android:layout_width="180dp"
             android:layout_height="40dp"
             android:text="Modificar"
@@ -363,7 +363,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Formas"
+            android:text="Detalles"
             android:textColor="#666"
             android:textSize="12sp"
             android:layout_gravity="center_horizontal"/>
@@ -371,7 +371,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="de pago"
+            android:text="de clases"
             android:textColor="#666"
             android:textSize="12sp"
             android:layout_gravity="center_horizontal"
@@ -380,128 +380,138 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_marginBottom="16dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="16dp">
 
-                <TextView
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Mastercard ****21"
-                    android:textColor="#000"
-                    android:textSize="14sp"/>
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-                <Button
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:text="Editar"
-                    android:textColor="@color/white"
-                    android:textSize="10sp"
-                    android:backgroundTint="#00BCD4"
-                    android:textAllCaps="false"
-                    android:id="@+id/Botonedita1"
-                    android:layout_marginEnd="8dp"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Costo de tu mensualidad"
+                        android:textColor="#000"
+                        android:textSize="11sp"
+                        android:paddingBottom="6dp"/>
 
-                <Button
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:text="Borrar"
-                    android:textColor="@color/white"
-                    android:textSize="10sp"
-                    android:backgroundTint="#D32F2F"
-                    android:textAllCaps="false"/>
+                    <EditText
+                        android:id="@+id/etCostoMensualidad"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:hint="$__________"
+                        android:textColorHint="#999"
+                        android:textColor="#666"
+                        android:textSize="11sp"
+                        android:background="@null"
+                        android:paddingBottom="6dp"
+                        android:gravity=""
+                        android:inputType="numberDecimal"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#000"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Visa **** 89"
-                    android:textColor="#000"
-                    android:textSize="14sp"/>
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-                <Button
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:text="Editar"
-                    android:textColor="@color/white"
-                    android:textSize="10sp"
-                    android:backgroundTint="#00BCD4"
-                    android:textAllCaps="false"
-                    android:id="@+id/Botonedita2"
-                    android:layout_marginEnd="8dp"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Alumnos inscritos"
+                        android:textColor="#000"
+                        android:textSize="11sp"
+                        android:paddingBottom="6dp"/>
 
-                <Button
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:text="Borrar"
-                    android:textColor="@color/white"
-                    android:textSize="10sp"
-                    android:backgroundTint="#D32F2F"
-                    android:textAllCaps="false"/>
+                    <EditText
+                        android:id="@+id/etAlumnosInscritos"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:hint="__________"
+                        android:textColorHint="#999"
+                        android:textColor="#666"
+                        android:textSize="11sp"
+                        android:background="@null"
+                        android:paddingBottom="6dp"
+                        android:gravity=""
+                        android:inputType="number"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#000"/>
             </LinearLayout>
+        </LinearLayout>
+
+        <!-- Dinero ganado en el mes -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_gravity="center"
                 android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Visa **** 76"
+                    android:text="Dinero ganado en el mes"
                     android:textColor="#000"
-                    android:textSize="14sp"/>
+                    android:textSize="11sp"
+                    android:gravity="center"
+                    android:paddingBottom="6dp"/>
 
-                <Button
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:text="Editar"
-                    android:textColor="@color/white"
-                    android:textSize="10sp"
-                    android:backgroundTint="#00BCD4"
-                    android:textAllCaps="false"
-                    android:id="@+id/Botonedita3"
-                    android:layout_marginEnd="8dp"/>
-
-                <Button
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:text="Borrar"
-                    android:textColor="@color/white"
-                    android:textSize="10sp"
-                    android:backgroundTint="#D32F2F"
-                    android:textAllCaps="false"/>
+                <EditText
+                    android:id="@+id/etDineroGanado"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:hint="$__________"
+                    android:textColorHint="#999"
+                    android:textColor="#666"
+                    android:textSize="11sp"
+                    android:background="@null"
+                    android:paddingBottom="6dp"
+                    android:gravity=""
+                    android:inputType="numberDecimal"/>
             </LinearLayout>
+
+            <View
+                android:layout_width="200dp"
+                android:layout_height="1dp"
+                android:layout_gravity="center"
+                android:background="#000"/>
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnAgregarPago"
-            android:layout_width="200dp"
-            android:layout_height="45dp"
-            android:text="Agregar forma de pago"
-            android:textColor="@color/white"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:backgroundTint="#66BB6A"
-            android:textAllCaps="false"
-            android:layout_gravity="center_horizontal"/>
 
     </LinearLayout>
     </ScrollView>

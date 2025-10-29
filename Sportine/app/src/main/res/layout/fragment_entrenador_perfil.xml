@@ -54,8 +54,13 @@
             android:paddingEnd="40dp"
             android:gravity="center_horizontal">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
             <androidx.cardview.widget.CardView
-                android:id="@+id/card_avatar_perfil"
+                android:id="@+id/card_avatar_perfil_entrenador"
                 android:layout_width="140dp"
                 android:layout_height="140dp"
                 android:layout_marginBottom="20dp"
@@ -63,7 +68,7 @@
                 app:cardElevation="4dp">
 
                 <ImageView
-                    android:id="@+id/iv_avatar_perfil"
+                    android:id="@+id/iv_avatar_perfil_entrenador"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
@@ -71,8 +76,19 @@
                     android:contentDescription="Foto de perfil"/>
 
             </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Hola soy Martin, Instructor de basquetball, futball y tennis con mas de 15 años de experiencia con alumnos de talla nacional"
+                    android:gravity="center"
+                    android:background="@drawable/tarjeta_entrenador"
+                    android:padding="16dp"/>
+
+            </LinearLayout>
+
             <TextView
-                android:id="@+id/txtSaludo"
+                android:id="@+id/txtSaludoEntrenador"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Hola Alumno"
@@ -145,7 +161,7 @@
                 android:layout_marginBottom="20dp">
 
                 <TextView
-                    android:id="@+id/tvNombre"
+                    android:id="@+id/tvNombreEntrenador"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Nombre"
@@ -163,7 +179,7 @@
                     android:layout_marginBottom="16dp"/>
 
                 <TextView
-                    android:id="@+id/tvApellido"
+                    android:id="@+id/tvApellidoEntrenador"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Apellido"
@@ -181,7 +197,7 @@
                     android:layout_marginBottom="16dp"/>
 
                 <TextView
-                    android:id="@+id/tvUsername"
+                    android:id="@+id/tvUsernameEntrenador"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Nombre de Usuario"
@@ -199,7 +215,7 @@
                     android:layout_marginBottom="16dp"/>
 
                 <TextView
-                    android:id="@+id/tvSexo"
+                    android:id="@+id/tvSexoEntrenador"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Sexo"
@@ -217,7 +233,7 @@
                     android:layout_marginBottom="16dp"/>
 
                 <TextView
-                    android:id="@+id/tvEstado"
+                    android:id="@+id/tvEstadoEntrenador"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Estado"
@@ -235,7 +251,7 @@
                     android:layout_marginBottom="16dp"/>
 
                 <TextView
-                    android:id="@+id/tvCiudad"
+                    android:id="@+id/tvCiudadEntrenador"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Ciudad"
@@ -253,7 +269,7 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/btnCompletar"
+                android:id="@+id/btnCompletarentrena"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:text="Completar tus datos"
@@ -302,14 +318,14 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/mainContainer"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="13dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginTop="480dp"
             android:gravity="center">
 
             <TextView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:text="3"
+                android:text="12"
                 android:textColor="#000"
                 android:textSize="20dp"
                 android:textStyle="bold"
@@ -319,7 +335,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Entrenadores"
+                android:text="Alumnos"
                 android:textColor="#000"
                 android:textSize="11dp"
                 android:textStyle="bold"
