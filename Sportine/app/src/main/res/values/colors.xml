@@ -7,4 +7,15 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- App Palette -->
+    <color name="colorPageBackground">#FAFAFA</color>
+    <color name="colorTextPrimary">#1A1A1A</color>
+    <color name="colorTextSecondary">#6B7280</color>
+    <color name="colorTextDescription">#4B5563</color>
+    <color name="colorTextLabel">#9CA3AF</color>
+    <color name="colorAccent">#3B82F6</color>
+    <color name="colorDivider">#E5E7EB</color>
+    <color name="colorCardBackground">#FFFFFF</color>
+    <color name="colorIconBackground">#F0F4FF</color>
 </resources>

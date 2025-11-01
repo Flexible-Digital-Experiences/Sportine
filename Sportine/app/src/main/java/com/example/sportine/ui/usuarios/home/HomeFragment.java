@@ -13,10 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.sportine.R;
 import com.example.sportine.databinding.FragmentAlumnoHomeBinding;
-import com.example.sportine.ui.usuarios.detallesentrenamiento.DetallesEntrenamientoFragment;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class HomeFragment extends Fragment {
 
@@ -27,31 +23,21 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentAlumnoHomeBinding.inflate(inflater, container, false);
 
-        // Personalizar textos
-        binding.textFecha.setText("20 de octubre de 2025");
-        binding.textSaludo.setText("Hola de nuevo, Alumno!");
-        binding.textMensaje.setText("¿Listo para mejorar hoy?");
+        // Los datos se llenarán desde el backend
+        binding.textFecha.setText("");
+        binding.textSaludo.setText("");
+        binding.textMensaje.setText("");
 
-        // Configurar RecyclerView con tarjetas
+        // Configurar RecyclerView
         setupRecyclerDeportes();
 
         return binding.getRoot();
     }
 
     private void setupRecyclerDeportes() {
-        // Lista de deportes de ejemplo
-        List<String> deportes = Arrays.asList(
-                "Fútbol",
-                "Natación",
-                "Beisbol",
-                "Tenis",
-                "Boxeo",
-                "Basket"
-        );
-
         // Adapter con el listener de clicks
-        DeportesAdapter adapter = new DeportesAdapter(deportes, (deporte, tituloEntrenamiento) -> {
-            // Abrir el fragmento de detalles usando Navigation Component
+        DeportesAdapter adapter = new DeportesAdapter((deporte, tituloEntrenamiento) -> {
+            // Abrir el fragmento de detalles
             abrirDetalleEntrenamiento(deporte, tituloEntrenamiento);
         });
 
@@ -60,31 +46,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void abrirDetalleEntrenamiento(String deporte, String tituloEntrenamiento) {
-        try {
-            // Crear el bundle con los datos
-            Bundle args = new Bundle();
-            args.putString("deporte", deporte);
-            args.putString("titulo", tituloEntrenamiento);
+        // Crear el bundle con los datos
+        Bundle args = new Bundle();
+        args.putString("deporte", deporte);
+        args.putString("titulo", tituloEntrenamiento);
 
-            // Navegar usando Navigation Component
-            NavController navController = Navigation.findNavController(requireView());
-            navController.navigate(R.id.action_home_to_detalles, args);
-        } catch (Exception e) {
-            // Fallback: usar FragmentTransaction si Navigation falla
-            e.printStackTrace();
-
-            DetallesEntrenamientoFragment detallesFragment = new DetallesEntrenamientoFragment();
-            Bundle args = new Bundle();
-            args.putString("deporte", deporte);
-            args.putString("titulo", tituloEntrenamiento);
-            detallesFragment.setArguments(args);
-
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.nav_host_fragment_activity_main, detallesFragment)
-                    .addToBackStack(null)
-                    .commit();
-        }
+        // Navegar usando Navigation Component
+        NavController navController = Navigation.findNavController(requireView());
+        navController.navigate(R.id.action_home_to_detalles, args);
     }
 
     @Override

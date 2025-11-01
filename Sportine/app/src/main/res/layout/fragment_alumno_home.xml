@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -50,7 +51,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:src="@drawable/logo_sportine"
-                        android:contentDescription="descripcion_logo"
+                        android:contentDescription="@string/descripcion_logo"
                         android:padding="12dp"
                         android:scaleType="fitCenter" />
                 </com.google.android.material.card.MaterialCardView>
@@ -66,33 +67,29 @@
                     app:layout_constraintTop_toTopOf="@id/card_logo"
                     app:layout_constraintBottom_toBottomOf="@id/card_logo">
 
+                    <!-- Saludo dinámico desde backend: "Hola de nuevo, [nombre]!" -->
                     <TextView
                         android:id="@+id/text_saludo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="texto_bienvenida"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="#1A1A1A"
-                        android:fontFamily="sans-serif-medium"
-                        tools:text="Hola de nuevo, Alumno!" />
+                        android:fontFamily="sans-serif-medium" />
 
+                    <!-- Mensaje dinámico desde backend -->
                     <TextView
                         android:id="@+id/text_mensaje"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="mensaje"
                         android:textSize="14sp"
-                        android:textColor="#6B7280"
-                        tools:text="¿Listo para mejorar hoy?" />
+                        android:textColor="#6B7280" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
-
-
-        <!-- Fecha -->
+        <!-- Fecha actual -->
         <LinearLayout
             android:id="@+id/layout_fecha"
             android:layout_width="wrap_content"
@@ -103,42 +100,23 @@
             app:layout_constraintTop_toBottomOf="@id/card_bienvenida"
             app:layout_constraintStart_toStartOf="parent">
 
-
-
             <View
                 android:layout_width="3dp"
                 android:layout_height="20dp"
                 android:background="#3B82F6"
                 android:layout_marginEnd="10dp" />
 
+            <!-- Fecha formateada desde backend -->
             <TextView
                 android:id="@+id/text_fecha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="default_fecha"
                 android:textColor="#6B7280"
                 android:textSize="14sp"
-                android:fontFamily="sans-serif-medium"
-                tools:text="12 de octubre de 2025" />
-
+                android:fontFamily="sans-serif-medium" />
         </LinearLayout>
 
-        <!-- RecyclerView de deportes (ESCALABLE) -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_deportes"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:nestedScrollingEnabled="false"
-            android:overScrollMode="never"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_entrenamientos"
-            tools:itemCount="10"
-            tools:listitem="@layout/item_alumno_deporte_seccion"
-            android:layout_marginTop="10dp"/>
-
+        <!-- Título de sección -->
         <TextView
             android:id="@+id/text_entrenamientos"
             android:layout_width="wrap_content"
@@ -149,13 +127,22 @@
             android:textColor="#1A1A1A"
             android:textSize="25sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layout_fecha"
-            tools:text="Entrenamientos" />
+            app:layout_constraintTop_toBottomOf="@+id/layout_fecha" />
 
+        <!-- RecyclerView: Se poblará dinámicamente desde backend -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_deportes"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_entrenamientos" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
-

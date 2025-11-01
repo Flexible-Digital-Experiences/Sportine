@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- CheckBox personalizado -->
+        <!-- CheckBox para marcar ejercicio como completado -->
         <CheckBox
             android:id="@+id/checkbox_ejercicio"
             android:layout_width="24dp"
@@ -39,34 +39,31 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
+            <!-- Nombre del ejercicio desde backend -->
             <TextView
                 android:id="@+id/text_nombre_ejercicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Calentamiento dinámico"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="#1A1A1A"
-                android:fontFamily="sans-serif-medium"
-                tools:text="Calentamiento dinámico" />
+                android:fontFamily="sans-serif-medium" />
 
+            <!-- Descripción del ejercicio desde backend -->
             <TextView
                 android:id="@+id/text_descripcion_ejercicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Ejercicios de movilidad articular"
                 android:textSize="13sp"
-                android:textColor="#6B7280"
-                tools:text="Ejercicios de movilidad articular" />
+                android:textColor="#6B7280" />
         </LinearLayout>
 
-        <!-- Duración del ejercicio -->
+        <!-- Duración del ejercicio desde backend -->
         <TextView
             android:id="@+id/text_duracion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="10 min"
             android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="#3B82F6"

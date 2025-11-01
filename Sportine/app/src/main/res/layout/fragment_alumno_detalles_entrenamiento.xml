@@ -5,26 +5,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAFAFA"
+    android:background="@color/colorPageBackground"
     android:fillViewport="true"
     tools:context=".ui.usuarios.detallesentrenamiento.DetallesEntrenamientoFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="24dp"
-        android:layout_marginTop="15dp">
+        android:paddingStart="@dimen/spacing_xlarge"
+        android:paddingEnd="@dimen/spacing_xlarge"
+        android:paddingTop="@dimen/spacing_large"
+        android:paddingBottom="@dimen/spacing_xxlarge"
+        android:layout_marginTop="@dimen/spacing_large">
 
-        <!-- Flecha de regreso -->
+        <!-- Botón de regreso -->
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/back_button_size"
+            android:layout_height="@dimen/back_button_size"
             android:src="@drawable/ic_flechaatras"
-            android:contentDescription="Volver"
+            android:contentDescription="@string/volver"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,12 +33,12 @@
             android:id="@+id/text_titulo_pagina"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Detalles Entrenamiento"
-            android:textSize="22sp"
+            android:text="@string/detalles_entrenamiento_title"
+            android:textSize="@dimen/font_size_page_title"
             android:textStyle="bold"
-            android:textColor="#1A1A1A"
+            android:textColor="@color/colorTextPrimary"
             android:fontFamily="sans-serif-medium"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="@dimen/spacing_medium"
             app:layout_constraintStart_toEndOf="@id/btnBack"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/btnBack"
@@ -48,50 +48,49 @@
         <View
             android:id="@+id/divider_header"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="#E5E7EB"
-            android:layout_marginTop="16dp"
+            android:layout_height="@dimen/divider_height"
+            android:background="@color/colorDivider"
+            android:layout_marginTop="@dimen/spacing_large"
             app:layout_constraintTop_toBottomOf="@id/btnBack"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Fecha -->
+        <!-- Fecha del entrenamiento -->
         <LinearLayout
             android:id="@+id/layout_fecha"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/spacing_xlarge"
             app:layout_constraintTop_toBottomOf="@id/divider_header"
             app:layout_constraintStart_toStartOf="parent">
 
             <View
-                android:layout_width="3dp"
-                android:layout_height="20dp"
-                android:background="#3B82F6"
-                android:layout_marginEnd="10dp" />
+                android:layout_width="@dimen/accent_line_width"
+                android:layout_height="@dimen/accent_line_height"
+                android:background="@color/colorAccent"
+                android:layout_marginEnd="@dimen/spacing_small" />
 
+            <!-- Fecha desde backend -->
             <TextView
                 android:id="@+id/text_fecha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="20 de octubre de 2025"
-                android:textColor="#6B7280"
-                android:textSize="14sp"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="@dimen/font_size_date"
                 android:fontFamily="sans-serif-medium" />
         </LinearLayout>
 
-        <!-- Título del entrenamiento -->
+        <!-- Título del entrenamiento desde backend -->
         <TextView
             android:id="@+id/text_titulo_entrenamiento"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Entrenamiento de resistencia y control"
-            android:textSize="26sp"
+            android:layout_marginTop="@dimen/spacing_xxlarge"
+            android:textSize="@dimen/font_size_training_title"
             android:textStyle="bold"
-            android:textColor="#1A1A1A"
+            android:textColor="@color/colorTextPrimary"
             android:fontFamily="sans-serif-medium"
             app:layout_constraintTop_toBottomOf="@id/layout_fecha"
             app:layout_constraintStart_toStartOf="parent"
@@ -101,9 +100,9 @@
         <View
             android:id="@+id/divider_titulo"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="#E5E7EB"
-            android:layout_marginTop="20dp"
+            android:layout_height="@dimen/divider_height"
+            android:background="@color/colorDivider"
+            android:layout_marginTop="@dimen/spacing_xlarge"
             app:layout_constraintTop_toBottomOf="@id/text_titulo_entrenamiento"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -113,10 +112,10 @@
             android:id="@+id/label_entrenador"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="ENTRENADOR"
-            android:textSize="12sp"
-            android:textColor="#9CA3AF"
+            android:layout_marginTop="@dimen/spacing_xlarge"
+            android:text="@string/label_entrenador"
+            android:textSize="@dimen/font_size_label"
+            android:textColor="@color/colorTextLabel"
             android:fontFamily="sans-serif-medium"
             android:letterSpacing="0.1"
             app:layout_constraintTop_toBottomOf="@id/divider_titulo"
@@ -127,11 +126,11 @@
             android:id="@+id/card_entrenador_deporte"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:cardCornerRadius="16dp"
+            android:layout_marginTop="@dimen/spacing_medium"
+            app:cardCornerRadius="@dimen/corner_radius_card"
             app:cardElevation="0dp"
             app:strokeWidth="0dp"
-            android:backgroundTint="#FFFFFF"
+            android:backgroundTint="@color/colorCardBackground"
             app:layout_constraintTop_toBottomOf="@id/label_entrenador"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -139,14 +138,14 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:padding="@dimen/spacing_large">
 
-                <!-- Avatar del entrenador -->
+                <!-- Avatar del entrenador (URL desde backend) -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/card_avatar_entrenador"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    app:cardCornerRadius="28dp"
+                    android:layout_width="@dimen/avatar_size"
+                    android:layout_height="@dimen/avatar_size"
+                    app:cardCornerRadius="@dimen/corner_radius_avatar"
                     app:cardElevation="0dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -156,52 +155,51 @@
                         android:id="@+id/img_avatar_entrenador"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/avatar_user_male"
                         android:scaleType="centerCrop"
-                        android:contentDescription="Avatar entrenador" />
+                        android:contentDescription="@string/avatar_entrenador_desc" />
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Información del entrenador -->
+                <!-- Información del entrenador desde backend -->
                 <LinearLayout
                     android:id="@+id/layout_info_entrenador"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="@dimen/spacing_large"
+                    android:layout_marginEnd="@dimen/spacing_large"
                     app:layout_constraintStart_toEndOf="@id/card_avatar_entrenador"
                     app:layout_constraintEnd_toStartOf="@id/card_deporte_icon"
                     app:layout_constraintTop_toTopOf="@id/card_avatar_entrenador"
                     app:layout_constraintBottom_toBottomOf="@id/card_avatar_entrenador">
 
+                    <!-- Nombre del entrenador -->
                     <TextView
                         android:id="@+id/text_nombre_entrenador"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Carlos Hernández"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/font_size_name"
                         android:textStyle="bold"
-                        android:textColor="#1A1A1A"
+                        android:textColor="@color/colorTextPrimary"
                         android:fontFamily="sans-serif-medium" />
 
+                    <!-- Especialidad del entrenador -->
                     <TextView
                         android:id="@+id/text_especialidad"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Entrenador Profesional"
-                        android:textSize="13sp"
-                        android:textColor="#6B7280" />
+                        android:layout_marginTop="@dimen/spacing_xsmall"
+                        android:textSize="@dimen/font_size_specialty"
+                        android:textColor="@color/colorTextSecondary" />
                 </LinearLayout>
 
-                <!-- Ícono del deporte -->
+                <!-- Ícono del deporte (drawable dinámico desde backend) -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/card_deporte_icon"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    app:cardCornerRadius="28dp"
+                    android:layout_width="@dimen/avatar_size"
+                    android:layout_height="@dimen/avatar_size"
+                    app:cardCornerRadius="@dimen/corner_radius_avatar"
                     app:cardElevation="0dp"
-                    android:backgroundTint="#F0F4FF"
+                    android:backgroundTint="@color/colorIconBackground"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent">
@@ -210,10 +208,9 @@
                         android:id="@+id/img_deporte_icon"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/balon_futbol"
-                        android:padding="12dp"
+                        android:padding="@dimen/icon_padding"
                         android:scaleType="fitCenter"
-                        android:contentDescription="Ícono deporte" />
+                        android:contentDescription="@string/icono_deporte_desc" />
                 </com.google.android.material.card.MaterialCardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -223,9 +220,9 @@
         <View
             android:id="@+id/divider_descripcion"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="#E5E7EB"
-            android:layout_marginTop="24dp"
+            android:layout_height="@dimen/divider_height"
+            android:background="@color/colorDivider"
+            android:layout_marginTop="@dimen/spacing_xxlarge"
             app:layout_constraintTop_toBottomOf="@id/card_entrenador_deporte"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -235,10 +232,10 @@
             android:id="@+id/label_descripcion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="DESCRIPCIÓN"
-            android:textSize="12sp"
-            android:textColor="#9CA3AF"
+            android:layout_marginTop="@dimen/spacing_xlarge"
+            android:text="@string/label_descripcion"
+            android:textSize="@dimen/font_size_label"
+            android:textColor="@color/colorTextLabel"
             android:fontFamily="sans-serif-medium"
             android:letterSpacing="0.1"
             app:layout_constraintTop_toBottomOf="@id/divider_descripcion"
@@ -249,67 +246,25 @@
             android:id="@+id/card_descripcion"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:cardCornerRadius="16dp"
+            android:layout_marginTop="@dimen/spacing_medium"
+            app:cardCornerRadius="@dimen/corner_radius_card"
             app:cardElevation="0dp"
             app:strokeWidth="0dp"
-            android:backgroundTint="#FFFFFF"
+            android:backgroundTint="@color/colorCardBackground"
             app:layout_constraintTop_toBottomOf="@id/label_descripcion"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
+            <!-- Descripción del entrenamiento desde backend -->
             <TextView
                 android:id="@+id/text_descripcion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:text="Este entrenamiento está diseñado para mejorar tu resistencia cardiovascular y control del balón. Trabajaremos en ejercicios de alta intensidad combinados con técnicas de precisión."
-                android:textSize="15sp"
-                android:textColor="#4B5563"
-                android:lineSpacingExtra="4dp" />
+                android:padding="@dimen/spacing_xlarge"
+                android:textSize="@dimen/font_size_description"
+                android:textColor="@color/colorTextDescription"
+                android:lineSpacingExtra="@dimen/spacing_xsmall" />
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Línea separadora -->
-        <View
-            android:id="@+id/divider_ejercicios"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="#E5E7EB"
-            android:layout_marginTop="24dp"
-            app:layout_constraintTop_toBottomOf="@id/card_descripcion"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- Label "Ejercicios" -->
-        <TextView
-            android:id="@+id/label_ejercicios"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="EJERCICIOS"
-            android:textSize="12sp"
-            android:textColor="#9CA3AF"
-            android:fontFamily="sans-serif-medium"
-            android:letterSpacing="0.1"
-            app:layout_constraintTop_toBottomOf="@id/divider_ejercicios"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <!-- RecyclerView de ejercicios -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_ejercicios"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:clipToPadding="false"
-            android:nestedScrollingEnabled="false"
-            android:overScrollMode="never"
-            app:layout_constraintTop_toBottomOf="@id/label_ejercicios"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:itemCount="5"
-            tools:listitem="@layout/item_ejercicio" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.core.widget.NestedScrollView>

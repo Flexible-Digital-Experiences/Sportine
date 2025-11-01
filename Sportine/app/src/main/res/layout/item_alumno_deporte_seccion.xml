@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
+        <!-- Imagen del entrenador (URL desde backend) -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/image_entrenador"
             android:layout_width="56dp"
@@ -26,8 +27,7 @@
             app:strokeWidth="2dp"
             app:strokeColor="#E0E0E0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/layout_info"
@@ -40,29 +40,27 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <!-- Nombre del deporte desde backend -->
             <TextView
                 android:id="@+id/text_titulo_deporte"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fútbol"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="#111827"
                 android:maxLines="1"
-                android:ellipsize="end"
-                tools:text="Fútbol" />
+                android:ellipsize="end" />
 
+            <!-- Nombre del entrenamiento desde backend -->
             <TextView
                 android:id="@+id/text_nombre_entrenamiento"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Entrenamiento de resistencia"
                 android:textSize="14sp"
                 android:textColor="#374151"
                 android:maxLines="1"
-                android:ellipsize="end"
-                tools:text="Entrenamiento de resistencia" />
+                android:ellipsize="end" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -75,23 +73,21 @@
                     android:layout_width="14dp"
                     android:layout_height="14dp"
                     android:src="@android:drawable/ic_menu_recent_history"
-                    android:tint="#6B7280"
-                    android:contentDescription="Icono de fecha" />
+                    android:contentDescription="icono_fecha"
+                    app:tint="#6B7280" />
 
+                <!-- Fecha formateada desde backend: "15 Oct 2024, 16:00" -->
                 <TextView
                     android:id="@+id/text_fecha"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:text="15 Oct 2024, 16:00"
                     android:textSize="12sp"
-                    android:textColor="#6B7280"
-                    tools:text="15 Oct 2024, 16:00" />
-
+                    android:textColor="#6B7280" />
             </LinearLayout>
-
         </LinearLayout>
 
+        <!-- Indicador de estado (color dinámico según estado desde backend) -->
         <View
             android:id="@+id/indicador_estado"
             android:layout_width="4dp"
@@ -102,5 +98,4 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </com.google.android.material.card.MaterialCardView>

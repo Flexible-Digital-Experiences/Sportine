@@ -11,20 +11,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sportine.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeportesAdapter extends RecyclerView.Adapter<DeportesAdapter.DeporteViewHolder> {
 
-    private List<String> deportes;
-    private OnDeporteClickListener listener;
+    private List<String> deportes = new ArrayList<>();
+    private final OnDeporteClickListener listener;
 
     // Interfaz para manejar clicks
     public interface OnDeporteClickListener {
         void onDeporteClick(String deporte, String tituloEntrenamiento);
     }
 
-    public DeportesAdapter(List<String> deportes, OnDeporteClickListener listener) {
-        this.deportes = deportes;
+    public DeportesAdapter(OnDeporteClickListener listener) {
         this.listener = listener;
     }
 
@@ -40,28 +40,17 @@ public class DeportesAdapter extends RecyclerView.Adapter<DeportesAdapter.Deport
     public void onBindViewHolder(@NonNull DeporteViewHolder holder, int position) {
         String deporte = deportes.get(position);
 
-        TextView titulo = holder.itemView.findViewById(R.id.text_titulo_deporte);
-        TextView nombreEntrenamiento = holder.itemView.findViewById(R.id.text_nombre_entrenamiento);
-        TextView fecha = holder.itemView.findViewById(R.id.text_fecha);
-        ImageView avatar = holder.itemView.findViewById(R.id.image_entrenador);
-
-        // Configurar datos según el deporte
-        titulo.setText(deporte);
-
-        // Nombre de entrenamiento personalizado por deporte
-        String tituloEntrenamiento = obtenerNombreEntrenamiento(deporte);
-        nombreEntrenamiento.setText(tituloEntrenamiento);
-
-        // Fecha de ejemplo
-        fecha.setText("20 Oct 2025, 16:00");
-
-        // Avatar según el deporte
-        avatar.setImageResource(obtenerImagenDeporte(deporte));
+        // Los datos se llenarán desde el backend
+        holder.titulo.setText(deporte);
+        holder.nombreEntrenamiento.setText(""); // Se llenará desde el backend
+        holder.fecha.setText(""); // Se llenará desde el backend
+        // holder.avatar.setImageResource(R.drawable.avatar_default); // Imagen por defecto
 
         // Configurar el click en toda la tarjeta
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onDeporteClick(deporte, tituloEntrenamiento);
+                // El título del entrenamiento vendrá del backend en el futuro.
+                listener.onDeporteClick(deporte, "");
             }
         });
     }
@@ -71,73 +60,24 @@ public class DeportesAdapter extends RecyclerView.Adapter<DeportesAdapter.Deport
         return deportes.size();
     }
 
-    /**
-     * Devuelve el recurso drawable correspondiente al deporte
-     */
-    private int obtenerImagenDeporte(String deporte) {
-        switch (deporte.toLowerCase()) {
-            case "fútbol":
-            case "futbol":
-                return R.drawable.avatar_user_male;
-
-            case "natación":
-            case "natacion":
-                return R.drawable.avatar_ana;
-
-            case "beisbol":
-                return R.drawable.avatar_user_female;
-
-            case "tenis":
-                return R.drawable.avatar_user_male;
-
-            case "boxeo":
-                return R.drawable.avatar_ana;
-
-            case "básquetbol":
-            case "basquetbol":
-            case "basket":
-                return R.drawable.avatar_user_female;
-
-            default:
-                return R.drawable.logo_sportine;
-        }
-    }
-
-    /**
-     * Devuelve un nombre de entrenamiento personalizado según el deporte
-     */
-    private String obtenerNombreEntrenamiento(String deporte) {
-        switch (deporte.toLowerCase()) {
-            case "fútbol":
-            case "futbol":
-                return "Entrenamiento de resistencia y control";
-
-            case "natación":
-            case "natacion":
-                return "Técnica de brazada y velocidad";
-
-            case "beisbol":
-                return "Práctica de pitcheo";
-
-            case "tenis":
-                return "Práctica de saque y volea";
-
-            case "boxeo":
-                return "Técnica de golpeo y defensa";
-
-            case "básquetbol":
-            case "basquetbol":
-            case "basket":
-                return "Tiros y jugadas tácticas";
-
-            default:
-                return "Entrenamiento especializado";
-        }
+    // Método para actualizar los datos del adaptador
+    public void setDeportes(List<String> nuevosDeportes) {
+        this.deportes = nuevosDeportes;
+        notifyDataSetChanged(); // Se puede optimizar con DiffUtil
     }
 
     static class DeporteViewHolder extends RecyclerView.ViewHolder {
+        TextView titulo;
+        TextView nombreEntrenamiento;
+        TextView fecha;
+        ImageView avatar;
+
         public DeporteViewHolder(@NonNull View itemView) {
             super(itemView);
+            titulo = itemView.findViewById(R.id.text_titulo_deporte);
+            nombreEntrenamiento = itemView.findViewById(R.id.text_nombre_entrenamiento);
+            fecha = itemView.findViewById(R.id.text_fecha);
+            avatar = itemView.findViewById(R.id.image_entrenador);
         }
     }
 }

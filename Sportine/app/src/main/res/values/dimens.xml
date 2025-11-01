@@ -2,6 +2,33 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="stroke_width_normal">1dp</dimen>
-    <dimen name="stroke_width_selected">3dp</dimen>
+
+    <!-- Spacing System -->
+    <dimen name="spacing_xsmall">4dp</dimen>
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="spacing_medium">12dp</dimen>
+    <dimen name="spacing_large">16dp</dimen>
+    <dimen name="spacing_xlarge">20dp</dimen>
+    <dimen name="spacing_xxlarge">24dp</dimen>
+
+    <!-- Font Sizes -->
+    <dimen name="font_size_label">12sp</dimen>
+    <dimen name="font_size_specialty">13sp</dimen>
+    <dimen name="font_size_date">14sp</dimen>
+    <dimen name="font_size_description">15sp</dimen>
+    <dimen name="font_size_name">16sp</dimen>
+    <dimen name="font_size_page_title">22sp</dimen>
+    <dimen name="font_size_training_title">26sp</dimen>
+
+    <!-- Component Sizes -->
+    <dimen name="divider_height">1dp</dimen>
+    <dimen name="back_button_size">24dp</dimen>
+    <dimen name="accent_line_width">3dp</dimen>
+    <dimen name="accent_line_height">20dp</dimen>
+    <dimen name="avatar_size">56dp</dimen>
+    <dimen name="icon_padding">12dp</dimen>
+
+    <!-- Corner Radius -->
+    <dimen name="corner_radius_card">16dp</dimen>
+    <dimen name="corner_radius_avatar">28dp</dimen>
 </resources>

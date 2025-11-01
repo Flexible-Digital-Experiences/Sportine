@@ -10,4 +10,15 @@
     <string name="title_social">Social</string>
     <string name="title_buscar">Buscar</string>
     <string name="like_button_description">Botón de Me Gusta</string>
+    <string name="volver">Volver</string>
+
+    <!-- Textos para Detalles de Entrenamiento -->
+    <string name="detalles_entrenamiento_title">Detalles Entrenamiento</string>
+    <string name="label_entrenador">Entrenador</string>
+    <string name="label_descripcion">Descripción</string>
+    <string name="label_ejercicios">Ejercicios</string>
+
+    <!-- Content Descriptions -->
+    <string name="avatar_entrenador_desc">Avatar del entrenador</string>
+    <string name="icono_deporte_desc">Icono del deporte</string>
 </resources>
