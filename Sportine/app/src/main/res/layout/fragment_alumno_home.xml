@@ -5,27 +5,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAFAFA"
+    android:background="@color/colorPageBackground"
     android:fillViewport="true"
     tools:context=".ui.usuarios.home.HomeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="24dp">
+        android:paddingStart="@dimen/spacing_xlarge"
+        android:paddingEnd="@dimen/spacing_xlarge"
+        android:paddingTop="@dimen/spacing_large"
+        android:paddingBottom="@dimen/spacing_xxlarge">
 
         <!-- Tarjeta de bienvenida -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_bienvenida"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="20dp"
+            app:cardCornerRadius="@dimen/corner_radius_card"
             app:cardElevation="0dp"
             app:strokeWidth="0dp"
-            android:backgroundTint="#FFFFFF"
+            app:cardBackgroundColor="@color/colorCardBackground"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -33,15 +33,15 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="20dp">
+                android:padding="@dimen/spacing_xlarge">
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/card_logo"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    app:cardCornerRadius="32dp"
+                    android:layout_width="@dimen/avatar_size"
+                    android:layout_height="@dimen/avatar_size"
+                    app:cardCornerRadius="@dimen/corner_radius_avatar"
                     app:cardElevation="0dp"
-                    android:backgroundTint="#F0F4FF"
+                    app:cardBackgroundColor="@color/colorIconBackground"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent">
@@ -52,7 +52,7 @@
                         android:layout_height="match_parent"
                         android:src="@drawable/logo_sportine"
                         android:contentDescription="@string/descripcion_logo"
-                        android:padding="12dp"
+                        android:padding="@dimen/icon_padding"
                         android:scaleType="fitCenter" />
                 </com.google.android.material.card.MaterialCardView>
 
@@ -61,7 +61,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="@dimen/spacing_large"
                     app:layout_constraintStart_toEndOf="@id/card_logo"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/card_logo"
@@ -72,9 +72,9 @@
                         android:id="@+id/text_saludo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/font_size_headline"
                         android:textStyle="bold"
-                        android:textColor="#1A1A1A"
+                        android:textColor="@color/colorTextPrimary"
                         android:fontFamily="sans-serif-medium" />
 
                     <!-- Mensaje dinámico desde backend -->
@@ -82,9 +82,9 @@
                         android:id="@+id/text_mensaje"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textSize="14sp"
-                        android:textColor="#6B7280" />
+                        android:layout_marginTop="@dimen/spacing_xsmall"
+                        android:textSize="@dimen/font_size_date"
+                        android:textColor="@color/colorTextSecondary" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -96,23 +96,23 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="@dimen/spacing_xxlarge"
             app:layout_constraintTop_toBottomOf="@id/card_bienvenida"
             app:layout_constraintStart_toStartOf="parent">
 
             <View
-                android:layout_width="3dp"
-                android:layout_height="20dp"
-                android:background="#3B82F6"
-                android:layout_marginEnd="10dp" />
+                android:layout_width="@dimen/accent_line_width"
+                android:layout_height="@dimen/accent_line_height"
+                android:background="@color/colorAccent"
+                android:layout_marginEnd="@dimen/spacing_small" />
 
             <!-- Fecha formateada desde backend -->
             <TextView
                 android:id="@+id/text_fecha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#6B7280"
-                android:textSize="14sp"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="@dimen/font_size_date"
                 android:fontFamily="sans-serif-medium" />
         </LinearLayout>
 
@@ -121,11 +121,11 @@
             android:id="@+id/text_entrenamientos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/spacing_xlarge"
             android:fontFamily="sans-serif-medium"
-            android:text="Entrenamientos"
-            android:textColor="#1A1A1A"
-            android:textSize="25sp"
+            android:text="@string/entrenamientos_title"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="@dimen/font_size_page_title"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layout_fecha" />
@@ -135,7 +135,7 @@
             android:id="@+id/recycler_deportes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/spacing_small"
             android:clipToPadding="false"
             android:nestedScrollingEnabled="false"
             android:overScrollMode="never"

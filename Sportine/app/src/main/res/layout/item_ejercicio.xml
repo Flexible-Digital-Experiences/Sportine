@@ -5,24 +5,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardCornerRadius="16dp"
+    android:layout_marginBottom="@dimen/spacing_medium"
+    app:cardCornerRadius="@dimen/corner_radius_card"
     app:cardElevation="0dp"
     app:strokeWidth="0dp"
-    android:backgroundTint="#FFFFFF">
+    app:cardBackgroundColor="@color/colorCardBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="@dimen/spacing_large">
 
         <!-- CheckBox para marcar ejercicio como completado -->
         <CheckBox
             android:id="@+id/checkbox_ejercicio"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/icon_size_medium"
+            android:layout_height="@dimen/icon_size_medium"
             android:button="@null"
             android:background="@drawable/checkbox_selector"
+            android:contentDescription="@string/marcar_ejercicio_completado"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
@@ -32,8 +33,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="@dimen/spacing_large"
+            android:layout_marginEnd="@dimen/spacing_small"
             app:layout_constraintStart_toEndOf="@id/checkbox_ejercicio"
             app:layout_constraintEnd_toStartOf="@id/text_duracion"
             app:layout_constraintTop_toTopOf="parent"
@@ -44,9 +45,9 @@
                 android:id="@+id/text_nombre_ejercicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:textSize="@dimen/font_size_name"
                 android:textStyle="bold"
-                android:textColor="#1A1A1A"
+                android:textColor="@color/colorTextPrimary"
                 android:fontFamily="sans-serif-medium" />
 
             <!-- Descripción del ejercicio desde backend -->
@@ -54,9 +55,9 @@
                 android:id="@+id/text_descripcion_ejercicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textSize="13sp"
-                android:textColor="#6B7280" />
+                android:layout_marginTop="@dimen/spacing_xsmall"
+                android:textSize="@dimen/font_size_specialty"
+                android:textColor="@color/colorTextSecondary" />
         </LinearLayout>
 
         <!-- Duración del ejercicio desde backend -->
@@ -64,9 +65,9 @@
             android:id="@+id/text_duracion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:textSize="@dimen/font_size_date"
             android:textStyle="bold"
-            android:textColor="#3B82F6"
+            android:textColor="@color/colorAccent"
             android:fontFamily="sans-serif-medium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

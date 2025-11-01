@@ -18,11 +18,13 @@
     <dimen name="font_size_description">15sp</dimen>
     <dimen name="font_size_name">16sp</dimen>
     <dimen name="font_size_page_title">22sp</dimen>
+    <dimen name="font_size_headline">24sp</dimen>
     <dimen name="font_size_training_title">26sp</dimen>
 
     <!-- Component Sizes -->
     <dimen name="divider_height">1dp</dimen>
     <dimen name="back_button_size">24dp</dimen>
+    <dimen name="icon_size_medium">24dp</dimen>
     <dimen name="accent_line_width">3dp</dimen>
     <dimen name="accent_line_height">20dp</dimen>
     <dimen name="avatar_size">56dp</dimen>

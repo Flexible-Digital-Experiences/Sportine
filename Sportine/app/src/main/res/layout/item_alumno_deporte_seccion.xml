@@ -5,27 +5,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp"
+    android:layout_marginBottom="@dimen/spacing_medium"
+    app:cardCornerRadius="@dimen/corner_radius_card"
+    app:cardElevation="0dp"
     app:strokeWidth="1dp"
-    app:strokeColor="#E5E7EB"
-    android:backgroundTint="#FFFFFF">
+    app:strokeColor="@color/colorDivider"
+    app:cardBackgroundColor="@color/colorCardBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="@dimen/spacing_large">
 
         <!-- Imagen del entrenador (URL desde backend) -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/image_entrenador"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
             android:scaleType="centerCrop"
-            app:shapeAppearanceOverlay="@style/CircularImageView"
-            app:strokeWidth="2dp"
-            app:strokeColor="#E0E0E0"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/colorDivider"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,8 +34,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="@dimen/spacing_medium"
+            android:layout_marginEnd="@dimen/spacing_small"
             app:layout_constraintStart_toEndOf="@id/image_entrenador"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -45,9 +45,9 @@
                 android:id="@+id/text_titulo_deporte"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:textSize="@dimen/font_size_name"
                 android:textStyle="bold"
-                android:textColor="#111827"
+                android:textColor="@color/colorTextPrimary"
                 android:maxLines="1"
                 android:ellipsize="end" />
 
@@ -56,9 +56,9 @@
                 android:id="@+id/text_nombre_entrenamiento"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:textSize="14sp"
-                android:textColor="#374151"
+                android:layout_marginTop="@dimen/spacing_xsmall"
+                android:textSize="@dimen/font_size_date"
+                android:textColor="@color/colorTextSecondary"
                 android:maxLines="1"
                 android:ellipsize="end" />
 
@@ -66,33 +66,33 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="@dimen/spacing_small"
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
+                    android:layout_width="@dimen/icon_size_medium"
+                    android:layout_height="@dimen/icon_size_medium"
                     android:src="@android:drawable/ic_menu_recent_history"
-                    android:contentDescription="icono_fecha"
-                    app:tint="#6B7280" />
+                    android:contentDescription="@string/icono_fecha"
+                    app:tint="@color/colorTextSecondary" />
 
                 <!-- Fecha formateada desde backend: "15 Oct 2024, 16:00" -->
                 <TextView
                     android:id="@+id/text_fecha"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:textSize="12sp"
-                    android:textColor="#6B7280" />
+                    android:layout_marginStart="@dimen/spacing_xsmall"
+                    android:textSize="@dimen/font_size_label"
+                    android:textColor="@color/colorTextSecondary" />
             </LinearLayout>
         </LinearLayout>
 
         <!-- Indicador de estado (color dinámico según estado desde backend) -->
         <View
             android:id="@+id/indicador_estado"
-            android:layout_width="4dp"
+            android:layout_width="@dimen/accent_line_width"
             android:layout_height="0dp"
-            android:background="#10B981"
+            android:background="@color/colorAccent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

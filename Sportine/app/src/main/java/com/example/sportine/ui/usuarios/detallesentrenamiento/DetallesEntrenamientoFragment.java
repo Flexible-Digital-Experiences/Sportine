@@ -39,7 +39,7 @@ public class DetallesEntrenamientoFragment extends Fragment {
         binding = FragmentAlumnoDetallesEntrenamientoBinding.inflate(inflater, container, false);
 
         setupUI();
-        setupRecyclerEjercicios();
+
 
         return binding.getRoot();
     }
@@ -66,13 +66,6 @@ public class DetallesEntrenamientoFragment extends Fragment {
         // binding.imgDeporteIcon.setImageResource(R.drawable.icon_default);
     }
 
-    private void setupRecyclerEjercicios() {
-        // Inicializar el RecyclerView con un adaptador vacío.
-        // Los datos se agregarán al adaptador cuando se reciban del backend.
-        EjerciciosAdapter adapter = new EjerciciosAdapter();
-        binding.recyclerEjercicios.setAdapter(adapter);
-        binding.recyclerEjercicios.setLayoutManager(new LinearLayoutManager(getContext()));
-    }
 
     @Override
     public void onDestroyView() {
