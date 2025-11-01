@@ -15,6 +15,7 @@
     <!-- Textos para Home -->
     <string name="descripcion_logo">Logo de Sportine</string>
     <string name="entrenamientos_title">Entrenamientos</string>
+    <string name="mis_alumnos_title">Mis Alumnos</string>
 
     <!-- Textos para Detalles de Entrenamiento -->
     <string name="detalles_entrenamiento_title">Detalles Entrenamiento</string>

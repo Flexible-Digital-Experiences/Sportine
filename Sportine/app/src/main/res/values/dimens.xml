@@ -25,6 +25,7 @@
     <dimen name="divider_height">1dp</dimen>
     <dimen name="back_button_size">24dp</dimen>
     <dimen name="icon_size_medium">24dp</dimen>
+    <dimen name="icon_size_large">40dp</dimen>
     <dimen name="accent_line_width">3dp</dimen>
     <dimen name="accent_line_height">20dp</dimen>
     <dimen name="avatar_size">56dp</dimen>
