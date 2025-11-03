@@ -7,6 +7,16 @@
     android:background="#F5F5F5"
     tools:context=".ui.usuarios.social.SocialFragment">
 
+    <ImageView
+        android:id="@+id/iv_remove_friend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_remove_friend_black_24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_title_social"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_title_social" />
+
     <TextView
         android:id="@+id/tv_title_social"
         android:layout_width="wrap_content"
@@ -30,47 +40,56 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_title_social" />
 
+
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_share_post"
+        android:id="@+id/card_create_post_trigger"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        app:cardCornerRadius="25dp"
-        app:cardElevation="2dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title_social">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="12dp"
+            android:background="@android:color/white">
 
-            <EditText
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_user_avatar_post"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="12dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/avatar_user_male"
+                app:shapeAppearanceOverlay="@style/CircularImageView"
+                android:contentDescription="Avatar de usuario"/>
+
+            <TextView
+                android:id="@+id/tv_share_post_hint"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:background="@null"
-                android:focusable="false"
-                android:hint="Comparte tu logro o entreno de hoy..."
-                android:paddingStart="20dp"
-                android:paddingEnd="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/iv_camera_icon"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Comparte tu logro o entreno de hoy..."
+                android:textColor="@color/grey_text"
+                android:textSize="14sp"/>
 
             <ImageView
-                android:id="@+id/iv_camera_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:src="@android:drawable/ic_menu_camera"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:id="@+id/iv_camera_icon_trigger"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/ic_camera_black_24dp"
+                android:contentDescription="Abrir cámara"
+                app:tint="@color/grey_icon"/>
+        </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
 
@@ -83,7 +102,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_share_post"
+        app:layout_constraintTop_toBottomOf="@id/card_create_post_trigger"
         tools:listitem="@layout/item_alumno_social_post" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

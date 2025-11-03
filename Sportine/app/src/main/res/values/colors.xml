@@ -7,4 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="sportine_primary">#FF018786</color>
+    <color name="sportine_accent">#E53935</color>
+    <color name="grey_text">#8A8A8A</color>
+    <color name="grey_icon">#AAAAAA</color>
+    <color name="grey_background_light">#F5F5F5</color>
+    <color name="red_error">#D32F2F</color>
 </resources>
