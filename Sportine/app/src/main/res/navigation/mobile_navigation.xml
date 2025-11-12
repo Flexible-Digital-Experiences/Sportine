@@ -146,4 +146,31 @@
         android:name="com.example.sportine.ui.usuarios.detallesentrenamiento.DetallesEntrenamientoFragment"
         android:label="Detalles Entrenamiento"
         tools:layout="@layout/fragment_alumno_detalles_entrenamiento" />
+    <fragment
+        android:id="@+id/perfilEntrenaFragment"
+        android:name="com.example.sportine.ui.entrenadores.perfil.PerfilEntrenaFragment"
+        android:label="PerfilEntrenaFragment" >
+        <action
+            android:id="@+id/action_perfilEntrenaFragment_to_completardatosentrenadorFragment"
+            app:destination="@id/completardatosentrenadorFragment" />
+        <action
+            android:id="@+id/action_perfilEntrenaFragment_to_configuracionEntrenadorFragment"
+            app:destination="@id/configuracionEntrenadorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/completardatosentrenadorFragment"
+        android:name="com.example.sportine.ui.entrenadores.completardatosentrenador.CompletardatosentrenadorFragment"
+        android:label="CompletardatosentrenadorFragment" />
+    <fragment
+        android:id="@+id/configuracionEntrenadorFragment"
+        android:name="com.example.sportine.ui.entrenadores.configuracion.ConfiguracionEntrenadorFragment"
+        android:label="ConfiguracionEntrenadorFragment" >
+        <action
+            android:id="@+id/action_configuracionEntrenadorFragment_to_modificarDatosEntrenadorFragment"
+            app:destination="@id/modificarDatosEntrenadorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/modificarDatosEntrenadorFragment"
+        android:name="com.example.sportine.ui.entrenadores.modificardatosentrenador.ModificarDatosEntrenadorFragment"
+        android:label="ModificarDatosEntrenadorFragment" />
 </navigation>
