@@ -1,6 +1,6 @@
+use sportine_db;
 CREATE TABLE Usuario (
     usuario VARCHAR(255) PRIMARY KEY,
-    id_alumno INT AUTO_INCREMENT,
     contraseña VARCHAR(255),
     nombre VARCHAR(255),
     apellidos VARCHAR(255),
