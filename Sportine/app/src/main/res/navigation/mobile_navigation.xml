@@ -132,9 +132,6 @@
         <action
             android:id="@+id/action_buscar_to_detallesEntrenador"
             app:destination="@id/navigation_detallesEntrenador" />
-        <action
-            android:id="@+id/action_navigation_buscar_to_navigation_resultadosBusqueda"
-            app:destination="@id/navigation_resultadosBusqueda" />
     </fragment>
 
     <fragment
@@ -142,16 +139,6 @@
         android:name="com.example.sportine.ui.usuarios.detallesEntrenador.DetallesEntrenadorFragment"
         android:label="detallesEntrenador"
         tools:layout="@layout/fragment_alumno_ver_detalles_entrenador" />
-
-    <fragment
-        android:id="@+id/navigation_resultadosBusqueda"
-        android:name="com.example.sportine.ui.usuarios.resultadosBusqueda.resultadosBusquedaFragment"
-        android:label="resultadosBuscar"
-        tools:layout="@layout/fragment_alumno_resultados_busqueda" >
-        <action
-            android:id="@id/action_navigation_buscar_to_navigation_resultadosBusqueda"
-            app:destination="@id/navigation_detallesEntrenador" />
-    </fragment>
 
 
     <fragment

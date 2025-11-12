@@ -9,7 +9,6 @@
     app:cardCornerRadius="12dp"
     app:cardElevation="2dp"
     app:strokeWidth="1dp"
-    android:id="@+id/item_buscar_calentrenador"
     app:strokeColor="#E5E7EB"
     android:backgroundTint="#FFFFFF">
 
@@ -53,7 +52,7 @@
                 android:textColor="#111827"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                tools:text="Entrenador" />
+                tools:text="Usuario" />
 
             <!-- Calificación con estrellas -->
             <LinearLayout
@@ -68,13 +67,13 @@
                     style="@style/Widget.AppCompat.RatingBar.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:numStars="5"
-                    android:rating="0"
-                    android:stepSize="0.5"
                     android:isIndicator="true"
-                    android:progressTint="#FCD34D"
+                    android:numStars="0"
                     android:progressBackgroundTint="#E5E7EB"
-                    android:secondaryProgressTint="#FCD34D" />
+                    android:progressTint="#FCD34D"
+                    android:rating="0"
+                    android:secondaryProgressTint="#FCD34D"
+                    android:stepSize="0.5" />
 
                 <TextView
                     android:id="@+id/text_calificacion"
@@ -96,49 +95,17 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_social_black_24dp"
-                    app:tint="#6B7280"
-                    android:contentDescription="Alumnos" />
-
                 <TextView
-                    android:id="@+id/text_alumnos"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/text_resenatexto"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:textColor="#6B7280"
                     android:textSize="13sp"
-                    tools:text="Alumnos" />
+                    tools:text="Reseña" />
             </LinearLayout>
 
-            <!-- Deportes que imparte -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_ensena"
-                    app:tint="#6B7280"
-                    android:contentDescription="Deportes" />
-
-                <TextView
-                    android:id="@+id/text_deportes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:textColor="#6B7280"
-                    android:textSize="13sp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    tools:text="Especialidad" />
-            </LinearLayout>
 
         </LinearLayout>
 
