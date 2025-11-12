@@ -15,12 +15,16 @@
     <!-- Textos para Home -->
     <string name="descripcion_logo">Logo de Sportine</string>
     <string name="entrenamientos_title">Entrenamientos</string>
+    <string name="mis_alumnos_title">Mis Alumnos</string>
 
     <!-- Textos para Detalles de Entrenamiento -->
     <string name="detalles_entrenamiento_title">Detalles Entrenamiento</string>
     <string name="label_entrenador">Entrenador</string>
     <string name="label_descripcion">Descripción</string>
     <string name="label_ejercicios">Ejercicios</string>
+
+    <!-- Textos para Estadisticas -->
+    <string name="seleccionar_alumno_subtitle">Seleccionar Alumno</string>
 
     <!-- Content Descriptions -->
     <string name="avatar_entrenador_desc">Avatar del entrenador</string>
