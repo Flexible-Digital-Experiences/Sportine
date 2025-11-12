@@ -1,4 +1,4 @@
-package com.example.sportine.ui.usuarios.modificardatosalumno;
+package com.example.sportine.ui.entrenadores.modificardatosentrenador;
 
 import android.os.Bundle;
 import android.text.InputType;
@@ -15,58 +15,60 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import com.example.sportine.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
-public class ModificarDatosAlumnoFragment extends Fragment {
+public class ModificarDatosEntrenadorFragment extends Fragment {
+
+    // Datos Actuales (TextViews)
+    private TextView tvNombreActual;
+    private TextView tvSexoActual;
+    private TextView tvApellidoActual;
+    private TextView tvEstadoActual;
+    private TextView tvUsernameActual;
+    private TextView tvCiudadActual;
+    private TextView tvPasswordActual;
+    private ImageView btnTogglePasswordActual;
+    private boolean isPasswordVisible = false;
+
+    // Nuevos Datos (Editables)
+    private TextInputEditText etNombreNuevo;
+    private TextInputEditText etApellidoNuevo;
+    private TextInputEditText etUsernameNuevo;
+    private TextInputEditText etPasswordNuevo;
 
     // Selectores modernos (AutoCompleteTextView)
     private AutoCompleteTextView actvSexoNuevo;
     private AutoCompleteTextView actvEstadoNuevo;
     private AutoCompleteTextView actvCiudadNuevo;
 
-    // Datos Actuales (TextViews de solo lectura)
-    private TextView tvNombreActual, tvSexoActual, tvApellidoActual, tvEstadoActual, tvUsernameActual, tvCiudadActual;
-    private TextView tvPasswordActual;
-    private ImageView btnTogglePasswordActual;
-    private boolean isPasswordVisible = false; // Estado para el toggle
-
-    // Nuevos Datos (TextInputEditTexts)
-    private TextInputEditText etNombreNuevo;
-    private TextInputEditText etApellidoNuevo;
-    private TextInputEditText etUsernameNuevo;
-    private TextInputEditText etPasswordNuevo; // Contraseña nueva
-
     private MaterialButton btnActualizar;
 
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        // Inflar el layout de modificar datos
-        return inflater.inflate(R.layout.fragment_alumno_modificar_datos, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Asegúrate de que este R.layout corresponde al XML que modernizamos
+        return inflater.inflate(R.layout.fragment_entrenador_modificar_datos, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 1. Inicializar todos los componentes
+        // 1. Inicializar Componentes
         inicializarComponentes(view);
 
-        // 2. Cargar datos de referencia (simulación)
+        // 2. Cargar datos actuales (Simulación)
         cargarDatosActuales();
 
-        // 3. Configurar Selectores (el antiguo configurarSpinners)
-        configurarSelectores();
+        // 3. Configurar Selectores
+        configurarSelectores(view);
 
-        // 4. Configurar listeners
-        configurarListeners();
+        // 4. Configurar Listeners
+        configurarListeners(view);
     }
 
     // --- Métodos de Ayuda ---
@@ -74,7 +76,7 @@ public class ModificarDatosAlumnoFragment extends Fragment {
     private void inicializarComponentes(@NonNull View view) {
         // Botón Volver
         View btnBack = view.findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
+        btnBack.setOnClickListener(v -> requireActivity().onBackPressed());
 
         // Datos Actuales (TextViews)
         tvNombreActual = view.findViewById(R.id.tvNombreActual);
@@ -86,13 +88,13 @@ public class ModificarDatosAlumnoFragment extends Fragment {
         tvPasswordActual = view.findViewById(R.id.tvPasswordActual);
         btnTogglePasswordActual = view.findViewById(R.id.btnTogglePasswordActual);
 
-        // Nuevos Datos (TextInputEditTexts)
+        // Nuevos Datos (Editables)
         etNombreNuevo = view.findViewById(R.id.etNombreNuevo);
-        etApellidoNuevo = view.findViewById(R.id.etApellidoNuevo);
+        etApellidoNuevo = view.findViewById(R.id.etUsernameNuevo);
         etUsernameNuevo = view.findViewById(R.id.etUsernameNuevo);
         etPasswordNuevo = view.findViewById(R.id.etPasswordNuevo);
 
-        // Selectores modernos (AutoCompleteTextViews)
+        // Selectores modernos
         actvSexoNuevo = view.findViewById(R.id.actvSexoNuevo);
         actvEstadoNuevo = view.findViewById(R.id.actvEstadoNuevo);
         actvCiudadNuevo = view.findViewById(R.id.actvCiudadNuevo);
@@ -102,22 +104,26 @@ public class ModificarDatosAlumnoFragment extends Fragment {
     }
 
     private void cargarDatosActuales() {
-        // ** SIMULACIÓN: Reemplazar con la lógica real de obtención de datos del Alumno **
-        tvNombreActual.setText("Ana");
-        tvApellidoActual.setText("García");
-        tvSexoActual.setText("Femenino");
-        tvEstadoActual.setText("Nuevo León");
-        tvCiudadActual.setText("Monterrey");
-        tvUsernameActual.setText("AnaG_alumno");
-        tvPasswordActual.setText("••••••••"); // Siempre ocultar contraseña en UI
+        // ** SIMULACIÓN: Reemplazar con la lógica real de obtención de datos **
+
+        tvNombreActual.setText("Martín");
+        tvApellidoActual.setText("Pérez");
+        tvSexoActual.setText("Masculino");
+        tvEstadoActual.setText("Jalisco");
+        tvCiudadActual.setText("Guadalajara");
+        tvUsernameActual.setText("Martinp_entrena");
+        // Ocultar la contraseña real con puntos (aunque en la vida real no se guarda)
+        tvPasswordActual.setText("••••••••");
     }
 
-    private void configurarSelectores() {
+    private void configurarSelectores(@NonNull View view) {
+        // Los Arrays.xml deben existir en R.array
+
         // Sexo
         ArrayAdapter<CharSequence> adapterSexo = ArrayAdapter.createFromResource(
                 requireContext(),
                 R.array.sexo_options,
-                android.R.layout.simple_dropdown_item_1line
+                android.R.layout.simple_dropdown_item_1line // Layout simple para AutoCompleteTextView
         );
         actvSexoNuevo.setAdapter(adapterSexo);
 
@@ -129,37 +135,39 @@ public class ModificarDatosAlumnoFragment extends Fragment {
         );
         actvEstadoNuevo.setAdapter(adapterEstado);
 
-        // Ciudad
+        // Ciudad (Dependerá del estado seleccionado, aquí usamos uno genérico)
         ArrayAdapter<CharSequence> adapterCiudad = ArrayAdapter.createFromResource(
                 requireContext(),
-                R.array.ciudad_options,
+                R.array.ciudad_options, // Usar array de ciudades específico
                 android.R.layout.simple_dropdown_item_1line
         );
         actvCiudadNuevo.setAdapter(adapterCiudad);
     }
 
-    private void configurarListeners() {
-        // Toggle de contraseña actual
+    private void configurarListeners(@NonNull View view) {
+
+        // Toggle de contraseña actual (solo simulación visual)
         btnTogglePasswordActual.setOnClickListener(v -> togglePasswordVisibilityActual());
 
         // Botón Actualizar
-        btnActualizar.setOnClickListener(v -> actualizarDatos());
+        btnActualizar.setOnClickListener(v -> actualizarDatosRegistro());
     }
 
     private void togglePasswordVisibilityActual() {
         if (isPasswordVisible) {
             // Ocultar contraseña
             tvPasswordActual.setText("••••••••");
-            // Aquí puedes cambiar el ícono del ojo a cerrado
+            btnTogglePasswordActual.setImageResource(R.drawable.ic_ojover); // Reemplazar con el ícono de ojo cerrado si es necesario
         } else {
-            // Mostrar contraseña (Usar con cautela)
-            tvPasswordActual.setText("contrasenaAlumno123");
-            // Aquí puedes cambiar el ícono del ojo a abierto
+            // Mostrar contraseña (Simulación - NO RECOMENDADO en producción)
+            // Se debería mostrar solo si el usuario confirma su identidad
+            tvPasswordActual.setText(tvUsernameActual.getText().toString() + "123"); // Simulación de una contraseña
+            btnTogglePasswordActual.setImageResource(R.drawable.ic_ojover); // Ícono de ojo abierto
         }
         isPasswordVisible = !isPasswordVisible;
     }
 
-    private void actualizarDatos() {
+    private void actualizarDatosRegistro() {
         String nombre = etNombreNuevo.getText().toString().trim();
         String apellido = etApellidoNuevo.getText().toString().trim();
         String username = etUsernameNuevo.getText().toString().trim();
@@ -168,18 +176,19 @@ public class ModificarDatosAlumnoFragment extends Fragment {
         String estado = actvEstadoNuevo.getText().toString().trim();
         String ciudad = actvCiudadNuevo.getText().toString().trim();
 
-        // Validación: Asegurarse de que al menos un campo tenga datos
+        // Validación simple de campos vacíos
         if (nombre.isEmpty() && apellido.isEmpty() && username.isEmpty() &&
                 password.isEmpty() && sexo.isEmpty() && estado.isEmpty() && ciudad.isEmpty()) {
             Toast.makeText(getContext(), "Ingresa al menos un campo para actualizar", Toast.LENGTH_LONG).show();
             return;
         }
 
-        // ** Lógica para enviar los datos a la base de datos o API **
+        // ** Lógica real para enviar los datos a la base de datos o API **
 
-        Toast.makeText(getContext(), "Datos de Alumno actualizados con éxito.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Iniciando proceso de actualización...", Toast.LENGTH_SHORT).show();
 
-        // Navegar de vuelta después de la actualización exitosa
-        Navigation.findNavController(requireView()).navigateUp();
+        // Después de la actualización exitosa, se podría navegar:
+        // Navigation.findNavController(requireView()).popBackStack();
     }
 }
+

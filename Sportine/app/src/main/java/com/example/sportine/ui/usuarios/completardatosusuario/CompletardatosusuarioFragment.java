@@ -27,7 +27,7 @@ public class CompletardatosusuarioFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ImageView btnBack = view.findViewById(R.id.btnBack);
+        com.google.android.material.card.MaterialCardView btnBack = view.findViewById(R.id.btnBack);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

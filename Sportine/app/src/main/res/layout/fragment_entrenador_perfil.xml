@@ -16,12 +16,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:fillViewport="true">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:paddingBottom="24dp">
 
-            <!-- Header -->
             <LinearLayout
                 android:id="@+id/headerLayout"
                 android:layout_width="match_parent"
@@ -35,10 +35,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Mi Perfil"
+                    android:text="PERFIL DE ENTRENADOR"
                     android:textColor="#1A1A1A"
-                    android:textSize="24sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
+                    android:letterSpacing="0.05"
                     android:layout_gravity="center_vertical"/>
 
                 <com.google.android.material.card.MaterialCardView
@@ -47,7 +48,7 @@
                     android:layout_height="40dp"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="2dp"
-                    app:cardBackgroundColor="@color/white"
+                    app:cardBackgroundColor="@android:color/white"
                     android:clickable="true"
                     android:focusable="true">
 
@@ -61,70 +62,148 @@
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-            <!-- Contenedor Principal -->
             <LinearLayout
-                android:id="@+id/mainContainer"
+                android:id="@+id/mainContentLayout"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/headerLayout"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
                 android:gravity="center_horizontal">
 
-                <!-- Card de Foto de Perfil -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardCornerRadius="75dp"
-                    app:cardElevation="8dp"
-                    app:strokeWidth="3dp"
-                    app:strokeColor="@color/white">
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="20dp">
 
-                    <FrameLayout
-                        android:layout_width="150dp"
-                        android:layout_height="150dp">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:layout_marginEnd="12dp">
 
-                        <ImageView
-                            android:id="@+id/iv_avatar_perfil"
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/card_avatar_entrenador"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:layout_marginBottom="12dp"
+                            app:cardCornerRadius="60dp"
+                            app:cardElevation="6dp"
+                            app:strokeWidth="3dp"
+                            app:strokeColor="#FFFFFF">
+
+                            <ImageView
+                                android:id="@+id/iv_avatar_perfil_entrenador"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:contentDescription="Foto de perfil"/>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <LinearLayout
+                            android:id="@+id/badgeAlumnos"
+                            android:orientation="vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:layout_marginBottom="8dp">
+
+                            <TextView
+                                android:id="@+id/tvContadorAlumnos"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:text="12"
+                                android:textColor="@android:color/white"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:gravity="center"
+                                android:background="@drawable/circulo_naranja"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Alumnos"
+                                android:textColor="#1A1A1A"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:layout_marginTop="4dp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/badgeAmigos"
+                            android:orientation="vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/tvContadorAmigos"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:text="58"
+                                android:textColor="@android:color/white"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:gravity="center"
+                                android:background="@drawable/circulo_verde"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Amigos"
+                                android:textColor="#1A1A1A"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:layout_marginTop="4dp"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="4dp"
+                        app:cardBackgroundColor="@color/white"
+                        android:layout_marginTop="16dp">
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:scaleType="centerCrop"
-                            android:contentDescription="Foto de perfil"/>
+                            android:orientation="vertical"
+                            android:padding="12dp">
 
+                            <TextView
+                                android:id="@+id/txtSaludoEntrenador"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Hola"
+                                android:textColor="#1A1A1A"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:layout_marginBottom="8dp"/>
 
-                    </FrameLayout>
-                </com.google.android.material.card.MaterialCardView>
+                            <TextView
+                                android:id="@+id/tvDescripcionEntrenador"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="#6B7280"
+                                android:textSize="13sp"
+                                android:gravity="start"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
 
-                <!-- Saludo -->
-                <TextView
-                    android:id="@+id/txtSaludo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Hola Alumno"
-                    android:textColor="#1A1A1A"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.01"
-                    android:layout_marginBottom="8dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="¡Sigue entrenando fuerte!"
-                    android:textColor="#6B7280"
-                    android:textSize="14sp"
-                    android:layout_marginBottom="24dp"/>
-
-                <!-- Card de Deportes -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="4dp"
-                    app:cardBackgroundColor="@color/white">
+                    app:cardBackgroundColor="@android:color/white">
 
                     <LinearLayout
                         android:orientation="vertical"
@@ -135,7 +214,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Mis Deportes"
+                            android:text="Deportes que Imparto"
                             android:textColor="#1A1A1A"
                             android:textSize="16sp"
                             android:textStyle="bold"
@@ -154,7 +233,7 @@
                                 android:layout_marginEnd="8dp"
                                 app:cardCornerRadius="12dp"
                                 app:cardElevation="2dp"
-                                app:cardBackgroundColor="#FFF3E0">
+                                app:cardBackgroundColor="#E0F2F1">
 
                                 <ImageView
                                     android:layout_width="50dp"
@@ -172,7 +251,7 @@
                                 android:layout_marginEnd="8dp"
                                 app:cardCornerRadius="12dp"
                                 app:cardElevation="2dp"
-                                app:cardBackgroundColor="#FFE0E0">
+                                app:cardBackgroundColor="#FFF3E0">
 
                                 <ImageView
                                     android:layout_width="50dp"
@@ -189,7 +268,7 @@
                                 android:layout_weight="1"
                                 app:cardCornerRadius="12dp"
                                 app:cardElevation="2dp"
-                                app:cardBackgroundColor="#E0F2F1">
+                                app:cardBackgroundColor="#FFE0E0">
 
                                 <ImageView
                                     android:layout_width="50dp"
@@ -203,14 +282,13 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Card de Información Personal -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="4dp"
-                    app:cardBackgroundColor="@color/white">
+                    app:cardBackgroundColor="@android:color/white">
 
                     <LinearLayout
                         android:orientation="vertical"
@@ -227,7 +305,6 @@
                             android:textStyle="bold"
                             android:layout_marginBottom="16dp"/>
 
-                        <!-- Campos con background -->
                         <LinearLayout
                             android:orientation="vertical"
                             android:layout_width="match_parent"
@@ -251,7 +328,7 @@
                                     android:letterSpacing="0.05"/>
 
                                 <TextView
-                                    android:id="@+id/tvNombre"
+                                    android:id="@+id/tvNombreEntrenador"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:textColor="#1A1A1A"
@@ -277,7 +354,7 @@
                                     android:letterSpacing="0.05"/>
 
                                 <TextView
-                                    android:id="@+id/tvApellido"
+                                    android:id="@+id/tvApellidoEntrenador"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:textColor="#1A1A1A"
@@ -296,14 +373,14 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Usuario"
+                                    android:text="Nombre de Usuario"
                                     android:textColor="#9CA3AF"
                                     android:textSize="11sp"
                                     android:textStyle="bold"
                                     android:letterSpacing="0.05"/>
 
                                 <TextView
-                                    android:id="@+id/tvUsername"
+                                    android:id="@+id/tvUsernameEntrenador"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:textColor="#1A1A1A"
@@ -336,7 +413,7 @@
                                         android:letterSpacing="0.05"/>
 
                                     <TextView
-                                        android:id="@+id/tvSexo"
+                                        android:id="@+id/tvSexoEntrenador"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:textColor="#1A1A1A"
@@ -362,7 +439,7 @@
                                         android:letterSpacing="0.05"/>
 
                                     <TextView
-                                        android:id="@+id/tvEstado"
+                                        android:id="@+id/tvEstadoEntrenador"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:textColor="#1A1A1A"
@@ -388,112 +465,31 @@
                                     android:letterSpacing="0.05"/>
 
                                 <TextView
-                                    android:id="@+id/tvCiudad"
+                                    android:id="@+id/tvCiudadEntrenador"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:textColor="#1A1A1A"
                                     android:textSize="15sp"
                                     android:layout_marginTop="4dp"/>
                             </LinearLayout>
+
                         </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Botón Moderno -->
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnCompletar"
+                    android:id="@+id/btnCompletarentrena"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:text="Completar mis datos"
+                    android:text="Completar tus datos"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:letterSpacing="0.02"
                     app:cornerRadius="16dp"
-                    app:backgroundTint="#00A896"
-                    android:textColor="@color/white"
+                    app:backgroundTint="@color/teal_700"
+                    android:textColor="@android:color/white"
                     app:elevation="4dp"
-                    app:icon="@android:drawable/ic_menu_edit"
-                    app:iconGravity="start"
-                    app:iconTint="@color/white"
-                    app:iconSize="20dp"
                     android:textAllCaps="false"/>
             </LinearLayout>
-
-            <!-- Badges Modernos -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/badgeAmigos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@id/mainContainer"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="420dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="6dp"
-                app:cardBackgroundColor="@color/white">
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="12dp"
-                    android:gravity="center">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#4CAF50"
-                        android:textSize="22sp"
-                        android:textStyle="bold"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Amigos"
-                        android:textColor="#6B7280"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        android:layout_marginTop="2dp"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/badgeEntrenadores"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@id/mainContainer"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="530dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="6dp"
-                app:cardBackgroundColor="@color/white">
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="12dp"
-                    android:gravity="center">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#FF9800"
-                        android:textSize="22sp"
-                        android:textStyle="bold"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Entrenadores"
-                        android:textColor="#6B7280"
-                        android:textSize="10sp"
-                        android:textStyle="bold"
-                        android:layout_marginTop="2dp"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-        </RelativeLayout>
+        </LinearLayout>
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
