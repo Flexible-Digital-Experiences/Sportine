@@ -32,6 +32,7 @@
             android:id="@+id/image_perfil"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:layout_marginTop="16dp"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,9 +40,7 @@
             app:shapeAppearanceOverlay="@style/CircularImageView"
             app:strokeColor="#E0E0E0"
             app:strokeWidth="3dp"
-            tools:src="@tools:sample/avatars"
-            android:src="@drawable/avatar_ana"
-            />
+            tools:src="@tools:sample/avatars" />
 
         <!-- Nombre del entrenador -->
         <TextView
@@ -49,11 +48,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="José García"
+            android:fontFamily="sans-serif-medium"
+            tools:text="Entrenador"
             android:textColor="#1A1A1A"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:fontFamily="sans-serif-medium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/image_perfil" />
@@ -70,19 +69,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_nombre">
 
-            <TextView
+            <RatingBar
+                android:id="@+id/rating_entrenador"
+                style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="★★★★★"
-                android:textColor="#FCD34D"
-                android:textSize="16sp" />
+                android:isIndicator="true"
+                android:numStars="5"
+                android:progressBackgroundTint="#E5E7EB"
+                android:progressTint="#FCD34D"
+                android:rating="0"
+                android:secondaryProgressTint="#FCD34D"
+                android:stepSize="0.5" />
 
             <TextView
                 android:id="@+id/text_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                android:text="5.0"
+                tools:text="Calificación"
                 android:textColor="#1A1A1A"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -92,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="(20 reseñas)"
+                tools:text="(NumReseñas)"
                 android:textColor="#6B7280"
                 android:textSize="13sp" />
         </LinearLayout>
@@ -103,39 +108,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="CDMX, Miguel Hidalgo"
+            tools:text="Ciudad"
             android:textColor="#6B7280"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_rating" />
 
-        <!-- Badge Entrenador de Fútbol -->
+        <!-- Badge Entrenador -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/badge_deporte"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:backgroundTint="#E3F2FD"
             app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
-            android:backgroundTint="#E3F2FD"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_ubicacion">
-
-            <TextView
-                android:id="@+id/text_badge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
-                android:text="Entrenador de Fútbol"
-                android:textColor="#1976D2"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-        </com.google.android.material.card.MaterialCardView>
+            app:layout_constraintTop_toBottomOf="@id/text_ubicacion"/>
 
         <!-- Tarjeta: Acerca de mí -->
         <com.google.android.material.card.MaterialCardView
@@ -143,11 +134,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
             android:layout_marginTop="24dp"
+            android:layout_marginEnd="20dp"
+            android:backgroundTint="#FFFFFF"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
-            android:backgroundTint="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/badge_deporte">
@@ -161,21 +152,21 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
                     android:text="Acerca de mí"
                     android:textColor="#1A1A1A"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/text_acerca"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="Lic. en Ciencias del Deporte. Mi pasión es sacar el máximo potencial de mis alumnos y ayudarlos a cumplir sus metas. ¡Con disciplina y constancia, el entrenamiento es más fácil!"
+                    android:lineSpacingExtra="4dp"
+                    tools:text="Descripción"
                     android:textColor="#4B5563"
-                    android:textSize="14sp"
-                    android:lineSpacingExtra="4dp" />
+                    android:textSize="14sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -185,11 +176,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="20dp"
+            android:backgroundTint="#FFFFFF"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
-            android:backgroundTint="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/card_acerca">
@@ -203,116 +194,23 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
                     android:text="Especialidades"
                     android:textColor="#1A1A1A"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium" />
+                    android:textStyle="bold" />
 
-                <!-- Iconos de deportes -->
-                <LinearLayout
+                <!-- RecyclerView de deportes -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_deportes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <!-- Fútbol -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            app:cardCornerRadius="30dp"
-                            app:cardElevation="0dp"
-                            android:backgroundTint="#E3F2FD">
-
-                            <ImageView
-                                android:layout_width="35dp"
-                                android:layout_height="35dp"
-                                android:layout_gravity="center"
-                                android:contentDescription="Fútbol"
-                                android:src="@drawable/balon_futbol" />
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Fútbol"
-                            android:textColor="#4B5563"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-
-                    <!-- Básquetbol -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            app:cardCornerRadius="30dp"
-                            app:cardElevation="0dp"
-                            android:backgroundTint="#FFF3E0">
-
-                            <ImageView
-                                android:layout_width="35dp"
-                                android:layout_height="35dp"
-                                android:layout_gravity="center"
-                                android:contentDescription="Básquetbol"
-                                android:src="@drawable/balon_basket" />
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Básquetbol"
-                            android:textColor="#4B5563"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-
-                    <!-- Tenis -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            app:cardCornerRadius="30dp"
-                            app:cardElevation="0dp"
-                            android:backgroundTint="#E8F5E9">
-
-                            <ImageView
-                                android:layout_width="35dp"
-                                android:layout_height="35dp"
-                                android:layout_gravity="center"
-                                android:contentDescription="Tenis"
-                                android:src="@drawable/pelota_tenis" />
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Tenis"
-                            android:textColor="#4B5563"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-                </LinearLayout>
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_alumno_deporte_card" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -322,11 +220,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="20dp"
+            android:backgroundTint="#FFFFFF"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
-            android:backgroundTint="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/card_especialidades">
@@ -340,82 +238,22 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
                     android:text="Lo que mis clientes dicen"
                     android:textColor="#1A1A1A"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium" />
+                    android:textStyle="bold" />
 
-                <!-- Reseña 1 -->
-                <LinearLayout
+                <!-- RecyclerView de reseñas -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_reseñas"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:orientation="horizontal"
-                    android:gravity="start">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:scaleType="centerCrop"
-                        app:shapeAppearanceOverlay="@style/CircularImageView"
-                        tools:src="@tools:sample/avatars" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="12dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="José es increíble! Llevo 6 meses con él y mi resistencia ha mejorado muchísimo."
-                            android:textColor="#374151"
-                            android:textSize="14sp"
-                            android:lineSpacingExtra="3dp" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- Separador -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="#E5E7EB" />
-
-                <!-- Reseña 2 -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="start">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:scaleType="centerCrop"
-                        app:shapeAppearanceOverlay="@style/CircularImageView"
-                        tools:src="@tools:sample/avatars" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="12dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="José es un excelente entrenador! Sus entrenamientos han cubierto al 100% mis expectativas."
-                            android:textColor="#374151"
-                            android:textSize="14sp"
-                            android:lineSpacingExtra="3dp" />
-                    </LinearLayout>
-                </LinearLayout>
+                    android:nestedScrollingEnabled="false"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="2"
+                    tools:listitem="@layout/item_alumno_resenaentre" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -424,37 +262,49 @@
             android:id="@+id/layout_bottom_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="16dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/card_reseñas">
 
-            <TextView
-                android:id="@+id/text_precio"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="$450 MXN/mes"
-                android:textColor="#1A1A1A"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_precio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$450 MXN"
+                    android:textColor="#1A1A1A"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="por mes"
+                    android:textColor="#6B7280"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_contratar"
                 android:layout_width="wrap_content"
                 android:layout_height="56dp"
-                android:text="Contratar entrenador"
+                android:text="Contratar"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                app:cornerRadius="28dp"
-                app:backgroundTint="#3B82F6" />
+                app:backgroundTint="#3B82F6"
+                app:cornerRadius="28dp" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
