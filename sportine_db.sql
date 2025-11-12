@@ -30,7 +30,7 @@ CREATE TABLE Informacion_Alumno (
     nivel VARCHAR(100),
     padecimientos VARCHAR(255),
     foto_perfil TEXT,
-    edad INT,
+    fecha_nacimiento DATE,
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
