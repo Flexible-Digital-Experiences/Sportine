@@ -23,6 +23,9 @@
     <string name="label_descripcion">Descripción</string>
     <string name="label_ejercicios">Ejercicios</string>
 
+    <!-- Textos para Estadisticas -->
+    <string name="seleccionar_alumno_subtitle">Seleccionar Alumno</string>
+
     <!-- Content Descriptions -->
     <string name="avatar_entrenador_desc">Avatar del entrenador</string>
     <string name="icono_deporte_desc">Icono del deporte</string>
