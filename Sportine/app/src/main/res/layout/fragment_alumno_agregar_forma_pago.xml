@@ -3,289 +3,321 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F8F9FA">
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/white"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingBottom="30dp">
 
-            <!-- Header con flecha y título -->
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp">
+                android:orientation="horizontal"
+                android:paddingStart="24dp"
+                android:paddingTop="24dp"
+                android:paddingEnd="24dp"
+                android:paddingBottom="16dp"
+                android:gravity="center_vertical">
 
-                <ImageView
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/btnBack"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_flechaatras"
-                    android:contentDescription="Volver"/>
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@android:color/white"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_flechaatras"
+                        android:contentDescription="Volver"
+                        app:tint="#1A1A1A" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="AGREGAR TARJETA"
+                    android:textColor="#1A1A1A"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05"
+                    android:gravity="center"
+                    android:layout_marginStart="-40dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="AGREGAR TARJETA"
-                    android:textColor="#000"
-                    android:textSize="16dp"
+                    android:text="Datos de la tarjeta"
+                    android:textColor="#6B7280"
+                    android:textSize="15sp"
                     android:textStyle="bold"
-                    android:letterSpacing="0.05"
-                    android:layout_centerInParent="true"/>
-            </RelativeLayout>
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="24dp"/>
 
-            <!-- Separador superior -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#E0E0E0"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- Label: Datos de la tarjeta -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Datos de la"
-                android:textColor="#666"
-                android:textSize="13dp"
-                android:layout_gravity="center_horizontal"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="tarjeta"
-                android:textColor="#666"
-                android:textSize="13dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp"/>
-
-            <!-- Separador inferior del título -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#E0E0E0"
-                android:layout_marginBottom="20dp"/>
-
-            <!-- Campos del formulario -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <!-- Número de tarjeta -->
-                <EditText
-                    android:id="@+id/etNumeroTarjeta"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Número de tarjeta"
-                    android:textSize="14dp"
-                    android:textColorHint="#999"
-                    android:textColor="#666"
-                    android:background="@null"
-                    android:paddingBottom="8dp"
-                    android:inputType="number"
-                    android:maxLength="16"/>
+                    android:orientation="vertical">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#000"
-                    android:layout_marginBottom="20dp"/>
-
-                <!-- Fecha de caducidad -->
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/etFechaCaducidad"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Fecha de caducidad"
-                        android:textSize="14dp"
-                        android:textColorHint="#999"
-                        android:textColor="#666"
-                        android:background="@null"
-                        android:paddingBottom="8dp"
-                        android:inputType="date"
-                        android:focusable="false"
-                        android:clickable="true"/>
+                        android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@android:color/white"
+                        app:boxCornerRadiusTopStart="8dp"
+                        app:boxCornerRadiusTopEnd="8dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
 
-                    <ImageView
-                        android:id="@+id/btnCalendario"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_calendario"
-                        android:contentDescription="Calendario"/>
-                </RelativeLayout>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etNumeroTarjeta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Número de tarjeta"
+                            android:inputType="number"
+                            android:textSize="15sp"
+                            android:maxLength="16"/>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <View
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"
+                            app:boxBackgroundColor="@android:color/white"
+                            app:boxCornerRadiusTopStart="8dp"
+                            app:boxCornerRadiusTopEnd="8dp"
+                            app:endIconMode="custom"
+                            app:endIconDrawable="@drawable/ic_calendario"
+                            app:endIconTint="#6B7280"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etFechaCaducidad"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Fecha caducidad"
+                                android:inputType="date"
+                                android:textSize="15sp"
+                                android:maxLength="5"
+                                android:focusable="false"
+                                android:clickable="true"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp"
+                            app:boxBackgroundColor="@android:color/white"
+                            app:boxCornerRadiusTopStart="8dp"
+                            app:boxCornerRadiusTopEnd="8dp"
+                            app:endIconMode="password_toggle"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etCVC"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="CVC"
+                                android:inputType="numberPassword"
+                                android:textSize="15sp"
+                                android:maxLength="4"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@android:color/white"
+                        app:boxCornerRadiusTopStart="8dp"
+                        app:boxCornerRadiusTopEnd="8dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etNombreTitular"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Nombre del titular"
+                            android:inputType="textPersonName"
+                            android:textSize="15sp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@android:color/white"
+                        app:boxCornerRadiusTopStart="8dp"
+                        app:boxCornerRadiusTopEnd="8dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etApellidosTitular"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Apellidos del titular"
+                            android:inputType="textPersonName"
+                            android:textSize="15sp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@android:color/white"
+                        app:boxCornerRadiusTopStart="8dp"
+                        app:boxCornerRadiusTopEnd="8dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etDireccionFacturacion"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Dirección de Facturación"
+                            android:inputType="textPostalAddress"
+                            android:textSize="15sp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"
+                            app:boxBackgroundColor="@android:color/white"
+                            app:boxCornerRadiusTopStart="8dp"
+                            app:boxCornerRadiusTopEnd="8dp"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etLocalidad"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Localidad"
+                                android:inputType="text"
+                                android:textSize="15sp"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp"
+                            app:boxBackgroundColor="@android:color/white"
+                            app:boxCornerRadiusTopStart="8dp"
+                            app:boxCornerRadiusTopEnd="8dp"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etCodigoPostal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="Cód. postal"
+                                android:inputType="numberDecimal"
+                                android:textSize="15sp"
+                                android:maxLength="5"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@android:color/white"
+                        app:boxCornerRadiusTopStart="8dp"
+                        app:boxCornerRadiusTopEnd="8dp"
+                        android:hint="País"
+                        app:hintEnabled="true"
+                        app:hintAnimationEnabled="true"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+
+                        <Spinner
+                            android:id="@+id/spinnerPais"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
+                            android:spinnerMode="dropdown"
+                            android:overlapAnchor="false"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="30dp"
+                        app:boxBackgroundColor="@android:color/white"
+                        app:boxCornerRadiusTopStart="8dp"
+                        app:boxCornerRadiusTopEnd="8dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etTelefono"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Teléfono"
+                            android:inputType="phone"
+                            android:textSize="15sp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAgregarTarjeta"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#000"
-                    android:layout_marginBottom="20dp"/>
-
-                <!-- Nombre del titular -->
-                <EditText
-                    android:id="@+id/etNombreTitular"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Nombre del titular"
-                    android:textSize="14dp"
-                    android:textColorHint="#999"
-                    android:textColor="#666"
-                    android:background="@null"
-                    android:paddingBottom="8dp"
-                    android:inputType="textPersonName"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#000"
-                    android:layout_marginBottom="20dp"/>
-
-                <!-- Apellidos del titular -->
-                <EditText
-                    android:id="@+id/etApellidosTitular"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Apellidos del titular"
-                    android:textSize="14dp"
-                    android:textColorHint="#999"
-                    android:textColor="#666"
-                    android:background="@null"
-                    android:paddingBottom="8dp"
-                    android:inputType="textPersonName"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#000"
-                    android:layout_marginBottom="20dp"/>
-
-                <!-- Dirección de Facturación -->
-                <EditText
-                    android:id="@+id/etDireccionFacturacion"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Dirección de Facturación"
-                    android:textSize="14dp"
-                    android:textColorHint="#999"
-                    android:textColor="#666"
-                    android:background="@null"
-                    android:paddingBottom="8dp"
-                    android:inputType="textPostalAddress"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#000"
-                    android:layout_marginBottom="20dp"/>
-
-                <!-- Localidad -->
-                <EditText
-                    android:id="@+id/etLocalidad"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Localidad"
-                    android:textSize="14dp"
-                    android:textColorHint="#999"
-                    android:textColor="#666"
-                    android:background="@null"
-                    android:paddingBottom="8dp"
-                    android:inputType="text"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#000"
-                    android:layout_marginBottom="20dp"/>
-
-                <!-- Código postal -->
-                <EditText
-                    android:id="@+id/etCodigoPostal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Código postal"
-                    android:textSize="14dp"
-                    android:textColorHint="#999"
-                    android:textColor="#666"
-                    android:background="@null"
-                    android:paddingBottom="8dp"
-                    android:inputType="number"
-                    android:maxLength="5"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#000"
-                    android:layout_marginBottom="20dp"/>
-
-                <!-- País (Spinner) -->
-                <Spinner
-                    android:id="@+id/spinnerPais"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="30dp"
-                    android:paddingBottom="8dp"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#000"
-                    android:layout_marginBottom="20dp"/>
-
-                <!-- Teléfono -->
-                <EditText
-                    android:id="@+id/etTelefono"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Teléfono"
-                    android:textSize="14dp"
-                    android:textColorHint="#999"
-                    android:textColor="#666"
-                    android:background="@null"
-                    android:paddingBottom="8dp"
-                    android:inputType="phone"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#000"
-                    android:layout_marginBottom="30dp"/>
+                    android:layout_height="56dp"
+                    android:text="Agregar Tarjeta"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="16dp"
+                    app:backgroundTint="#66BB6A"
+                    android:textColor="@android:color/white"
+                    app:elevation="4dp"
+                    app:icon="@android:drawable/ic_input_add"
+                    app:iconGravity="start"
+                    app:iconTint="@android:color/white"
+                    android:textAllCaps="false"
+                    android:layout_gravity="center_horizontal"/>
             </LinearLayout>
-
-            <!-- Botón Agregar tarjeta -->
-            <Button
-                android:id="@+id/btnAgregarTarjeta"
-                android:layout_width="200dp"
-                android:layout_height="55dp"
-                android:text="Agregar&#10;tarjeta"
-                android:textColor="@color/white"
-                android:textSize="14dp"
-                android:textStyle="bold"
-                android:backgroundTint="#66BB6A"
-                android:textAllCaps="false"
-                android:layout_gravity="center_horizontal"/>
-            <!-- El &#10 es un salto de linea -->
         </LinearLayout>
     </ScrollView>
-
-    <!-- Bottom Navigation View -->
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

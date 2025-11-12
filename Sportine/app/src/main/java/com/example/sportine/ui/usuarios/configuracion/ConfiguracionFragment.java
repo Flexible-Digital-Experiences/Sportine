@@ -28,7 +28,7 @@ public class ConfiguracionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Botón para volver atrás
-        ImageView btnBack = view.findViewById(R.id.btnBack);
+        com.google.android.material.card.MaterialCardView btnBack = view.findViewById(R.id.btnBack);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

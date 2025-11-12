@@ -3,517 +3,555 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F8F9FA">
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:fillViewport="true"> <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
-
-            <ImageView
-                android:id="@+id/btnBack"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_flechaatras"
-                android:contentDescription="Volver"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CONFIGURACIÓN" android:textColor="#000"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.1"
-                android:layout_centerInParent="true"/>
-        </RelativeLayout>
-
-        <FrameLayout
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="20dp">
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_avatar_config"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp"
-                app:cardCornerRadius="40dp"
-                app:cardElevation="2dp">
-
-                <ImageView
-                    android:id="@+id/iv_avatar_config"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/avatar_user_male"
-                    android:contentDescription="Foto de perfil"/>
-
-            </androidx.cardview.widget.CardView>
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="bottom|end"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="5dp"
-                android:src="@drawable/ic_editimgperf"
-                android:padding="6dp"
-                android:contentDescription="Editar foto"/>
-        </FrameLayout>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Datos actuales"
-            android:textColor="#666"
-            android:textSize="12sp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"/>
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="20dp">
+            android:paddingBottom="24dp">
 
             <LinearLayout
+                android:id="@+id/headerLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="12dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="8dp">
-
-                    <TextView
-                        android:id="@+id/tvNombre"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Nombre"
-                        android:textSize="12sp"
-                        android:textColorHint="#999"
-                        android:background="@null"
-                        android:paddingBottom="6dp"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#000"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="8dp">
-
-                    <TextView
-                        android:id="@+id/tvSexo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Sexo"
-                        android:textSize="12sp"
-                        android:textColorHint="#999"
-                        android:background="@null"
-                        android:paddingBottom="6dp"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#000"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="12dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="8dp">
-
-                    <TextView
-                        android:id="@+id/tvApellido"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Apellido"
-                        android:textSize="12sp"
-                        android:textColorHint="#999"
-                        android:background="@null"
-                        android:paddingBottom="6dp"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#000"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="8dp">
-
-                    <TextView
-                        android:id="@+id/tvEstado"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Estado"
-                        android:textSize="12sp"
-                        android:textColorHint="#999"
-                        android:background="@null"
-                        android:paddingBottom="6dp"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#000"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="12dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="8dp">
-
-                    <TextView
-                        android:id="@+id/tvUsername"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Nombre de Usuario"
-                        android:textSize="12sp"
-                        android:textColorHint="#999"
-                        android:background="@null"
-                        android:paddingBottom="6dp"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#000"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="8dp">
-
-                    <TextView
-                        android:id="@+id/tvCiudad"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Ciudad"
-                        android:textSize="12sp"
-                        android:textColorHint="#999"
-                        android:background="@null"
-                        android:paddingBottom="6dp"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#000"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="12dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="8dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:id="@+id/tvPassword"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Contraseña"
-                            android:textSize="12sp"
-                            android:textColorHint="#999"
-                            android:background="@null"
-                            android:paddingBottom="6dp"
-                            android:inputType="textPassword"/>
-
-                        <ImageView
-                            android:id="@+id/btnTogglePassword"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:src="@drawable/ic_ojover"
-                            android:contentDescription="Mostrar/Ocultar"/>
-                    </RelativeLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#000"/>
-                </LinearLayout>
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/btnModificarentrena"
-            android:layout_width="180dp"
-            android:layout_height="40dp"
-            android:text="Modificar"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:backgroundTint="#FFA726"
-            android:textAllCaps="false"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="20dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tema"
-            android:textColor="#666"
-            android:textSize="12sp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="12dp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginBottom="20dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Claro"
-                android:textColor="#000"
-                android:textSize="14sp"
-                android:layout_marginEnd="8dp"/>
-
-            <CheckBox
-                android:id="@+id/checkClaro"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="40dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Obscuro"
-                android:textColor="#000"
-                android:textSize="14sp"
-                android:layout_marginEnd="8dp"/>
-
-            <CheckBox
-                android:id="@+id/checkObscuro"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Detalles"
-            android:textColor="#666"
-            android:textSize="12sp"
-            android:layout_gravity="center_horizontal"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="de clases"
-            android:textColor="#666"
-            android:textSize="12sp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginEnd="16dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Costo de tu mensualidad"
-                        android:textColor="#000"
-                        android:textSize="11sp"
-                        android:paddingBottom="6dp"/>
-
-                    <EditText
-                        android:id="@+id/etCostoMensualidad"
-                        android:layout_width="60dp"
-                        android:layout_height="wrap_content"
-                        android:hint="$__________"
-                        android:textColorHint="#999"
-                        android:textColor="#666"
-                        android:textSize="11sp"
-                        android:background="@null"
-                        android:paddingBottom="6dp"
-                        android:gravity=""
-                        android:inputType="numberDecimal"/>
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#000"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Alumnos inscritos"
-                        android:textColor="#000"
-                        android:textSize="11sp"
-                        android:paddingBottom="6dp"/>
-
-                    <EditText
-                        android:id="@+id/etAlumnosInscritos"
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
-                        android:hint="__________"
-                        android:textColorHint="#999"
-                        android:textColor="#666"
-                        android:textSize="11sp"
-                        android:background="@null"
-                        android:paddingBottom="6dp"
-                        android:gravity=""
-                        android:inputType="number"/>
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#000"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Dinero ganado en el mes -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="20dp">
-
-            <LinearLayout
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
+                android:paddingStart="20dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="12dp"
                 android:gravity="center_vertical">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnBack"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/white"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_flechaatras"
+                        android:contentDescription="Volver"
+                        app:tint="#1A1A1A" />
+                </com.google.android.material.card.MaterialCardView>
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Dinero ganado en el mes"
-                    android:textColor="#000"
-                    android:textSize="11sp"
+                    android:text="Configuración del Perfil"
+                    android:textColor="#1A1A1A"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
                     android:gravity="center"
-                    android:paddingBottom="6dp"/>
-
-                <EditText
-                    android:id="@+id/etDineroGanado"
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:hint="$__________"
-                    android:textColorHint="#999"
-                    android:textColor="#666"
-                    android:textSize="11sp"
-                    android:background="@null"
-                    android:paddingBottom="6dp"
-                    android:gravity=""
-                    android:inputType="numberDecimal"/>
+                    android:layout_marginStart="-40dp"/>
             </LinearLayout>
 
-            <View
-                android:layout_width="200dp"
-                android:layout_height="1dp"
-                android:layout_gravity="center"
-                android:background="#000"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:gravity="center_horizontal">
+
+                <FrameLayout
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="24dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_avatar_config"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_gravity="center"
+                        app:cardCornerRadius="40dp"
+                        app:cardElevation="4dp"
+                        app:strokeWidth="2dp"
+                        app:strokeColor="@color/white">
+
+                        <ImageView
+                            android:id="@+id/iv_avatar_config"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="Foto de perfil"/>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="bottom|end"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="5dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="6dp"
+                        app:cardBackgroundColor="#00A896"
+                        android:clickable="true"
+                        android:focusable="true">
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_editimgperf"
+                            android:padding="0dp"
+                            android:contentDescription="Editar foto"
+                            app:tint="@color/white"/>
+                    </com.google.android.material.card.MaterialCardView>
+                </FrameLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/white">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Datos actuales"
+                            android:textColor="#1A1A1A"
+                            android:textSize="16sp"
+                            android:layout_gravity="center"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="16dp"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginBottom="12dp">
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginEnd="8dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Nombre"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <TextView
+                                        android:id="@+id/tvNombre"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="#1A1A1A"
+                                        android:textSize="15sp"
+                                        android:layout_marginTop="4dp" />
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginStart="8dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Sexo"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <TextView
+                                        android:id="@+id/tvSexo"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="#1A1A1A"
+                                        android:textSize="15sp"
+                                        android:layout_marginTop="4dp" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginBottom="12dp">
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginEnd="8dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Apellido"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <TextView
+                                        android:id="@+id/tvApellido"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="#1A1A1A"
+                                        android:textSize="15sp"
+                                        android:layout_marginTop="4dp" />
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginStart="8dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Estado"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <TextView
+                                        android:id="@+id/tvEstado"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="#1A1A1A"
+                                        android:textSize="15sp"
+                                        android:layout_marginTop="4dp" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_marginBottom="12dp">
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginEnd="8dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Nombre de Usuario"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <TextView
+                                        android:id="@+id/tvUsername"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="#1A1A1A"
+                                        android:textSize="15sp"
+                                        android:layout_marginTop="4dp" />
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginStart="8dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Ciudad"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <TextView
+                                        android:id="@+id/tvCiudad"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="#1A1A1A"
+                                        android:textSize="15sp"
+                                        android:layout_marginTop="4dp" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Contraseña"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <RelativeLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="4dp">
+
+                                        <TextView
+                                            android:id="@+id/tvPassword"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:textColor="#1A1A1A"
+                                            android:textSize="15sp"
+                                            android:layout_toStartOf="@id/btnTogglePassword"
+                                            android:layout_centerVertical="true" />
+
+                                        <ImageView
+                                            android:id="@+id/btnTogglePassword"
+                                            android:layout_width="24dp"
+                                            android:layout_height="24dp"
+                                            android:layout_alignParentEnd="true"
+                                            android:layout_centerVertical="true"
+                                            android:src="@drawable/ic_ojover"
+                                            app:tint="#6B7280"
+                                            android:clickable="true"
+                                            android:focusable="true"
+                                            android:contentDescription="Mostrar/Ocultar contraseña"/>
+                                    </RelativeLayout>
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnModificarentrena"
+                    android:layout_width="wrap_content"
+                    android:layout_height="56dp"
+                    android:text="Modificar Datos"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="16dp"
+                    app:backgroundTint="#FFA726"
+                    android:textColor="@android:color/white"
+                    app:elevation="4dp"
+                    android:textAllCaps="false"
+                    android:layout_marginBottom="30dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Configuración de Tema"
+                    android:textColor="#1A1A1A"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginBottom="30dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Claro"
+                        android:textColor="#000"
+                        android:textSize="14sp"
+                        android:layout_marginEnd="8dp"/>
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/checkClaro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:buttonTint="#00A896"
+                        android:layout_marginEnd="40dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Oscuro"
+                        android:textColor="#000"
+                        android:textSize="14sp"
+                        android:layout_marginEnd="8dp"/>
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/checkObscuro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:buttonTint="#00A896"/>
+                </LinearLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_marginBottom="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Detalles de Clases"
+                            android:textColor="#1A1A1A"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="16dp"/>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="16dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp"
+                                android:layout_marginEnd="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Costo de Mensualidad"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.05"/>
+
+                                <TextView
+                                    android:id="@+id/tvCostoMensualidad"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp"
+                                android:layout_marginStart="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Alumnos Inscritos"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.05"/>
+
+                                <TextView
+                                    android:id="@+id/tvAlumnosInscritos"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:background="@drawable/fondo_campos_perfil"
+                            android:padding="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Dinero ganado (Cálculo Estimado)"
+                                android:textColor="#9CA3AF"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:letterSpacing="0.05"/>
+
+                            <TextView
+                                android:id="@+id/tvDineroGanado"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="#1A1A1A"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:layout_marginTop="4dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
         </LinearLayout>
-
-
-    </LinearLayout>
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

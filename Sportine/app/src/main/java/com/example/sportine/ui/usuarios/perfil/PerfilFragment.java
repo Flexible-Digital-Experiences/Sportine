@@ -4,13 +4,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import com.example.sportine.R;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
+
 public class PerfilFragment extends Fragment {
 
     @Nullable
@@ -18,7 +19,6 @@ public class PerfilFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        // Inflar el layout del perfil
         return inflater.inflate(R.layout.fragment_alumno_perfil, container, false);
     }
 
@@ -26,10 +26,8 @@ public class PerfilFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Obtener el ícono de configuración
-        ImageView btnSettings = view.findViewById(R.id.btnSettings);
-
-        // Al hacer click, navegar a configuración
+        // Botón de configuración (MaterialCardView)
+        MaterialCardView btnSettings = view.findViewById(R.id.btnSettings);
         btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -38,7 +36,8 @@ public class PerfilFragment extends Fragment {
             }
         });
 
-        Button btnCompletardatos = view.findViewById(R.id.btnCompletar);
+        // Botón completar datos (MaterialButton)
+        MaterialButton btnCompletardatos = view.findViewById(R.id.btnCompletar);
         btnCompletardatos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

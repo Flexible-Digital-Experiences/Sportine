@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F8F9FA">
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,315 +17,483 @@
         android:fillViewport="true">
 
         <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="20dp">
-
-        <TextView
-            android:id="@+id/txtPerfil"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PERFIL"
-            android:textColor="#000"
-            android:textSize="16dp"
-            android:textStyle="bold"
-            android:letterSpacing="0.1"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"/>
-
-        <ImageView
-            android:id="@+id/btnSettings"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="18dp"
-            android:src="@android:drawable/ic_menu_manage"
-            android:contentDescription="Configuración"/>
-
-        <LinearLayout
-            android:id="@+id/mainContainer"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/txtPerfil"
-            android:layout_marginTop="20dp"
-            android:paddingStart="40dp"
-            android:paddingEnd="40dp"
-            android:gravity="center_horizontal">
+            android:paddingBottom="24dp">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_avatar_perfil"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:layout_marginBottom="20dp"
-                app:cardCornerRadius="70dp"
-                app:cardElevation="4dp">
-
-                <ImageView
-                    android:id="@+id/iv_avatar_perfil"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/avatar_user_male"
-                    android:contentDescription="Foto de perfil"/>
-
-            </androidx.cardview.widget.CardView>
-            <TextView
-                android:id="@+id/txtSaludo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hola Alumno"
-                android:textColor="#000"
-                android:textSize="26dp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp"/>
-
-            <View
-                android:layout_width="260dp"
-                android:layout_height="1dp"
-                android:background="#E0E0E0"
-                android:layout_marginBottom="16dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Deportes"
-                android:textColor="#666"
-                android:textSize="12dp"
-                android:layout_marginBottom="12dp"/>
-
+            <!-- Header -->
             <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginBottom="16dp">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginEnd="20dp"
-                    android:contentDescription="Fútbol"
-                    android:src="@drawable/balon_futbol" />
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginEnd="20dp"
-                    android:contentDescription="Basquet"
-                    android:src="@drawable/balon_basket" />
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:contentDescription="Tenis"
-                    android:src="@drawable/pelota_tenis" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="260dp"
-                android:layout_height="1dp"
-                android:background="#E0E0E0"
-                android:layout_marginBottom="16dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Datos del Perfil"
-                android:textColor="#666"
-                android:textSize="12dp"
-                android:layout_marginBottom="16dp"/>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginBottom="20dp">
-
-                <TextView
-                    android:id="@+id/tvNombre"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Nombre"
-                    android:textColorHint="#999"
-                    android:textColor="#666"
-                    android:textSize="14dp"
-                    android:background="@null"
-                    android:paddingBottom="8dp"
-                    android:inputType="textPersonName"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="#000"
-                    android:layout_marginBottom="16dp"/>
-
-                <TextView
-                    android:id="@+id/tvApellido"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Apellido"
-                    android:textColorHint="#999"
-                    android:textColor="#666"
-                    android:textSize="14dp"
-                    android:background="@null"
-                    android:paddingBottom="8dp"
-                    android:inputType="textPersonName"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="#000"
-                    android:layout_marginBottom="16dp"/>
-
-                <TextView
-                    android:id="@+id/tvUsername"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Nombre de Usuario"
-                    android:textColorHint="#999"
-                    android:textColor="#666"
-                    android:textSize="14dp"
-                    android:background="@null"
-                    android:paddingBottom="8dp"
-                    android:inputType="text"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="#000"
-                    android:layout_marginBottom="16dp"/>
-
-                <TextView
-                    android:id="@+id/tvSexo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Sexo"
-                    android:textColorHint="#999"
-                    android:textColor="#666"
-                    android:textSize="14dp"
-                    android:background="@null"
-                    android:paddingBottom="8dp"
-                    android:inputType="text"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="#000"
-                    android:layout_marginBottom="16dp"/>
-
-                <TextView
-                    android:id="@+id/tvEstado"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Estado"
-                    android:textColorHint="#999"
-                    android:textColor="#666"
-                    android:textSize="14dp"
-                    android:background="@null"
-                    android:paddingBottom="8dp"
-                    android:inputType="text"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="#000"
-                    android:layout_marginBottom="16dp"/>
-
-                <TextView
-                    android:id="@+id/tvCiudad"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Ciudad"
-                    android:textColorHint="#999"
-                    android:textColor="#666"
-                    android:textSize="14dp"
-                    android:background="@null"
-                    android:paddingBottom="8dp"
-                    android:inputType="text"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="#000"/>
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/btnCompletar"
+                android:id="@+id/headerLayout"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="Completar tus datos"
-                android:textColor="@color/white"
-                android:textSize="14dp"
-                android:textStyle="bold"
-                android:backgroundTint="@color/teal_700"
-                android:textAllCaps="false"/>
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="20dp"
+                android:gravity="center_vertical">
 
-        <LinearLayout
-            android:id="@+id/badgeAmigos"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/mainContainer"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="380dp"
-            android:gravity="center">
+                <TextView
+                    android:id="@+id/txtPerfil"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Mi Perfil"
+                    android:textColor="#1A1A1A"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_vertical"/>
 
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:text="58"
-                android:textColor="#000"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:background="@drawable/circulo_verde"/>
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnSettings"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/white"
+                    android:clickable="true"
+                    android:focusable="true">
 
-            <TextView
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@android:drawable/ic_menu_manage"
+                        android:contentDescription="Configuración"
+                        app:tint="#00A896" />
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Contenedor Principal -->
+            <LinearLayout
+                android:id="@+id/mainContainer"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/headerLayout"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:gravity="center_horizontal">
+
+                <!-- Card de Foto de Perfil -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="75dp"
+                    app:cardElevation="8dp"
+                    app:strokeWidth="3dp"
+                    app:strokeColor="@color/white">
+
+                    <FrameLayout
+                        android:layout_width="150dp"
+                        android:layout_height="150dp">
+
+                        <ImageView
+                            android:id="@+id/iv_avatar_perfil"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="Foto de perfil"/>
+
+
+                    </FrameLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Saludo -->
+                <TextView
+                    android:id="@+id/txtSaludo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hola Alumno"
+                    android:textColor="#1A1A1A"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.01"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="¡Sigue entrenando fuerte!"
+                    android:textColor="#6B7280"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="24dp"/>
+
+                <!-- Card de Deportes -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/white">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Mis Deportes"
+                            android:textColor="#1A1A1A"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="16dp"/>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center">
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="8dp"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="#FFF3E0">
+
+                                <ImageView
+                                    android:layout_width="50dp"
+                                    android:layout_height="50dp"
+                                    android:padding="10dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/balon_futbol"
+                                    android:contentDescription="Fútbol"/>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="8dp"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="#FFE0E0">
+
+                                <ImageView
+                                    android:layout_width="50dp"
+                                    android:layout_height="50dp"
+                                    android:padding="10dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/balon_basket"
+                                    android:contentDescription="Basquet"/>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="#E0F2F1">
+
+                                <ImageView
+                                    android:layout_width="50dp"
+                                    android:layout_height="50dp"
+                                    android:padding="10dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/pelota_tenis"
+                                    android:contentDescription="Tenis"/>
+                            </com.google.android.material.card.MaterialCardView>
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Card de Información Personal -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/white">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Información Personal"
+                            android:textColor="#1A1A1A"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="16dp"/>
+
+                        <!-- Campos con background -->
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp"
+                                android:layout_marginBottom="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Nombre"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.05"/>
+
+                                <TextView
+                                    android:id="@+id/tvNombre"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp"
+                                android:layout_marginBottom="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Apellido"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.05"/>
+
+                                <TextView
+                                    android:id="@+id/tvApellido"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp"
+                                android:layout_marginBottom="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Usuario"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.05"/>
+
+                                <TextView
+                                    android:id="@+id/tvUsername"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="12dp">
+
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginEnd="8dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Sexo"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <TextView
+                                        android:id="@+id/tvSexo"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="#1A1A1A"
+                                        android:textSize="15sp"
+                                        android:layout_marginTop="4dp"/>
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Estado"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <TextView
+                                        android:id="@+id/tvEstado"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="#1A1A1A"
+                                        android:textSize="15sp"
+                                        android:layout_marginTop="4dp"/>
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Ciudad"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.05"/>
+
+                                <TextView
+                                    android:id="@+id/tvCiudad"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Botón Moderno -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCompletar"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Completar mis datos"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.02"
+                    app:cornerRadius="16dp"
+                    app:backgroundTint="#00A896"
+                    android:textColor="@color/white"
+                    app:elevation="4dp"
+                    app:icon="@android:drawable/ic_menu_edit"
+                    app:iconGravity="start"
+                    app:iconTint="@color/white"
+                    app:iconSize="20dp"
+                    android:textAllCaps="false"/>
+            </LinearLayout>
+
+            <!-- Badges Modernos -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/badgeAmigos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Amigos"
-                android:textColor="#000"
-                android:textSize="11dp"
-                android:textStyle="bold"
-                android:layout_marginTop="4dp"/>
-        </LinearLayout>
+                android:layout_alignTop="@id/mainContainer"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="420dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="@color/white">
 
-        <LinearLayout
-            android:id="@+id/badgeEntrenadores"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/mainContainer"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="13dp"
-            android:layout_marginTop="480dp"
-            android:gravity="center">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center">
 
-            <TextView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:text="3"
-                android:textColor="#000"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:background="@drawable/circulo_naranja"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#4CAF50"
+                        android:textSize="22sp"
+                        android:textStyle="bold"/>
 
-            <TextView
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Amigos"
+                        android:textColor="#6B7280"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="2dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/badgeEntrenadores"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Entrenadores"
-                android:textColor="#000"
-                android:textSize="11dp"
-                android:textStyle="bold"
-                android:layout_marginTop="4dp"/>
-        </LinearLayout>
-    </RelativeLayout>
+                android:layout_alignTop="@id/mainContainer"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="530dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#FF9800"
+                        android:textSize="22sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Entrenadores"
+                        android:textColor="#6B7280"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="2dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </RelativeLayout>
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

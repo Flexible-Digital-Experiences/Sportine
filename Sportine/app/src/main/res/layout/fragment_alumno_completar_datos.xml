@@ -4,386 +4,653 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="#F8F9FA">
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:fillViewport="true"> <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="20dp">
+        android:fillViewport="true">
 
-        <RelativeLayout
-            android:id="@+id/headerLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp">
-
-            <ImageView
-                android:id="@+id/btnBack"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_flechaatras"
-                android:contentDescription="Volver"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="COMPLETAR DATOS"
-                android:textColor="#000"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.1"
-                android:layout_centerInParent="true"/>
-
-        </RelativeLayout>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_avatar_completar"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            app:cardCornerRadius="40dp"
-            app:cardElevation="2dp">
-
-            <ImageView
-                android:id="@+id/iv_avatar_completar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/avatar_user_male"
-                android:contentDescription="Foto de perfil"/>
-
-        </androidx.cardview.widget.CardView>
         <LinearLayout
-            android:id="@+id/seccion_datos_actuales"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingStart="40dp"
-            android:paddingEnd="40dp">
+            android:paddingBottom="24dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Datos actuales"
-                android:textColor="#666"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:layout_marginBottom="16dp"/>
-
+            <!-- Header -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="12dp">
+                android:padding="20dp"
+                android:gravity="center_vertical">
 
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnBack"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/white"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_marginEnd="12dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_flechaatras"
+                        android:contentDescription="Volver"/>
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="16dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Nivel"
-                        android:textColor="#999"
-                        android:textSize="12sp"
-                        android:paddingBottom="4dp"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#CCC"
-                        android:layout_marginBottom="16dp"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Lesiones"
-                        android:textColor="#999"
-                        android:textSize="12sp"
-                        android:paddingBottom="4dp"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#CCC"
-                        android:layout_marginBottom="16dp"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Padecimientos"
-                        android:textColor="#999"
-                        android:textSize="12sp"
-                        android:paddingBottom="4dp"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#CCC"
-                        android:layout_marginBottom="16dp"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Deportes"
-                        android:textColor="#999"
-                        android:textSize="12sp"
-                        android:paddingBottom="4dp"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#CCC"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Estatura (m)"
-                        android:textColor="#999"
-                        android:textSize="12sp"
-                        android:paddingBottom="4dp"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#CCC"
-                        android:layout_marginBottom="16dp"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Peso (Kg.)"
-                        android:textColor="#999"
-                        android:textSize="12sp"
-                        android:paddingBottom="4dp"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#CCC"
-                        android:layout_marginBottom="16dp"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Edad"
-                        android:textColor="#999"
-                        android:textSize="12sp"
-                        android:paddingBottom="4dp"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#CCC"
-                        android:layout_marginBottom="16dp"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Genero"
-                        android:textColor="#999"
-                        android:textSize="12sp"
-                        android:paddingBottom="4dp"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#CCC"/>
-                </LinearLayout>
+                    android:text="Completar Datos"
+                    android:textColor="#1A1A1A"
+                    android:textSize="22sp"
+                    android:textStyle="bold"/>
             </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Completa tus datos"
-                android:textColor="#666"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="8dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Si no quieres cambiar un campo déjalo vacío"
-                android:textColor="#000"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:layout_marginBottom="20dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="12dp">
+                android:orientation="vertical"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:gravity="center_horizontal">
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <!-- Foto de perfil -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="16dp">
+                    android:layout_marginBottom="24dp"
+                    app:cardCornerRadius="50dp"
+                    app:cardElevation="4dp">
 
-                    <Spinner
-                        android:id="@+id/spinnerNivel"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="32dp"
-                        android:prompt="@string/nivel_prompt"
-                        android:spinnerMode="dropdown"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#000"
-                        android:layout_marginBottom="16dp"/>
+                    <ImageView
+                        android:id="@+id/iv_avatar_completar"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="Foto de perfil"/>
+                </com.google.android.material.card.MaterialCardView>
 
-                    <EditText
-                        android:id="@+id/etLesiones"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Lesiones"
-                        android:textColorHint="#999"
-                        android:textColor="#666"
-                        android:textSize="12sp"
-                        android:background="@null"
-                        android:paddingBottom="4dp"
-                        android:inputType="text"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#000"
-                        android:layout_marginBottom="16dp"/>
-
-                    <EditText
-                        android:id="@+id/etPadecimientos"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Padecimientos"
-                        android:textColorHint="#999"
-                        android:textColor="#666"
-                        android:textSize="12sp"
-                        android:background="@null"
-                        android:paddingBottom="4dp"
-                        android:inputType="text"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#000"
-                        android:layout_marginBottom="16dp"/>
-
-                    <Spinner
-                        android:id="@+id/spinnerDeportes"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="32dp"
-                        android:prompt="@string/deportes_prompt"
-                        android:spinnerMode="dropdown"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#000"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
+                <!-- Card Datos Actuales -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_marginBottom="20dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/white">
 
-                    <EditText
-                        android:id="@+id/etEstatura"
+                    <LinearLayout
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Estatura (m)"
-                        android:textColorHint="#999"
-                        android:textColor="#666"
-                        android:textSize="12sp"
-                        android:background="@null"
-                        android:paddingBottom="4dp"
-                        android:inputType="numberDecimal"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#000"
-                        android:layout_marginBottom="16dp"/>
+                        android:padding="20dp">
 
-                    <EditText
-                        android:id="@+id/etPeso"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Datos Actuales"
+                            android:textColor="#1A1A1A"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="16dp"/>
+
+                        <!-- Grid de datos actuales -->
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <!-- Columna izquierda -->
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="12dp">
+
+                                <!-- Nivel -->
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginBottom="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Nivel"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="-"
+                                        android:textColor="#1A1A1A"
+                                        android:textSize="14sp"
+                                        android:layout_marginTop="4dp"/>
+                                </LinearLayout>
+
+                                <!-- Lesiones -->
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginBottom="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Lesiones"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="-"
+                                        android:textColor="#1A1A1A"
+                                        android:textSize="14sp"
+                                        android:layout_marginTop="4dp"/>
+                                </LinearLayout>
+
+                                <!-- Padecimientos -->
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginBottom="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Padecimientos"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="-"
+                                        android:textColor="#1A1A1A"
+                                        android:textSize="14sp"
+                                        android:layout_marginTop="4dp"/>
+                                </LinearLayout>
+
+                                <!-- Deportes -->
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Deportes"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="-"
+                                        android:textColor="#1A1A1A"
+                                        android:textSize="14sp"
+                                        android:layout_marginTop="4dp"/>
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <!-- Columna derecha -->
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                                <!-- Estatura -->
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginBottom="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Estatura (m)"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="-"
+                                        android:textColor="#1A1A1A"
+                                        android:textSize="14sp"
+                                        android:layout_marginTop="4dp"/>
+                                </LinearLayout>
+
+                                <!-- Peso -->
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginBottom="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Peso (Kg)"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="-"
+                                        android:textColor="#1A1A1A"
+                                        android:textSize="14sp"
+                                        android:layout_marginTop="4dp"/>
+                                </LinearLayout>
+
+                                <!-- Edad -->
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginBottom="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Edad"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="-"
+                                        android:textColor="#1A1A1A"
+                                        android:textSize="14sp"
+                                        android:layout_marginTop="4dp"/>
+                                </LinearLayout>
+
+                                <!-- Género -->
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Género"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"/>
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="-"
+                                        android:textColor="#1A1A1A"
+                                        android:textSize="14sp"
+                                        android:layout_marginTop="4dp"/>
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Card Completar Datos -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/white">
+
+                    <LinearLayout
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Peso (Kg.)"
-                        android:textColorHint="#999"
-                        android:textColor="#666"
-                        android:textSize="12sp"
-                        android:background="@null"
-                        android:paddingBottom="4dp"
-                        android:inputType="numberDecimal"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#000"
-                        android:layout_marginBottom="16dp"/>
+                        android:padding="20dp">
 
-                    <Spinner
-                        android:id="@+id/spinnerEdad"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="32dp"
-                        android:prompt="@string/edad_prompt"
-                        android:spinnerMode="dropdown"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#000"
-                        android:layout_marginBottom="16dp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Completa tus datos"
+                            android:textColor="#1A1A1A"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="8dp"/>
 
-                    <Spinner
-                        android:id="@+id/spinnerGenero"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minHeight="32dp"
-                        android:prompt="@string/genero_prompt"
-                        android:spinnerMode="dropdown"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#000"/>
-                </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Si no quieres cambiar un campo déjalo vacío"
+                            android:textColor="#6B7280"
+                            android:textSize="13sp"
+                            android:layout_marginBottom="16dp"/>
+
+                        <!-- Grid de campos editables -->
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <!-- Columna izquierda -->
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="12dp">
+
+                                <!-- Spinner Nivel con label -->
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginBottom="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Nivel"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"
+                                        android:layout_marginBottom="4dp"/>
+
+                                    <Spinner
+                                        android:id="@+id/spinnerNivel"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:minHeight="32dp"
+                                        android:background="@null"/>
+                                </LinearLayout>
+
+                                <!-- EditText Lesiones -->
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginBottom="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Lesiones"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"
+                                        android:layout_marginBottom="4dp"/>
+
+                                    <EditText
+                                        android:id="@+id/etLesiones"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="Ej: Rodilla"
+                                        android:textSize="14sp"
+                                        android:textColorHint="#CCC"
+                                        android:background="@null"
+                                        android:inputType="text"/>
+                                </LinearLayout>
+
+                                <!-- EditText Padecimientos -->
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginBottom="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Padecimientos"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"
+                                        android:layout_marginBottom="4dp"/>
+
+                                    <EditText
+                                        android:id="@+id/etPadecimientos"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="Ej: Asma"
+                                        android:textSize="14sp"
+                                        android:textColorHint="#CCC"
+                                        android:background="@null"
+                                        android:inputType="text"/>
+                                </LinearLayout>
+
+                                <!-- Spinner Deportes -->
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Deportes"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"
+                                        android:layout_marginBottom="4dp"/>
+
+                                    <Spinner
+                                        android:id="@+id/spinnerDeportes"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:minHeight="32dp"
+                                        android:background="@null"/>
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <!-- Columna derecha -->
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                                <!-- EditText Estatura -->
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginBottom="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Estatura (m)"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"
+                                        android:layout_marginBottom="4dp"/>
+
+                                    <EditText
+                                        android:id="@+id/etEstatura"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="1.75"
+                                        android:textSize="14sp"
+                                        android:textColorHint="#CCC"
+                                        android:background="@null"
+                                        android:inputType="numberDecimal"/>
+                                </LinearLayout>
+
+                                <!-- EditText Peso -->
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginBottom="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Peso (Kg)"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"
+                                        android:layout_marginBottom="4dp"/>
+
+                                    <EditText
+                                        android:id="@+id/etPeso"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="70"
+                                        android:textSize="14sp"
+                                        android:textColorHint="#CCC"
+                                        android:background="@null"
+                                        android:inputType="numberDecimal"/>
+                                </LinearLayout>
+
+                                <!-- Spinner Edad -->
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp"
+                                    android:layout_marginBottom="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Edad"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"
+                                        android:layout_marginBottom="4dp"/>
+
+                                    <Spinner
+                                        android:id="@+id/spinnerEdad"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:minHeight="32dp"
+                                        android:background="@null"/>
+                                </LinearLayout>
+
+                                <!-- Spinner Género -->
+                                <LinearLayout
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/fondo_campos_perfil"
+                                    android:padding="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Género"
+                                        android:textColor="#9CA3AF"
+                                        android:textSize="11sp"
+                                        android:textStyle="bold"
+                                        android:letterSpacing="0.05"
+                                        android:layout_marginBottom="4dp"/>
+
+                                    <Spinner
+                                        android:id="@+id/spinnerGenero"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:minHeight="32dp"
+                                        android:background="@null"/>
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Botón Actualizar -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnActualizar"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Actualizar datos"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.02"
+                    app:cornerRadius="16dp"
+                    app:backgroundTint="#00A896"
+                    android:textColor="@color/white"
+                    app:elevation="4dp"
+                    app:icon="@android:drawable/ic_menu_save"
+                    app:iconGravity="start"
+                    app:iconTint="@color/white"
+                    app:iconSize="20dp"
+                    android:textAllCaps="false"/>
             </LinearLayout>
-
-            <Button
-                android:id="@+id/btnActualizar"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:text="Actualizar"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:backgroundTint="#0288D1"
-                android:textAllCaps="false"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"/>
         </LinearLayout>
-    </LinearLayout>
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
