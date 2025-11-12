@@ -30,6 +30,7 @@ CREATE TABLE Informacion_Alumno (
     nivel VARCHAR(100),
     padecimientos VARCHAR(255),
     foto_perfil TEXT,
+    edad INT,
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
@@ -44,6 +45,7 @@ CREATE TABLE Informacion_Entrenador (
     usuario VARCHAR(255),
     costo_mensualidad INT,
     descripcion_perfil VARCHAR(255),
+    foto_perfil TEXT,
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
@@ -172,7 +174,6 @@ CREATE TABLE Publicacion (
     usuario VARCHAR(255),
     descripcion VARCHAR(255),
     fecha_publicacion DATE,
-    num_likes INT,
     imagen TEXT,
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
@@ -185,3 +186,15 @@ CREATE TABLE Likes (
     FOREIGN KEY (id_publicacion) REFERENCES Publicacion(id_publicacion),
     FOREIGN KEY (usuario_like) REFERENCES Usuario(usuario)
 );
+
+CREATE TABLE Amistad(
+	id_amistad INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_1 VARCHAR(255),
+    usuario_2 VARCHAR(255),
+	FOREIGN KEY (usuario_1) REFERENCES Usuario(usuario),
+    FOREIGN KEY (usuario_2) REFERENCES Usuario(usuario),
+    -- Para evitar repetidos en la tabla
+    UNIQUE(usuario_1, usuario_2) 
+);
+
+
