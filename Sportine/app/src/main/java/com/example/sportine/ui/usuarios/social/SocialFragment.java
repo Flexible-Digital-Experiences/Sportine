@@ -44,15 +44,15 @@ public class SocialFragment extends Fragment implements CreatePostBottomSheetFra
 
         // --- CAMBIO #2: Lógica para ABRIR EL DIÁLOGO FLOTANTE ---
 
-        // Buscamos el CardView modernizado (¡CON EL NUEVO ID!)
-        MaterialCardView cardCreatePostTrigger = view.findViewById(R.id.card_share_post);
+        // Buscamos el CardView modernizado (¡CON EL ID CORRECTO DEL XML!)
+        MaterialCardView cardCreatePostTrigger = view.findViewById(R.id.card_create_post_trigger);
 
         cardCreatePostTrigger.setOnClickListener(v -> {
             // Ya no navega, ahora llama al método para mostrar el diálogo
             showCreatePostDialog();
         });
 
-        // (Se elimina la lógica vieja de cardSharePost y cameraIcon)
+        // (Se elimina la lógica vieja de cameraIcon)
 
         // --- FIN DE LA LÓGICA MODIFICADA ---
 
@@ -63,7 +63,13 @@ public class SocialFragment extends Fragment implements CreatePostBottomSheetFra
             // Esto sigue navegando a la pantalla de "Buscar Amigo"
             Navigation.findNavController(view).navigate(R.id.action_social_to_buscar_amigo);
         });
-        // --- FIN DE LÓGICA DE AGREGAR AMIGO ---
+
+        // --- LÓGICA DE ELIMINAR AMIGO (NUEVA) ---
+        ImageView removeFriendIcon = view.findViewById(R.id.iv_remove_friend);
+        removeFriendIcon.setOnClickListener(v -> {
+            // Navega a la pantalla "ListaAmigosFragment"
+            Navigation.findNavController(view).navigate(R.id.action_social_to_lista_amigos);
+        });
 
         return view;
     }
@@ -81,6 +87,7 @@ public class SocialFragment extends Fragment implements CreatePostBottomSheetFra
     @Override
     public void onPostPublished(String content) {
         // Por ahora, solo muestra un mensaje.
+        // En el futuro, aquí llamarías a tu API de Spring Boot para refrescar el feed.
         Toast.makeText(getContext(), "¡Publicado con éxito!", Toast.LENGTH_LONG).show();
 
         // (Opcional) Aquí podrías añadir el nuevo post a la 'postList' localmente
@@ -94,6 +101,7 @@ public class SocialFragment extends Fragment implements CreatePostBottomSheetFra
     // --- CAMBIO #5: Rellenamos tu método 'addSamplePosts' ---
     private void addSamplePosts() {
         // --- INICIO DE TU LÓGICA DE POSTS (La movimos aquí) ---
+        // ¡Solo asegúrate de que los archivos de imagen existan en res/drawable!
         postList.add(new Post(
                 "Ana",
                 "Logro conseguido\n¡Felicidades Ana! Ha superado el récord:\n¡160kg en sentadilla!",

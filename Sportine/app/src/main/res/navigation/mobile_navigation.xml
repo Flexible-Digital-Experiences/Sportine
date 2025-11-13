@@ -16,9 +16,7 @@
             app:enterAnim="@android:anim/slide_in_left"
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right" >
-
-        </action>
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -48,22 +46,19 @@
         <action
             android:id="@+id/action_perfil_to_completar_datos"
             app:destination="@id/navigation_completar_datos_usuario" />
-
     </fragment>
+
     <fragment
         android:id="@+id/navigation_configuracion"
         android:name="com.example.sportine.ui.usuarios.configuracion.ConfiguracionFragment"
         android:label="Configuración"
         tools:layout="@layout/fragment_alumno_configuracion">
-
         <action
             android:id="@+id/action_configuracion_to_modificar"
             app:destination="@id/navigation_modificar_datos"/>
-
         <action
             android:id="@+id/action_configuracion_to_editar_tarjeta"
             app:destination="@id/navigation_editar_tarjeta"/>
-
         <action
             android:id="@+id/action_configuracion_to_agregar_pago"
             app:destination="@id/navigation_agregar_forma_pago"/>
@@ -83,10 +78,11 @@
     </fragment>
 
     <fragment
-    android:id="@+id/navigation_agregar_forma_pago"
-    android:name="com.example.sportine.ui.usuarios.agregarformapago.AgregarformapagoFragment"
-    android:label="Agregar Forma de Pago"
-    tools:layout="@layout/fragment_alumno_agregar_forma_pago"/>
+        android:id="@+id/navigation_agregar_forma_pago"
+        android:name="com.example.sportine.ui.usuarios.agregarformapago.AgregarformapagoFragment"
+        android:label="Agregar Forma de Pago"
+        tools:layout="@layout/fragment_alumno_agregar_forma_pago"/>
+
     <fragment
         android:id="@+id/navigation_completar_datos_usuario"
         android:name="com.example.sportine.ui.usuarios.completardatosusuario.CompletardatosusuarioFragment"
@@ -99,14 +95,20 @@
         android:name="com.example.sportine.ui.usuarios.social.SocialFragment"
         android:label="@string/title_social"
         tools:layout="@layout/fragment_alumno_social" >
-
-
         <action
             android:id="@+id/action_social_to_buscar_amigo"
             app:destination="@id/navigation_buscar_amigo"
             app:enterAnim="@anim/slide_in_up"
             app:exitAnim="@anim/slide_out_down"/>
-    </fragment>
+
+        <action
+            android:id="@+id/action_social_to_lista_amigos"
+            app:destination="@id/navigation_lista_amigos"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"/>
+
+
+    </fragment> <!-- ARREGLADO: Se quitó el </fragment> extra que tenías -->
 
 
 
@@ -115,7 +117,15 @@
         android:name="com.example.sportine.ui.usuarios.social.BuscarAmigoFragment"
         android:label="Buscar Amigo"
         tools:layout="@layout/fragment_alumno_buscar_amigo" />
-  
+
+
+    <fragment
+        android:id="@+id/navigation_lista_amigos"
+        android:name="com.example.sportine.ui.usuarios.social.ListaAmigosFragment"
+        android:label="Mis Amigos"
+        tools:layout="@layout/fragment_alumno_lista_amigos" />
+
+
     <fragment
         android:id="@+id/navigation_buscar"
         android:name="com.example.sportine.ui.usuarios.buscar.BuscarFragment"
@@ -138,6 +148,7 @@
         android:name="com.example.sportine.ui.usuarios.detallesentrenamiento.DetallesEntrenamientoFragment"
         android:label="Detalles Entrenamiento"
         tools:layout="@layout/fragment_alumno_detalles_entrenamiento" />
+
     <fragment
         android:id="@+id/perfilEntrenaFragment"
         android:name="com.example.sportine.ui.entrenadores.perfil.PerfilEntrenaFragment"
@@ -149,10 +160,12 @@
             android:id="@+id/action_perfilEntrenaFragment_to_configuracionEntrenadorFragment"
             app:destination="@id/configuracionEntrenadorFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/completardatosentrenadorFragment"
         android:name="com.example.sportine.ui.entrenadores.completardatosentrenador.CompletardatosentrenadorFragment"
         android:label="CompletardatosentrenadorFragment" />
+
     <fragment
         android:id="@+id/configuracionEntrenadorFragment"
         android:name="com.example.sportine.ui.entrenadores.configuracion.ConfiguracionEntrenadorFragment"
@@ -161,8 +174,10 @@
             android:id="@+id/action_configuracionEntrenadorFragment_to_modificarDatosEntrenadorFragment"
             app:destination="@id/modificarDatosEntrenadorFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/modificarDatosEntrenadorFragment"
         android:name="com.example.sportine.ui.entrenadores.modificardatosentrenador.ModificarDatosEntrenadorFragment"
         android:label="ModificarDatosEntrenadorFragment" />
+
 </navigation>

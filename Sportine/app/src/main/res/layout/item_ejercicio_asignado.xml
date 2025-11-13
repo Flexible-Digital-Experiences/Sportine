@@ -248,9 +248,9 @@
                 android:layout_height="40dp"
                 android:layout_marginStart="@dimen/spacing_xsmall"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_delete"
+
                 android:contentDescription="Eliminar ejercicio"
-                app:tint="@color/colorError" />
+                />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
