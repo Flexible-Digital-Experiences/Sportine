@@ -81,7 +81,7 @@
                         android:id="@+id/ivDeporteIcon"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src=""
+
                         android:padding="4dp"
                         android:scaleType="centerInside" />
 
@@ -135,8 +135,9 @@
                 <ImageView
                     android:layout_width="14dp"
                     android:layout_height="14dp"
-                    android:src="@drawable/ic_clock"
-                    android:tint="#757575" />
+                    android:src="@drawable/ic_launcher_background"
+
+                     />
 
                 <TextView
                     android:id="@+id/tvTiempo"

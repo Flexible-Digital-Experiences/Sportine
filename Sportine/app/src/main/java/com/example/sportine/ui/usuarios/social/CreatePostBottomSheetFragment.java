@@ -122,11 +122,24 @@ public class CreatePostBottomSheetFragment extends BottomSheetDialogFragment {
     }
 
     private void checkPermissionAndOpenGallery() {
-        String permission = Manifest.permission.READ_MEDIA_IMAGES;
 
+        String permission;
+
+        // 1. Decide qué permiso pedir basado en la versión de Android
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            // Android 13 (API 33) o superior
+            permission = Manifest.permission.READ_MEDIA_IMAGES;
+        } else {
+            // Android 12 (API 32) o inferior
+            permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+        }
+
+        // 2. Revisa si ya tiene el permiso
         if (ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
+            // Si ya tenemos permiso, abre la galería
             pickPhotosLauncher.launch("image/*");
         } else {
+            // Si no, pide el permiso
             requestPermissionLauncher.launch(permission);
         }
     }
