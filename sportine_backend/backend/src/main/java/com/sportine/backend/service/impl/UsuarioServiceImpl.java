@@ -1,8 +1,6 @@
 package com.sportine.backend.service.impl;
 
-import com.sportine.backend.dto.UsuarioDetalleDTO;
-import com.sportine.backend.dto.UsuarioRegistroDTO;
-import com.sportine.backend.dto.UsuarioResponseDTO;
+import com.sportine.backend.dto.*;
 import com.sportine.backend.model.Rol;
 import com.sportine.backend.model.Usuario;
 import com.sportine.backend.model.UsuarioRol;
@@ -88,6 +86,50 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.getEstado(),
                 usuario.getCiudad(),
                 rol.getRol()
+        );
+    }
+
+    @Override
+    public LoginResponseDTO login(LoginRequestDTO dto) {
+
+        Usuario usuario = usuarioRepository.findByUsuario(dto.getUsuario())
+                .orElse(null);
+
+        if (usuario == null) {
+            return new LoginResponseDTO(
+                    false,
+                    "Usuario no encontrado",
+                    null, null, null, null, null, null, null
+            );
+        }
+
+        if (!usuario.getContrasena().equals(dto.getContrasena())) {
+            return new LoginResponseDTO(
+                    false,
+                    "Contraseña incorrecta",
+                    null, null, null, null, null, null, null
+            );
+        }
+
+        UsuarioRol usuarioRol = usuarioRolRepository.findByUsuario(dto.getUsuario())
+                .orElse(null);
+
+        String rolNombre = "";
+        if (usuarioRol != null) {
+            Rol rol = rolRepository.findById(usuarioRol.getIdRol()).orElse(null);
+            rolNombre = rol != null ? rol.getRol() : "";
+        }
+
+        return new LoginResponseDTO(
+                true,
+                "Login exitoso",
+                usuario.getUsuario(),
+                usuario.getNombre(),
+                usuario.getApellidos(),
+                rolNombre,
+                usuario.getSexo(),
+                usuario.getEstado(),
+                usuario.getCiudad()
         );
     }
 }
