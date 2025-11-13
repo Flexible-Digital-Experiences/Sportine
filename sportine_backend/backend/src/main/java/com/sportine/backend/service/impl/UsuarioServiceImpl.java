@@ -1,5 +1,6 @@
 package com.sportine.backend.service.impl;
 
+import com.sportine.backend.dto.UsuarioDetalleDTO;
 import com.sportine.backend.dto.UsuarioRegistroDTO;
 import com.sportine.backend.dto.UsuarioResponseDTO;
 import com.sportine.backend.model.Rol;
@@ -60,6 +61,33 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.getApellidos(),
                 dto.getRol(),
                 "Usuario registrado exitosamente"
+        );
+    }
+
+    @Override
+    public UsuarioDetalleDTO obtenerUsuarioPorUsername(String username) {
+
+        // 1. Buscar el usuario en UsuarioRepository (NO en UsuarioRolRepository)
+        Usuario usuario = usuarioRepository.findByUsuario(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // 2. Buscar su rol en UsuarioRolRepository
+        UsuarioRol usuarioRol = usuarioRolRepository.findByUsuario(username)
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado para el usuario"));
+
+        // 3. Obtener el nombre del rol
+        Rol rol = rolRepository.findById(usuarioRol.getIdRol())
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
+        // 4. Crear y devolver el DTO
+        return new UsuarioDetalleDTO(
+                usuario.getUsuario(),
+                usuario.getNombre(),
+                usuario.getApellidos(),
+                usuario.getSexo(),
+                usuario.getEstado(),
+                usuario.getCiudad(),
+                rol.getRol()
         );
     }
 }
