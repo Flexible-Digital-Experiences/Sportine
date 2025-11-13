@@ -15,10 +15,12 @@ CREATE TABLE Rol (
 );
 
 CREATE TABLE Usuario_rol (
+    id_usuario_rol INT PRIMARY KEY AUTO_INCREMENT,
     id_rol INT,
     usuario VARCHAR(255),
     FOREIGN KEY (id_rol) REFERENCES Rol(id_rol),
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
+    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
+    UNIQUE KEY unique_usuario_rol (usuario, id_rol) 
 );
 
 
