@@ -18,4 +18,13 @@
     <color name="colorDivider">#E5E7EB</color>
     <color name="colorCardBackground">#FFFFFF</color>
     <color name="colorIconBackground">#F0F4FF</color>
+    <color name="sportine_primary">#FF018786</color>
+
+    <color name="sportine_accent">#E53935</color>
+
+    <color name="grey_text">#8A8A8A</color>
+
+    <color name="grey_icon">#AAAAAA</color>
+
+    <color name="grey_background_light">#F5F5F5</color>
 </resources>
