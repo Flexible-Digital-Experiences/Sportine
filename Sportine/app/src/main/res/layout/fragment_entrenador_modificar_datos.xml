@@ -3,51 +3,68 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F8F9FA">
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/white"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingBottom="30dp">
 
-            <!-- Header con flecha y título -->
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp">
+                android:orientation="horizontal"
+                android:paddingStart="24dp"
+                android:paddingTop="24dp"
+                android:paddingEnd="24dp"
+                android:paddingBottom="16dp"
+                android:gravity="center_vertical">
 
-                <ImageView
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/btnBack"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_flechaatras"
-                    android:contentDescription="Volver"/>
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/white"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_flechaatras"
+                        android:contentDescription="Volver"
+                        app:tint="#1A1A1A" />
+                </com.google.android.material.card.MaterialCardView>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical"
-                    android:layout_centerInParent="true"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:layout_marginStart="-40dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="EDITAR DATOS DE"
-                        android:textColor="#000"
-                        android:textSize="14sp"
+                        android:textColor="#1A1A1A"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.05"/>
 
@@ -55,522 +72,473 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="REGISTRO"
-                        android:textColor="#000"
-                        android:textSize="14sp"
+                        android:textColor="#1A1A1A"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.05"/>
                 </LinearLayout>
-            </RelativeLayout>
-
-            <!-- Sección: Datos actuales -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Datos actuales"
-                android:textColor="#666"
-                android:textSize="13sp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- Separador superior -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#E0E0E0"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- Grid de campos actuales -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="24dp">
-
-                <!-- Fila 1: Nombre y Sexo -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="16dp">
-
-                        <EditText
-                            android:id="@+id/etNombreActual"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Nombre"
-                            android:textSize="13sp"
-                            android:textColorHint="#999"
-                            android:textColor="#666"
-                            android:background="@null"
-                            android:paddingBottom="6dp"
-                            android:enabled="false"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <EditText
-                            android:id="@+id/etSexoActual"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Sexo"
-                            android:textSize="13sp"
-                            android:textColorHint="#999"
-                            android:textColor="#666"
-                            android:background="@null"
-                            android:paddingBottom="6dp"
-                            android:enabled="false"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- Fila 2: Apellido y Estado -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="16dp">
-
-                        <EditText
-                            android:id="@+id/etApellidoActual"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Apellido"
-                            android:textSize="13sp"
-                            android:textColorHint="#999"
-                            android:textColor="#666"
-                            android:background="@null"
-                            android:paddingBottom="6dp"
-                            android:enabled="false"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <EditText
-                            android:id="@+id/etEstadoActual"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Estado"
-                            android:textSize="13sp"
-                            android:textColorHint="#999"
-                            android:textColor="#666"
-                            android:background="@null"
-                            android:paddingBottom="6dp"
-                            android:enabled="false"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- Fila 3: Nombre de Usuario y Ciudad -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="16dp">
-
-                        <EditText
-                            android:id="@+id/etUsernameActual"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Nombre de Usuario"
-                            android:textSize="13sp"
-                            android:textColorHint="#999"
-                            android:textColor="#666"
-                            android:background="@null"
-                            android:paddingBottom="6dp"
-                            android:enabled="false"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <EditText
-                            android:id="@+id/etCiudadActual"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Ciudad"
-                            android:textSize="13sp"
-                            android:textColorHint="#999"
-                            android:textColor="#666"
-                            android:background="@null"
-                            android:paddingBottom="6dp"
-                            android:enabled="false"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- Fila 4: Contraseña -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="16dp">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <EditText
-                                android:id="@+id/etPasswordActual"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="Contraseña"
-                                android:textSize="13sp"
-                                android:textColorHint="#999"
-                                android:textColor="#666"
-                                android:background="@null"
-                                android:paddingBottom="6dp"
-                                android:inputType="textPassword"
-                                android:enabled="false"/>
-
-                            <ImageView
-                                android:id="@+id/btnTogglePasswordActual"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:src="@drawable/ic_ojover"
-                                android:contentDescription="Mostrar/Ocultar"/>
-                        </RelativeLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="1dp"
-                        android:layout_weight="1"/>
-                </LinearLayout>
             </LinearLayout>
 
-            <!-- Separador central -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#E0E0E0"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- Sección: Nuevos Datos -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nuevos Datos"
-                android:textColor="#666"
-                android:textSize="13sp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="8dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Si no quieres cambiar un campo"
-                android:textColor="#000"
-                android:textSize="11sp"
-                android:layout_gravity="center_horizontal"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="déjalo vacío"
-                android:textColor="#000"
-                android:textSize="11sp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- Grid de campos nuevos -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="24dp">
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp">
 
-                <!-- Fila 1: Nombre nuevo y Sexo -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="30dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="@color/white">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Datos actuales (Referencia)"
+                            android:textColor="#1A1A1A"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="16dp"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="12dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp"
+                                android:layout_marginEnd="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Nombre"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.05"/>
+
+                                <TextView
+                                    android:id="@+id/tvNombreActual"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp"
+                                android:layout_marginStart="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Sexo"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.05"/>
+
+                                <TextView
+                                    android:id="@+id/tvSexoActual"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="12dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp"
+                                android:layout_marginEnd="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Apellido"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.05"/>
+
+                                <TextView
+                                    android:id="@+id/tvApellidoActual"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp"
+                                android:layout_marginStart="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Estado"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.05"/>
+
+                                <TextView
+                                    android:id="@+id/tvEstadoActual"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="12dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp"
+                                android:layout_marginEnd="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Nombre de Usuario"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.05"/>
+
+                                <TextView
+                                    android:id="@+id/tvUsernameActual"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp"
+                                android:layout_marginStart="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Ciudad"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.05"/>
+
+                                <TextView
+                                    android:id="@+id/tvCiudadActual"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp"
+                                android:layout_marginEnd="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Contraseña"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.05"/>
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp">
+
+                                    <TextView
+                                        android:id="@+id/tvPasswordActual"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="#1A1A1A"
+                                        android:textSize="15sp"
+                                        android:layout_toStartOf="@id/btnTogglePasswordActual"
+                                        android:layout_centerVertical="true" />
+
+                                    <ImageView
+                                        android:id="@+id/btnTogglePasswordActual"
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:layout_alignParentEnd="true"
+                                        android:layout_centerVertical="true"
+                                        android:src="@drawable/ic_ojover"
+                                        app:tint="#6B7280"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:contentDescription="Mostrar/Ocultar contraseña"/>
+                                </RelativeLayout>
+                            </LinearLayout>
+
+                            <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_marginStart="8dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nuevos Datos"
+                    android:textColor="#1A1A1A"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="4dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dejar vacío si no quieres modificar el campo."
+                    android:textColor="#6B7280"
+                    android:textSize="12sp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="24dp"/>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginBottom="16dp">
 
-                    <LinearLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="16dp">
+                        android:hint="Nombre nuevo"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                        app:boxStrokeColor="#00A896"
+                        android:layout_marginEnd="8dp">
 
-                        <EditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etNombreNuevo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Nombre nuevo"
-                            android:textSize="13sp"
-                            android:textColorHint="#999"
-                            android:textColor="#666"
-                            android:background="@null"
-                            android:paddingBottom="6dp"/>
+                            android:inputType="textPersonName"
+                            android:textColor="#1A1A1A"
+                            android:textSize="14sp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:hint="Sexo"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                        app:boxStrokeColor="#00A896"
+                        android:layout_marginStart="8dp">
 
-                        <Spinner
-                            android:id="@+id/spinnerSexoNuevo"
+                        <AutoCompleteTextView
+                            android:id="@+id/actvSexoNuevo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:minHeight="30dp"
-                            android:paddingBottom="6dp"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
+                            android:inputType="none"
+                            android:textColor="#1A1A1A"
+                            android:textSize="14sp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
-                <!-- Fila 2: Apellido nuevo y Estado -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginBottom="16dp">
 
-                    <LinearLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="16dp">
+                        android:hint="Apellido nuevo"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                        app:boxStrokeColor="#00A896"
+                        android:layout_marginEnd="8dp">
 
-                        <EditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etApellidoNuevo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Apellido nuevo"
-                            android:textSize="13sp"
-                            android:textColorHint="#999"
-                            android:textColor="#666"
-                            android:background="@null"
-                            android:paddingBottom="6dp"/>
+                            android:inputType="textPersonName"
+                            android:textColor="#1A1A1A"
+                            android:textSize="14sp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:hint="Estado"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                        app:boxStrokeColor="#00A896"
+                        android:layout_marginStart="8dp">
 
-                        <Spinner
-                            android:id="@+id/spinnerEstadoNuevo"
+                        <AutoCompleteTextView
+                            android:id="@+id/actvEstadoNuevo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:minHeight="30dp"
-                            android:paddingBottom="6dp"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
+                            android:inputType="none"
+                            android:textColor="#1A1A1A"
+                            android:textSize="14sp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
-                <!-- Fila 3: Nombre de Usuario nuevo y Ciudad -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginBottom="16dp">
 
-                    <LinearLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="16dp">
+                        android:hint="Nombre de Usuario nuevo"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                        app:boxStrokeColor="#00A896"
+                        android:layout_marginEnd="8dp">
 
-                        <EditText
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etUsernameNuevo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Nombre de Usuario nuevo"
-                            android:textSize="13sp"
-                            android:textColorHint="#999"
-                            android:textColor="#666"
-                            android:background="@null"
-                            android:paddingBottom="6dp"/>
+                            android:inputType="text"
+                            android:textColor="#1A1A1A"
+                            android:textSize="14sp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:hint="Ciudad"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                        app:boxStrokeColor="#00A896"
+                        android:layout_marginStart="8dp">
 
-                        <Spinner
-                            android:id="@+id/spinnerCiudadNuevo"
+                        <AutoCompleteTextView
+                            android:id="@+id/actvCiudadNuevo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:minHeight="30dp"
-                            android:paddingBottom="6dp"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
+                            android:inputType="none"
+                            android:textColor="#1A1A1A"
+                            android:textSize="14sp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
-                <!-- Fila 4: Contraseña nueva -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="30dp">
 
-                    <LinearLayout
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="16dp">
+                        android:hint="Contraseña nueva"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                        app:endIconMode="password_toggle"
+                        app:boxStrokeColor="#00A896"
+                        android:layout_marginEnd="8dp">
 
-                        <RelativeLayout
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etPasswordNuevo"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword"
+                            android:textColor="#1A1A1A"
+                            android:textSize="14sp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                            <EditText
-                                android:id="@+id/etPasswordNuevo"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="Contraseña nueva"
-                                android:textSize="13sp"
-                                android:textColorHint="#999"
-                                android:textColor="#666"
-                                android:background="@null"
-                                android:paddingBottom="6dp"
-                                android:inputType="textPassword"/>
-
-                            <ImageView
-                                android:id="@+id/btnTogglePasswordNuevo"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:src="@drawable/ic_ojover"
-                                android:contentDescription="Mostrar/Ocultar"/>
-                        </RelativeLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#000"/>
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="1dp"
-                        android:layout_weight="1"/>
+                    <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_marginStart="8dp"/>
                 </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnActualizar"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Actualizar"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="16dp"
+                    app:backgroundTint="#0288D1"
+                    app:elevation="4dp"
+                    android:textAllCaps="false"
+                    android:layout_gravity="center_horizontal"/>
             </LinearLayout>
-
-            <!-- Botón Actualizar -->
-            <Button
-                android:id="@+id/btnActualizar"
-                android:layout_width="180dp"
-                android:layout_height="45dp"
-                android:text="Actualizar"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:backgroundTint="#1976D2"
-                android:textAllCaps="false"
-                android:layout_gravity="center_horizontal"/>
-
         </LinearLayout>
     </ScrollView>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
