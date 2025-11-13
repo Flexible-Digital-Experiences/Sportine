@@ -1,9 +1,7 @@
 package com.sportine.backend.controler;
 
 
-import com.sportine.backend.dto.UsuarioDetalleDTO;
-import com.sportine.backend.dto.UsuarioRegistroDTO;
-import com.sportine.backend.dto.UsuarioResponseDTO;
+import com.sportine.backend.dto.*;
 import com.sportine.backend.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,5 +30,18 @@ public class UsuarioController {
         return ResponseEntity.ok(response);  // ← HTTP 200 OK
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> login(
+            @RequestBody LoginRequestDTO loginRequestDTO) {
 
+        LoginResponseDTO response = usuarioService.login(loginRequestDTO);
+
+        // Si el login falla, devuelve 401 Unauthorized
+        if (!response.isSuccess()) {
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        // Si el login es exitoso, devuelve 200 OK
+        return ResponseEntity.ok(response);
+    }
 }
