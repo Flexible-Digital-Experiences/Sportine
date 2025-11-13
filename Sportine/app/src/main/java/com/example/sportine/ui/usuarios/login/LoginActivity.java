@@ -74,11 +74,11 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, "MODO PRUEBA ACTIVADO", Toast.LENGTH_SHORT).show();
 
                 // CAMBIA ESTO PARA PROBAR "ALUMNO" O "ENTRENADOR"
-                String rolFalso = "ALUMNO";
+                String rolReal = "ENTRENADOR";
 
                 SharedPreferences prefs = getSharedPreferences("SportinePrefs", MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("USER_ROL", rolFalso);
+                editor.putString("USER_ROL", rolReal);
                 editor.putString("USER_TOKEN", "token_de_prueba_123");
                 editor.apply();
 

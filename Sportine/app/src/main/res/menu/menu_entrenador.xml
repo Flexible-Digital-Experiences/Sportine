@@ -2,27 +2,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_social"
+        android:id="@+id/navigation_social_entrenador"
         android:icon="@drawable/ic_social_black_24dp"
         android:title="@string/title_social" />
 
     <item
-        android:id="@+id/navigation_buscar"
-        android:icon="@drawable/ic_buscar"
+        android:id="@+id/navigation_solicitudes_entrenador"
+        android:icon="@drawable/ic_solicitudes_black_24dp"
         android:title="@string/title_buscar" />
 
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_home_entrenador"
         android:icon="@drawable/ic_home_black_24dp"
         android:title="Home" />
 
     <item
-        android:id="@+id/navigation_stats"
+        android:id="@+id/navigation_stats_entrenador"
         android:icon="@drawable/ic_estadisticas"
         android:title="Estadísticas" />
 
     <item
-        android:id="@+id/navigation_perfil"
+        android:id="@+id/navigation_perfil_entrenador"
         android:icon="@drawable/ic_perfil"
         android:title="Perfil" />
 </menu>
