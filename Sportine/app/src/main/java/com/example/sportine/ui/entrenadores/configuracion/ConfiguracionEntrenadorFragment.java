@@ -101,7 +101,7 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
         btnModificar.setOnClickListener(v -> {
             // Asegúrate de que el R.id.action_... existe en tu navigation graph
             Navigation.findNavController(v)
-                    .navigate(R.id.action_configuracionEntrenadorFragment_to_modificarDatosEntrenadorFragment);
+                    .navigate(R.id.action_configuracionentre_to_modificar);
         });
 
         // Toggle para mostrar/ocultar Contraseña

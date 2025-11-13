@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/entrenador_navigation"
+    app:startDestination="@+id/navigation_home_entrenador">
+
+    <!-- HOME ENTRENADOR -->
+    <fragment
+        android:id="@+id/navigation_home_entrenador"
+        android:name="com.example.sportine.ui.entrenadores.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_entrenador_home" />
+
+
+    <!-- ESTADÍSTICAS ENTRENADOR -->
+    <fragment
+        android:id="@+id/navigation_stats_entrenador"
+        android:name="com.example.sportine.ui.entrenadores.estadisticas.EstadisticasFragment"
+        android:label="Estadísticas"
+        tools:layout="@layout/fragment_entrenador_estadisticas" />
+
+    <!-- PERFIL ENTRENADOR -->
+    <fragment
+        android:id="@+id/navigation_perfil_entrenador"
+        android:name="com.example.sportine.ui.entrenadores.perfil.PerfilEntrenaFragment"
+        android:label="Perfil"
+        tools:layout="@layout/fragment_entrenador_perfil">
+        <action
+            android:id="@+id/action_perfilentre_to_completar_datos"
+            app:destination="@id/completardatosentrenadorFragment" />
+        <action
+            android:id="@+id/action_perfilentre_to_configuracion"
+            app:destination="@id/configuracionEntrenadorFragment" />
+    </fragment>
+
+    <!-- COMPLETAR DATOS ENTRENADOR -->
+    <fragment
+        android:id="@+id/completardatosentrenadorFragment"
+        android:name="com.example.sportine.ui.entrenadores.completardatosentrenador.CompletardatosentrenadorFragment"
+        android:label="Completar Datos"
+        tools:layout="@layout/fragment_entrenador_completar_datos" />
+
+    <!-- CONFIGURACIÓN ENTRENADOR -->
+    <fragment
+        android:id="@+id/configuracionEntrenadorFragment"
+        android:name="com.example.sportine.ui.entrenadores.configuracion.ConfiguracionEntrenadorFragment"
+        android:label="Configuración"
+        tools:layout="@layout/fragment_entrenador_configuracion">
+        <action
+            android:id="@+id/action_configuracionentre_to_modificar"
+            app:destination="@id/modificarDatosEntrenadorFragment" />
+    </fragment>
+
+    <!-- MODIFICAR DATOS ENTRENADOR -->
+    <fragment
+        android:id="@+id/modificarDatosEntrenadorFragment"
+        android:name="com.example.sportine.ui.entrenadores.modificardatosentrenador.ModificarDatosEntrenadorFragment"
+        android:label="Modificar Datos"
+        tools:layout="@layout/fragment_entrenador_modificar_datos" />
+
+    <!-- SOCIAL ENTRENADOR -->
+    <fragment
+        android:id="@+id/navigation_social_entrenador"
+        android:name="com.example.sportine.ui.usuarios.social.SocialFragment"
+        android:label="Social"
+        tools:layout="@layout/fragment_alumno_social">
+        <action
+            android:id="@+id/action_social_to_buscar_amigo"
+            app:destination="@id/navigation_buscar_amigo_entrenador"
+            app:enterAnim="@anim/slide_in_up"
+            app:exitAnim="@anim/slide_out_down"/>
+        <action
+            android:id="@+id/action_social_to_lista_amigos"
+            app:destination="@id/navigation_lista_amigos_entrenador"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"/>
+    </fragment>
+
+    <!-- BUSCAR AMIGO ENTRENADOR -->
+    <fragment
+        android:id="@+id/navigation_buscar_amigo_entrenador"
+        android:name="com.example.sportine.ui.usuarios.social.BuscarAmigoFragment"
+        android:label="Buscar Amigo"
+        tools:layout="@layout/fragment_alumno_buscar_amigo" />
+
+    <!-- LISTA AMIGOS ENTRENADOR -->
+    <fragment
+        android:id="@+id/navigation_lista_amigos_entrenador"
+        android:name="com.example.sportine.ui.usuarios.social.ListaAmigosFragment"
+        android:label="Mis Amigos"
+        tools:layout="@layout/fragment_alumno_lista_amigos" />
+
+    <!-- SOLICITUDES ENTRENADOR (antes era "Buscar" para alumnos) -->
+    <fragment
+        android:id="@+id/navigation_solicitudes_entrenador"
+        android:name="com.example.sportine.ui.entrenadores.solicitudes.SolicitudesFragment"
+        android:label="Solicitudes"
+        tools:layout="@layout/fragment_entrenador_solicitudes">
+    </fragment>
+
+</navigation>

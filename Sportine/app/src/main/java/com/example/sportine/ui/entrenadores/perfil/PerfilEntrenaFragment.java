@@ -87,14 +87,14 @@ public class PerfilEntrenaFragment extends Fragment {
         btnSettings.setOnClickListener(v -> {
             // Asegúrate de que el R.id.action_... existe en tu navigation graph
             Navigation.findNavController(v)
-                    .navigate(R.id.action_perfilEntrenaFragment_to_configuracionEntrenadorFragment);
+                    .navigate(R.id.action_perfilentre_to_configuracion);
         });
 
         // Listener para el botón Completar Datos
         btnCompletardatos.setOnClickListener(v -> {
             // Asegúrate de que el R.id.action_... existe en tu navigation graph
             Navigation.findNavController(v)
-                    .navigate(R.id.action_perfilEntrenaFragment_to_completardatosentrenadorFragment);
+                    .navigate(R.id.action_perfilentre_to_completar_datos);
         });
     }
 
