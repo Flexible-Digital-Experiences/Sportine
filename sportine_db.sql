@@ -165,10 +165,12 @@ CREATE TABLE Feedback_Entrenamiento (
 
 CREATE TABLE Calificaciones (
     id_calificacion INT PRIMARY KEY AUTO_INCREMENT,
-    usuario VARCHAR(255),
+    usuario VARCHAR(255),                   
+    usuario_calificado VARCHAR(255),         
     calificacion INT,
     comentarios VARCHAR(255),
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
+    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
+    FOREIGN KEY (usuario_calificado) REFERENCES Usuario(usuario)
 );
 
 CREATE TABLE Publicacion (

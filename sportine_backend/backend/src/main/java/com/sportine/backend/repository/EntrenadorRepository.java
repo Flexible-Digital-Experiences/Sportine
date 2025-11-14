@@ -22,7 +22,7 @@ public interface EntrenadorRepository extends JpaRepository<Usuario, String> {
         INNER JOIN Usuario_rol ur ON u.usuario = ur.usuario
         INNER JOIN Rol r ON ur.id_rol = r.id_rol
         LEFT JOIN Informacion_Entrenador ie ON u.usuario = ie.usuario
-        LEFT JOIN Calificaciones c ON u.usuario = c.usuario
+        LEFT JOIN Calificaciones c ON u.usuario = c.usuario_calificado
         WHERE r.rol = 'ENTRENADOR'
         AND (:searchQuery IS NULL 
              OR LOWER(u.nombre) LIKE LOWER(CONCAT('%', :searchQuery, '%'))
@@ -32,6 +32,12 @@ public interface EntrenadorRepository extends JpaRepository<Usuario, String> {
         """, nativeQuery = true)
     List<Map<String, Object>> buscarEntrenadores(@Param("searchQuery") String searchQuery);
 
+    /**
+     * Obtiene todas las especialidades (deportes) de un entrenador específico.
+     *
+     * @param usuario El username del entrenador
+     * @return Lista de deportes que imparte
+     */
     @Query(value = """
         SELECT ed.deporte
         FROM Entrenador_Deporte ed
