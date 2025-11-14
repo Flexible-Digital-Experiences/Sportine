@@ -140,7 +140,11 @@
         android:id="@+id/navigation_detallesEntrenador"
         android:name="com.example.sportine.ui.usuarios.detallesEntrenador.DetallesEntrenadorFragment"
         android:label="detallesEntrenador"
-        tools:layout="@layout/fragment_alumno_ver_detalles_entrenador" />
+        tools:layout="@layout/fragment_alumno_ver_detalles_entrenador" >
+        <action
+            android:id="@+id/action_navigation_detallesEntrenador_to_enviarSolicitud"
+            app:destination="@id/enviarSolicitud" />
+    </fragment>
 
 
     <fragment
@@ -148,5 +152,9 @@
         android:name="com.example.sportine.ui.usuarios.detallesentrenamiento.DetallesEntrenamientoFragment"
         android:label="Detalles Entrenamiento"
         tools:layout="@layout/fragment_alumno_detalles_entrenamiento" />
+    <fragment
+        android:id="@+id/enviarSolicitud"
+        android:name="com.example.sportine.ui.usuarios.enviarsolicitud.EnviarSolicitud"
+        android:label="EnviarSolicitud" />
 
 </navigation>
