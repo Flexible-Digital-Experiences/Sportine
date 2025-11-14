@@ -199,4 +199,15 @@ CREATE TABLE Amistad(
     UNIQUE(usuario_1, usuario_2) 
 );
 
+CREATE TABLE Entrenador_Deporte (
+    id_entrenador_deporte INT PRIMARY KEY AUTO_INCREMENT,
+    usuario VARCHAR(255),
+    deporte VARCHAR(100),
+    FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
+);
+
+
+INSERT INTO Rol (rol) VALUES ('alumno');
+INSERT INTO Rol (rol) VALUES ('entrenador');
+
 
