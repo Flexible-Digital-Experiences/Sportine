@@ -10,4 +10,8 @@ public interface UsuarioService {
     UsuarioDetalleDTO obtenerUsuarioPorUsername(String usuario);
 
     LoginResponseDTO login(LoginRequestDTO loginRequestDTO);
+
+    UsuarioDetalleDTO actualizarDatosBasicos(String usuario, ActualizarUsuarioDTO dto);
+
+    UsuarioResponseDTO cambiarPassword(String usuario, CambiarPasswordDTO dto);
 }

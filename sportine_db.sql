@@ -210,4 +210,3 @@ CREATE TABLE Entrenador_Deporte (
 INSERT INTO Rol (rol) VALUES ('alumno');
 INSERT INTO Rol (rol) VALUES ('entrenador');
 
-
