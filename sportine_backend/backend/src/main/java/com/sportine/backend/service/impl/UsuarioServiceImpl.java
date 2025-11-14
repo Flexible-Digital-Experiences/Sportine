@@ -132,4 +132,89 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.getCiudad()
         );
     }
+    @Override
+    @Transactional
+    public UsuarioDetalleDTO actualizarDatosBasicos(String username, ActualizarUsuarioDTO dto) {
+
+        // 1. Buscar el usuario
+        Usuario usuario = usuarioRepository.findByUsuario(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // 2. Actualizar los campos
+        usuario.setNombre(dto.getNombre());
+        usuario.setApellidos(dto.getApellidos());
+        usuario.setSexo(dto.getSexo());
+        usuario.setEstado(dto.getEstado());
+        usuario.setCiudad(dto.getCiudad());
+
+        // 3. Guardar cambios
+        usuarioRepository.save(usuario);
+
+        // 4. Obtener el rol para la respuesta
+        UsuarioRol usuarioRol = usuarioRolRepository.findByUsuario(username)
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
+        Rol rol = rolRepository.findById(usuarioRol.getIdRol())
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
+        // 5. Retornar el usuario actualizado
+        return new UsuarioDetalleDTO(
+                usuario.getUsuario(),
+                usuario.getNombre(),
+                usuario.getApellidos(),
+                usuario.getSexo(),
+                usuario.getEstado(),
+                usuario.getCiudad(),
+                rol.getRol()
+        );
+    }
+
+    @Override
+    @Transactional
+    public UsuarioResponseDTO cambiarPassword(String username, CambiarPasswordDTO dto) {
+
+        // 1. Validar que las contraseñas nuevas coincidan
+        if (!dto.getPasswordNueva().equals(dto.getPasswordNuevaConfirmar())) {
+            throw new RuntimeException("Las contraseñas nuevas no coinciden");
+        }
+
+        // 2. Validar que la nueva contraseña no esté vacía
+        if (dto.getPasswordNueva() == null || dto.getPasswordNueva().trim().isEmpty()) {
+            throw new RuntimeException("La contraseña nueva no puede estar vacía");
+        }
+
+        // 3. Validar que la nueva contraseña tenga al menos 6 caracteres
+        if (dto.getPasswordNueva().length() < 6) {
+            throw new RuntimeException("La contraseña debe tener al menos 6 caracteres");
+        }
+
+        // 4. Buscar el usuario
+        Usuario usuario = usuarioRepository.findByUsuario(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // 5. Validar que la contraseña actual sea correcta
+        if (!usuario.getContrasena().equals(dto.getPasswordActual())) {
+            throw new RuntimeException("La contraseña actual es incorrecta");
+        }
+
+        // 6. Actualizar la contraseña
+        usuario.setContrasena(dto.getPasswordNueva());
+        usuarioRepository.save(usuario);
+
+        // 7. Obtener el rol para la respuesta
+        UsuarioRol usuarioRol = usuarioRolRepository.findByUsuario(username)
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
+        Rol rol = rolRepository.findById(usuarioRol.getIdRol())
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
+        // 8. Retornar confirmación
+        return new UsuarioResponseDTO(
+                usuario.getUsuario(),
+                usuario.getNombre(),
+                usuario.getApellidos(),
+                rol.getRol(),
+                "Contraseña actualizada exitosamente"
+        );
+    }
 }

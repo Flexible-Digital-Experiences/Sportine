@@ -44,4 +44,41 @@ public class UsuarioController {
         // Si el login es exitoso, devuelve 200 OK
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * Actualizar datos básicos del usuario (nombre, apellidos, sexo, estado, ciudad)
+     * PUT /api/usuarios/{usuario}
+     */
+
+    @PutMapping("/{usuario}")
+    public ResponseEntity<UsuarioDetalleDTO> actualizarDatosBasicos(
+            @PathVariable String usuario,
+            @RequestBody ActualizarUsuarioDTO actualizarUsuarioDTO) {
+
+        try {
+            UsuarioDetalleDTO response = usuarioService.actualizarDatosBasicos(usuario, actualizarUsuarioDTO);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    /**
+     * Cambiar contraseña del usuario
+     * PUT /api/usuarios/{usuario}/password
+     */
+    @PutMapping("/{usuario}/password")
+    public ResponseEntity<UsuarioResponseDTO> cambiarPassword(
+            @PathVariable String usuario,
+            @RequestBody CambiarPasswordDTO cambiarPasswordDTO) {
+
+        try {
+            UsuarioResponseDTO response = usuarioService.cambiarPassword(usuario, cambiarPasswordDTO);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            UsuarioResponseDTO errorResponse = new UsuarioResponseDTO();
+            errorResponse.setMensaje(e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
 }
