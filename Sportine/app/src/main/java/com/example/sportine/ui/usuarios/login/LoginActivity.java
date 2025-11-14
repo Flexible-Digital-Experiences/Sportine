@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, "MODO PRUEBA ACTIVADO", Toast.LENGTH_SHORT).show();
 
                 // CAMBIA ESTO PARA PROBAR "ALUMNO" O "ENTRENADOR"
-                String rolReal = "ENTRENADOR";
+                String rolReal = "ALUMNO";
 
                 SharedPreferences prefs = getSharedPreferences("SportinePrefs", MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
