@@ -199,4 +199,31 @@ CREATE TABLE Amistad(
     UNIQUE(usuario_1, usuario_2) 
 );
 
+/*
+-- Pruebas
+-- Ingresa roles
 
+INSERT INTO Rol (rol) VALUES ('alumno');
+INSERT INTO Rol (rol) VALUES ('entrenador');
+
+SELECT * FROM Rol;
+
+
+SELECT * FROM Usuario WHERE usuario = 'juanperez';
+
+-- Ver su rol
+SELECT u.usuario, r.rol 
+FROM Usuario u
+JOIN Usuario_rol ur ON u.usuario = ur.usuario
+JOIN Rol r ON ur.id_rol = r.id_rol
+WHERE u.usuario = 'juanperez';
+
+-- Ver su perfil
+SELECT * FROM Informacion_Alumno WHERE usuario = 'juanperez';
+
+-- Ver sus deportes
+SELECT * FROM Alumno_Deporte WHERE usuario = 'juanperez';
+
+-- Ver las tarjetas
+select * FROM Tarjeta;
+*/
