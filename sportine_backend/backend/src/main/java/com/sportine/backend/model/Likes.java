@@ -11,7 +11,7 @@ public class Likes {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idLike; // <-- CAMBIO #1
 
-    // Esta es la variable en Java (camelCase)
+
     @Column(name = "id_publicacion") // Esta es la columna en MySQL (snake_case)
     private Integer idPublicacion; // <-- CAMBIO #2
 
