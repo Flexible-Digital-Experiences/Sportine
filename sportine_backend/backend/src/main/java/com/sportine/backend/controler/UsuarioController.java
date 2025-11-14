@@ -45,10 +45,7 @@ public class UsuarioController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Actualizar datos básicos del usuario (nombre, apellidos, sexo, estado, ciudad)
-     * PUT /api/usuarios/{usuario}
-     */
+
 
     @PutMapping("/{usuario}")
     public ResponseEntity<UsuarioDetalleDTO> actualizarDatosBasicos(
@@ -63,10 +60,7 @@ public class UsuarioController {
         }
     }
 
-    /**
-     * Cambiar contraseña del usuario
-     * PUT /api/usuarios/{usuario}/password
-     */
+
     @PutMapping("/{usuario}/password")
     public ResponseEntity<UsuarioResponseDTO> cambiarPassword(
             @PathVariable String usuario,
