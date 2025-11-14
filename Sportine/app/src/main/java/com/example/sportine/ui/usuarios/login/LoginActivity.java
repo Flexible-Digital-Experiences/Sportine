@@ -98,17 +98,18 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 LoginRequest loginRequest = new LoginRequest(email, password);
-                hacerLogin(loginRequest);
+                //hacerLogin(loginRequest);
             }
         });
     }
 
+    /*
     // --- 5. Método que hace la llamada a la API (Modo Real) ---
     private void hacerLogin(LoginRequest loginRequest) {
         // (Este método se queda igual)
-        Call<LoginResponse> call = apiService.login(loginRequest);
+        //Call<LoginResponse> call = apiService.login(loginRequest);
 
-        call.enqueue(new Callback<LoginResponse>() {
+        //call.enqueue(new Callback<LoginResponse>() {
 
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
@@ -138,4 +139,5 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+    */
 }

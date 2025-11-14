@@ -59,7 +59,7 @@
                 android:textColor="#000000"
                 android:textColorHint="#9E9E9E"
                 android:inputType="textPersonName|textCapWords"
-                android:maxLines="1"/>
+                android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Campo de apellido -->
@@ -85,7 +85,7 @@
                 android:textColor="#000000"
                 android:textColorHint="#9E9E9E"
                 android:inputType="textPersonName|textCapWords"
-                android:maxLines="1"/>
+                android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Spinner de sexo -->
@@ -111,7 +111,7 @@
                 android:textColor="#000000"
                 android:textColorHint="#9E9E9E"
                 android:inputType="none"
-                android:focusable="false"/>
+                android:focusable="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Campo de nombre de usuario -->
@@ -137,7 +137,7 @@
                 android:textColor="#000000"
                 android:textColorHint="#9E9E9E"
                 android:inputType="text"
-                android:maxLines="1"/>
+                android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Campo de contraseña -->
@@ -164,7 +164,59 @@
                 android:textColor="#000000"
                 android:textColorHint="#9E9E9E"
                 android:inputType="textPassword"
-                android:maxLines="1"/>
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Campo Estado -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/estadoInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:boxStrokeColor="#000000"
+            app:hintTextColor="#000000"
+            app:endIconTint="#000000"
+            app:layout_constraintTop_toBottomOf="@id/passwordInputLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="16dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/estadoInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Estado"
+                android:textColor="#000000"
+                android:textColorHint="#9E9E9E"
+                android:inputType="textCapWords"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Campo Ciudad -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/ciudadInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:boxStrokeColor="#000000"
+            app:hintTextColor="#000000"
+            app:endIconTint="#000000"
+            app:layout_constraintTop_toBottomOf="@id/estadoInputLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="16dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ciudadInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ciudad"
+                android:textColor="#000000"
+                android:textColorHint="#9E9E9E"
+                android:inputType="textCapWords"
+                android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Spinner de rol -->
@@ -176,7 +228,7 @@
             app:boxStrokeColor="#000000"
             app:hintTextColor="#000000"
             app:endIconTint="#000000"
-            app:layout_constraintTop_toBottomOf="@id/passwordInputLayout"
+            app:layout_constraintTop_toBottomOf="@id/ciudadInputLayout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginHorizontal="32dp"
@@ -190,7 +242,7 @@
                 android:textColor="#000000"
                 android:textColorHint="#9E9E9E"
                 android:inputType="none"
-                android:focusable="false"/>
+                android:focusable="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Botón Registrarse -->
@@ -208,7 +260,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginHorizontal="32dp"
-            android:layout_marginTop="24dp"/>
+            android:layout_marginTop="24dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

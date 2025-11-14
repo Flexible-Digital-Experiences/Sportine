@@ -53,6 +53,7 @@ dependencies {
     // Dependencia para grafica
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     // Para Gson (el "traductor" de JSON a clases Java)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("androidx.activity:activity-ktx:1.9.0")
     implementation("androidx.fragment:fragment-ktx:1.7.1")
