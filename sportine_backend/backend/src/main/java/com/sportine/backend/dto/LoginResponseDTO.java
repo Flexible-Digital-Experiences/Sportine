@@ -13,6 +13,8 @@ public class LoginResponseDTO {
     private String mensaje;
 
     // Datos del usuario (solo si login exitoso)
+    private String token;
+
     private String usuario;
     private String nombre;
     private String apellidos;

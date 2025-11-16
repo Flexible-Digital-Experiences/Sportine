@@ -11,13 +11,12 @@ import retrofit2.http.POST;
 
 public interface ApiService {
 
-    // Esto le dice a Retrofit: "Cuando llame a 'login', haz un POST a la URL '/auth/login'"
-    //@POST("/auth/login") // <-- Esta URL debe coincidir con la de tu Controller de Spring Boot
-    //Call<LoginResponse> login(@Body LoginRequest loginRequest);
 
-    // Aquí pondrás tus otras 4 cosas (GET, POST, PUT, DELETE)
-    // Ej: @GET("/api/social/feed")
-    //     Call<List<Post>> getSocialFeed();
+    // 1. Descomentado
+    // 2. URL corregida para que coincida con el @RequestMapping de Spring
+    @POST("/api/usuarios/login")
+    Call<LoginResponse> login(@Body LoginRequest loginRequest);
+
 
     @POST("/api/usuarios/registrar")
     Call<RespuestaRegistro> registrarUsuario(@Body Usuario usuario);

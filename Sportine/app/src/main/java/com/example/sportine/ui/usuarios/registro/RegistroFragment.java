@@ -45,7 +45,7 @@ public class RegistroFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_registro, container, false);
 
         // Inicializar Retrofit
-        apiService = RetrofitClient.getClient().create(ApiService.class);
+        apiService = RetrofitClient.getClient(requireContext()).create(ApiService.class);
 
         // Referencias a vistas (USAR view.findViewById EN FRAGMENT)
         nombreInput = view.findViewById(R.id.nombreInput);
