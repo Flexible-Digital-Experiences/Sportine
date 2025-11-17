@@ -1,4 +1,4 @@
-// Ubicación: com/example/sportine/ui/usuarios/dto/LoginResponse.java
+
 package com.example.sportine.ui.usuarios.dto;
 
 public class LoginResponse {

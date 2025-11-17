@@ -2,13 +2,14 @@ package com.sportine.backend.dto;
 
 import lombok.Data;
 
-
 @Data
 public class PublicacionRequestDTO {
 
-    // El username del usuario que está creando el post
-    private String usuario;
+    // El 'usuario' se quita. Lo obtendremos del Token JWT.
 
     private String descripcion;
-    private String imagen; // La URL de la imagen
+
+    // TODO: Esto eventualmente será un sistema de subida de archivos,
+    // pero por ahora aceptamos una URL de imagen (puede ser null).
+    private String imagen;
 }
