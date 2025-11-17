@@ -59,4 +59,7 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.7.1")
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
+    implementation("org.ocpsoft.prettytime:prettytime:5.0.7.Final")
 }

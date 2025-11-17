@@ -20,7 +20,7 @@ public class Publicacion {
     private String descripcion;
 
     @Column(name = "fecha_publicacion")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP) // <-- ¡ESTA ES LA CORRECCIÓN!
     private Date fecha_publicacion;
 
     @Column(name = "imagen")

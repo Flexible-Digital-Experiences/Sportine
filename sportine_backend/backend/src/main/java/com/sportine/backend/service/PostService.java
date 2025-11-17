@@ -1,58 +1,46 @@
 package com.sportine.backend.service;
 
+import com.sportine.backend.dto.PublicacionFeedDTO;
+import com.sportine.backend.dto.PublicacionRequestDTO;
 import com.sportine.backend.model.Publicacion;
+
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Interfaz de servicio para gestionar la lógica de negocio de las Publicaciones.
- * Define las operaciones CRUD (Crear, Leer, Actualizar, Borrar) para los posts,
- * así como la gestión de "Likes".
+ * Interfaz (Menú) para todas las operaciones del Módulo Social.
  */
 public interface PostService {
 
-    // --- CRUD de Publicacion ---
-
     /**
-     * Obtiene una lista de todas las publicaciones (el feed).
-     * @return Lista de entidades Publicacion.
+     * Obtiene el feed "fusionado" (Post + Perfil + Likes)
+     * para un usuario específico (el que mira).
      */
-    List<Publicacion> getFeed();
+    List<PublicacionFeedDTO> getFeed(String username);
 
     /**
-     * Guarda una nueva publicación en la base de datos.
-     * @param publicacion El objeto Publicacion a crear.
-     * @return La Publicacion guardada con su ID asignado.
+     * Crea un nuevo post (seguro, usando el username del token).
      */
-    Publicacion crearPublicacion(Publicacion publicacion);
+    Publicacion crearPublicacion(String username, PublicacionRequestDTO dto);
 
     /**
-     * Actualiza una publicación existente por su ID.
-     * @param id El ID de la publicación a actualizar.
-     * @param publicacion El objeto Publicacion con los datos nuevos.
-     * @return Un Optional con la Publicacion actualizada si se encontró, o un Optional vacío si no.
+     * Actualiza un post existente.
+     * (¡Este es el método que daba error!)
      */
-    Optional<Publicacion> actualizarPublicacion(Integer id, Publicacion publicacion);
+    Optional<Publicacion> actualizarPublicacion(Integer id, Publicacion publicacionActualizada);
 
     /**
-     * Elimina una publicación de la base de datos por su ID.
-     * @param id El ID de la publicación a eliminar.
+     * Elimina un post por su ID.
      */
     void eliminarPublicacion(Integer id);
 
-    // --- Métodos para Likes ---
-
     /**
-     * Crea un nuevo "Like" en una publicación.
-     * @param idPublicacion El ID del post al que se da like.
-     * @param username El usuario que da el like.
+     * Da like a un post (seguro, usando el username del token).
      */
     void darLike(Integer idPublicacion, String username);
 
     /**
-     * Elimina un "Like" de una publicación.
-     * @param idPublicacion El ID del post al que se quita el like.
-     * @param username El usuario que quita el like.
+     * Quita el like de un post (seguro, usando el username del token).
      */
     void quitarLike(Integer idPublicacion, String username);
 }

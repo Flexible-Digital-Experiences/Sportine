@@ -1,135 +1,115 @@
-package com.example.sportine.ui.usuarios.social; // Asegúrate que el paquete sea el correcto
+package com.example.sportine.ui.usuarios.social;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast; // ¡AÑADIDO! Para mostrar el mensaje de "Publicado"
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation; // Se mantiene para "Buscar Amigo"
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.sportine.R; // Asegúrate de importar tu R
-import com.google.android.material.card.MaterialCardView; // Para el disparador
+import com.example.sportine.R;
+import com.example.sportine.data.ApiService;
+import com.example.sportine.data.RetrofitClient;
+// --- ¡CAMBIO! Importamos el "Súper-Paquete" ---
+import com.example.sportine.models.PublicacionFeedDTO;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-// --- CAMBIO #1: Implementamos la interfaz del BottomSheet ---
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class SocialFragment extends Fragment implements CreatePostBottomSheetFragment.OnPostPublishedListener {
 
     private RecyclerView recyclerView;
     private SocialFeedAdapter adapter;
-    private List<Post> postList;
+
+    // --- ¡CAMBIO! La lista ahora es del tipo DTO ---
+    private List<PublicacionFeedDTO> publicacionList;
+
+    private ApiService apiService;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_alumno_social, container, false);
 
-        // --- Configuración del RecyclerView (Se queda igual) ---
+        apiService = RetrofitClient.getClient(requireContext()).create(ApiService.class);
+
         recyclerView = view.findViewById(R.id.rv_social_feed);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        postList = new ArrayList<>();
-        addSamplePosts(); // Llamamos al método que tiene tus posts de ejemplo
+        // Inicializamos la lista VACÍA
+        publicacionList = new ArrayList<>();
 
-        adapter = new SocialFeedAdapter(postList);
+        // Le pasamos la lista vacía al adaptador
+        adapter = new SocialFeedAdapter(publicacionList, requireContext(), apiService);
         recyclerView.setAdapter(adapter);
 
-        // --- CAMBIO #2: Lógica para ABRIR EL DIÁLOGO FLOTANTE ---
-
-        // Buscamos el CardView modernizado (¡CON EL ID CORRECTO DEL XML!)
+        // --- Lógica de botones (se queda igual) ---
         MaterialCardView cardCreatePostTrigger = view.findViewById(R.id.card_create_post_trigger);
+        cardCreatePostTrigger.setOnClickListener(v -> showCreatePostDialog());
 
-        cardCreatePostTrigger.setOnClickListener(v -> {
-            // Ya no navega, ahora llama al método para mostrar el diálogo
-            showCreatePostDialog();
-        });
-
-        // (Se elimina la lógica vieja de cameraIcon)
-
-        // --- FIN DE LA LÓGICA MODIFICADA ---
-
-
-        // --- LÓGICA DE AGREGAR AMIGO (Esta se queda igual) ---
         ImageView addFriendIcon = view.findViewById(R.id.iv_add_friend);
-        addFriendIcon.setOnClickListener(v -> {
-            // Esto sigue navegando a la pantalla de "Buscar Amigo"
-            Navigation.findNavController(view).navigate(R.id.action_social_to_buscar_amigo);
-        });
+        addFriendIcon.setOnClickListener(v -> Navigation.findNavController(view).navigate(R.id.action_social_to_buscar_amigo));
 
-        // --- LÓGICA DE ELIMINAR AMIGO (NUEVA) ---
         ImageView removeFriendIcon = view.findViewById(R.id.iv_remove_friend);
-        removeFriendIcon.setOnClickListener(v -> {
-            // Navega a la pantalla "ListaAmigosFragment"
-            Navigation.findNavController(view).navigate(R.id.action_social_to_lista_amigos);
-        });
+        removeFriendIcon.setOnClickListener(v -> Navigation.findNavController(view).navigate(R.id.action_social_to_lista_amigos));
 
         return view;
     }
 
-    // --- CAMBIO #3: NUEVO MÉTODO para mostrar el diálogo flotante ---
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        cargarFeed(); // Llamamos a la API
+    }
+
+    // --- ¡CAMBIO! Este método ahora espera 'PublicacionFeedDTO' ---
+    private void cargarFeed() {
+
+        apiService.getSocialFeed().enqueue(new Callback<List<PublicacionFeedDTO>>() {
+            @Override
+            public void onResponse(Call<List<PublicacionFeedDTO>> call, Response<List<PublicacionFeedDTO>> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+                    List<PublicacionFeedDTO> posts = response.body();
+                    Collections.reverse(posts); // Los más nuevos primero
+                    adapter.setPublicaciones(posts); // ¡Actualiza el adapter!
+                } else {
+                    Toast.makeText(getContext(), "Error al cargar el feed: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<PublicacionFeedDTO>> call, Throwable t) {
+                Toast.makeText(getContext(), "Fallo de conexión al cargar feed: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    // (showCreatePostDialog se queda igual)
     private void showCreatePostDialog() {
         CreatePostBottomSheetFragment bottomSheet = new CreatePostBottomSheetFragment();
-        // Nos "suscribimos" para saber cuándo el usuario presione "Publicar"
         bottomSheet.setOnPostPublishedListener(this);
-        // Mostramos el diálogo
         bottomSheet.show(getParentFragmentManager(), "CreatePostBottomSheet");
     }
 
-    // --- CAMBIO #4: NUEVO MÉTODO que se ejecuta cuando el diálogo avisa que publicó ---
+    // ('onPostPublished' se queda igual, ¡sigue funcionando!)
     @Override
     public void onPostPublished(String content) {
-        // Por ahora, solo muestra un mensaje.
-        // En el futuro, aquí llamarías a tu API de Spring Boot para refrescar el feed.
-        Toast.makeText(getContext(), "¡Publicado con éxito!", Toast.LENGTH_LONG).show();
-
-        // (Opcional) Aquí podrías añadir el nuevo post a la 'postList' localmente
-        // Post newPost = new Post("Tú", content, R.drawable.avatar_user_male, "Ahora mismo");
-        // postList.add(0, newPost);
-        // adapter.notifyItemInserted(0);
-        // recyclerView.scrollToPosition(0);
+        Toast.makeText(getContext(), "¡Publicado con éxito!", Toast.LENGTH_SHORT).show();
+        cargarFeed(); // Refresca el feed para mostrar el post nuevo
     }
-
-
-    // --- CAMBIO #5: Rellenamos tu método 'addSamplePosts' ---
-    private void addSamplePosts() {
-        // --- INICIO DE TU LÓGICA DE POSTS (La movimos aquí) ---
-        // ¡Solo asegúrate de que los archivos de imagen existan en res/drawable!
-        postList.add(new Post(
-                "Ana",
-                "Logro conseguido\n¡Felicidades Ana! Ha superado el récord:\n¡160kg en sentadilla!",
-                R.drawable.avatar_ana,
-                "Sportine ● Hace 10m"
-        ));
-        postList.add(new Post(
-                "Ana",
-                "¡Felicidades Ana! Enhorabuena, sigue así 💪",
-                R.drawable.avatar_ana,
-                "Sportine ● Hace 5m"
-        ));
-        postList.add(new Post(
-                "Usuario 3",
-                "Hoy 5km, ¡rompí récord!\n#Running #Cardio",
-                R.drawable.avatar_user_female,
-                R.drawable.post_running,
-                "Sportine ● Hace 5m"
-        ));
-        postList.add(new Post(
-                "Usuario 4",
-                "¡Felicidades! Enhorabuena, sigue así 👍",
-                R.drawable.avatar_user_male,
-                "Sportine ● Hace 5m"
-        ));
-        postList.add(new Post("David", "Nueva rutina de pecho, ¡a darle!", R.drawable.avatar_user_male, "Sportine ● Hace 2h"));
-        postList.add(new Post("Laura", "¿Alguien para una reta de basket mañana?", R.drawable.avatar_user_female, "Sportine ● Hace 3h"));
-        // --- FIN DE TU LÓGICA DE POSTS ---
-    }
-
-} // Fin de la clase SocialFragment
+}
