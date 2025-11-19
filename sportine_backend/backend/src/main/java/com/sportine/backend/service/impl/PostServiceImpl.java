@@ -1,10 +1,13 @@
 package com.sportine.backend.service.impl;
 
+import com.sportine.backend.dto.ComentarioResponseDTO;
 import com.sportine.backend.dto.PublicacionFeedDTO;
 import com.sportine.backend.dto.PublicacionRequestDTO;
+import com.sportine.backend.model.Comentario;
 import com.sportine.backend.model.Likes;
 import com.sportine.backend.model.Publicacion;
 import com.sportine.backend.model.Usuario;
+import com.sportine.backend.repository.ComentarioRepository;
 import com.sportine.backend.repository.LikesRepository;
 import com.sportine.backend.repository.PublicacionRepository;
 import com.sportine.backend.repository.UsuarioRepository;
@@ -26,6 +29,7 @@ public class PostServiceImpl implements PostService {
     @Autowired private LikesRepository likesRepository;
     @Autowired private UsuarioRepository usuarioRepository;
     @Autowired private AlumnoPerfilService alumnoPerfilService;
+    @Autowired private ComentarioRepository comentarioRepository;
 
 
     @Override
@@ -46,6 +50,8 @@ public class PostServiceImpl implements PostService {
             boolean isLikedByMe = likesRepository.existsByIdPublicacionAndUsuarioLike(
                     publicacion.getId_publicacion(), username);
 
+            boolean isMine = autorUsername.equals(username);
+
             PublicacionFeedDTO dto = new PublicacionFeedDTO();
             dto.setIdPublicacion(publicacion.getId_publicacion());
             dto.setDescripcion(publicacion.getDescripcion());
@@ -56,6 +62,9 @@ public class PostServiceImpl implements PostService {
             dto.setAutorFotoPerfil(fotoPerfilUrl);
             dto.setTotalLikes(totalLikes);
             dto.setLikedByMe(isLikedByMe);
+            dto.setMine(isMine);
+
+
             return dto;
         }).collect(Collectors.toList());
     }
@@ -90,7 +99,15 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public void eliminarPublicacion(Integer id) {
+    public void eliminarPublicacion(Integer id, String usernameQuePide) {
+
+        Publicacion post = publicacionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post no encontrado"));
+
+        if (!post.getUsuario().equals(usernameQuePide)) {
+            throw new RuntimeException("No tienes permiso para borrar este post");
+        }
+
         publicacionRepository.deleteById(id);
     }
 
@@ -113,4 +130,54 @@ public class PostServiceImpl implements PostService {
             likesRepository.delete(like);
         });
     }
+
+    @Override
+    public void comentar(Integer idPublicacion, String username, String texto) {
+        // Validar que el post existe
+        if (!publicacionRepository.existsById(idPublicacion)) {
+            throw new RuntimeException("El post no existe");
+        }
+
+        Comentario comentario = new Comentario();
+        comentario.setIdPublicacion(idPublicacion);
+        comentario.setUsuario(username);
+        comentario.setTexto(texto);
+        comentario.setFecha(new Date()); // Hora actual
+
+        comentarioRepository.save(comentario);
+    }
+
+    @Override
+    public List<ComentarioResponseDTO> obtenerComentarios(Integer idPublicacion, String usernameQueMira) {
+
+        // 1. Sacamos los comentarios de la BD
+        List<Comentario> comentarios = comentarioRepository.findByIdPublicacionOrderByFechaAsc(idPublicacion);
+
+        // 2. Los convertimos a DTOs fusionando con el perfil (Igual que en el Feed)
+        return comentarios.stream().map(c -> {
+            ComentarioResponseDTO dto = new ComentarioResponseDTO();
+            dto.setIdComentario(c.getIdComentario());
+            dto.setTexto(c.getTexto());
+            dto.setFecha(c.getFecha());
+            dto.setAutorUsername(c.getUsuario());
+
+            // Calculamos si es mío
+            dto.setMine(c.getUsuario().equals(usernameQueMira));
+
+            // FUSIÓN DE PERFIL (Consultamos al servicio de tu amigo)
+            try {
+                PerfilAlumnoResponseDTO perfil = alumnoPerfilService.obtenerPerfilAlumno(c.getUsuario());
+                dto.setAutorNombre(perfil.getNombre() + " " + perfil.getApellidos());
+                dto.setAutorFoto(perfil.getFotoPerfil());
+            } catch (Exception e) {
+                // Si falla, defaults
+                dto.setAutorNombre(c.getUsuario());
+                dto.setAutorFoto(null);
+            }
+
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+
 }

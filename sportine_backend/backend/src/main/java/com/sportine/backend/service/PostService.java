@@ -1,5 +1,6 @@
 package com.sportine.backend.service;
 
+import com.sportine.backend.dto.ComentarioResponseDTO;
 import com.sportine.backend.dto.PublicacionFeedDTO;
 import com.sportine.backend.dto.PublicacionRequestDTO;
 import com.sportine.backend.model.Publicacion;
@@ -32,7 +33,7 @@ public interface PostService {
     /**
      * Elimina un post por su ID.
      */
-    void eliminarPublicacion(Integer id);
+    void eliminarPublicacion(Integer id, String usernameQuePide);
 
     /**
      * Da like a un post (seguro, usando el username del token).
@@ -43,4 +44,7 @@ public interface PostService {
      * Quita el like de un post (seguro, usando el username del token).
      */
     void quitarLike(Integer idPublicacion, String username);
+
+    void comentar(Integer idPublicacion, String username, String texto);
+    List<ComentarioResponseDTO> obtenerComentarios(Integer idPublicacion, String usernameQueMira);
 }

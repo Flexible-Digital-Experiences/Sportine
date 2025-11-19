@@ -1,13 +1,15 @@
 package com.example.sportine.data;
 
-// ¡Imports de tus modelos y DTOs reales!
+
 import com.example.sportine.models.Publicacion;
 import com.example.sportine.models.RespuestaRegistro;
 import com.example.sportine.models.Usuario;
-import com.example.sportine.models.PublicacionFeedDTO; // <-- ¡NUEVO IMPORT!
+import com.example.sportine.models.PublicacionFeedDTO;
 import com.example.sportine.ui.usuarios.dto.LoginRequest;
 import com.example.sportine.ui.usuarios.dto.LoginResponse;
 import com.example.sportine.ui.usuarios.dto.PublicacionRequest;
+import com.example.sportine.models.Comentario;
+import com.example.sportine.ui.usuarios.dto.ComentarioRequest;
 
 import java.util.List;
 
@@ -38,4 +40,13 @@ public interface ApiService {
 
     @DELETE("/api/social/post/{id}/like")
     Call<Void> quitarLike(@Path("id") Integer idPublicacion);
+
+    @DELETE("/api/social/post/{id}")
+    Call<Void> borrarPost(@Path("id") Integer idPublicacion);
+
+    @GET("/api/social/post/{id}/comentarios")
+    Call<List<Comentario>> verComentarios(@Path("id") Integer idPublicacion);
+
+    @POST("/api/social/post/{id}/comentarios")
+    Call<Void> crearComentario(@Path("id") Integer idPublicacion, @Body ComentarioRequest request);
 }
