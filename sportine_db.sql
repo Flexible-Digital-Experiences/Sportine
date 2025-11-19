@@ -1,12 +1,18 @@
 use sportine_db;
+CREATE TABLE Estado(
+	id_estado INT PRIMARY KEY AUTO_INCREMENT,
+    estado VARCHAR(100)
+);
+
 CREATE TABLE Usuario (
     usuario VARCHAR(255) PRIMARY KEY,
     contraseña VARCHAR(255),
     nombre VARCHAR(255),
     apellidos VARCHAR(255),
     sexo VARCHAR(50),
-    estado VARCHAR(100),
-    ciudad VARCHAR(100)
+    id_estado INT,
+    ciudad VARCHAR(100),
+    FOREIGN KEY (id_estado) REFERENCES Estado(id_estado)
 );
 
 CREATE TABLE Rol (
@@ -207,7 +213,40 @@ CREATE TABLE Entrenador_Deporte (
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
-
+INSERT INTO Estado (estado) VALUES
+	('Ciudad de México'),
+	('Aguascalientes'),
+	('Baja California'),
+	('Baja California Sur'),
+	('Campeche'),
+	('Chiapas'),
+	('Chihuahua'),
+	('Coahuila'),
+	('Colima'),
+	('Durango'),
+	('Guanajuato'),
+	('Guerrero'),
+	('Hidalgo'),
+	('Jalisco'),
+	('México'),
+	('Michoacán'),
+	('Morelos'),
+	('Nayarit'),
+	('Nuevo León'),
+	('Oaxaca'),
+	('Puebla'),
+	('Querétaro'),
+	('Quintana Roo'),
+	('San Luis Potosí'),
+	('Sinaloa'),
+	('Sonora'),
+	('Tabasco'),
+	('Tamaulipas'),
+	('Tlaxcala'),
+	('Veracruz'),
+	('Yucatán'),
+	('Zacatecas');
 INSERT INTO Rol (rol) VALUES ('alumno');
 INSERT INTO Rol (rol) VALUES ('entrenador');
+
 
