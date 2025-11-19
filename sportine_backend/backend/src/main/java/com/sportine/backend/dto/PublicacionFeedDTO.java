@@ -23,5 +23,7 @@ public class PublicacionFeedDTO {
     private int totalLikes;
     private boolean isLikedByMe; // true si el usuario del token ya le dio like
 
+    private boolean isMine;
+
 
 }
