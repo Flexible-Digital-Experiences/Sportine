@@ -165,6 +165,25 @@
                     android:paddingEnd="12dp"
                     android:layout_marginBottom="16dp" />
 
+                <!-- Selector de Nivel -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nivel "
+                    android:textColor="#1A1A1A"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <Spinner
+                    android:id="@+id/spinner_nivel"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@android:drawable/btn_dropdown"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:layout_marginBottom="16dp" />
+
                 <!-- Campo de Motivo -->
                 <TextView
                     android:layout_width="wrap_content"
