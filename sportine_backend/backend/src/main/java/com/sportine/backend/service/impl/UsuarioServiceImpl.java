@@ -114,7 +114,8 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.getSexo(),
                 usuario.getEstado(),
                 usuario.getCiudad(),
-                rol.getRol()
+                rol.getRol(),
+                false
         );
     }
 
@@ -180,6 +181,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setSexo(dto.getSexo());
         usuario.setEstado(dto.getEstado());
         usuario.setCiudad(dto.getCiudad());
+
         usuarioRepository.save(usuario);
 
         UsuarioRol usuarioRol = obtenerUsuarioRolOError(username);
@@ -194,7 +196,8 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.getSexo(),
                 usuario.getEstado(),
                 usuario.getCiudad(),
-                rol.getRol()
+                rol.getRol(),
+                false
         );
     }
 

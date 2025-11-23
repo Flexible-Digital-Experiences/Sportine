@@ -62,4 +62,5 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
     implementation("org.ocpsoft.prettytime:prettytime:5.0.7.Final")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }

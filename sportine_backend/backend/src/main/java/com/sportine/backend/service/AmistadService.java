@@ -1,30 +1,11 @@
 package com.sportine.backend.service;
 
+import com.sportine.backend.dto.UsuarioDetalleDTO; // Usaremos este DTO para listar amigos
 import java.util.List;
 
-/**
- * Interfaz de servicio para la lógica de negocio de Amistades.
- */
 public interface AmistadService {
-
-    /**
-     * Obtiene la lista de usernames de todos los amigos de un usuario.
-     * @param username El usuario del que se quiere la lista.
-     * @return Una lista de Strings (usernames).
-     */
-    List<String> getAmigosUsernames(String username); // GET
-
-    /**
-     * Crea una nueva relación de amistad.
-     * @param miUsername El usuario que inicia la acción.
-     * @param amigoUsername El usuario a agregar.
-     */
-    void agregarAmigo(String miUsername, String amigoUsername); // POST
-
-    /**
-     * Elimina una relación de amistad.
-     * @param miUsername El usuario que inicia la acción.
-     * @param amigoUsername El usuario a eliminar.
-     */
-    void eliminarAmigo(String miUsername, String amigoUsername); // DELETE
+    void agregarAmigo(String miUsuario, String nuevoAmigo);
+    void eliminarAmigo(String miUsuario, String exAmigo);
+    List<UsuarioDetalleDTO> misAmigos(String miUsuario);
+    List<UsuarioDetalleDTO> buscarUsuarios(String terminoBusqueda, String miUsuario); // Para buscar nuevos
 }
