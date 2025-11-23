@@ -11,6 +11,8 @@ import com.example.sportine.ui.usuarios.dto.LoginResponse;
 import com.example.sportine.ui.usuarios.dto.PublicacionRequest;
 import com.example.sportine.models.Comentario;
 import com.example.sportine.ui.usuarios.dto.ComentarioRequest;
+import com.example.sportine.ui.usuarios.dto.UsuarioDetalleDTO;
+import com.example.sportine.ui.usuarios.dto.PerfilAlumnoResponseDTO;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Multipart;
@@ -63,6 +65,11 @@ public interface ApiService {
     @POST("/api/social/post/{id}/comentarios")
     Call<Void> crearComentario(@Path("id") Integer idPublicacion, @Body ComentarioRequest request);
 
+    @GET("/api/usuarios/{usuario}")
+    Call<UsuarioDetalleDTO> obtenerUsuario(@Path("usuario") String usuario);
+
+    @GET("/api/alumnos/perfil/{usuario}")
+    Call<PerfilAlumnoResponseDTO> obtenerPerfilAlumno(@Path("usuario") String usuario);
     @GET("/api/social/amigos")
     Call<List<UsuarioDetalle>> verMisAmigos();
 
