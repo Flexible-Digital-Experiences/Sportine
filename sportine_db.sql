@@ -1,7 +1,13 @@
+<<<<<<< HEAD
 USE sportine_db;
 
 CREATE TABLE Estado(
     id_estado INT PRIMARY KEY AUTO_INCREMENT,
+=======
+use sportine_db;
+CREATE TABLE Estado(
+	id_estado INT PRIMARY KEY AUTO_INCREMENT,
+>>>>>>> main
     estado VARCHAR(100)
 );
 
@@ -222,6 +228,7 @@ CREATE TABLE Entrenador_Deporte (
 );
 
 INSERT INTO Estado (estado) VALUES
+<<<<<<< HEAD
     ('Ciudad de México'),
     ('Aguascalientes'),
     ('Baja California'),
@@ -256,3 +263,41 @@ INSERT INTO Estado (estado) VALUES
     ('Zacatecas');
 INSERT INTO Rol (rol) VALUES ('alumno');
 INSERT INTO Rol (rol) VALUES ('entrenador');
+=======
+	('Ciudad de México'),
+	('Aguascalientes'),
+	('Baja California'),
+	('Baja California Sur'),
+	('Campeche'),
+	('Chiapas'),
+	('Chihuahua'),
+	('Coahuila'),
+	('Colima'),
+	('Durango'),
+	('Guanajuato'),
+	('Guerrero'),
+	('Hidalgo'),
+	('Jalisco'),
+	('México'),
+	('Michoacán'),
+	('Morelos'),
+	('Nayarit'),
+	('Nuevo León'),
+	('Oaxaca'),
+	('Puebla'),
+	('Querétaro'),
+	('Quintana Roo'),
+	('San Luis Potosí'),
+	('Sinaloa'),
+	('Sonora'),
+	('Tabasco'),
+	('Tamaulipas'),
+	('Tlaxcala'),
+	('Veracruz'),
+	('Yucatán'),
+	('Zacatecas');
+INSERT INTO Rol (rol) VALUES ('alumno');
+INSERT INTO Rol (rol) VALUES ('entrenador');
+
+
+>>>>>>> main

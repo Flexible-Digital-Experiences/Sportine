@@ -142,7 +142,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_entrenamientos" />
+            app:layout_constraintTop_toBottomOf="@+id/text_entrenamientos"
+            tools:listitem="@layout/item_ejercicio_detalle"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

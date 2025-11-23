@@ -32,4 +32,27 @@
     <string name="icono_fecha">Icono de fecha</string>
     <string name="marcar_ejercicio_completado">Marcar ejercicio como completado</string>
     <string name="title_solicitudes">Solicitudes</string>
+
+
+    <!-- Agregar estos strings a tu archivo strings.xml existente -->
+
+    <!-- Estados de entrenamientos -->
+    <string name="estado_pendiente">Pendiente</string>
+    <string name="estado_en_progreso">En progreso</string>
+    <string name="estado_completado">Completado</string>
+
+    <!-- Botones -->
+    <string name="btn_marcar_completado">Marcar como completado</string>
+    <string name="btn_guardar_entrenamiento">Guardar Entrenamiento</string>
+    <string name="btn_agregar_ejercicio">Agregar ejercicio</string>
+
+    <!-- Placeholders -->
+    <string name="hint_comentario_opcional">Comentario (opcional)</string>
+    <string name="placeholder_ultima_actividad">Última actividad: %s</string>
+    <string name="placeholder_completados">%d completados</string>
+    <string name="placeholder_pendientes">%d pendientes</string>
+
+    <!-- Mensajes -->
+    <string name="mensaje_sin_entrenamientos">No tienes entrenamientos para hoy</string>
+    <string name="mensaje_sin_ejercicios">No hay ejercicios asignados</string>
 </resources>
