@@ -207,7 +207,7 @@ CREATE TABLE Feedback_Entrenamiento (
 
 CREATE TABLE Calificaciones (
     id_calificacion INT PRIMARY KEY AUTO_INCREMENT,
-    usuario VARCHAR(255),                   
+    usuario VARCHAR(255),                    
     usuario_calificado VARCHAR(255),         
     calificacion INT,
     comentarios VARCHAR(255),
@@ -237,7 +237,6 @@ CREATE TABLE Likes (
     FOREIGN KEY (usuario_like) REFERENCES Usuario(usuario)
 );
 
--- TABLA COMENTARIO (LA QUE FALTABA)
 CREATE TABLE Comentario (
     id_comentario INT PRIMARY KEY AUTO_INCREMENT,
     id_publicacion INT NOT NULL,
@@ -248,13 +247,14 @@ CREATE TABLE Comentario (
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
-CREATE TABLE Amistad(
-    id_amistad INT PRIMARY KEY AUTO_INCREMENT,
-    usuario_1 VARCHAR(255),
-    usuario_2 VARCHAR(255),
-    FOREIGN KEY (usuario_1) REFERENCES Usuario(usuario),
-    FOREIGN KEY (usuario_2) REFERENCES Usuario(usuario),
-    UNIQUE(usuario_1, usuario_2) 
+CREATE TABLE Seguidores (
+    id_seguimiento INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_seguidor VARCHAR(255), 
+    usuario_seguido VARCHAR(255),  
+    fecha_seguimiento DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_seguidor) REFERENCES Usuario(usuario),
+    FOREIGN KEY (usuario_seguido) REFERENCES Usuario(usuario),
+    UNIQUE KEY unique_seguimiento (usuario_seguidor, usuario_seguido) 
 );
 
 -- ============================================
@@ -527,3 +527,5 @@ INSERT INTO Nivel (nombre_nivel) VALUES
     ('Principiante'),
     ('Intermedio'),
     ('Avanzado');
+
+
