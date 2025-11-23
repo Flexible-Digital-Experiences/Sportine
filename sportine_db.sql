@@ -1,3 +1,5 @@
+drop database if exists sportine_db;
+create database sportine_db;
 use sportine_db;
 
 CREATE TABLE Estado(
