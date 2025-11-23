@@ -9,9 +9,9 @@ import java.util.List;
 @Repository
 public interface EntrenamientoRepository extends JpaRepository<Entrenamiento, Integer> {
 
-    // Buscar entrenamientos por usuario y fecha
     List<Entrenamiento> findByUsuarioAndFechaEntrenamiento(String usuario, LocalDate fecha);
 
-    // Contar entrenamientos por usuario y fecha
     int countByUsuarioAndFechaEntrenamiento(String usuario, LocalDate fecha);
+
+    List<Entrenamiento> findByUsuario(String usuario);
 }
