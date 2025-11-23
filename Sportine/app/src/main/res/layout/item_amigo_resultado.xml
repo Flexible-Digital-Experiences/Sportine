@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:padding="12dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_avatar_amigo"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        app:cardCornerRadius="24dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -23,26 +24,46 @@
             tools:src="@tools:sample/avatars" />
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/tv_nombre_amigo"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_marginStart="16dp"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        android:layout_marginEnd="16dp"
         app:layout_constraintStart_toEndOf="@id/card_avatar_amigo"
         app:layout_constraintEnd_toStartOf="@id/btn_agregar_amigo"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:text="Nombre de Usuario" />
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/tv_nombre_amigo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="Juan Pérez" />
+
+        <TextView
+            android:id="@+id/tv_usuario_amigo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#757575"
+            android:textSize="14sp"
+            tools:text="@juanito" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btn_agregar_amigo"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="36dp"
+        android:background="@drawable/bg_boton_redondo"
+        app:backgroundTint="@null"
         android:text="Agregar"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
         android:textAllCaps="false"
+        android:paddingHorizontal="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

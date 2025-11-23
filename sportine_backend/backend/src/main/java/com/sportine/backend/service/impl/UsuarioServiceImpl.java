@@ -1,16 +1,17 @@
 package com.sportine.backend.service.impl;
 
 import com.sportine.backend.dto.*;
+import com.sportine.backend.exception.ConflictoException;
+import com.sportine.backend.exception.DatosInvalidosException;
+import com.sportine.backend.exception.RecursoNoEncontradoException;
 import com.sportine.backend.model.Rol;
 import com.sportine.backend.model.Usuario;
 import com.sportine.backend.model.UsuarioRol;
 import com.sportine.backend.repository.RolRepository;
 import com.sportine.backend.repository.UsuarioRepository;
 import com.sportine.backend.repository.UsuarioRolRepository;
-import com.sportine.backend.service.UsuarioService;
-// --- ¡CAMBIO 1! ---
-// Importamos el nuevo servicio
 import com.sportine.backend.service.JwtService;
+import com.sportine.backend.service.UsuarioService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,19 +24,50 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
     private final UsuarioRolRepository usuarioRolRepository;
-
-
-    // Inyectamos el servicio de JWT (Lombok lo hace por RequiredArgsConstructor)
     private final JwtService jwtService;
 
-    // (El método registrarUsuario no cambia)
+    // ============================================
+    // MÉTODOS HELPER PRIVADOS (EVITA REPETICIÓN)
+    // ============================================
+
+    /**
+     * Busca un usuario por username o lanza excepción si no existe
+     */
+    private Usuario obtenerUsuarioOError(String username) {
+        return usuarioRepository.findByUsuario(username)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario", username));
+    }
+
+    /**
+     * Busca un rol por nombre o lanza excepción si no existe
+     */
+    private Rol obtenerRolOError(String nombreRol) {
+        return rolRepository.findByRol(nombreRol)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Rol", nombreRol));
+    }
+
+    /**
+     * Busca el rol de un usuario o lanza excepción
+     */
+    private UsuarioRol obtenerUsuarioRolOError(String username) {
+        return usuarioRolRepository.findByUsuario(username)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Rol del usuario", username));
+    }
+
+    // ============================================
+    // MÉTODOS DEL SERVICIO
+    // ============================================
+
     @Override
     @Transactional
     public UsuarioResponseDTO registrarUsuario(UsuarioRegistroDTO dto) {
-        // ... (código igual)
+
+        // Validación: Usuario ya existe
         if (usuarioRepository.existsByUsuario(dto.getUsuario())) {
-            throw new RuntimeException("El usuario ya existe");
+            throw new ConflictoException("Usuario", dto.getUsuario());
         }
+
+        // Crear usuario
         Usuario usuario = new Usuario();
         usuario.setUsuario(dto.getUsuario());
         usuario.setContrasena(dto.getContrasena());
@@ -45,12 +77,16 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setEstado(dto.getEstado());
         usuario.setCiudad(dto.getCiudad());
         usuarioRepository.save(usuario);
-        Rol rol = rolRepository.findByRol(dto.getRol())
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
+        // Usar método helper
+        Rol rol = obtenerRolOError(dto.getRol());
+
+        // Asignar rol
         UsuarioRol usuarioRol = new UsuarioRol();
         usuarioRol.setUsuario(dto.getUsuario());
         usuarioRol.setIdRol(rol.getIdRol());
         usuarioRolRepository.save(usuarioRol);
+
         return new UsuarioResponseDTO(
                 usuario.getUsuario(),
                 usuario.getNombre(),
@@ -60,16 +96,17 @@ public class UsuarioServiceImpl implements UsuarioService {
         );
     }
 
-    // (El método obtenerUsuarioPorUsername no cambia)
     @Override
     public UsuarioDetalleDTO obtenerUsuarioPorUsername(String username) {
-        // ... (código igual)
-        Usuario usuario = usuarioRepository.findByUsuario(username)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        UsuarioRol usuarioRol = usuarioRolRepository.findByUsuario(username)
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado para el usuario"));
+
+        // Usar método helper
+        Usuario usuario = obtenerUsuarioOError(username);
+        UsuarioRol usuarioRol = obtenerUsuarioRolOError(username);
+
         Rol rol = rolRepository.findById(usuarioRol.getIdRol())
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Rol con ID",
+                        usuarioRol.getIdRol().toString()));
+
         return new UsuarioDetalleDTO(
                 usuario.getUsuario(),
                 usuario.getNombre(),
@@ -77,7 +114,8 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.getSexo(),
                 usuario.getEstado(),
                 usuario.getCiudad(),
-                rol.getRol()
+                rol.getRol(),
+                false
         );
     }
 
@@ -87,39 +125,40 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = usuarioRepository.findByUsuario(dto.getUsuario())
                 .orElse(null);
 
+        // Retornar respuesta clara en lugar de excepción
         if (usuario == null) {
             return new LoginResponseDTO(
-                    false, "Usuario no encontrado",
-                    null, null, null, null, null, null, null, null // 10 campos
+                    false,
+                    "Usuario no encontrado",
+                    null, null, null, null, null, null, null, null
             );
         }
 
-        // ¡OJO! En un proyecto real, aquí se usaría un BCrypt.matches()
+        // Validar contraseña
         if (!usuario.getContrasena().equals(dto.getContrasena())) {
             return new LoginResponseDTO(
-                    false, "Contraseña incorrecta",
-                    null, null, null, null, null, null, null, null // 10 campos
+                    false,
+                    "Contraseña incorrecta",
+                    null, null, null, null, null, null, null, null
             );
         }
 
-        // El login es exitoso, buscamos el rol
+        // Login exitoso
         UsuarioRol usuarioRol = usuarioRolRepository.findByUsuario(dto.getUsuario())
                 .orElse(null);
+
         String rolNombre = "";
         if (usuarioRol != null) {
             Rol rol = rolRepository.findById(usuarioRol.getIdRol()).orElse(null);
             rolNombre = rol != null ? rol.getRol() : "";
         }
 
-        // --- ¡CAMBIO 3! (El más importante) ---
-        // 1. Generar el token
         String token = jwtService.generateToken(usuario.getUsuario());
 
-        // 2. Retornar el DTO con el token
         return new LoginResponseDTO(
                 true,
                 "Login exitoso",
-                token, // <-- ¡NUEVO CAMPO!
+                token,
                 usuario.getUsuario(),
                 usuario.getNombre(),
                 usuario.getApellidos(),
@@ -130,23 +169,26 @@ public class UsuarioServiceImpl implements UsuarioService {
         );
     }
 
-    // (El método actualizarDatosBasicos no cambia)
     @Override
     @Transactional
     public UsuarioDetalleDTO actualizarDatosBasicos(String username, ActualizarUsuarioDTO dto) {
-        // ... (código igual)
-        Usuario usuario = usuarioRepository.findByUsuario(username)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Usar método helper
+        Usuario usuario = obtenerUsuarioOError(username);
+
         usuario.setNombre(dto.getNombre());
         usuario.setApellidos(dto.getApellidos());
         usuario.setSexo(dto.getSexo());
         usuario.setEstado(dto.getEstado());
         usuario.setCiudad(dto.getCiudad());
+
         usuarioRepository.save(usuario);
-        UsuarioRol usuarioRol = usuarioRolRepository.findByUsuario(username)
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
+        UsuarioRol usuarioRol = obtenerUsuarioRolOError(username);
         Rol rol = rolRepository.findById(usuarioRol.getIdRol())
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Rol con ID",
+                        usuarioRol.getIdRol().toString()));
+
         return new UsuarioDetalleDTO(
                 usuario.getUsuario(),
                 usuario.getNombre(),
@@ -154,35 +196,45 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.getSexo(),
                 usuario.getEstado(),
                 usuario.getCiudad(),
-                rol.getRol()
+                rol.getRol(),
+                false
         );
     }
 
-    // (El método cambiarPassword no cambia)
     @Override
     @Transactional
     public UsuarioResponseDTO cambiarPassword(String username, CambiarPasswordDTO dto) {
-        // ... (código igual)
+
+        // Validaciones más claras
         if (!dto.getPasswordNueva().equals(dto.getPasswordNuevaConfirmar())) {
-            throw new RuntimeException("Las contraseñas nuevas no coinciden");
+            throw new DatosInvalidosException("Las contraseñas nuevas no coinciden");
         }
+
         if (dto.getPasswordNueva() == null || dto.getPasswordNueva().trim().isEmpty()) {
-            throw new RuntimeException("La contraseña nueva no puede estar vacía");
+            throw new DatosInvalidosException("passwordNueva", "no puede estar vacía");
         }
+
         if (dto.getPasswordNueva().length() < 6) {
-            throw new RuntimeException("La contraseña debe tener al menos 6 caracteres");
+            throw new DatosInvalidosException("passwordNueva",
+                    "debe tener al menos 6 caracteres");
         }
-        Usuario usuario = usuarioRepository.findByUsuario(username)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        //  Usar método helper
+        Usuario usuario = obtenerUsuarioOError(username);
+
+        // Validar contraseña actual
         if (!usuario.getContrasena().equals(dto.getPasswordActual())) {
-            throw new RuntimeException("La contraseña actual es incorrecta");
+            throw new DatosInvalidosException("La contraseña actual es incorrecta");
         }
+
         usuario.setContrasena(dto.getPasswordNueva());
         usuarioRepository.save(usuario);
-        UsuarioRol usuarioRol = usuarioRolRepository.findByUsuario(username)
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
+        UsuarioRol usuarioRol = obtenerUsuarioRolOError(username);
         Rol rol = rolRepository.findById(usuarioRol.getIdRol())
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Rol con ID",
+                        usuarioRol.getIdRol().toString()));
+
         return new UsuarioResponseDTO(
                 usuario.getUsuario(),
                 usuario.getNombre(),

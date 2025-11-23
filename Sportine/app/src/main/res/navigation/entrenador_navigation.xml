@@ -12,6 +12,21 @@
         android:label="Home"
         tools:layout="@layout/fragment_entrenador_home" />
 
+    <action
+        android:id="@+id/action_home_entrenador_to_asignar"
+        app:destination="@+id/asignarEntrenamientoFragment"
+        app:enterAnim="@android:anim/slide_in_left"
+        app:exitAnim="@android:anim/slide_out_right" />
+
+    <action
+        android:id="@+id/action_home_entrenador_to_progreso_alumno"
+        app:destination="@+id/progresoAlumnoFragment" />
+
+    <fragment
+        android:id="@+id/asignarEntrenamientoFragment"
+        android:name="com.example.sportine.ui.entrenadores.asignarentrenamiento.AsignarEntrenamientoFragment"
+        android:label="Asignar Entrenamiento"
+        tools:layout="@layout/fragment_entrenador_asignar_entrenamiento" />
 
     <!-- ESTADÍSTICAS ENTRENADOR -->
     <fragment

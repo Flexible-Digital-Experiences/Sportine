@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-
+import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -24,7 +24,10 @@ public class RetrofitClient {
     private static Retrofit retrofit = null;
 
     // IP PARA MI CELULAR --EMMANUEL--
-    public static final String BASE_URL = "http://192.168.100.5:8080/";
+    //public static final String BASE_URL = "http://192.168.100.5:8080/";
+
+    // IP PARA CELULAR --JP--
+    public static final String BASE_URL = "http://192.168.1.77:8080/";
 
     // IP PARA EMULADOR
     //private static final String BASE_URL = "http://10.0.2.2:8080/";
@@ -66,6 +69,10 @@ public class RetrofitClient {
             AuthInterceptor authInterceptor = new AuthInterceptor(context);
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .addInterceptor(authInterceptor)
+
+                    .connectTimeout(60, TimeUnit.SECONDS)
+                    .readTimeout(60, TimeUnit.SECONDS)
+                    .writeTimeout(60, TimeUnit.SECONDS)
                     .build();
 
             retrofit = new Retrofit.Builder()

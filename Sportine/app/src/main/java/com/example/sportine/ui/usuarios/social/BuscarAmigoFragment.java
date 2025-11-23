@@ -4,38 +4,131 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView; // <-- ¡OJO! Importar este SearchView
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.SearchView;
+
 import com.example.sportine.R;
+import com.example.sportine.data.ApiService;
+import com.example.sportine.data.RetrofitClient;
+import com.example.sportine.models.UsuarioDetalle;
 import com.google.android.material.appbar.MaterialToolbar;
 
-public class BuscarAmigoFragment extends Fragment {
+import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class BuscarAmigoFragment extends Fragment implements AmigosAdapter.OnItemActionListener {
+
+    private RecyclerView rvResultados;
     private SearchView searchView;
-    private RecyclerView recyclerView;
+    private AmigosAdapter adapter;
+    private ApiService apiService;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_alumno_buscar_amigo, container, false);
 
+        apiService = RetrofitClient.getClient(requireContext()).create(ApiService.class);
+
+        // 1. Configurar Toolbar
         MaterialToolbar toolbar = view.findViewById(R.id.toolbar_buscar_amigo);
+        toolbar.setNavigationOnClickListener(v -> NavHostFragment.findNavController(this).navigateUp());
+
+        // 2. Configurar RecyclerView
+        rvResultados = view.findViewById(R.id.rv_resultados_amigos);
+        rvResultados.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Inicializamos el adaptador en modo "BUSQUEDA" (true = botón Agregar)
+        adapter = new AmigosAdapter(true, this);
+        rvResultados.setAdapter(adapter);
+
+        // 3. Configurar el Buscador (SearchView)
         searchView = view.findViewById(R.id.search_view_amigo);
-        recyclerView = view.findViewById(R.id.rv_resultados_amigos);
-
-        // Lógica para el botón de "Atrás" en la barra
-        toolbar.setNavigationOnClickListener(v -> {
-            NavHostFragment.findNavController(this).navigateUp();
-        });
-
-        // Aquí iría la lógica del RecyclerView y el SearchView
-        // setupRecyclerView();
-        // setupSearchView();
+        setupBuscador();
 
         return view;
+    }
+
+    private void setupBuscador() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                buscarPersonas(query);
+                searchView.clearFocus();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+
+                if (newText.length() > 0) {
+
+                    buscarPersonas(newText);
+                } else {
+
+                    adapter.setUsuarios(new java.util.ArrayList<>());
+                }
+                return true;
+            }
+        });
+    }
+
+    private void buscarPersonas(String query) {
+        if (query.isEmpty()) return;
+
+        apiService.buscarPersonas(query).enqueue(new Callback<List<UsuarioDetalle>>() {
+            @Override
+            public void onResponse(Call<List<UsuarioDetalle>> call, Response<List<UsuarioDetalle>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<UsuarioDetalle> resultados = response.body();
+                    adapter.setUsuarios(resultados);
+
+                    if (resultados.isEmpty()) {
+                        Toast.makeText(getContext(), "No se encontraron usuarios", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "Error al buscar", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<UsuarioDetalle>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    @Override
+    public void onAction(UsuarioDetalle usuario) {
+        apiService.agregarAmigo(usuario.getUsuario()).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(), "¡Ahora sigues a " + usuario.getNombre() + "!", Toast.LENGTH_SHORT).show();
+                    // Opcional: Podrías quitarlo de la lista o deshabilitar el botón
+                } else {
+                    // Error 400 o 500 (probablemente ya son amigos)
+                    Toast.makeText(getContext(), "No se pudo agregar (¿Ya lo sigues?)", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(getContext(), "Fallo de red", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
