@@ -2,11 +2,15 @@ package com.sportine.backend.controler;
 
 
 import com.sportine.backend.dto.*;
+import com.sportine.backend.model.Estado;
+import com.sportine.backend.repository.EstadoRepository;
 import com.sportine.backend.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -28,6 +32,13 @@ public class UsuarioController {
 
         UsuarioDetalleDTO response = usuarioService.obtenerUsuarioPorUsername(usuario);
         return ResponseEntity.ok(response);  // ← HTTP 200 OK
+    }
+
+    private EstadoRepository estadoRepository;
+    @GetMapping("/estados")
+    public ResponseEntity<List<Estado>> obtenerEstados() {
+        List<Estado> estados = estadoRepository.findAll();
+        return ResponseEntity.ok(estados);
     }
 
     @PostMapping("/login")

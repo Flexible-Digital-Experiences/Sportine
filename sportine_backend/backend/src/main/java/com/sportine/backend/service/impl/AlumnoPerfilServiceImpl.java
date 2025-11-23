@@ -2,17 +2,11 @@ package com.sportine.backend.service.impl;
 
 import com.sportine.backend.dto.PerfilAlumnoDTO;
 import com.sportine.backend.dto.PerfilAlumnoResponseDTO;
-import com.sportine.backend.model.AlumnoDeporte;
-import com.sportine.backend.model.InformacionAlumno;
+import com.sportine.backend.model.*;
 
 import com.sportine.backend.dto.TarjetaDTO;
 import com.sportine.backend.dto.TarjetaResponseDTO;
-import com.sportine.backend.model.Tarjeta;
-import com.sportine.backend.model.Usuario;
-import com.sportine.backend.repository.AlumnoDeporteRepository;
-import com.sportine.backend.repository.InformacionAlumnoRepository;
-import com.sportine.backend.repository.TarjetaRepository;
-import com.sportine.backend.repository.UsuarioRepository;
+import com.sportine.backend.repository.*;
 import com.sportine.backend.service.AlumnoPerfilService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +25,7 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
     private final InformacionAlumnoRepository informacionAlumnoRepository;
     private final AlumnoDeporteRepository alumnoDeporteRepository;
     private final TarjetaRepository tarjetaRepository;
+    private final EstadoRepository estadoRepository;
 
     // ========================================================
     // MÉTODOS DE PERFIL
@@ -70,12 +65,16 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
 
         Integer edad = calcularEdad(dto.getFechaNacimiento());
 
+        Estado estado = estadoRepository.findById(usuario.getIdEstado())
+                .orElse(null);
+        String nombreEstado = estado != null ? estado.getEstado() : "";
+
         return new PerfilAlumnoResponseDTO(
                 usuario.getUsuario(),
                 usuario.getNombre(),
                 usuario.getApellidos(),
                 usuario.getSexo(),
-                usuario.getEstado(),
+                nombreEstado,
                 usuario.getCiudad(),
                 infoAlumno.getEstatura(),
                 infoAlumno.getPeso(),
@@ -106,12 +105,16 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
 
         Integer edad = calcularEdad(infoAlumno.getFechaNacimiento());
 
+        Estado estado = estadoRepository.findById(usuarioEntity.getIdEstado())
+                .orElse(null);
+        String nombreEstado = estado != null ? estado.getEstado() : "";
+
         return new PerfilAlumnoResponseDTO(
                 usuarioEntity.getUsuario(),
                 usuarioEntity.getNombre(),
                 usuarioEntity.getApellidos(),
                 usuarioEntity.getSexo(),
-                usuarioEntity.getEstado(),
+                nombreEstado,
                 usuarioEntity.getCiudad(),
                 infoAlumno.getEstatura(),
                 infoAlumno.getPeso(),
@@ -159,12 +162,16 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
 
         Integer edad = calcularEdad(dto.getFechaNacimiento());
 
+        Estado estado = estadoRepository.findById(usuarioEntity.getIdEstado())
+                .orElse(null);
+        String nombreEstado = estado != null ? estado.getEstado() : "";
+
         return new PerfilAlumnoResponseDTO(
                 usuarioEntity.getUsuario(),
                 usuarioEntity.getNombre(),
                 usuarioEntity.getApellidos(),
                 usuarioEntity.getSexo(),
-                usuarioEntity.getEstado(),
+                nombreEstado,
                 usuarioEntity.getCiudad(),
                 infoAlumno.getEstatura(),
                 infoAlumno.getPeso(),
