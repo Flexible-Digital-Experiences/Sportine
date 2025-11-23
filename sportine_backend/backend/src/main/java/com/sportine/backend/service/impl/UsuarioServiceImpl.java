@@ -4,9 +4,11 @@ import com.sportine.backend.dto.*;
 import com.sportine.backend.exception.ConflictoException;
 import com.sportine.backend.exception.DatosInvalidosException;
 import com.sportine.backend.exception.RecursoNoEncontradoException;
+import com.sportine.backend.model.Estado;
 import com.sportine.backend.model.Rol;
 import com.sportine.backend.model.Usuario;
 import com.sportine.backend.model.UsuarioRol;
+import com.sportine.backend.repository.EstadoRepository;
 import com.sportine.backend.repository.RolRepository;
 import com.sportine.backend.repository.UsuarioRepository;
 import com.sportine.backend.repository.UsuarioRolRepository;
@@ -25,6 +27,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final RolRepository rolRepository;
     private final UsuarioRolRepository usuarioRolRepository;
     private final JwtService jwtService;
+    private final EstadoRepository estadoRepository;
 
     // ============================================
     // MÉTODOS HELPER PRIVADOS (EVITA REPETICIÓN)
@@ -74,7 +77,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setNombre(dto.getNombre());
         usuario.setApellidos(dto.getApellidos());
         usuario.setSexo(dto.getSexo());
-        usuario.setEstado(dto.getEstado());
+        usuario.setIdEstado(dto.getIdEstado());
         usuario.setCiudad(dto.getCiudad());
         usuarioRepository.save(usuario);
 
@@ -107,12 +110,16 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .orElseThrow(() -> new RecursoNoEncontradoException("Rol con ID",
                         usuarioRol.getIdRol().toString()));
 
+        Estado estado = estadoRepository.findById(usuario.getIdEstado())
+                .orElse(null);
+        String nombreEstado = estado != null ? estado.getEstado() : "";
+
         return new UsuarioDetalleDTO(
                 usuario.getUsuario(),
                 usuario.getNombre(),
                 usuario.getApellidos(),
                 usuario.getSexo(),
-                usuario.getEstado(),
+                nombreEstado,
                 usuario.getCiudad(),
                 rol.getRol(),
                 false
@@ -153,6 +160,10 @@ public class UsuarioServiceImpl implements UsuarioService {
             rolNombre = rol != null ? rol.getRol() : "";
         }
 
+        Estado estado = estadoRepository.findById(usuario.getIdEstado())
+                .orElse(null);
+        String nombreEstado = estado != null ? estado.getEstado() : "";
+
         String token = jwtService.generateToken(usuario.getUsuario());
 
         return new LoginResponseDTO(
@@ -164,7 +175,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.getApellidos(),
                 rolNombre,
                 usuario.getSexo(),
-                usuario.getEstado(),
+                nombreEstado,
                 usuario.getCiudad()
         );
     }
@@ -179,7 +190,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setNombre(dto.getNombre());
         usuario.setApellidos(dto.getApellidos());
         usuario.setSexo(dto.getSexo());
-        usuario.setEstado(dto.getEstado());
+        usuario.setIdEstado(dto.getIdEstado());
         usuario.setCiudad(dto.getCiudad());
 
         usuarioRepository.save(usuario);
@@ -189,12 +200,16 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .orElseThrow(() -> new RecursoNoEncontradoException("Rol con ID",
                         usuarioRol.getIdRol().toString()));
 
+        Estado estado = estadoRepository.findById(usuario.getIdEstado())
+                .orElse(null);
+        String nombreEstado = estado != null ? estado.getEstado() : "";
+
         return new UsuarioDetalleDTO(
                 usuario.getUsuario(),
                 usuario.getNombre(),
                 usuario.getApellidos(),
                 usuario.getSexo(),
-                usuario.getEstado(),
+                nombreEstado,
                 usuario.getCiudad(),
                 rol.getRol(),
                 false

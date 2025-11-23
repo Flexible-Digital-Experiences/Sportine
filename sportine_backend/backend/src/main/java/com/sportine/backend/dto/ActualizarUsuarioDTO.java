@@ -12,6 +12,6 @@ public class ActualizarUsuarioDTO {
     private String nombre;
     private String apellidos;
     private String sexo;
-    private String estado;
+    private Integer idEstado;
     private String ciudad;
 }

@@ -27,8 +27,8 @@ public class Usuario {
     @Column(name = "sexo")
     private String sexo;
 
-    @Column(name = "estado")
-    private String estado;
+    @Column(name = "idEstado")
+    private Integer idEstado;
 
     @Column(name = "ciudad")
     private String ciudad;

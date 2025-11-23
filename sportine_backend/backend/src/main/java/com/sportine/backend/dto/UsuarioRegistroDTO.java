@@ -15,6 +15,6 @@ public class UsuarioRegistroDTO {
     private String usuario;
     private String contrasena;
     private String rol;
-    private String estado;
+    private Integer idEstado;
     private String ciudad;
 }
