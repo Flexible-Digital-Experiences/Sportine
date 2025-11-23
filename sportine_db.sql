@@ -1,12 +1,19 @@
-use sportine_db;
+USE sportine_db;
+
+CREATE TABLE Estado(
+    id_estado INT PRIMARY KEY AUTO_INCREMENT,
+    estado VARCHAR(100)
+);
+
 CREATE TABLE Usuario (
     usuario VARCHAR(255) PRIMARY KEY,
     contraseña VARCHAR(255),
     nombre VARCHAR(255),
     apellidos VARCHAR(255),
     sexo VARCHAR(50),
-    estado VARCHAR(100),
-    ciudad VARCHAR(100)
+    id_estado INT,
+    ciudad VARCHAR(100),
+    FOREIGN KEY (id_estado) REFERENCES Estado(id_estado)
 );
 
 CREATE TABLE Rol (
@@ -22,7 +29,6 @@ CREATE TABLE Usuario_rol (
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
     UNIQUE KEY unique_usuario_rol (usuario, id_rol) 
 );
-
 
 CREATE TABLE Informacion_Alumno (
     usuario VARCHAR(255),
@@ -51,14 +57,12 @@ CREATE TABLE Informacion_Entrenador (
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
-
 CREATE TABLE Tarjeta (
     id_tarjeta INT PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(255),
     numero_tarjeta VARCHAR(50),
     fecha_caducidad DATE,
-    nombre_titular VARCHAR(100),
-    apellidos_titular VARCHAR(100),
+    nombre_titular VARCHAR(255),
     direccion_facturacion VARCHAR(255),
     localidad VARCHAR(100),
     codigo_postal VARCHAR(20),
@@ -66,7 +70,6 @@ CREATE TABLE Tarjeta (
     telefono VARCHAR(20),
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
-
 
 CREATE TABLE Entrenador_Alumno (
     id_relacion INT PRIMARY KEY AUTO_INCREMENT,
@@ -99,7 +102,6 @@ CREATE TABLE Contrato (
     FOREIGN KEY (usuario_alumno) REFERENCES Usuario(usuario),
     FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario)
 );
-
 
 CREATE TABLE Entrenamiento (
     id_entrenamiento INT PRIMARY KEY AUTO_INCREMENT,
@@ -137,7 +139,6 @@ CREATE TABLE Ejercicios_Asignados (
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
-
 CREATE TABLE Progreso_Entrenamiento (
     id_progreso INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT,
@@ -162,10 +163,9 @@ CREATE TABLE Feedback_Entrenamiento (
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
-
 CREATE TABLE Calificaciones (
     id_calificacion INT PRIMARY KEY AUTO_INCREMENT,
-    usuario VARCHAR(255),                   
+    usuario VARCHAR(255),                    
     usuario_calificado VARCHAR(255),         
     calificacion INT,
     comentarios VARCHAR(255),
@@ -173,11 +173,13 @@ CREATE TABLE Calificaciones (
     FOREIGN KEY (usuario_calificado) REFERENCES Usuario(usuario)
 );
 
+-- --- MÓDULO SOCIAL ---
+
 CREATE TABLE Publicacion (
     id_publicacion INT PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(255),
     descripcion VARCHAR(255),
-    fecha_publicacion DATE,
+    fecha_publicacion DATETIME, -- ¡CORREGIDO! Antes era DATE
     imagen TEXT,
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
@@ -191,13 +193,24 @@ CREATE TABLE Likes (
     FOREIGN KEY (usuario_like) REFERENCES Usuario(usuario)
 );
 
+CREATE TABLE Comentario (
+    id_comentario INT AUTO_INCREMENT PRIMARY KEY,
+    id_publicacion INT NOT NULL,
+    usuario VARCHAR(255) NOT NULL,
+    texto TEXT NOT NULL,
+    fecha DATETIME, 
+    FOREIGN KEY (id_publicacion) REFERENCES Publicacion(id_publicacion),
+    FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
+);
+
+-- ----------------------
+
 CREATE TABLE Amistad(
-	id_amistad INT PRIMARY KEY AUTO_INCREMENT,
+    id_amistad INT PRIMARY KEY AUTO_INCREMENT,
     usuario_1 VARCHAR(255),
     usuario_2 VARCHAR(255),
-	FOREIGN KEY (usuario_1) REFERENCES Usuario(usuario),
+    FOREIGN KEY (usuario_1) REFERENCES Usuario(usuario),
     FOREIGN KEY (usuario_2) REFERENCES Usuario(usuario),
-    -- Para evitar repetidos en la tabla
     UNIQUE(usuario_1, usuario_2) 
 );
 
@@ -208,7 +221,38 @@ CREATE TABLE Entrenador_Deporte (
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
-
+INSERT INTO Estado (estado) VALUES
+    ('Ciudad de México'),
+    ('Aguascalientes'),
+    ('Baja California'),
+    ('Baja California Sur'),
+    ('Campeche'),
+    ('Chiapas'),
+    ('Chihuahua'),
+    ('Coahuila'),
+    ('Colima'),
+    ('Durango'),
+    ('Guanajuato'),
+    ('Guerrero'),
+    ('Hidalgo'),
+    ('Jalisco'),
+    ('México'),
+    ('Michoacán'),
+    ('Morelos'),
+    ('Nayarit'),
+    ('Nuevo León'),
+    ('Oaxaca'),
+    ('Puebla'),
+    ('Querétaro'),
+    ('Quintana Roo'),
+    ('San Luis Potosí'),
+    ('Sinaloa'),
+    ('Sonora'),
+    ('Tabasco'),
+    ('Tamaulipas'),
+    ('Tlaxcala'),
+    ('Veracruz'),
+    ('Yucatán'),
+    ('Zacatecas');
 INSERT INTO Rol (rol) VALUES ('alumno');
 INSERT INTO Rol (rol) VALUES ('entrenador');
-
