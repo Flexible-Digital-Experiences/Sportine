@@ -95,20 +95,23 @@
         android:name="com.example.sportine.ui.usuarios.social.SocialFragment"
         android:label="@string/title_social"
         tools:layout="@layout/fragment_alumno_social" >
+
         <action
             android:id="@+id/action_social_to_buscar_amigo"
             app:destination="@id/navigation_buscar_amigo"
-            app:enterAnim="@anim/slide_in_up"
-            app:exitAnim="@anim/slide_out_down"/>
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
 
         <action
             android:id="@+id/action_social_to_lista_amigos"
             app:destination="@id/navigation_lista_amigos"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right"/>
-
-
-    </fragment> <!-- ARREGLADO: Se quitó el </fragment> extra que tenías -->
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+    </fragment>
 
 
 

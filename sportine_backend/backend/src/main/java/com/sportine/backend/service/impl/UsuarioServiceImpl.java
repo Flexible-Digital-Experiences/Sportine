@@ -60,16 +60,19 @@ public class UsuarioServiceImpl implements UsuarioService {
         );
     }
 
-    // (El método obtenerUsuarioPorUsername no cambia)
+
     @Override
     public UsuarioDetalleDTO obtenerUsuarioPorUsername(String username) {
-        // ... (código igual)
+
         Usuario usuario = usuarioRepository.findByUsuario(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
         UsuarioRol usuarioRol = usuarioRolRepository.findByUsuario(username)
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado para el usuario"));
+
         Rol rol = rolRepository.findById(usuarioRol.getIdRol())
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
         return new UsuarioDetalleDTO(
                 usuario.getUsuario(),
                 usuario.getNombre(),
@@ -77,7 +80,8 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.getSexo(),
                 usuario.getEstado(),
                 usuario.getCiudad(),
-                rol.getRol()
+                rol.getRol(),
+                false
         );
     }
 
@@ -134,19 +138,24 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional
     public UsuarioDetalleDTO actualizarDatosBasicos(String username, ActualizarUsuarioDTO dto) {
-        // ... (código igual)
+
         Usuario usuario = usuarioRepository.findByUsuario(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
         usuario.setNombre(dto.getNombre());
         usuario.setApellidos(dto.getApellidos());
         usuario.setSexo(dto.getSexo());
         usuario.setEstado(dto.getEstado());
         usuario.setCiudad(dto.getCiudad());
+
         usuarioRepository.save(usuario);
+
         UsuarioRol usuarioRol = usuarioRolRepository.findByUsuario(username)
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
         Rol rol = rolRepository.findById(usuarioRol.getIdRol())
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
         return new UsuarioDetalleDTO(
                 usuario.getUsuario(),
                 usuario.getNombre(),
@@ -154,10 +163,10 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.getSexo(),
                 usuario.getEstado(),
                 usuario.getCiudad(),
-                rol.getRol()
+                rol.getRol(),
+                false
         );
     }
-
     // (El método cambiarPassword no cambia)
     @Override
     @Transactional

@@ -10,16 +10,13 @@ import java.util.Optional;
 
 public interface AmistadRepository extends JpaRepository<Amistad, Integer> {
 
-    /**
-     * Busca una amistad en cualquier dirección (A->B o B->A).
-     * Útil para saber si ya son amigos o para borrar la amistad.
-     */
-    @Query("SELECT a FROM Amistad a WHERE (a.usuario_1 = :u1 AND a.usuario_2 = :u2) OR (a.usuario_1 = :u2 AND a.usuario_2 = :u1)")
-    Optional<Amistad> findAmistad(@Param("u1") String u1, @Param("u2") String u2);
+    // Verificar si son amigos (usando tus nombres de variables: usuario_1 y usuario_2)
+    @Query("SELECT a FROM Amistad a WHERE " +
+            "(a.usuario_1 = :u1 AND a.usuario_2 = :u2) OR " +
+            "(a.usuario_1 = :u2 AND a.usuario_2 = :u1)")
+    Optional<Amistad> findAmistadEntre(@Param("u1") String user1, @Param("u2") String user2);
 
-    /**
-     * Busca todas las relaciones de amistad de un usuario (donde él es usuario_1 o usuario_2).
-     */
-    @Query("SELECT a FROM Amistad a WHERE a.usuario_1 = :username OR a.usuario_2 = :username")
-    List<Amistad> findAllAmigos(@Param("username") String username);
+    // Buscar amigos
+    @Query("SELECT a FROM Amistad a WHERE a.usuario_1 = :user OR a.usuario_2 = :user")
+    List<Amistad> findAllAmistadesDe(@Param("user") String user);
 }

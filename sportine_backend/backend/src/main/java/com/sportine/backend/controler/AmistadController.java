@@ -1,42 +1,40 @@
 package com.sportine.backend.controler;
 
+import com.sportine.backend.dto.UsuarioDetalleDTO;
 import com.sportine.backend.service.AmistadService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
-
 @RestController
-@RequestMapping("/api/amigos") // URL base para todos los endpoints de amigos
+@RequestMapping("/api/social/amigos")
+@RequiredArgsConstructor
 public class AmistadController {
 
-    @Autowired
-    private AmistadService amistadService;
-
+    private final AmistadService amistadService;
 
     @GetMapping
-    public List<String> getMisAmigos(@RequestParam String username) {
-        return amistadService.getAmigosUsernames(username);
+    public ResponseEntity<List<UsuarioDetalleDTO>> misAmigos(Principal principal) {
+        return ResponseEntity.ok(amistadService.misAmigos(principal.getName()));
     }
 
-
-    @PostMapping("/{amigoUsername}")
-    public ResponseEntity<Void> agregarAmigo(
-            @RequestParam String miUsername,
-            @PathVariable String amigoUsername) {
-
-        amistadService.agregarAmigo(miUsername, amigoUsername);
+    @PostMapping("/{nuevoAmigo}")
+    public ResponseEntity<Void> agregar(@PathVariable String nuevoAmigo, Principal principal) {
+        amistadService.agregarAmigo(principal.getName(), nuevoAmigo);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{amigoUsername}")
-    public ResponseEntity<Void> eliminarAmigo(
-            @RequestParam String miUsername,
-            @PathVariable String amigoUsername) {
-
-        amistadService.eliminarAmigo(miUsername, amigoUsername);
+    @DeleteMapping("/{exAmigo}")
+    public ResponseEntity<Void> eliminar(@PathVariable String exAmigo, Principal principal) {
+        amistadService.eliminarAmigo(principal.getName(), exAmigo);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<List<UsuarioDetalleDTO>> buscar(@RequestParam String q, Principal principal) {
+        return ResponseEntity.ok(amistadService.buscarUsuarios(q, principal.getName()));
     }
 }
