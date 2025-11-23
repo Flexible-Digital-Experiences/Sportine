@@ -1,12 +1,16 @@
 package com.sportine.backend.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
+/**
+ * Entity que representa la información adicional del entrenador.
+ * Corresponde a la tabla Informacion_Entrenador en la base de datos.
+ */
 @Entity
-@Table(name = "informacion_entrenador")
+@Table(name = "Informacion_Entrenador")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,4 +28,9 @@ public class InformacionEntrenador {
 
     @Column(name = "foto_perfil", columnDefinition = "TEXT")
     private String fotoPerfil;
+
+    // Relación con Usuario (opcional)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario", insertable = false, updatable = false)
+    private Usuario usuarioEntrenador;
 }

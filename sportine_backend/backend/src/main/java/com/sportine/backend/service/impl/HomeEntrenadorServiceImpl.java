@@ -2,6 +2,7 @@ package com.sportine.backend.service.impl;
 
 import com.sportine.backend.dto.AlumnoProgresoDTO;
 import com.sportine.backend.dto.HomeEntrenadorDTO;
+import com.sportine.backend.exception.RecursoNoEncontradoException;
 import com.sportine.backend.model.*;
 import com.sportine.backend.repository.*;
 import com.sportine.backend.service.HomeEntrenadorService;
@@ -40,7 +41,7 @@ public class HomeEntrenadorServiceImpl implements HomeEntrenadorService {
 
         // 1. Obtener datos del entrenador
         Usuario entrenador = usuarioRepository.findByUsuario(username)
-                .orElseThrow(() -> new RuntimeException("Entrenador no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Entrenador no encontrado: " + username));
 
         // 2. Obtener alumnos activos del entrenador
         List<EntrenadorAlumno> relaciones = entrenadorAlumnoRepository
