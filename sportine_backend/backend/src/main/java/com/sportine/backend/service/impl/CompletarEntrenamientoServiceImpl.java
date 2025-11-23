@@ -1,6 +1,9 @@
 package com.sportine.backend.service.impl;
 
 import com.sportine.backend.dto.CompletarEntrenamientoRequestDTO;
+import com.sportine.backend.exception.DatosInvalidosException;
+import com.sportine.backend.exception.RecursoNoEncontradoException;
+import com.sportine.backend.exception.AccesoNoAutorizadoException;
 import com.sportine.backend.model.*;
 import com.sportine.backend.repository.*;
 import com.sportine.backend.service.CompletarEntrenamientoService;
@@ -31,16 +34,16 @@ public class CompletarEntrenamientoServiceImpl implements CompletarEntrenamiento
 
         // 1. Buscar el entrenamiento
         Entrenamiento entrenamiento = entrenamientoRepository.findById(request.getIdEntrenamiento())
-                .orElseThrow(() -> new RuntimeException("Entrenamiento no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Entrenamiento no encontrado con id: " + request.getIdEntrenamiento()));
 
         // 2. Validar que pertenece al alumno
         if (!entrenamiento.getUsuario().equals(username)) {
-            throw new RuntimeException("Este entrenamiento no te pertenece");
+            throw new AccesoNoAutorizadoException("Este entrenamiento no te pertenece");
         }
 
         // 3. Validar que no esté ya completado
         if (entrenamiento.getEstadoEntrenamiento() == Entrenamiento.EstadoEntrenamiento.finalizado) {
-            throw new RuntimeException("Este entrenamiento ya está completado");
+            throw new DatosInvalidosException("Este entrenamiento ya está completado");
         }
 
         // 4. Actualizar estado del entrenamiento a "finalizado"

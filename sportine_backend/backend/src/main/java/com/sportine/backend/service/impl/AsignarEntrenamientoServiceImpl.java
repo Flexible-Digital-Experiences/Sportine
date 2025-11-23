@@ -2,6 +2,9 @@ package com.sportine.backend.service.impl;
 
 import com.sportine.backend.dto.AsignarEjercicioDTO;
 import com.sportine.backend.dto.CrearEntrenamientoRequestDTO;
+import com.sportine.backend.exception.DatosInvalidosException;
+import com.sportine.backend.exception.RecursoNoEncontradoException;
+import com.sportine.backend.exception.AccesoNoAutorizadoException;
 import com.sportine.backend.model.*;
 import com.sportine.backend.repository.*;
 import com.sportine.backend.service.AsignarEntrenamientoService;
@@ -70,11 +73,11 @@ public class AsignarEntrenamientoServiceImpl implements AsignarEntrenamientoServ
 
         // Buscar el entrenamiento
         Entrenamiento entrenamiento = entrenamientoRepository.findById(idEntrenamiento)
-                .orElseThrow(() -> new RuntimeException("Entrenamiento no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Entrenamiento no encontrado con id: " + idEntrenamiento));
 
         // Validar que el entrenador es el dueño
         if (!entrenamiento.getUsuarioEntrenador().equals(usernameEntrenador)) {
-            throw new RuntimeException("No tienes permiso para editar este entrenamiento");
+            throw new AccesoNoAutorizadoException("No tienes permiso para editar este entrenamiento");
         }
 
         // Actualizar datos
@@ -101,11 +104,11 @@ public class AsignarEntrenamientoServiceImpl implements AsignarEntrenamientoServ
         log.info("Entrenador {} eliminando entrenamiento {}", usernameEntrenador, idEntrenamiento);
 
         Entrenamiento entrenamiento = entrenamientoRepository.findById(idEntrenamiento)
-                .orElseThrow(() -> new RuntimeException("Entrenamiento no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Entrenamiento no encontrado con id: " + idEntrenamiento));
 
         // Validar que el entrenador es el dueño
         if (!entrenamiento.getUsuarioEntrenador().equals(usernameEntrenador)) {
-            throw new RuntimeException("No tienes permiso para eliminar este entrenamiento");
+            throw new AccesoNoAutorizadoException("No tienes permiso para eliminar este entrenamiento");
         }
 
         entrenamientoRepository.deleteById(idEntrenamiento);
@@ -122,7 +125,7 @@ public class AsignarEntrenamientoServiceImpl implements AsignarEntrenamientoServ
                 );
 
         if (!existeRelacion) {
-            throw new RuntimeException(
+            throw new DatosInvalidosException(
                     "No existe una relación activa con el alumno " + alumno
             );
         }
@@ -141,8 +144,8 @@ public class AsignarEntrenamientoServiceImpl implements AsignarEntrenamientoServ
             // Validar que el ejercicio existe en el catálogo
             CatalogoEjercicios catalogoEjercicio = catalogoEjerciciosRepository
                     .findById(ejercicioDTO.getIdCatalogo())
-                    .orElseThrow(() -> new RuntimeException(
-                            "Ejercicio con ID " + ejercicioDTO.getIdCatalogo() + " no encontrado en el catálogo"
+                    .orElseThrow(() -> new RecursoNoEncontradoException(
+                            "Ejercicio no encontrado con id: " + ejercicioDTO.getIdCatalogo()
                     ));
 
             // Crear el ejercicio asignado

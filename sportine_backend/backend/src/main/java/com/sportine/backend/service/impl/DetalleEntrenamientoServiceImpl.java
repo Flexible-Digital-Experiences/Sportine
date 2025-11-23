@@ -2,6 +2,8 @@ package com.sportine.backend.service.impl;
 
 import com.sportine.backend.dto.DetalleEntrenamientoDTO;
 import com.sportine.backend.dto.EjercicioDetalleDTO;
+import com.sportine.backend.exception.RecursoNoEncontradoException;
+import com.sportine.backend.exception.AccesoNoAutorizadoException;
 import com.sportine.backend.model.*;
 import com.sportine.backend.repository.*;
 import com.sportine.backend.service.DetalleEntrenamientoService;
@@ -35,16 +37,16 @@ public class DetalleEntrenamientoServiceImpl implements DetalleEntrenamientoServ
 
         // 1. Buscar el entrenamiento
         Entrenamiento entrenamiento = entrenamientoRepository.findById(idEntrenamiento)
-                .orElseThrow(() -> new RuntimeException("Entrenamiento no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Entrenamiento no encontrado con id: " + idEntrenamiento));
 
         // 2. Validar que el entrenamiento pertenece al alumno
         if (!entrenamiento.getUsuario().equals(username)) {
-            throw new RuntimeException("Este entrenamiento no te pertenece");
+            throw new AccesoNoAutorizadoException("Este entrenamiento no te pertenece");
         }
 
         // 3. Obtener información del entrenador
         Usuario entrenador = usuarioRepository.findByUsuario(entrenamiento.getUsuarioEntrenador())
-                .orElseThrow(() -> new RuntimeException("Entrenador no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Entrenador no encontrado: " + entrenamiento.getUsuarioEntrenador()));
 
         InformacionEntrenador infoEntrenador = informacionEntrenadorRepository
                 .findByUsuario(entrenamiento.getUsuarioEntrenador())
