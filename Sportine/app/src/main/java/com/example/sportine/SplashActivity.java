@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,33 +26,51 @@ public class SplashActivity extends AppCompatActivity {
         ImageView logo = findViewById(R.id.iv_splash_logo);
         TextView text = findViewById(R.id.tv_splash_name);
 
-        // --- ANIMACIÓN ---
-        // 1. Estado inicial: El texto está ahí pero invisible (alpha 0)
-        //    El logo está en su lugar.
+        logo.setScaleX(0f);
+        logo.setScaleY(0f);
+        logo.setAlpha(0f);
 
-        // Vamos a mover el logo un poco a la izquierda Y aparecer el texto
-        // Pero primero, un pequeño delay para que se aprecie el logo solo
+        logo.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .alpha(1f)
+                .setDuration(800)
+                .setInterpolator(new OvershootInterpolator(1.5f))
+                .start();
+
+        text.setTranslationY(100f);
+        text.setAlpha(0f);
+
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-
-            // Animación del Texto: Fade In (Aparecer)
             text.animate()
-                    .alpha(1f) // Se vuelve visible
-                    .setDuration(800) // Tarda 0.8 segundos
-                    .setInterpolator(new DecelerateInterpolator())
+                    .translationY(0f)
+                    .alpha(1f)
+                    .setDuration(800)
+                    .setInterpolator(new DecelerateInterpolator(2f))
+                    .start();
+        }, 400);
+
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            logo.animate()
+                    .scaleX(0.9f)
+                    .scaleY(0.9f)
+                    .alpha(0f)
+                    .setDuration(300)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
                     .start();
 
-            // (Opcional) Si quieres que el logo se mueva, podrías jugar con translationX
-            // pero con el LinearLayout centrado, solo aparecer el texto
-            // hace que se vea como que se expande. ¡Se ve elegante!
-
-        }, 500); // Espera medio segundo antes de empezar
-
-        // --- NAVEGACIÓN ---
-        // Esperamos 3 segundos en total y nos vamos al Login
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish(); // Matamos el Splash para que no puedan volver con "Atrás"
-        }, 3000);
+            text.animate()
+                    .translationY(-50f)
+                    .alpha(0f)
+                    .setDuration(300)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .withEndAction(() -> {
+                        Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        finish();
+                    })
+                    .start();
+        }, 2500);
     }
 }

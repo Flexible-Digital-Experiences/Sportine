@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView; // <-- Importante
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,7 +23,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map; // <--- AGREGADO: Necesario para la respuesta
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,7 +34,7 @@ public class ListaAmigosFragment extends Fragment implements AmigosAdapter.OnIte
     private RecyclerView rvListaAmigos;
     private AmigosAdapter adapter;
     private ApiService apiService;
-    private List<UsuarioDetalle> listaCompleta = new ArrayList<>(); // Guardamos todos aquí
+    private List<UsuarioDetalle> listaCompleta = new ArrayList<>();
 
     @Nullable
     @Override
@@ -52,7 +52,6 @@ public class ListaAmigosFragment extends Fragment implements AmigosAdapter.OnIte
         adapter = new AmigosAdapter(false, this);
         rvListaAmigos.setAdapter(adapter);
 
-        // --- CONFIGURAR BUSCADOR ---
         SearchView searchView = view.findViewById(R.id.sv_filtro_amigos);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -107,24 +106,36 @@ public class ListaAmigosFragment extends Fragment implements AmigosAdapter.OnIte
     @Override
     public void onAction(UsuarioDetalle usuario) {
         new AlertDialog.Builder(getContext())
-                .setTitle("Eliminar Amigo")
-                .setMessage("¿Dejar de seguir a " + usuario.getNombre() + "?")
-                .setPositiveButton("Eliminar", (dialog, which) -> eliminarAmigoReal(usuario))
+                .setTitle("Dejar de seguir") // Título más acorde
+                .setMessage("¿Ya no quieres ver las publicaciones de " + usuario.getNombre() + "?")
+                .setPositiveButton("Dejar de seguir", (dialog, which) -> eliminarAmigoReal(usuario))
                 .setNegativeButton("Cancelar", null)
                 .show();
     }
 
     private void eliminarAmigoReal(UsuarioDetalle usuario) {
-        apiService.eliminarAmigo(usuario.getUsuario()).enqueue(new Callback<Void>() {
+
+        apiService.seguirUsuario(usuario.getUsuario()).enqueue(new Callback<Map<String, String>>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Eliminado", Toast.LENGTH_SHORT).show();
-                    cargarMisAmigos(); // Recargar lista del server
+
+                    String msg = "Eliminado correctamente";
+                    if(response.body() != null && response.body().containsKey("mensaje")) {
+                        msg = response.body().get("mensaje");
+                    }
+
+                    Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                    cargarMisAmigos(); // Recargar lista del server para que desaparezca
+                } else {
+                    Toast.makeText(getContext(), "Error al dejar de seguir", Toast.LENGTH_SHORT).show();
                 }
             }
+
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {}
+            public void onFailure(Call<Map<String, String>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }

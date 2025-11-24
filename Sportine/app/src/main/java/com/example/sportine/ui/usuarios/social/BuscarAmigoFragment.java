@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView; // <-- ¡OJO! Importar este SearchView
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,6 +21,7 @@ import com.example.sportine.models.UsuarioDetalle;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.List;
+import java.util.Map; // --- CAMBIO: Importar Map
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,19 +41,15 @@ public class BuscarAmigoFragment extends Fragment implements AmigosAdapter.OnIte
 
         apiService = RetrofitClient.getClient(requireContext()).create(ApiService.class);
 
-        // 1. Configurar Toolbar
         MaterialToolbar toolbar = view.findViewById(R.id.toolbar_buscar_amigo);
         toolbar.setNavigationOnClickListener(v -> NavHostFragment.findNavController(this).navigateUp());
 
-        // 2. Configurar RecyclerView
         rvResultados = view.findViewById(R.id.rv_resultados_amigos);
         rvResultados.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Inicializamos el adaptador en modo "BUSQUEDA" (true = botón Agregar)
         adapter = new AmigosAdapter(true, this);
         rvResultados.setAdapter(adapter);
 
-        // 3. Configurar el Buscador (SearchView)
         searchView = view.findViewById(R.id.search_view_amigo);
         setupBuscador();
 
@@ -63,7 +60,6 @@ public class BuscarAmigoFragment extends Fragment implements AmigosAdapter.OnIte
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
                 buscarPersonas(query);
                 searchView.clearFocus();
                 return true;
@@ -71,13 +67,9 @@ public class BuscarAmigoFragment extends Fragment implements AmigosAdapter.OnIte
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
-
                 if (newText.length() > 0) {
-
                     buscarPersonas(newText);
                 } else {
-
                     adapter.setUsuarios(new java.util.ArrayList<>());
                 }
                 return true;
@@ -110,23 +102,31 @@ public class BuscarAmigoFragment extends Fragment implements AmigosAdapter.OnIte
         });
     }
 
-
     @Override
     public void onAction(UsuarioDetalle usuario) {
-        apiService.agregarAmigo(usuario.getUsuario()).enqueue(new Callback<Void>() {
+
+        apiService.seguirUsuario(usuario.getUsuario()).enqueue(new Callback<Map<String, String>>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "¡Ahora sigues a " + usuario.getNombre() + "!", Toast.LENGTH_SHORT).show();
-                    // Opcional: Podrías quitarlo de la lista o deshabilitar el botón
+
+                    String mensaje = "";
+                    if (response.body() != null) {
+                        mensaje = response.body().get("mensaje");
+                    }
+                    Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
+
+                    usuario.setAmigo(!usuario.isAmigo());
+
+                    adapter.notifyDataSetChanged();
+
                 } else {
-                    // Error 400 o 500 (probablemente ya son amigos)
-                    Toast.makeText(getContext(), "No se pudo agregar (¿Ya lo sigues?)", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "No se pudo realizar la acción", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<Map<String, String>> call, Throwable t) {
                 Toast.makeText(getContext(), "Fallo de red", Toast.LENGTH_SHORT).show();
             }
         });
