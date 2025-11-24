@@ -8,10 +8,11 @@ import com.example.sportine.models.PublicacionFeedDTO;
 import com.example.sportine.models.UsuarioDetalle;
 import com.example.sportine.ui.usuarios.dto.LoginRequest;
 import com.example.sportine.ui.usuarios.dto.LoginResponse;
-import com.example.sportine.models.Comentario;
 import com.example.sportine.ui.usuarios.dto.ComentarioRequest;
+// Asegúrate de que este DTO exista en tu Android, si no, usa UsuarioDetalle
 import com.example.sportine.ui.usuarios.dto.UsuarioDetalleDTO;
 import com.example.sportine.ui.usuarios.dto.PerfilAlumnoResponseDTO;
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Multipart;
@@ -36,6 +37,12 @@ public interface ApiService {
     @POST("/api/usuarios/registrar")
     Call<RespuestaRegistro> registrarUsuario(@Body Usuario usuario);
 
+    @GET("/api/usuarios/{usuario}")
+    Call<UsuarioDetalleDTO> obtenerUsuario(@Path("usuario") String usuario);
+
+    @GET("/api/alumnos/perfil/{usuario}")
+    Call<PerfilAlumnoResponseDTO> obtenerPerfilAlumno(@Path("usuario") String usuario);
+
     @GET("/api/social/feed")
     Call<List<PublicacionFeedDTO>> getSocialFeed();
 
@@ -46,14 +53,14 @@ public interface ApiService {
             @Part MultipartBody.Part file
     );
 
+    @DELETE("/api/social/post/{id}")
+    Call<Void> borrarPost(@Path("id") Integer idPublicacion);
+
     @POST("/api/social/post/{id}/like")
     Call<Void> darLike(@Path("id") Integer idPublicacion);
 
     @DELETE("/api/social/post/{id}/like")
     Call<Void> quitarLike(@Path("id") Integer idPublicacion);
-
-    @DELETE("/api/social/post/{id}")
-    Call<Void> borrarPost(@Path("id") Integer idPublicacion);
 
     @GET("/api/social/post/{id}/comentarios")
     Call<List<Comentario>> verComentarios(@Path("id") Integer idPublicacion);
@@ -61,17 +68,15 @@ public interface ApiService {
     @POST("/api/social/post/{id}/comentarios")
     Call<Void> crearComentario(@Path("id") Integer idPublicacion, @Body ComentarioRequest request);
 
-    @GET("/api/usuarios/{usuario}")
-    Call<UsuarioDetalleDTO> obtenerUsuario(@Path("usuario") String usuario);
+    @POST("/api/social/seguir/{username}")
+    Call<Map<String, String>> seguirUsuario(@Path("username") String username);
 
-    @GET("/api/alumnos/perfil/{usuario}")
-    Call<PerfilAlumnoResponseDTO> obtenerPerfilAlumno(@Path("usuario") String usuario);
-    @GET("/api/social/amigos")
-    Call<List<UsuarioDetalle>> verMisAmigos();
+    @GET("/api/social/verificar/{username}")
+    Call<Boolean> verificarSeguimiento(@Path("username") String username);
 
     @GET("/api/social/amigos/buscar")
     Call<List<UsuarioDetalle>> buscarPersonas(@Query("q") String termino);
 
-    @POST("/api/social/amigos/{username}")
-    Call<Void> agregarAmigo(@Path("username") String username);
+    @GET("/api/social/amigos")
+    Call<List<UsuarioDetalle>> verMisAmigos();
 }

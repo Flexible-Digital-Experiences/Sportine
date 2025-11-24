@@ -6,7 +6,7 @@ import com.sportine.backend.dto.PublicacionFeedDTO;
 import com.sportine.backend.dto.PublicacionRequestDTO;
 import com.sportine.backend.model.Publicacion;
 import com.sportine.backend.service.PostService;
-import com.sportine.backend.service.SubidaImagenService;
+// Ya no necesitamos SubidaImagenService aquí
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,36 +25,22 @@ public class SocialController {
     @Autowired
     private PostService postService;
 
-    @Autowired
-    private SubidaImagenService subidaImagenService;
+    // @Autowired private SubidaImagenService subidaImagenService; <--- YA NO VA
 
     @GetMapping("/feed")
     public List<PublicacionFeedDTO> getSocialFeed(Principal principal) {
-        String username = principal.getName();
-        return postService.getFeed(username);
+        return postService.getFeed(principal.getName());
     }
 
     @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Publicacion crearNuevoPost(
-
             @RequestPart("data") PublicacionRequestDTO dto,
-
             @RequestPart(value = "file", required = false) MultipartFile file,
             Principal principal) {
 
-        String username = principal.getName();
-
-
-        if (file != null && !file.isEmpty()) {
-
-            String urlImagen = subidaImagenService.subirImagen(file);
-
-            dto.setImagen(urlImagen);
-        }
-
-        return postService.crearPublicacion(username, dto);
+        // Toda la lógica se fue al Service. Aquí solo pasamos los datos.
+        return postService.crearPublicacion(principal.getName(), dto, file);
     }
-
 
     @PutMapping("/post/{id}")
     public ResponseEntity<Publicacion> actualizarPost(@PathVariable Integer id, @RequestBody Publicacion publicacion) {
@@ -65,9 +51,8 @@ public class SocialController {
 
     @DeleteMapping("/post/{id}")
     public ResponseEntity<Void> borrarPost(@PathVariable Integer id, Principal principal) {
-        String username = principal.getName();
         try {
-            postService.eliminarPublicacion(id, username);
+            postService.eliminarPublicacion(id, principal.getName());
             return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -76,29 +61,25 @@ public class SocialController {
 
     @PostMapping("/post/{id}/like")
     public ResponseEntity<Void> darLikePost(@PathVariable Integer id, Principal principal) {
-        String username = principal.getName();
-        postService.darLike(id, username);
+        postService.darLike(id, principal.getName());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/post/{id}/like")
     public ResponseEntity<Void> quitarLikePost(@PathVariable Integer id, Principal principal) {
-        String username = principal.getName();
-        postService.quitarLike(id, username);
+        postService.quitarLike(id, principal.getName());
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/post/{id}/comentarios")
     public ResponseEntity<List<ComentarioResponseDTO>> verComentarios(@PathVariable Integer id, Principal principal) {
-        String username = principal.getName();
-        List<ComentarioResponseDTO> lista = postService.obtenerComentarios(id, username);
+        List<ComentarioResponseDTO> lista = postService.obtenerComentarios(id, principal.getName());
         return ResponseEntity.ok(lista);
     }
 
     @PostMapping("/post/{id}/comentarios")
     public ResponseEntity<Void> crearComentario(@PathVariable Integer id, @RequestBody ComentarioRequestDTO request, Principal principal) {
-        String username = principal.getName();
-        postService.comentar(id, username, request.getTexto());
+        postService.comentar(id, principal.getName(), request.getTexto());
         return ResponseEntity.ok().build();
     }
 }
