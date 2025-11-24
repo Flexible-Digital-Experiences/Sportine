@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                         SharedPreferences prefs = getSharedPreferences("SportinePrefs", MODE_PRIVATE);
                         SharedPreferences.Editor editor = prefs.edit();
 
-                        editor.putString("USER_ROL", rol);
+                        editor.putString("USER_ROL", response.body().getRol());
                         editor.putString("USER_NOMBRE", nombreUsuario);
                         editor.putString("USER_USERNAME", username);
                         editor.putString("USER_TOKEN", token); // <-- ¡Lo guardamos!

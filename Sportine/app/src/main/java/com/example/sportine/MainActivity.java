@@ -34,13 +34,13 @@ public class MainActivity extends AppCompatActivity {
 
         // 1. Leemos el rol guardado en SharedPreferences
         SharedPreferences prefs = getSharedPreferences("SportinePrefs", MODE_PRIVATE);
-        String rol = prefs.getString("USER_ROL", "ALUMNO");
+        String rol = prefs.getString("USER_ROL","alumno");
 
         // 2. Declaramos la configuración fuera del if/else
         AppBarConfiguration appBarConfiguration;
 
         // 3. Configuramos según el rol
-        if (rol.equals("ENTRENADOR")) {
+        if (rol.equals("entrenador")) {
             // === CONFIGURACIÓN PARA ENTRENADOR ===
 
             // Cambiar el menú del BottomNavigationView
