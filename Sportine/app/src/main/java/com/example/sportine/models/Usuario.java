@@ -5,20 +5,20 @@ public class Usuario {
     private String nombre;
     private String apellidos;
     private String sexo;
-    private String estado;
+    private Integer idEstado;
     private String ciudad;
     private String rol;
     private String contrasena;
 
     public Usuario(String usuario, String nombre, String apellidos,
-                   String sexo, String estado, String ciudad,
+                   String sexo, Integer idEstado, String ciudad,
                    String rol, String contrasena) {
 
         this.usuario = usuario;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.sexo = sexo;
-        this.estado = estado;
+        this.idEstado = idEstado;
         this.ciudad = ciudad;
         this.rol = rol;
         this.contrasena = contrasena;
@@ -56,12 +56,12 @@ public class Usuario {
         this.sexo = sexo;
     }
 
-    public String getEstado() {
-        return estado;
+    public Integer getEstado() {
+        return idEstado;
     }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
+    public void setEstado(Integer idEstado) {
+        this.idEstado = idEstado;
     }
 
     public String getCiudad() {

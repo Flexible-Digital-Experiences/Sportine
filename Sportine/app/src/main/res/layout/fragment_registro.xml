@@ -167,12 +167,12 @@
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Campo Estado -->
+        <!-- Campo Estado (CORREGIDO) -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/estadoInputLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             app:boxStrokeColor="#000000"
             app:hintTextColor="#000000"
             app:endIconTint="#000000"
@@ -182,15 +182,15 @@
             android:layout_marginHorizontal="32dp"
             android:layout_marginTop="16dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/estadoInput"
+            <AutoCompleteTextView
+                android:id="@+id/estadoSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Estado"
                 android:textColor="#000000"
                 android:textColorHint="#9E9E9E"
-                android:inputType="textCapWords"
-                android:maxLines="1" />
+                android:inputType="none"
+                android:focusable="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Campo Ciudad -->
