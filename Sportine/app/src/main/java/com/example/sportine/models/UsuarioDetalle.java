@@ -13,19 +13,25 @@ public class UsuarioDetalle {
     @SerializedName("apellidos")
     private String apellidos;
 
-
     @SerializedName("ciudad")
+    private String ciudad;
+
+    @SerializedName("fotoPerfil")
     private String fotoPerfil;
 
-    @SerializedName("amigo")
+    @SerializedName("isAmigo")
+
     private boolean isAmigo;
 
+    // Getters y Setters
     public boolean isAmigo() { return isAmigo; }
-
     public void setAmigo(boolean amigo) { isAmigo = amigo; }
 
     public String getUsuario() { return usuario; }
     public String getNombre() { return nombre; }
     public String getApellidos() { return apellidos; }
+
+    public String getCiudad() { return ciudad; }
+
     public String getFotoPerfil() { return fotoPerfil; }
 }

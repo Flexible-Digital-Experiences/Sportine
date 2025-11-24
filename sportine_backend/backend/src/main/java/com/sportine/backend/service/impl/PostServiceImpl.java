@@ -1,6 +1,7 @@
 package com.sportine.backend.service.impl;
 
 import com.sportine.backend.dto.ComentarioResponseDTO;
+import com.sportine.backend.dto.PerfilAlumnoResponseDTO;
 import com.sportine.backend.dto.PublicacionFeedDTO;
 import com.sportine.backend.dto.PublicacionRequestDTO;
 import com.sportine.backend.model.Comentario;
@@ -11,16 +12,17 @@ import com.sportine.backend.repository.ComentarioRepository;
 import com.sportine.backend.repository.LikesRepository;
 import com.sportine.backend.repository.PublicacionRepository;
 import com.sportine.backend.repository.UsuarioRepository;
+import com.sportine.backend.service.AlumnoPerfilService;
 import com.sportine.backend.service.PostService;
+import com.sportine.backend.service.SubidaImagenService; // <--- IMPORTANTE
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile; // <--- IMPORTANTE
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import com.sportine.backend.service.AlumnoPerfilService;
-import com.sportine.backend.dto.PerfilAlumnoResponseDTO;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -31,9 +33,10 @@ public class PostServiceImpl implements PostService {
     @Autowired private AlumnoPerfilService alumnoPerfilService;
     @Autowired private ComentarioRepository comentarioRepository;
 
+    @Autowired private SubidaImagenService subidaImagenService;
+
     @Override
     public List<PublicacionFeedDTO> getFeed(String username) {
-
         List<Publicacion> publicaciones = publicacionRepository.obtenerFeedPersonalizado(username);
 
         return publicaciones.stream().map(publicacion -> {
@@ -49,7 +52,6 @@ public class PostServiceImpl implements PostService {
             int totalLikes = likesRepository.countByIdPublicacion(publicacion.getId_publicacion());
             boolean isLikedByMe = likesRepository.existsByIdPublicacionAndUsuarioLike(
                     publicacion.getId_publicacion(), username);
-
             boolean isMine = autorUsername.equals(username);
 
             PublicacionFeedDTO dto = new PublicacionFeedDTO();
@@ -69,7 +71,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Publicacion crearPublicacion(String username, PublicacionRequestDTO dto) {
+    public Publicacion crearPublicacion(String username, PublicacionRequestDTO dto, MultipartFile file) {
+
+        if (file != null && !file.isEmpty()) {
+            String urlImagen = subidaImagenService.subirImagen(file);
+            dto.setImagen(urlImagen);
+        }
 
         Usuario autor = usuarioRepository.findByUsuario(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + username));
@@ -78,7 +85,6 @@ public class PostServiceImpl implements PostService {
         nuevaPublicacion.setUsuario(autor.getUsuario());
         nuevaPublicacion.setDescripcion(dto.getDescripcion());
         nuevaPublicacion.setImagen(dto.getImagen());
-
         nuevaPublicacion.setFecha_publicacion(new Date());
 
         return publicacionRepository.save(nuevaPublicacion);
@@ -95,14 +101,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void eliminarPublicacion(Integer id, String usernameQuePide) {
-
         Publicacion post = publicacionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post no encontrado"));
 
         if (!post.getUsuario().equals(usernameQuePide)) {
             throw new RuntimeException("No tienes permiso para borrar este post");
         }
-
         publicacionRepository.deleteById(id);
     }
 
@@ -128,29 +132,24 @@ public class PostServiceImpl implements PostService {
         if (!publicacionRepository.existsById(idPublicacion)) {
             throw new RuntimeException("El post no existe");
         }
-
         Comentario comentario = new Comentario();
         comentario.setIdPublicacion(idPublicacion);
         comentario.setUsuario(username);
         comentario.setTexto(texto);
         comentario.setFecha(new Date());
-
         comentarioRepository.save(comentario);
     }
 
     @Override
     public List<ComentarioResponseDTO> obtenerComentarios(Integer idPublicacion, String usernameQueMira) {
         List<Comentario> comentarios = comentarioRepository.findByIdPublicacionOrderByFechaAsc(idPublicacion);
-
         return comentarios.stream().map(c -> {
             ComentarioResponseDTO dto = new ComentarioResponseDTO();
             dto.setIdComentario(c.getIdComentario());
             dto.setTexto(c.getTexto());
             dto.setFecha(c.getFecha());
             dto.setAutorUsername(c.getUsuario());
-
             dto.setMine(c.getUsuario().equals(usernameQueMira));
-
             try {
                 PerfilAlumnoResponseDTO perfil = alumnoPerfilService.obtenerPerfilAlumno(c.getUsuario());
                 dto.setAutorNombre(perfil.getNombre() + " " + perfil.getApellidos());
@@ -159,7 +158,6 @@ public class PostServiceImpl implements PostService {
                 dto.setAutorNombre(c.getUsuario());
                 dto.setAutorFoto(null);
             }
-
             return dto;
         }).collect(Collectors.toList());
     }
