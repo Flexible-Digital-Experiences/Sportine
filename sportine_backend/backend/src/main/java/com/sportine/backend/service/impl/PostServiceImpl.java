@@ -31,11 +31,11 @@ public class PostServiceImpl implements PostService {
     @Autowired private AlumnoPerfilService alumnoPerfilService;
     @Autowired private ComentarioRepository comentarioRepository;
 
-
     @Override
     public List<PublicacionFeedDTO> getFeed(String username) {
-        // (Toda la lógica de 'getFeed' se queda igual, ya estaba bien)
-        List<Publicacion> publicaciones = publicacionRepository.findAll();
+
+        List<Publicacion> publicaciones = publicacionRepository.obtenerFeedPersonalizado(username);
+
         return publicaciones.stream().map(publicacion -> {
             String autorUsername = publicacion.getUsuario();
             String nombreCompleto = autorUsername;
@@ -56,7 +56,7 @@ public class PostServiceImpl implements PostService {
             dto.setIdPublicacion(publicacion.getId_publicacion());
             dto.setDescripcion(publicacion.getDescripcion());
             dto.setImagen(publicacion.getImagen());
-            dto.setFechaPublicacion(publicacion.getFecha_publicacion()); // <-- ¡Aquí!
+            dto.setFechaPublicacion(publicacion.getFecha_publicacion());
             dto.setAutorUsername(autorUsername);
             dto.setAutorNombreCompleto(nombreCompleto);
             dto.setAutorFotoPerfil(fotoPerfilUrl);
@@ -64,11 +64,9 @@ public class PostServiceImpl implements PostService {
             dto.setLikedByMe(isLikedByMe);
             dto.setMine(isMine);
 
-
             return dto;
         }).collect(Collectors.toList());
     }
-
 
     @Override
     public Publicacion crearPublicacion(String username, PublicacionRequestDTO dto) {
@@ -86,17 +84,14 @@ public class PostServiceImpl implements PostService {
         return publicacionRepository.save(nuevaPublicacion);
     }
 
-
     @Override
     public Optional<Publicacion> actualizarPublicacion(Integer id, Publicacion publicacionActualizada) {
-        // (Este es el que te faltaba antes, ya está completo)
         return publicacionRepository.findById(id).map(postExistente -> {
             postExistente.setDescripcion(publicacionActualizada.getDescripcion());
             postExistente.setImagen(publicacionActualizada.getImagen());
             return publicacionRepository.save(postExistente);
         });
     }
-
 
     @Override
     public void eliminarPublicacion(Integer id, String usernameQuePide) {
@@ -113,8 +108,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void darLike(Integer idPublicacion, String username) {
-        // Ahora el 'findLikeByPostAndUser' (arreglado en el Repo)
-        // ya no fallará en silencio.
         if(likesRepository.findLikeByPostAndUser(idPublicacion, username).isEmpty()) {
             Likes newLike = new Likes();
             newLike.setIdPublicacion(idPublicacion);
@@ -125,7 +118,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void quitarLike(Integer idPublicacion, String username) {
-        // Arreglamos el 'findLikeByPostAndUser'
         likesRepository.findLikeByPostAndUser(idPublicacion, username).ifPresent(like -> {
             likesRepository.delete(like);
         });
@@ -133,7 +125,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void comentar(Integer idPublicacion, String username, String texto) {
-        // Validar que el post existe
         if (!publicacionRepository.existsById(idPublicacion)) {
             throw new RuntimeException("El post no existe");
         }
@@ -142,18 +133,15 @@ public class PostServiceImpl implements PostService {
         comentario.setIdPublicacion(idPublicacion);
         comentario.setUsuario(username);
         comentario.setTexto(texto);
-        comentario.setFecha(new Date()); // Hora actual
+        comentario.setFecha(new Date());
 
         comentarioRepository.save(comentario);
     }
 
     @Override
     public List<ComentarioResponseDTO> obtenerComentarios(Integer idPublicacion, String usernameQueMira) {
-
-        // 1. Sacamos los comentarios de la BD
         List<Comentario> comentarios = comentarioRepository.findByIdPublicacionOrderByFechaAsc(idPublicacion);
 
-        // 2. Los convertimos a DTOs fusionando con el perfil (Igual que en el Feed)
         return comentarios.stream().map(c -> {
             ComentarioResponseDTO dto = new ComentarioResponseDTO();
             dto.setIdComentario(c.getIdComentario());
@@ -161,16 +149,13 @@ public class PostServiceImpl implements PostService {
             dto.setFecha(c.getFecha());
             dto.setAutorUsername(c.getUsuario());
 
-            // Calculamos si es mío
             dto.setMine(c.getUsuario().equals(usernameQueMira));
 
-            // FUSIÓN DE PERFIL (Consultamos al servicio de tu amigo)
             try {
                 PerfilAlumnoResponseDTO perfil = alumnoPerfilService.obtenerPerfilAlumno(c.getUsuario());
                 dto.setAutorNombre(perfil.getNombre() + " " + perfil.getApellidos());
                 dto.setAutorFoto(perfil.getFotoPerfil());
             } catch (Exception e) {
-                // Si falla, defaults
                 dto.setAutorNombre(c.getUsuario());
                 dto.setAutorFoto(null);
             }
@@ -178,6 +163,4 @@ public class PostServiceImpl implements PostService {
             return dto;
         }).collect(Collectors.toList());
     }
-
-
 }

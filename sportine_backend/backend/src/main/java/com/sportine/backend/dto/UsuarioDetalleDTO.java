@@ -17,5 +17,5 @@ public class UsuarioDetalleDTO {
     private String ciudad;
     private String rol;
 
-    private boolean amigo;
+    private boolean isAmigo;
 }

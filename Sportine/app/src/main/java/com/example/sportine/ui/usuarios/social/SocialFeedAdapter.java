@@ -2,7 +2,6 @@ package com.example.sportine.ui.usuarios.social;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -37,7 +36,6 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
     private List<PublicacionFeedDTO> publicacionList;
     private PrettyTime prettyTime;
     private ApiService apiService;
-    private static final String TAG = "LikeDebug";
     private Context context;
 
     public SocialFeedAdapter(List<PublicacionFeedDTO> publicacionList, Context context, ApiService apiService) {
@@ -45,24 +43,15 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
         this.context = context;
         this.apiService = apiService;
 
-
         this.prettyTime = new PrettyTime(new Locale("es"));
-
-
         TimeUnit justNowUnit = prettyTime.getUnit(JustNow.class);
         prettyTime.removeUnit(justNowUnit);
-
-
         TimeFormat justNowFormat = new SimpleTimeFormat()
                 .setSingularName("hace un momento")
                 .setPluralName("hace un momento")
                 .setPattern("%u")
-                .setPastPrefix("")
-                .setPastSuffix("")
-                .setFuturePrefix("")
-                .setFutureSuffix("");
-
-
+                .setPastPrefix("").setPastSuffix("")
+                .setFuturePrefix("").setFutureSuffix("");
         prettyTime.registerUnit(new JustNow(), justNowFormat);
     }
 
@@ -75,10 +64,9 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-
         PublicacionFeedDTO publicacion = publicacionList.get(position);
 
-
+        // --- 1. DETECTOR DE GESTOS MEJORADO ---
         GestureDetector detector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDown(MotionEvent e) {
@@ -87,17 +75,39 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
 
             @Override
             public boolean onDoubleTap(MotionEvent e) {
-                toggleLike(holder, publicacion); // ¡Like al hacer doble tap!
+                // A. Animación Instagram (Posición dinámica)
+                // Centramos el corazón donde fue el toque
+                float x = holder.postImageView.getX() + e.getX() - (holder.bigHeartImageView.getWidth() / 2f);
+                float y = holder.postImageView.getY() + e.getY() - (holder.bigHeartImageView.getHeight() / 2f);
+
+                holder.bigHeartImageView.setX(x);
+                holder.bigHeartImageView.setY(y);
+
+                animarCorazonGigante(holder.bigHeartImageView);
+                animarLike(holder.likeButtonImageView);
+
+                if (!publicacion.isLikedByMe()) {
+                    toggleLike(holder, publicacion);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                // B. Aquí se dispara la navegación al detalle
+                abrirDetalleConTransicion(holder, publicacion);
                 return true;
             }
         });
 
+        // Asignamos el detector a AMBOS (Tarjeta e Imagen) para que no se bloqueen
+        holder.itemView.setOnTouchListener((v, event) -> detector.onTouchEvent(event));
+        holder.postImageView.setOnTouchListener((v, event) -> detector.onTouchEvent(event));
 
-        holder.itemView.setOnTouchListener((v, event) -> {
-            return detector.onTouchEvent(event);
-        });
+        // --- 2. TRANSICIÓN ---
+        holder.postImageView.setTransitionName("transicion_post_" + publicacion.getIdPublicacion());
 
-        // --- 2. DATOS ---
+        // --- 3. DATOS ---
         holder.postTitleTextView.setText(publicacion.getDescripcion());
 
         Glide.with(holder.itemView.getContext())
@@ -122,9 +132,18 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
             holder.timestampTextView.setText("");
         }
 
+        // Likes
+        int likes = publicacion.getTotalLikes();
+        holder.tvLikesCount.setText(String.valueOf(likes));
+
         updateLikeVisuals(holder, publicacion.isLikedByMe());
 
-        holder.likeButtonImageView.setOnClickListener(v -> toggleLike(holder, publicacion));
+        // --- 4. CLICKS ---
+        holder.likeButtonImageView.setOnClickListener(v -> {
+            v.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY);
+            animarLike(v);
+            toggleLike(holder, publicacion);
+        });
 
         holder.commentButtonImageView.setOnClickListener(v -> {
             if (holder.itemView.getContext() instanceof androidx.fragment.app.FragmentActivity) {
@@ -150,22 +169,53 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
         }
     }
 
+    // Método helper para la navegación
+    private void abrirDetalleConTransicion(PostViewHolder holder, PublicacionFeedDTO publicacion) {
+        // 1. Extras para Shared Element
+        androidx.navigation.fragment.FragmentNavigator.Extras extras =
+                new androidx.navigation.fragment.FragmentNavigator.Extras.Builder()
+                        .addSharedElement(holder.postImageView, holder.postImageView.getTransitionName())
+                        .build();
+
+        // 2. Argumentos
+        android.os.Bundle args = new android.os.Bundle();
+        args.putString("imagenUrl", publicacion.getImagen());
+        args.putString("descripcion", publicacion.getDescripcion());
+        args.putString("transitionName", holder.postImageView.getTransitionName());
+
+        // 3. Navegar
+        try {
+            androidx.navigation.Navigation.findNavController(holder.itemView).navigate(
+                    R.id.action_social_to_detallePost, // ID del NavGraph
+                    args,
+                    null,
+                    extras
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void toggleLike(PostViewHolder holder, PublicacionFeedDTO publicacion) {
         Integer postId = publicacion.getIdPublicacion();
-        boolean isCurrentlyLiked = publicacion.isLikedByMe();
-        boolean newState = !isCurrentlyLiked;
+        boolean newState = !publicacion.isLikedByMe();
 
         publicacion.setLikedByMe(newState);
+        int currentLikes = publicacion.getTotalLikes();
+
+        if (newState) currentLikes++;
+        else if (currentLikes > 0) currentLikes--;
+
+        publicacion.setTotalLikes(currentLikes);
+        holder.tvLikesCount.setText(String.valueOf(currentLikes));
         updateLikeVisuals(holder, newState);
 
         if (newState) {
-            publicacion.setTotalLikes(publicacion.getTotalLikes() + 1);
             apiService.darLike(postId).enqueue(new Callback<Void>() {
                 public void onResponse(Call<Void> call, Response<Void> response) {}
                 public void onFailure(Call<Void> call, Throwable t) {}
             });
         } else {
-            publicacion.setTotalLikes(publicacion.getTotalLikes() - 1);
             apiService.quitarLike(postId).enqueue(new Callback<Void>() {
                 public void onResponse(Call<Void> call, Response<Void> response) {}
                 public void onFailure(Call<Void> call, Throwable t) {}
@@ -198,8 +248,32 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
         }
     }
 
+    private void animarLike(View view) {
+        view.animate().scaleX(1.3f).scaleY(1.3f).setDuration(100).withEndAction(() -> {
+            view.animate().scaleX(1f).scaleY(1f).setDuration(100)
+                    .setInterpolator(new android.view.animation.OvershootInterpolator(4f)).start();
+        }).start();
+    }
+
+    private void animarCorazonGigante(ImageView heart) {
+        heart.setVisibility(View.VISIBLE);
+        heart.setAlpha(1f);
+        heart.setScaleX(0f);
+        heart.setScaleY(0f);
+        float randomAngle = (float) (Math.random() * 40 - 20);
+        heart.setRotation(randomAngle);
+
+        heart.animate().scaleX(1.3f).scaleY(1.3f).alpha(0f).setDuration(800)
+                .setInterpolator(new android.view.animation.DecelerateInterpolator())
+                .withEndAction(() -> {
+                    heart.setVisibility(View.GONE);
+                    heart.setRotation(0);
+                }).start();
+    }
+
     @Override
     public int getItemCount() { return publicacionList.size(); }
+
     public void setPublicaciones(List<PublicacionFeedDTO> nuevasPublicaciones) {
         this.publicacionList.clear();
         this.publicacionList.addAll(nuevasPublicaciones);
@@ -208,8 +282,8 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         ImageView userAvatarImageView, postImageView, likeButtonImageView;
-        ImageView commentButtonImageView, deleteButtonImageView;
-        TextView postTitleTextView, timestampTextView;
+        ImageView commentButtonImageView, deleteButtonImageView, bigHeartImageView;
+        TextView postTitleTextView, timestampTextView, tvLikesCount;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -220,6 +294,8 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
             likeButtonImageView = itemView.findViewById(R.id.iv_like_button);
             commentButtonImageView = itemView.findViewById(R.id.iv_comment_button);
             deleteButtonImageView = itemView.findViewById(R.id.iv_delete_button);
+            tvLikesCount = itemView.findViewById(R.id.tv_likes_count);
+            bigHeartImageView = itemView.findViewById(R.id.iv_big_heart);
         }
     }
 }

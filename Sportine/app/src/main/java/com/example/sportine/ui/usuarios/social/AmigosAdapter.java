@@ -49,7 +49,7 @@ public class AmigosAdapter extends RecyclerView.Adapter<AmigosAdapter.AmigoViewH
     public void onBindViewHolder(@NonNull AmigoViewHolder holder, int position) {
         UsuarioDetalle usuario = listaUsuarios.get(position);
 
-        // 1. Datos de texto (Nombre y Usuario)
+        // 1. Datos de texto
         String nombre = usuario.getNombre();
         String apellidos = usuario.getApellidos();
         if (nombre == null) nombre = usuario.getUsuario();
@@ -60,7 +60,6 @@ public class AmigosAdapter extends RecyclerView.Adapter<AmigosAdapter.AmigoViewH
             holder.tvUsuario.setText("@" + usuario.getUsuario());
         }
 
-
         Glide.with(holder.itemView.getContext())
                 .load(usuario.getFotoPerfil())
                 .placeholder(R.drawable.avatar_user_male)
@@ -68,19 +67,20 @@ public class AmigosAdapter extends RecyclerView.Adapter<AmigosAdapter.AmigoViewH
                 .circleCrop()
                 .into(holder.ivAvatar);
 
-
-
         if (esModoBusqueda) {
+
 
             if (usuario.isAmigo()) {
 
                 holder.btnAccion.setText("Siguiendo");
-                holder.btnAccion.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#2196F3"))); // Azul
+                holder.btnAccion.setBackgroundTintList(ColorStateList.valueOf(Color.GRAY));
                 holder.btnAccion.setTextColor(Color.WHITE);
-                holder.btnAccion.setEnabled(false); // No se puede picar
+
+                holder.btnAccion.setEnabled(true);
             } else {
-                holder.btnAccion.setText("Agregar");
-                holder.btnAccion.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#6200EE"))); // Tu Morado (Purple 500)
+
+                holder.btnAccion.setText("Seguir");
+                holder.btnAccion.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#2196F3"))); // Azul
                 holder.btnAccion.setTextColor(Color.WHITE);
                 holder.btnAccion.setEnabled(true);
             }
@@ -97,10 +97,6 @@ public class AmigosAdapter extends RecyclerView.Adapter<AmigosAdapter.AmigoViewH
             if (listener != null) {
                 listener.onAction(usuario);
 
-                if (esModoBusqueda) {
-                    usuario.setAmigo(true);
-                    notifyItemChanged(position);
-                }
             }
         });
     }

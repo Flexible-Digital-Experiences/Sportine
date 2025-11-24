@@ -16,6 +16,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, String> {
     boolean existsByUsuario(String usuario);
     Optional<Usuario> findByUsuario(String usuario);
 
-    @Query("SELECT u FROM Usuario u WHERE u.usuario LIKE %:termino% OR u.nombre LIKE %:termino% OR u.apellidos LIKE %:termino%")
+    @Query("SELECT u FROM Usuario u WHERE " +
+            "LOWER(u.usuario) LIKE LOWER(CONCAT('%', :termino, '%')) OR " +
+            "LOWER(u.nombre) LIKE LOWER(CONCAT('%', :termino, '%')) OR " +
+            "LOWER(u.apellidos) LIKE LOWER(CONCAT('%', :termino, '%'))")
     List<Usuario> buscarPorNombreOUsuario(@Param("termino") String termino);
 }
