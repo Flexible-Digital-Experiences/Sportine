@@ -63,4 +63,5 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
     implementation("org.ocpsoft.prettytime:prettytime:5.0.7.Final")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation("com.airbnb.android:lottie:6.1.0")
 }

@@ -1,6 +1,6 @@
 package com.example.sportine.data;
 
-
+import com.example.sportine.models.Comentario;
 import com.example.sportine.models.Publicacion;
 import com.example.sportine.models.RespuestaRegistro;
 import com.example.sportine.models.Usuario;
@@ -8,8 +8,6 @@ import com.example.sportine.models.PublicacionFeedDTO;
 import com.example.sportine.models.UsuarioDetalle;
 import com.example.sportine.ui.usuarios.dto.LoginRequest;
 import com.example.sportine.ui.usuarios.dto.LoginResponse;
-import com.example.sportine.ui.usuarios.dto.PublicacionRequest;
-import com.example.sportine.models.Comentario;
 import com.example.sportine.ui.usuarios.dto.ComentarioRequest;
 import com.example.sportine.ui.usuarios.dto.UsuarioDetalleDTO;
 import com.example.sportine.ui.usuarios.dto.PerfilAlumnoResponseDTO;
@@ -19,6 +17,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.Part;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -30,7 +29,6 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
-    // --- MÓDULO USUARIOS ---
     @POST("/api/usuarios/login")
     Call<LoginResponse> login(@Body LoginRequest loginRequest);
 
@@ -43,10 +41,7 @@ public interface ApiService {
     @Multipart
     @POST("/api/social/post")
     Call<Publicacion> crearPost(
-
             @Part("data") RequestBody data,
-
-
             @Part MultipartBody.Part file
     );
 
@@ -73,15 +68,13 @@ public interface ApiService {
     @GET("/api/social/amigos")
     Call<List<UsuarioDetalle>> verMisAmigos();
 
-
     @GET("/api/social/amigos/buscar")
     Call<List<UsuarioDetalle>> buscarPersonas(@Query("q") String termino);
 
+    @POST("/api/social/seguir/{username}")
+    Call<Map<String, String>> seguirUsuario(@Path("username") String username);
 
-    @POST("/api/social/amigos/{username}")
-    Call<Void> agregarAmigo(@Path("username") String username);
+    @GET("/api/social/verificar/{username}")
+    Call<Boolean> verificarSeguimiento(@Path("username") String username);
 
-
-    @DELETE("/api/social/amigos/{username}")
-    Call<Void> eliminarAmigo(@Path("username") String username);
 }

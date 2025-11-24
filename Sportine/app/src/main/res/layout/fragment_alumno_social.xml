@@ -27,7 +27,7 @@
         android:layout_marginStart="16dp"
         android:src="@drawable/ic_remove_friend_black_24dp"
         android:contentDescription="Ver/Eliminar Amigos"
-        android:padding="4dp"
+        android:padding="8dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintBottom_toBottomOf="@+id/tv_title_social"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,6 +39,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:src="@drawable/ic_add_friend_black_24dp"
+        android:contentDescription="Buscar Amigos"
+        android:padding="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintBottom_toBottomOf="@+id/tv_title_social"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_title_social" />
@@ -51,7 +54,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
+        app:cardElevation="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title_social">
@@ -70,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Comparte tu logro o entreno de hoy..."
-                android:textColor="@color/grey_text"
+                android:textColor="#757575"
                 android:textSize="14sp"/>
 
             <ImageView
@@ -80,7 +83,7 @@
                 android:layout_marginStart="8dp"
                 android:src="@drawable/ic_camera_black_24dp"
                 android:contentDescription="Abrir cámara"
-                app:tint="@color/grey_icon"/>
+                app:tint="#757575"/>
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
@@ -103,5 +106,52 @@
             tools:listitem="@layout/item_alumno_social_post" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_empty_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_create_post_trigger"
+        tools:visibility="visible">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_empty_state"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            app:lottie_rawRes="@raw/gym_animation"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="¡Esto está muy tranquilo!"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="Sigue a tus amigos para ver\nsu actividad aquí."
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_buscar_amigos_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Buscar Amigos"
+            android:backgroundTint="@color/purple_500"/> </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

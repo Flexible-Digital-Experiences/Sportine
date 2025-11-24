@@ -5,6 +5,7 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_home">
 
+    <!-- ... TUS OTROS FRAGMENTOS ... -->
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.sportine.ui.usuarios.home.HomeFragment"
@@ -90,6 +91,7 @@
         tools:layout="@layout/fragment_alumno_completar_datos" />
 
 
+    <!-- FRAGMENT SOCIAL -->
     <fragment
         android:id="@+id/navigation_social"
         android:name="com.example.sportine.ui.usuarios.social.SocialFragment"
@@ -111,9 +113,12 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
+
+        <!-- ¡ACCIÓN NUEVA PARA LA TRANSICIÓN! (Sin animaciones default para que jale el Shared Element) -->
+        <action
+            android:id="@+id/action_social_to_detallePost"
+            app:destination="@id/navigation_detallePost" />
     </fragment>
-
-
 
     <fragment
         android:id="@+id/navigation_buscar_amigo"
@@ -121,12 +126,18 @@
         android:label="Buscar Amigo"
         tools:layout="@layout/fragment_alumno_buscar_amigo" />
 
-
     <fragment
         android:id="@+id/navigation_lista_amigos"
         android:name="com.example.sportine.ui.usuarios.social.ListaAmigosFragment"
         android:label="Mis Amigos"
         tools:layout="@layout/fragment_alumno_lista_amigos" />
+
+    <!-- NUEVO DESTINO: DETALLE POST -->
+    <fragment
+        android:id="@+id/navigation_detallePost"
+        android:name="com.example.sportine.ui.usuarios.social.DetallePostFragment"
+        android:label="Detalle"
+        tools:layout="@layout/fragment_detalle_post" />
 
 
     <fragment
