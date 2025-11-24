@@ -8,6 +8,7 @@ import com.example.sportine.models.PublicacionFeedDTO;
 import com.example.sportine.models.UsuarioDetalle;
 import com.example.sportine.ui.usuarios.dto.LoginRequest;
 import com.example.sportine.ui.usuarios.dto.LoginResponse;
+import com.example.sportine.models.Comentario;
 import com.example.sportine.ui.usuarios.dto.ComentarioRequest;
 import com.example.sportine.ui.usuarios.dto.UsuarioDetalleDTO;
 import com.example.sportine.ui.usuarios.dto.PerfilAlumnoResponseDTO;
@@ -71,10 +72,6 @@ public interface ApiService {
     @GET("/api/social/amigos/buscar")
     Call<List<UsuarioDetalle>> buscarPersonas(@Query("q") String termino);
 
-    @POST("/api/social/seguir/{username}")
-    Call<Map<String, String>> seguirUsuario(@Path("username") String username);
-
-    @GET("/api/social/verificar/{username}")
-    Call<Boolean> verificarSeguimiento(@Path("username") String username);
-
+    @POST("/api/social/amigos/{username}")
+    Call<Void> agregarAmigo(@Path("username") String username);
 }
