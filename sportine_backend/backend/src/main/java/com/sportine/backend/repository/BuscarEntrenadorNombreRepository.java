@@ -17,18 +17,19 @@ public interface BuscarEntrenadorNombreRepository extends JpaRepository<Usuario,
      * Se usa cuando el usuario busca por nombre
      */
     @Query(value = """
-        SELECT DISTINCT
+        SELECT
             u.usuario,
             CONCAT(u.nombre, ' ', u.apellidos) AS nombreCompleto,
-            u.foto_perfil AS fotoPerfil,
+            ie.foto_perfil AS fotoPerfil,
             COALESCE(AVG(c.calificacion), 0.0) AS ratingPromedio
         FROM Usuario u
         INNER JOIN Usuario_Rol ur ON u.usuario = ur.usuario
         INNER JOIN Rol r ON ur.id_rol = r.id_rol
+        LEFT JOIN Informacion_Entrenador ie ON u.usuario = ie.usuario
         LEFT JOIN Calificaciones c ON u.usuario = c.usuario_calificado
-        WHERE r.nombre_rol = 'entrenador'
+        WHERE r.rol = 'entrenador'
           AND (:query IS NULL OR LOWER(CONCAT(u.nombre, ' ', u.apellidos)) LIKE LOWER(CONCAT('%', :query, '%')))
-        GROUP BY u.usuario, u.nombre, u.apellidos, u.foto_perfil
+        GROUP BY u.usuario, u.nombre, u.apellidos, ie.foto_perfil
         ORDER BY ratingPromedio DESC, u.nombre ASC
         """, nativeQuery = true)
     List<Map<String, Object>> buscarEntrenadores(@Param("query") String query);
@@ -38,18 +39,19 @@ public interface BuscarEntrenadorNombreRepository extends JpaRepository<Usuario,
      * Se usa cuando el usuario entra a la pantalla sin buscar nada
      */
     @Query(value = """
-        SELECT DISTINCT
+        SELECT
             u.usuario,
             CONCAT(u.nombre, ' ', u.apellidos) AS nombreCompleto,
-            u.foto_perfil AS fotoPerfil,
+            ie.foto_perfil AS fotoPerfil,
             COALESCE(AVG(c.calificacion), 0.0) AS ratingPromedio
         FROM Usuario u
         INNER JOIN Usuario_Rol ur ON u.usuario = ur.usuario
         INNER JOIN Rol r ON ur.id_rol = r.id_rol
+        LEFT JOIN Informacion_Entrenador ie ON u.usuario = ie.usuario
         LEFT JOIN Calificaciones c ON u.usuario = c.usuario_calificado
-        WHERE r.nombre_rol = 'entrenador'
+        WHERE r.rol = 'entrenador'
           AND u.id_estado = :idEstado
-        GROUP BY u.usuario, u.nombre, u.apellidos, u.foto_perfil
+        GROUP BY u.usuario, u.nombre, u.apellidos, ie.foto_perfil
         ORDER BY ratingPromedio DESC, u.nombre ASC
         LIMIT 20
         """, nativeQuery = true)
