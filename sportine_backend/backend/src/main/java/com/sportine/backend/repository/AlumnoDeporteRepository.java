@@ -10,4 +10,5 @@ public interface AlumnoDeporteRepository extends JpaRepository<AlumnoDeporte, In
 
     List<AlumnoDeporte> findByUsuario(String usuario);
     void deleteByUsuario(String usuario);
+
 }

@@ -71,6 +71,7 @@ CREATE TABLE Alumno_Deporte (
 CREATE TABLE Informacion_Entrenador (
     usuario VARCHAR(255),
     costo_mensualidad INT,
+    limite_alumnos INT,
     descripcion_perfil VARCHAR(255),
     foto_perfil TEXT,
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
