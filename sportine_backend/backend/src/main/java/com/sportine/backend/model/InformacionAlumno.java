@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 
 @Entity
@@ -26,8 +27,9 @@ public class InformacionAlumno {
     @Column(name = "lesiones")
     private String lesiones;
 
-    @Column(name = "nivel")
-    private String nivel;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_nivel", referencedColumnName = "id_nivel")
+    private Nivel nivel;
 
     @Column(name = "padecimientos")
     private String padecimientos;
@@ -37,4 +39,9 @@ public class InformacionAlumno {
 
     @Column(name = "fecha_nacimiento")
     private LocalDate fechaNacimiento;
+
+    // Método helper para obtener el nombre del nivel
+    public String getNombreNivel() {
+        return nivel != null ? nivel.getNombreNivel() : null;
+    }
 }

@@ -26,9 +26,65 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
     private final AlumnoDeporteRepository alumnoDeporteRepository;
     private final TarjetaRepository tarjetaRepository;
     private final EstadoRepository estadoRepository;
+    private final NivelRepository nivelRepository;
+    private final DeporteRepository deporteRepository;
 
     // ========================================================
-    // MÉTODOS DE PERFIL
+    // MÉTODO OBTENER PERFIL - CORREGIDO
+    // ========================================================
+
+    @Override
+    public PerfilAlumnoResponseDTO obtenerPerfilAlumno(String usuario) {
+
+        Usuario usuarioEntity = usuarioRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        InformacionAlumno infoAlumno = informacionAlumnoRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Perfil de alumno no encontrado"));
+
+        // ========================================
+        // CAMBIO CRÍTICO: Obtener nombres de deportes correctamente
+        // ========================================
+        List<AlumnoDeporte> deportesEntity = alumnoDeporteRepository.findByUsuario(usuario);
+        List<String> deportes = deportesEntity.stream()
+                .map(ad -> ad.getDeporte().getNombreDeporte())  // ← Usar relación
+                .collect(Collectors.toList());
+
+        Integer edad = calcularEdad(infoAlumno.getFechaNacimiento());
+
+        Estado estado = estadoRepository.findById(usuarioEntity.getIdEstado())
+                .orElse(null);
+        String nombreEstado = estado != null ? estado.getEstado() : "";
+
+        // ========================================
+        // CAMBIO CRÍTICO: Obtener nombre del nivel
+        // ========================================
+        String nombreNivel = infoAlumno.getNivel() != null
+                ? infoAlumno.getNivel().getNombreNivel()
+                : null;
+
+        return new PerfilAlumnoResponseDTO(
+                usuarioEntity.getUsuario(),
+                usuarioEntity.getNombre(),
+                usuarioEntity.getApellidos(),
+                usuarioEntity.getSexo(),
+                nombreEstado,
+                usuarioEntity.getCiudad(),
+                infoAlumno.getEstatura(),
+                infoAlumno.getPeso(),
+                infoAlumno.getLesiones(),
+                nombreNivel,  // ← Usar nombre, no objeto
+                infoAlumno.getPadecimientos(),
+                infoAlumno.getFotoPerfil(),
+                infoAlumno.getFechaNacimiento(),
+                edad,
+                deportes,
+                "Perfil obtenido exitosamente"
+        );
+    }
+
+    // ========================================================
+    // MÉTODO CREAR PERFIL - CORREGIDO
     // ========================================================
 
     @Override
@@ -42,23 +98,38 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
             throw new RuntimeException("El alumno ya tiene un perfil creado");
         }
 
+        // ========================================
+        // CAMBIO CRÍTICO: Buscar el nivel por nombre
+        // ========================================
+        Nivel nivel = nivelRepository.findByNombreNivel(dto.getNivel())
+                .orElseThrow(() -> new RuntimeException("Nivel no encontrado: " + dto.getNivel()));
+
         InformacionAlumno infoAlumno = new InformacionAlumno();
         infoAlumno.setUsuario(dto.getUsuario());
         infoAlumno.setEstatura(dto.getEstatura());
         infoAlumno.setPeso(dto.getPeso());
         infoAlumno.setLesiones(dto.getLesiones());
-        infoAlumno.setNivel(dto.getNivel());
+        infoAlumno.setNivel(nivel);  // ← Asignar objeto Nivel, no String
         infoAlumno.setPadecimientos(dto.getPadecimientos());
         infoAlumno.setFotoPerfil(dto.getFotoPerfil());
         infoAlumno.setFechaNacimiento(dto.getFechaNacimiento());
 
         informacionAlumnoRepository.save(infoAlumno);
 
+        // ========================================
+        // CAMBIO CRÍTICO: Buscar deportes por nombre
+        // ========================================
         if (dto.getDeportes() != null && !dto.getDeportes().isEmpty()) {
-            for (String deporte : dto.getDeportes()) {
+            for (String nombreDeporte : dto.getDeportes()) {
+                Deporte deporte = deporteRepository.findByNombreDeporte(nombreDeporte)
+                        .orElseThrow(() -> new RuntimeException("Deporte no encontrado: " + nombreDeporte));
+
                 AlumnoDeporte alumnoDeporte = new AlumnoDeporte();
                 alumnoDeporte.setUsuario(dto.getUsuario());
-                alumnoDeporte.setDeporte(deporte);
+                alumnoDeporte.setDeporte(deporte);  // ← Asignar objeto Deporte
+                alumnoDeporte.setNivel(nivel);  // ← Asignar nivel
+                alumnoDeporte.setFechaInicio(LocalDate.now());
+
                 alumnoDeporteRepository.save(alumnoDeporte);
             }
         }
@@ -79,7 +150,7 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 infoAlumno.getEstatura(),
                 infoAlumno.getPeso(),
                 infoAlumno.getLesiones(),
-                infoAlumno.getNivel(),
+                nivel.getNombreNivel(),  // ← Nombre del nivel
                 infoAlumno.getPadecimientos(),
                 infoAlumno.getFotoPerfil(),
                 infoAlumno.getFechaNacimiento(),
@@ -89,45 +160,9 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
         );
     }
 
-    @Override
-    public PerfilAlumnoResponseDTO obtenerPerfilAlumno(String usuario) {
-
-        Usuario usuarioEntity = usuarioRepository.findByUsuario(usuario)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        InformacionAlumno infoAlumno = informacionAlumnoRepository.findByUsuario(usuario)
-                .orElseThrow(() -> new RuntimeException("Perfil de alumno no encontrado"));
-
-        List<AlumnoDeporte> deportesEntity = alumnoDeporteRepository.findByUsuario(usuario);
-        List<String> deportes = deportesEntity.stream()
-                .map(AlumnoDeporte::getDeporte)
-                .collect(Collectors.toList());
-
-        Integer edad = calcularEdad(infoAlumno.getFechaNacimiento());
-
-        Estado estado = estadoRepository.findById(usuarioEntity.getIdEstado())
-                .orElse(null);
-        String nombreEstado = estado != null ? estado.getEstado() : "";
-
-        return new PerfilAlumnoResponseDTO(
-                usuarioEntity.getUsuario(),
-                usuarioEntity.getNombre(),
-                usuarioEntity.getApellidos(),
-                usuarioEntity.getSexo(),
-                nombreEstado,
-                usuarioEntity.getCiudad(),
-                infoAlumno.getEstatura(),
-                infoAlumno.getPeso(),
-                infoAlumno.getLesiones(),
-                infoAlumno.getNivel(),
-                infoAlumno.getPadecimientos(),
-                infoAlumno.getFotoPerfil(),
-                infoAlumno.getFechaNacimiento(),
-                edad,
-                deportes,
-                "Perfil obtenido exitosamente"
-        );
-    }
+    // ========================================================
+    // MÉTODO ACTUALIZAR PERFIL - CORREGIDO
+    // ========================================================
 
     @Override
     @Transactional
@@ -139,23 +174,35 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
         InformacionAlumno infoAlumno = informacionAlumnoRepository.findByUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("Perfil de alumno no encontrado"));
 
+        // Buscar el nivel por nombre
+        Nivel nivel = nivelRepository.findByNombreNivel(dto.getNivel())
+                .orElseThrow(() -> new RuntimeException("Nivel no encontrado: " + dto.getNivel()));
+
         infoAlumno.setEstatura(dto.getEstatura());
         infoAlumno.setPeso(dto.getPeso());
         infoAlumno.setLesiones(dto.getLesiones());
-        infoAlumno.setNivel(dto.getNivel());
+        infoAlumno.setNivel(nivel);  // ← Asignar objeto Nivel
         infoAlumno.setPadecimientos(dto.getPadecimientos());
         infoAlumno.setFotoPerfil(dto.getFotoPerfil());
         infoAlumno.setFechaNacimiento(dto.getFechaNacimiento());
 
         informacionAlumnoRepository.save(infoAlumno);
 
+        // Eliminar deportes anteriores
         alumnoDeporteRepository.deleteByUsuario(usuario);
 
+        // Agregar nuevos deportes
         if (dto.getDeportes() != null && !dto.getDeportes().isEmpty()) {
-            for (String deporte : dto.getDeportes()) {
+            for (String nombreDeporte : dto.getDeportes()) {
+                Deporte deporte = deporteRepository.findByNombreDeporte(nombreDeporte)
+                        .orElseThrow(() -> new RuntimeException("Deporte no encontrado: " + nombreDeporte));
+
                 AlumnoDeporte alumnoDeporte = new AlumnoDeporte();
                 alumnoDeporte.setUsuario(usuario);
                 alumnoDeporte.setDeporte(deporte);
+                alumnoDeporte.setNivel(nivel);
+                alumnoDeporte.setFechaInicio(LocalDate.now());
+
                 alumnoDeporteRepository.save(alumnoDeporte);
             }
         }
@@ -176,7 +223,7 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 infoAlumno.getEstatura(),
                 infoAlumno.getPeso(),
                 infoAlumno.getLesiones(),
-                infoAlumno.getNivel(),
+                nivel.getNombreNivel(),
                 infoAlumno.getPadecimientos(),
                 infoAlumno.getFotoPerfil(),
                 infoAlumno.getFechaNacimiento(),
