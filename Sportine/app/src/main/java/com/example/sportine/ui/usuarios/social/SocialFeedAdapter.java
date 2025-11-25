@@ -76,7 +76,6 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 // A. Animación Instagram (Posición dinámica)
-                // Centramos el corazón donde fue el toque
                 float x = holder.postImageView.getX() + e.getX() - (holder.bigHeartImageView.getWidth() / 2f);
                 float y = holder.postImageView.getY() + e.getY() - (holder.bigHeartImageView.getHeight() / 2f);
 
@@ -94,7 +93,7 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
 
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
-                // B. Aquí se dispara la navegación al detalle
+                // B. Aquí se dispara la navegación al detalle (Transición)
                 abrirDetalleConTransicion(holder, publicacion);
                 return true;
             }
@@ -107,9 +106,22 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
         // --- 2. TRANSICIÓN ---
         holder.postImageView.setTransitionName("transicion_post_" + publicacion.getIdPublicacion());
 
-        // --- 3. DATOS ---
-        holder.postTitleTextView.setText(publicacion.getDescripcion());
+        // --- 3. DATOS (Layout tipo Twitter) ---
 
+        // A. Nombre (Negritas)
+        String nombreMostrar = publicacion.getAutorNombreCompleto() != null ?
+                publicacion.getAutorNombreCompleto() : publicacion.getAutorUsername();
+        holder.tvUsername.setText(nombreMostrar);
+
+        // B. Descripción (Visible/Gone)
+        if (publicacion.getDescripcion() != null && !publicacion.getDescripcion().isEmpty()) {
+            holder.tvDescription.setVisibility(View.VISIBLE);
+            holder.tvDescription.setText(publicacion.getDescripcion());
+        } else {
+            holder.tvDescription.setVisibility(View.GONE);
+        }
+
+        // C. Avatar
         Glide.with(holder.itemView.getContext())
                 .load(publicacion.getAutorFotoPerfil())
                 .placeholder(R.drawable.avatar_user_male)
@@ -117,6 +129,7 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
                 .circleCrop()
                 .into(holder.userAvatarImageView);
 
+        // D. Imagen del Post (Visible/Gone)
         if (publicacion.getImagen() != null && !publicacion.getImagen().isEmpty()) {
             holder.postImageView.setVisibility(View.VISIBLE);
             Glide.with(holder.itemView.getContext())
@@ -126,19 +139,20 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
             holder.postImageView.setVisibility(View.GONE);
         }
 
+        // E. Fecha
         if (publicacion.getFechaPublicacion() != null) {
             holder.timestampTextView.setText(prettyTime.format(publicacion.getFechaPublicacion()));
         } else {
             holder.timestampTextView.setText("");
         }
 
-        // Likes
+        // F. Likes
         int likes = publicacion.getTotalLikes();
         holder.tvLikesCount.setText(String.valueOf(likes));
 
         updateLikeVisuals(holder, publicacion.isLikedByMe());
 
-        // --- 4. CLICKS ---
+        // --- 4. CLICKS DE BOTONES ---
         holder.likeButtonImageView.setOnClickListener(v -> {
             v.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY);
             animarLike(v);
@@ -169,7 +183,7 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
         }
     }
 
-    // Método helper para la navegación
+    // Método helper para la navegación con transición
     private void abrirDetalleConTransicion(PostViewHolder holder, PublicacionFeedDTO publicacion) {
         // 1. Extras para Shared Element
         androidx.navigation.fragment.FragmentNavigator.Extras extras =
@@ -283,19 +297,22 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         ImageView userAvatarImageView, postImageView, likeButtonImageView;
         ImageView commentButtonImageView, deleteButtonImageView, bigHeartImageView;
-        TextView postTitleTextView, timestampTextView, tvLikesCount;
+        TextView tvUsername, tvDescription, timestampTextView, tvLikesCount;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
+
             userAvatarImageView = itemView.findViewById(R.id.iv_user_avatar);
-            postTitleTextView = itemView.findViewById(R.id.tv_post_title);
+            tvUsername = itemView.findViewById(R.id.tv_username);
+            tvDescription = itemView.findViewById(R.id.tv_post_description);
             postImageView = itemView.findViewById(R.id.iv_post_image);
+            bigHeartImageView = itemView.findViewById(R.id.iv_big_heart);
+
             timestampTextView = itemView.findViewById(R.id.tv_post_timestamp);
             likeButtonImageView = itemView.findViewById(R.id.iv_like_button);
+            tvLikesCount = itemView.findViewById(R.id.tv_likes_count);
             commentButtonImageView = itemView.findViewById(R.id.iv_comment_button);
             deleteButtonImageView = itemView.findViewById(R.id.iv_delete_button);
-            tvLikesCount = itemView.findViewById(R.id.tv_likes_count);
-            bigHeartImageView = itemView.findViewById(R.id.iv_big_heart);
         }
     }
 }
