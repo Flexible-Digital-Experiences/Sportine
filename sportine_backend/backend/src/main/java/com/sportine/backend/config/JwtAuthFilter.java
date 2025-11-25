@@ -25,6 +25,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+
+        // No ejecutar el filtro para estos endpoints públicos
+        return path.equals("/api/usuarios/login") ||
+                path.equals("/api/usuarios/registrar");
+    }
+
+    @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
@@ -43,7 +52,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             username = jwtService.extractUsername(jwt);
         } catch (Exception e) {
-            filterChain.doFilter(request, response); // (Deja que falle en el config)
+            filterChain.doFilter(request, response);
             return;
         }
 
