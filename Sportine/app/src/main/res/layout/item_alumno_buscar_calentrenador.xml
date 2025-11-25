@@ -81,14 +81,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
-                    tools:text="Calificación"
+                    tools:text="4.5"
                     android:textColor="#6B7280"
                     android:textSize="13sp"
-                    android:textStyle="bold"
-                    />
+                    android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Número de alumnos -->
+            <!-- Número de alumnos y disponibilidad -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -110,7 +109,25 @@
                     android:layout_marginStart="4dp"
                     android:textColor="#6B7280"
                     android:textSize="13sp"
-                    tools:text="Alumnos" />
+                    tools:text="15/20 alumnos" />
+
+                <!-- Badge de disponibilidad -->
+                <TextView
+                    android:id="@+id/badge_disponibilidad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/badge_disponible"
+                    android:paddingStart="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="2dp"
+                    android:textColor="#059669"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    tools:text="5 espacios"
+                    tools:visibility="visible" />
             </LinearLayout>
 
             <!-- Deportes que imparte -->
@@ -130,18 +147,20 @@
 
                 <TextView
                     android:id="@+id/text_deportes"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:layout_marginStart="4dp"
                     android:textColor="#6B7280"
                     android:textSize="13sp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    tools:text="Especialidad" />
+                    tools:text="Fútbol, Basketball" />
             </LinearLayout>
 
         </LinearLayout>
 
+        <!-- Indicador de estado (verde = disponible, amarillo = casi lleno) -->
         <View
             android:id="@+id/indicador_estado"
             android:layout_width="4dp"

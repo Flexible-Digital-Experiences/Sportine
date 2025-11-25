@@ -1,6 +1,7 @@
 package com.example.sportine.data;
 
 import com.example.sportine.models.Comentario;
+import com.example.sportine.models.EntrenadorCardDTO;
 import com.example.sportine.models.Publicacion;
 import com.example.sportine.models.RespuestaRegistro;
 import com.example.sportine.models.Usuario;
@@ -31,6 +32,8 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
+    // Usuarios
+
     @POST("/api/usuarios/login")
     Call<LoginResponse> login(@Body LoginRequest loginRequest);
 
@@ -40,8 +43,12 @@ public interface ApiService {
     @GET("/api/usuarios/{usuario}")
     Call<UsuarioDetalleDTO> obtenerUsuario(@Path("usuario") String usuario);
 
+    // Alumnos
+
     @GET("/api/alumnos/perfil/{usuario}")
     Call<PerfilAlumnoResponseDTO> obtenerPerfilAlumno(@Path("usuario") String usuario);
+
+    // Social
 
     @GET("/api/social/feed")
     Call<List<PublicacionFeedDTO>> getSocialFeed();
@@ -79,4 +86,9 @@ public interface ApiService {
 
     @GET("/api/social/amigos")
     Call<List<UsuarioDetalle>> verMisAmigos();
+
+    // Buscar
+
+    @GET("api/buscar-entrenadores")
+    Call<List<EntrenadorCardDTO>> buscarEntrenadores(@Query("query") String query);
 }
