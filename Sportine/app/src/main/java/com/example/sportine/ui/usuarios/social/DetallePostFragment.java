@@ -6,11 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.transition.TransitionInflater;
 
 import com.bumptech.glide.Glide;
@@ -25,7 +25,10 @@ public class DetallePostFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // 1. ANIMACIÓN DE ENTRADA Y SALIDA
         setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.move));
+        setEnterTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.fade));
+        setExitTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.fade));
     }
 
     @Nullable
@@ -38,21 +41,19 @@ public class DetallePostFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 2. RECUPERAR DATOS
         Bundle args = getArguments();
         if (args == null) return;
 
         String urlImagen = args.getString("imagenUrl");
-        String descripcion = args.getString("descripcion");
-        String transitionName = args.getString("transitionName"); // ¡Clave!
+        String transitionName = args.getString("transitionName");
 
         ImageView ivDetalle = view.findViewById(R.id.iv_detalle_imagen_grande);
-        TextView tvDescripcion = view.findViewById(R.id.tv_detalle_descripcion);
+        ImageView btnCerrar = view.findViewById(R.id.btn_close_detalle);
 
-        tvDescripcion.setText(descripcion);
-
+        // 3. ASIGNAR EL NOMBRE DE TRANSICIÓN
         ivDetalle.setTransitionName(transitionName);
 
+        // 4. POSPONER LA TRANSICIÓN (Esperar a Glide)
         postponeEnterTransition();
 
         Glide.with(this)
@@ -61,7 +62,6 @@ public class DetallePostFragment extends Fragment {
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-
                         startPostponedEnterTransition();
                         return false;
                     }
@@ -73,5 +73,10 @@ public class DetallePostFragment extends Fragment {
                     }
                 })
                 .into(ivDetalle);
+
+        // 5. BOTÓN CERRAR (Regresar)
+        btnCerrar.setOnClickListener(v -> Navigation.findNavController(view).popBackStack());
+        // Cerrar también al tocar la imagen
+        ivDetalle.setOnClickListener(v -> Navigation.findNavController(view).popBackStack());
     }
 }

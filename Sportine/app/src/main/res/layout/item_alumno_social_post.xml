@@ -12,83 +12,88 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:paddingBottom="16dp">
 
         <ImageView
             android:id="@+id/iv_user_avatar"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/tv_post_title"
+            android:id="@+id/tv_username"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
+            android:layout_marginEnd="16dp"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/iv_user_avatar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_user_avatar"
             app:layout_constraintTop_toTopOf="@id/iv_user_avatar"
-            tools:text="¡Felicidades Ana! Enhorabuena, sigue así 💪" />
+            tools:text="Emmanuel Pérez" />
+
+        <TextView
+            android:id="@+id/tv_post_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="12dp"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_user_avatar"
+            tools:text="Aquí va la descripción de lo que entrené hoy... 💪 Si es puro texto se ve así." />
 
         <ImageView
             android:id="@+id/iv_post_image"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_marginTop="12dp"
             android:scaleType="centerCrop"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/tv_post_title"
-            app:layout_constraintTop_toBottomOf="@id/tv_post_title"
-            tools:src="@tools:sample/backgrounds/scenic" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_post_description"
+            tools:src="@tools:sample/backgrounds/scenic"
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/iv_big_heart"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/ic_favorite_black_24dp"
-            app:tint="#EF0505"
+            app:tint="#FD0000"
             android:visibility="invisible"
             android:alpha="0"
             android:elevation="10dp"
-
             app:layout_constraintStart_toStartOf="@id/iv_post_image"
             app:layout_constraintTop_toTopOf="@id/iv_post_image" />
 
-        <TextView
-            android:id="@+id/tv_post_timestamp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="@id/tv_post_title"
-            app:layout_constraintTop_toBottomOf="@id/iv_post_image"
-            tools:text="Hace 5m" />
-
         <LinearLayout
             android:id="@+id/ll_actions"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginHorizontal="8dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:clipChildren="false"
             android:clipToPadding="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/tv_post_title"
-            app:layout_constraintTop_toBottomOf="@id/tv_post_timestamp">
+            app:layout_constraintTop_toBottomOf="@id/iv_post_image">
 
             <ImageView
                 android:id="@+id/iv_like_button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="8dp"
-                android:contentDescription="Me gusta"
                 android:src="@drawable/ic_favorite_border_black_24dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
@@ -109,7 +114,6 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="8dp"
-                android:contentDescription="Comentarios"
                 android:src="@drawable/ic_chat_bubble_outline_black_24dp"
                 app:tint="@android:color/black"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -121,19 +125,26 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
+            <TextView
+                android:id="@+id/tv_post_timestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:textSize="12sp"
+                android:textColor="@android:color/darker_gray"
+                tools:text="Hace 5m" />
+
             <ImageView
                 android:id="@+id/iv_delete_button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:padding="8dp"
-                android:contentDescription="Borrar publicación"
                 android:src="@drawable/ic_delete_black_24dp"
                 android:visibility="gone"
-                app:tint="@color/black"
+                app:tint="@android:color/holo_red_dark"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true" />
-
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
