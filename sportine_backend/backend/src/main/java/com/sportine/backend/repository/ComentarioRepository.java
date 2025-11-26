@@ -7,4 +7,6 @@ import java.util.List;
 public interface ComentarioRepository extends JpaRepository<Comentario, Integer> {
 
     List<Comentario> findByIdPublicacionOrderByFechaAsc(Integer idPublicacion);
+
+    void deleteByIdPublicacion(Integer idPublicacion);
 }

@@ -33,4 +33,8 @@ public class PublicacionFeedDTO {
     public void setLikedByMe(boolean likedByMe) { this.isLikedByMe = likedByMe; }
     public void setTotalLikes(int totalLikes) { this.totalLikes = totalLikes; }
     public boolean isMine() { return isMine; }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 }
