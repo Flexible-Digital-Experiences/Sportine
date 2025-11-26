@@ -50,7 +50,6 @@ public class SocialFragment extends Fragment implements CreatePostBottomSheetFra
 
         apiService = RetrofitClient.getClient(requireContext()).create(ApiService.class);
 
-        // 1. Vincular Vistas
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         llEmptyState = view.findViewById(R.id.ll_empty_state);
         btnBuscarAmigosEmpty = view.findViewById(R.id.btn_buscar_amigos_empty);
@@ -58,18 +57,16 @@ public class SocialFragment extends Fragment implements CreatePostBottomSheetFra
         recyclerView = view.findViewById(R.id.rv_social_feed);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // 2. Configurar Adapter
         publicacionList = new ArrayList<>();
         adapter = new SocialFeedAdapter(publicacionList, requireContext(), apiService);
         recyclerView.setAdapter(adapter);
 
-        // 3. Configurar SwipeRefresh (Jalar para recargar)
         swipeRefreshLayout.setOnRefreshListener(this::cargarFeed);
 
-        // 4. Configurar Botón del Empty State
         btnBuscarAmigosEmpty.setOnClickListener(v ->
                 Navigation.findNavController(view).navigate(R.id.action_social_to_buscar_amigo)
         );
+
 
         MaterialCardView cardCreatePostTrigger = view.findViewById(R.id.card_create_post_trigger);
         cardCreatePostTrigger.setOnClickListener(v -> showCreatePostDialog());
@@ -80,13 +77,17 @@ public class SocialFragment extends Fragment implements CreatePostBottomSheetFra
         ImageView removeFriendIcon = view.findViewById(R.id.iv_remove_friend);
         removeFriendIcon.setOnClickListener(v -> Navigation.findNavController(view).navigate(R.id.action_social_to_lista_amigos));
 
+        ImageView notifIcon = view.findViewById(R.id.iv_notifications_btn);
+        notifIcon.setOnClickListener(v ->
+                Navigation.findNavController(view).navigate(R.id.navigation_notifications)
+        );
+
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // Cargar feed automáticamente al entrar
         swipeRefreshLayout.setRefreshing(true);
         cargarFeed();
     }
@@ -95,26 +96,18 @@ public class SocialFragment extends Fragment implements CreatePostBottomSheetFra
         apiService.getSocialFeed().enqueue(new Callback<List<PublicacionFeedDTO>>() {
             @Override
             public void onResponse(Call<List<PublicacionFeedDTO>> call, Response<List<PublicacionFeedDTO>> response) {
-                // Apagar la ruedita de carga
                 swipeRefreshLayout.setRefreshing(false);
 
                 if (response.isSuccessful() && response.body() != null) {
                     List<PublicacionFeedDTO> posts = response.body();
-
-                    // --- AQUÍ ESTÁ EL REVERSE ---
-                    // Como en tu backend usaste ASC (viejos primero),
-                    // aquí los volteamos para ver los NUEVOS primero.
                     Collections.reverse(posts);
 
                     adapter.setPublicaciones(posts);
 
-                    // --- LÓGICA DEL EMPTY STATE ---
                     if (posts.isEmpty()) {
-                        // No hay posts: Muestra dibujo, oculta lista
                         llEmptyState.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
                     } else {
-                        // Sí hay posts: Oculta dibujo, muestra lista
                         llEmptyState.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
                     }

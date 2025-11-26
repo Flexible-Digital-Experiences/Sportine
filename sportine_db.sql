@@ -258,6 +258,19 @@ CREATE TABLE Seguidores (
     UNIQUE KEY unique_seguimiento (usuario_seguidor, usuario_seguido) 
 );
 
+CREATE TABLE Notificacion (
+    id_notificacion INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_destino VARCHAR(255), 
+    usuario_actor VARCHAR(255),   
+    tipo ENUM('LIKE', 'COMENTARIO', 'SEGUIDOR') NOT NULL,
+    id_referencia INT,            
+    mensaje VARCHAR(255),         
+    leido BOOLEAN DEFAULT FALSE,
+    fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (usuario_destino) REFERENCES Usuario(usuario),
+    FOREIGN KEY (usuario_actor) REFERENCES Usuario(usuario)
+);
 -- ============================================
 -- TABLAS DE ESTADÍSTICAS POR DEPORTE
 -- ============================================

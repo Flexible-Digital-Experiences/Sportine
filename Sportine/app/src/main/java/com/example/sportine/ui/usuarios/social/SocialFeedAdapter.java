@@ -7,8 +7,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +20,8 @@ import com.bumptech.glide.Glide;
 import com.example.sportine.R;
 import com.example.sportine.data.ApiService;
 import com.example.sportine.models.PublicacionFeedDTO;
+
+import com.example.sportine.models.Publicacion;
 
 import org.ocpsoft.prettytime.PrettyTime;
 import org.ocpsoft.prettytime.TimeFormat;
@@ -43,6 +48,7 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
         this.context = context;
         this.apiService = apiService;
 
+        // Configuración de PrettyTime (Hace x tiempo)
         this.prettyTime = new PrettyTime(new Locale("es"));
         TimeUnit justNowUnit = prettyTime.getUnit(JustNow.class);
         prettyTime.removeUnit(justNowUnit);
@@ -66,16 +72,14 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         PublicacionFeedDTO publicacion = publicacionList.get(position);
 
-        // --- 1. DETECTOR DE GESTOS MEJORADO ---
+        // --- 1. GESTOS (Doble Tap y Transición) ---
         GestureDetector detector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
-            public boolean onDown(MotionEvent e) {
-                return true;
-            }
+            public boolean onDown(MotionEvent e) { return true; }
 
             @Override
             public boolean onDoubleTap(MotionEvent e) {
-                // A. Animación Instagram (Posición dinámica)
+                // Animación Instagram (Posición dinámica del corazón)
                 float x = holder.postImageView.getX() + e.getX() - (holder.bigHeartImageView.getWidth() / 2f);
                 float y = holder.postImageView.getY() + e.getY() - (holder.bigHeartImageView.getHeight() / 2f);
 
@@ -93,27 +97,20 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
 
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
-                // B. Aquí se dispara la navegación al detalle (Transición)
+
                 abrirDetalleConTransicion(holder, publicacion);
                 return true;
             }
         });
 
-        // Asignamos el detector a AMBOS (Tarjeta e Imagen) para que no se bloqueen
         holder.itemView.setOnTouchListener((v, event) -> detector.onTouchEvent(event));
         holder.postImageView.setOnTouchListener((v, event) -> detector.onTouchEvent(event));
-
-        // --- 2. TRANSICIÓN ---
         holder.postImageView.setTransitionName("transicion_post_" + publicacion.getIdPublicacion());
 
-        // --- 3. DATOS (Layout tipo Twitter) ---
-
-        // A. Nombre (Negritas)
         String nombreMostrar = publicacion.getAutorNombreCompleto() != null ?
                 publicacion.getAutorNombreCompleto() : publicacion.getAutorUsername();
         holder.tvUsername.setText(nombreMostrar);
 
-        // B. Descripción (Visible/Gone)
         if (publicacion.getDescripcion() != null && !publicacion.getDescripcion().isEmpty()) {
             holder.tvDescription.setVisibility(View.VISIBLE);
             holder.tvDescription.setText(publicacion.getDescripcion());
@@ -121,7 +118,6 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
             holder.tvDescription.setVisibility(View.GONE);
         }
 
-        // C. Avatar
         Glide.with(holder.itemView.getContext())
                 .load(publicacion.getAutorFotoPerfil())
                 .placeholder(R.drawable.avatar_user_male)
@@ -129,7 +125,6 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
                 .circleCrop()
                 .into(holder.userAvatarImageView);
 
-        // D. Imagen del Post (Visible/Gone)
         if (publicacion.getImagen() != null && !publicacion.getImagen().isEmpty()) {
             holder.postImageView.setVisibility(View.VISIBLE);
             Glide.with(holder.itemView.getContext())
@@ -139,20 +134,16 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
             holder.postImageView.setVisibility(View.GONE);
         }
 
-        // E. Fecha
         if (publicacion.getFechaPublicacion() != null) {
             holder.timestampTextView.setText(prettyTime.format(publicacion.getFechaPublicacion()));
         } else {
             holder.timestampTextView.setText("");
         }
-
-        // F. Likes
         int likes = publicacion.getTotalLikes();
         holder.tvLikesCount.setText(String.valueOf(likes));
 
         updateLikeVisuals(holder, publicacion.isLikedByMe());
 
-        // --- 4. CLICKS DE BOTONES ---
         holder.likeButtonImageView.setOnClickListener(v -> {
             v.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY);
             animarLike(v);
@@ -169,38 +160,97 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
         });
 
         if (publicacion.isMine()) {
-            holder.deleteButtonImageView.setVisibility(View.VISIBLE);
-            holder.deleteButtonImageView.setOnClickListener(v -> {
-                new android.app.AlertDialog.Builder(holder.itemView.getContext())
-                        .setTitle("Borrar publicación")
-                        .setMessage("¿Estás seguro?")
-                        .setPositiveButton("Borrar", (dialog, which) -> eliminarPost(publicacion.getIdPublicacion(), holder.getAdapterPosition()))
-                        .setNegativeButton("Cancelar", null)
-                        .show();
+            holder.moreOptionsImageView.setVisibility(View.VISIBLE);
+
+            holder.moreOptionsImageView.setOnClickListener(v -> {
+                PopupMenu popup = new PopupMenu(context, holder.moreOptionsImageView);
+                popup.getMenu().add(0, 1, 0, "Editar");
+                popup.getMenu().add(0, 2, 1, "Eliminar");
+
+                popup.setOnMenuItemClickListener(item -> {
+                    if (item.getItemId() == 1) {
+                        // EDITAR
+                        mostrarDialogoEditar(publicacion, holder.getAdapterPosition());
+                        return true;
+                    } else if (item.getItemId() == 2) {
+                        // ELIMINAR
+                        confirmarEliminacion(publicacion.getIdPublicacion(), holder.getAdapterPosition());
+                        return true;
+                    }
+                    return false;
+                });
+                popup.show();
             });
         } else {
-            holder.deleteButtonImageView.setVisibility(View.GONE);
+            holder.moreOptionsImageView.setVisibility(View.GONE);
         }
     }
 
-    // Método helper para la navegación con transición
+    private void mostrarDialogoEditar(PublicacionFeedDTO publicacion, int position) {
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_editar_post, null);
+        EditText etDescripcion = view.findViewById(R.id.et_editar_descripcion);
+        etDescripcion.setText(publicacion.getDescripcion());
+
+        new android.app.AlertDialog.Builder(context)
+                .setView(view)
+                .setPositiveButton("Guardar", (dialog, which) -> {
+                    String nuevoTexto = etDescripcion.getText().toString().trim();
+                    if (!nuevoTexto.isEmpty()) {
+                        guardarEdicion(publicacion, position, nuevoTexto);
+                    }
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    private void guardarEdicion(PublicacionFeedDTO publicacion, int position, String nuevoTexto) {
+        Publicacion datosActualizados = new Publicacion();
+        datosActualizados.setDescripcion(nuevoTexto);
+        datosActualizados.setImagen(publicacion.getImagen()); // Mantenemos imagen
+
+        apiService.editarPost(publicacion.getIdPublicacion(), datosActualizados).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    publicacion.setDescripcion(nuevoTexto);
+                    notifyItemChanged(position);
+                    Toast.makeText(context, "Post actualizado", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Error al editar", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(context, "Error de conexión", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void confirmarEliminacion(Integer postId, int position) {
+        new android.app.AlertDialog.Builder(context)
+                .setTitle("Borrar publicación")
+                .setMessage("¿Estás seguro de que quieres eliminar esto?")
+                .setPositiveButton("Eliminar", (dialog, which) -> eliminarPost(postId, position))
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+
     private void abrirDetalleConTransicion(PostViewHolder holder, PublicacionFeedDTO publicacion) {
-        // 1. Extras para Shared Element
         androidx.navigation.fragment.FragmentNavigator.Extras extras =
                 new androidx.navigation.fragment.FragmentNavigator.Extras.Builder()
                         .addSharedElement(holder.postImageView, holder.postImageView.getTransitionName())
                         .build();
 
-        // 2. Argumentos
         android.os.Bundle args = new android.os.Bundle();
         args.putString("imagenUrl", publicacion.getImagen());
         args.putString("descripcion", publicacion.getDescripcion());
         args.putString("transitionName", holder.postImageView.getTransitionName());
 
-        // 3. Navegar
         try {
             androidx.navigation.Navigation.findNavController(holder.itemView).navigate(
-                    R.id.action_social_to_detallePost, // ID del NavGraph
+                    R.id.action_social_to_detallePost,
                     args,
                     null,
                     extras
@@ -296,23 +346,22 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<SocialFeedAdapter.Po
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         ImageView userAvatarImageView, postImageView, likeButtonImageView;
-        ImageView commentButtonImageView, deleteButtonImageView, bigHeartImageView;
+        ImageView commentButtonImageView, moreOptionsImageView, bigHeartImageView;
         TextView tvUsername, tvDescription, timestampTextView, tvLikesCount;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
-
             userAvatarImageView = itemView.findViewById(R.id.iv_user_avatar);
             tvUsername = itemView.findViewById(R.id.tv_username);
             tvDescription = itemView.findViewById(R.id.tv_post_description);
             postImageView = itemView.findViewById(R.id.iv_post_image);
             bigHeartImageView = itemView.findViewById(R.id.iv_big_heart);
-
             timestampTextView = itemView.findViewById(R.id.tv_post_timestamp);
             likeButtonImageView = itemView.findViewById(R.id.iv_like_button);
             tvLikesCount = itemView.findViewById(R.id.tv_likes_count);
             commentButtonImageView = itemView.findViewById(R.id.iv_comment_button);
-            deleteButtonImageView = itemView.findViewById(R.id.iv_delete_button);
+
+            moreOptionsImageView = itemView.findViewById(R.id.iv_more_options);
         }
     }
 }

@@ -17,6 +17,7 @@ import com.example.sportine.ui.usuarios.dto.PerfilAlumnoResponseDTO;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Multipart;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 
 import java.util.List;
@@ -91,4 +92,10 @@ public interface ApiService {
 
     @GET("api/buscar-entrenadores")
     Call<List<EntrenadorCardDTO>> buscarEntrenadores(@Query("query") String query);
+
+    @PUT("/api/social/post/{id}")
+    Call<Void> editarPost(@Path("id") Integer id, @Body com.example.sportine.models.Publicacion publicacionActualizada);
+
+    @GET("/api/notificaciones")
+    Call<List<com.example.sportine.models.Notificacion>> obtenerNotificaciones();
 }

@@ -1,10 +1,12 @@
 package com.sportine.backend.service.impl;
 
 import com.sportine.backend.dto.UsuarioDetalleDTO;
+import com.sportine.backend.model.Notificacion; // <--- NUEVO
 import com.sportine.backend.model.Seguidores;
 import com.sportine.backend.model.Usuario;
 import com.sportine.backend.repository.SeguidoresRepository;
 import com.sportine.backend.repository.UsuarioRepository;
+import com.sportine.backend.service.NotificacionService; // <--- NUEVO
 import com.sportine.backend.service.SeguidoresService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ public class SeguidoresServiceImpl implements SeguidoresService {
 
     private final SeguidoresRepository seguidoresRepository;
     private final UsuarioRepository usuarioRepository;
+    private final NotificacionService notificacionService;
 
     @Override
     @Transactional
@@ -41,6 +44,13 @@ public class SeguidoresServiceImpl implements SeguidoresService {
             nuevo.setUsuarioSeguidor(miUsuario);
             nuevo.setUsuarioSeguido(usuarioObjetivo);
             seguidoresRepository.save(nuevo);
+            notificacionService.crearNotificacion(
+                    usuarioObjetivo,
+                    miUsuario,
+                    Notificacion.TipoNotificacion.SEGUIDOR,
+                    null
+            );
+
             return "Ahora sigues a " + usuarioObjetivo;
         }
     }
@@ -73,7 +83,6 @@ public class SeguidoresServiceImpl implements SeguidoresService {
 
     private UsuarioDetalleDTO convertirADTO(Usuario u, String miUsuario) {
         boolean loSigo = loSigo(miUsuario, u.getUsuario());
-
         String infoEstado = (u.getIdEstado() != null) ? "Estado ID: " + u.getIdEstado() : "Sin Estado";
 
         return new UsuarioDetalleDTO(
