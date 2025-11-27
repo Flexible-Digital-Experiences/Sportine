@@ -130,19 +130,6 @@ CREATE TABLE Solicitudes_Entrenamiento (
     FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte)
 );
 
-CREATE TABLE Contrato (
-    id_contrato INT PRIMARY KEY AUTO_INCREMENT,
-    usuario_alumno VARCHAR(255),
-    usuario_entrenador VARCHAR(255),
-    id_deporte INT,
-    fecha_inicio DATE,
-    fecha_fin DATE,
-    estado_contrato VARCHAR(50),
-    FOREIGN KEY (usuario_alumno) REFERENCES Usuario(usuario),
-    FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
-    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte)
-);
-
 CREATE TABLE Entrenamiento (
     id_entrenamiento INT PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(255),
