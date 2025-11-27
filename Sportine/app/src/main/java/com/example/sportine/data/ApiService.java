@@ -2,6 +2,7 @@ package com.example.sportine.data;
 
 import com.example.sportine.models.Comentario;
 import com.example.sportine.models.EntrenadorCardDTO;
+import com.example.sportine.models.PerfilEntrenadorDTO;
 import com.example.sportine.models.Publicacion;
 import com.example.sportine.models.RespuestaRegistro;
 import com.example.sportine.models.Usuario;
@@ -88,13 +89,18 @@ public interface ApiService {
     @GET("/api/social/amigos")
     Call<List<UsuarioDetalle>> verMisAmigos();
 
+    @PUT("/api/social/post/{id}")
+    Call<Void> editarPost(@Path("id") Integer id, @Body com.example.sportine.models.Publicacion publicacionActualizada);
+
     // Buscar
 
     @GET("api/buscar-entrenadores")
     Call<List<EntrenadorCardDTO>> buscarEntrenadores(@Query("query") String query);
 
-    @PUT("/api/social/post/{id}")
-    Call<Void> editarPost(@Path("id") Integer id, @Body com.example.sportine.models.Publicacion publicacionActualizada);
+    @GET("api/buscar-entrenadores/ver/{usuario}")
+    Call<PerfilEntrenadorDTO> obtenerPerfilEntrenador(@Path("usuario") String usuario);
+
+    // Notificaciones
 
     @GET("/api/notificaciones")
     Call<List<com.example.sportine.models.Notificacion>> obtenerNotificaciones();

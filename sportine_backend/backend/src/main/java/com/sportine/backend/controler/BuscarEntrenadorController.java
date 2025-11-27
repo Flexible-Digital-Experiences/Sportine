@@ -1,7 +1,10 @@
 package com.sportine.backend.controler;
 
 import com.sportine.backend.dto.EntrenadorCardDTO;
+import com.sportine.backend.dto.HomeAlumnoDTO;
+import com.sportine.backend.dto.PerfilEntrenadorDTO;
 import com.sportine.backend.service.BuscarEntrenadorService;
+import com.sportine.backend.service.DetalleEntrenadorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +17,10 @@ import java.util.List;
 @RequestMapping("/api/buscar-entrenadores")
 @RequiredArgsConstructor
 @Slf4j
+
 public class BuscarEntrenadorController {
+
+    private final DetalleEntrenadorService detalleEntrenadorService;
 
     private final BuscarEntrenadorService buscarEntrenadorService;
 
@@ -33,4 +39,12 @@ public class BuscarEntrenadorController {
 
         return ResponseEntity.ok(entrenadores);
     }
+    @GetMapping("/ver/{usuario}")
+    public ResponseEntity<PerfilEntrenadorDTO> VerEntrenador(
+            @PathVariable String usuario) {
+
+        PerfilEntrenadorDTO response = detalleEntrenadorService.obtenerPerfilEntrenador(usuario);
+        return ResponseEntity.ok(response);
+    }
+
 }

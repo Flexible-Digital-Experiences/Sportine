@@ -1,6 +1,5 @@
 package com.sportine.backend.service.impl;
 
-
 import com.sportine.backend.dto.CalificacionDTO;
 import com.sportine.backend.dto.PerfilEntrenadorDTO;
 import com.sportine.backend.dto.ResenaDTO;
@@ -70,11 +69,38 @@ public class DetalleEntrenadorServiceImpl implements DetalleEntrenadorService {
         }
         perfil.setCostoMensual(costo);
 
+        // Manejar límite de alumnos
+        Object limiteObj = datosEntrenador.get("limiteAlumnos");
+        Integer limite = 0;
+        if (limiteObj != null) {
+            if (limiteObj instanceof Integer) {
+                limite = (Integer) limiteObj;
+            } else if (limiteObj instanceof Number) {
+                limite = ((Number) limiteObj).intValue();
+            }
+        }
+        perfil.setLimiteAlumnos(limite);
+
+        // Manejar alumnos actuales
+        Object actualesObj = datosEntrenador.get("alumnosActuales");
+        Integer actuales = 0;
+        if (actualesObj != null) {
+            if (actualesObj instanceof Long) {
+                actuales = ((Long) actualesObj).intValue();
+            } else if (actualesObj instanceof Integer) {
+                actuales = (Integer) actualesObj;
+            } else if (actualesObj instanceof Number) {
+                actuales = ((Number) actualesObj).intValue();
+            }
+        }
+        perfil.setAlumnosActuales(actuales);
+
         perfil.setCalificacion(calificacion);
         perfil.setEspecialidades(especialidades != null ? especialidades : new ArrayList<>());
         perfil.setResenas(resenas);
 
-        log.info("Perfil del entrenador {} obtenido exitosamente", usuario);
+        log.info("Perfil del entrenador {} obtenido exitosamente con {}/{} alumnos",
+                usuario, actuales, limite);
         return perfil;
     }
 
