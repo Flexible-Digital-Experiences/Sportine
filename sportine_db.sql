@@ -109,8 +109,7 @@ CREATE TABLE Entrenador_Alumno (
     usuario_entrenador VARCHAR(255),
     usuario_alumno VARCHAR(255),
     id_deporte INT,
-    fecha_inicio DATE,
-    status_relacion VARCHAR(50), -- activo, pausado, finalizado
+    status_relacion ENUM('activo', 'pendiente', 'finalizado'),
     FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
     FOREIGN KEY (usuario_alumno) REFERENCES Usuario(usuario),
     FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
@@ -124,7 +123,7 @@ CREATE TABLE Solicitudes_Entrenamiento (
     id_deporte INT,
     descripcion_solicitud VARCHAR(255),
     fecha_solicitud DATE,
-    status_solicitud VARCHAR(50),
+    status_solicitud ENUM('Aprobada', 'Rechazada', 'En revisión'),
     FOREIGN KEY (usuario_alumno) REFERENCES Usuario(usuario),
     FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
     FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte)
