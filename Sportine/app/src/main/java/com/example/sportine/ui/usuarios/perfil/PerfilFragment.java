@@ -48,6 +48,8 @@ public class PerfilFragment extends Fragment {
     private TextView tvSexo;
     private TextView tvEstado;
     private TextView tvCiudad;
+    private TextView tvTotalAmigos;
+    private TextView tvTotalEntrenadores;
 
     // Contenedor de deportes
     private LinearLayout deportesContainer;
@@ -106,6 +108,8 @@ public class PerfilFragment extends Fragment {
         tvSexo = view.findViewById(R.id.tvSexo);
         tvEstado = view.findViewById(R.id.tvEstado);
         tvCiudad = view.findViewById(R.id.tvCiudad);
+        tvTotalAmigos = view.findViewById(R.id.tvTotalAmigos);
+        tvTotalEntrenadores = view.findViewById(R.id.tvTotalEntrenadores);
 
         // Contenedor de deportes (el LinearLayout horizontal que contiene las cards)
         deportesContainer = view.findViewById(R.id.deportesContainer);
@@ -124,10 +128,8 @@ public class PerfilFragment extends Fragment {
 
         username = prefs.getString("USER_USERNAME", null);
         rol = prefs.getString("USER_ROL", null);
-        String token = prefs.getString("USER_TOKEN", null);  // ← AGREGAR
 
         Log.d(TAG, "Usuario logueado: " + username + ", Rol: " + rol);
-        Log.d(TAG, "🔑 TOKEN COMPLETO: " + token);  // ← AGREGAR
 
     }
 
@@ -267,12 +269,17 @@ public class PerfilFragment extends Fragment {
         Log.d(TAG, "Foto perfil URL: " + perfil.getFotoPerfil());
         Log.d(TAG, "Deportes: " + perfil.getDeportes());
         Log.d(TAG, "Cantidad deportes: " + (perfil.getDeportes() != null ? perfil.getDeportes().size() : "NULL"));
+        Log.d(TAG, "Total amigos: " + perfil.getTotalAmigos());
+        Log.d(TAG, "Total entrenadores: " + perfil.getTotalEntrenadores());
 
         // 1. Cargar foto de perfil
         cargarFotoPerfil(perfil.getFotoPerfil());
 
         // 2. Mostrar deportes dinámicamente
         mostrarDeportes(perfil.getDeportes());
+
+        // 3. Mostrar contadores
+        mostrarContadores(perfil);
 
         Log.d(TAG, "===== FIN DATOS COMPLETOS =====");
     }
@@ -505,5 +512,19 @@ public class PerfilFragment extends Fragment {
     private int dpToPx(int dp) {
         float density = getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
+    }
+
+    /**
+     * Muestra los contadores de amigos y entrenadores
+     */
+    private void mostrarContadores(PerfilAlumnoResponseDTO perfil) {
+        int amigos = perfil.getTotalAmigos();
+        int entrenadores = perfil.getTotalEntrenadores();
+
+        Log.d(TAG, "Total amigos: " + amigos);
+        Log.d(TAG, "Total entrenadores: " + entrenadores);
+
+        tvTotalAmigos.setText(String.valueOf(amigos));
+        tvTotalEntrenadores.setText(String.valueOf(entrenadores));
     }
 }

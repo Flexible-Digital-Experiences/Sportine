@@ -28,6 +28,8 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
     private final EstadoRepository estadoRepository;
     private final NivelRepository nivelRepository;
     private final DeporteRepository deporteRepository;
+    private final SeguidoresRepository seguidoresRepository;
+    private final EntrenadorAlumnoRepository entrenadorAlumnoRepository;
 
     // ========================================================
     // MÉTODO OBTENER PERFIL - CORREGIDO
@@ -63,6 +65,10 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 ? infoAlumno.getNivel().getNombreNivel()
                 : null;
 
+        Integer totalAmigos = seguidoresRepository.contarAmigos(usuario);
+
+        Integer totalEntrenadores = entrenadorAlumnoRepository.contarEntrenadoresActivos(usuario);
+
         return new PerfilAlumnoResponseDTO(
                 usuarioEntity.getUsuario(),
                 usuarioEntity.getNombre(),
@@ -79,6 +85,8 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 infoAlumno.getFechaNacimiento(),
                 edad,
                 deportes,
+                totalAmigos,
+                totalEntrenadores,
                 "Perfil obtenido exitosamente"
         );
     }
@@ -140,6 +148,9 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 .orElse(null);
         String nombreEstado = estado != null ? estado.getEstado() : "";
 
+        Integer totalAmigos = seguidoresRepository.contarAmigos(dto.getUsuario());
+        Integer totalEntrenadores = entrenadorAlumnoRepository.contarEntrenadoresActivos(dto.getUsuario());
+
         return new PerfilAlumnoResponseDTO(
                 usuario.getUsuario(),
                 usuario.getNombre(),
@@ -156,6 +167,8 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 infoAlumno.getFechaNacimiento(),
                 edad,
                 dto.getDeportes(),
+                totalAmigos,
+                totalEntrenadores,
                 "Perfil de alumno creado exitosamente"
         );
     }
@@ -213,6 +226,9 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 .orElse(null);
         String nombreEstado = estado != null ? estado.getEstado() : "";
 
+        Integer totalAmigos = seguidoresRepository.contarAmigos(usuario);
+        Integer totalEntrenadores = entrenadorAlumnoRepository.contarEntrenadoresActivos(usuario);
+
         return new PerfilAlumnoResponseDTO(
                 usuarioEntity.getUsuario(),
                 usuarioEntity.getNombre(),
@@ -229,6 +245,8 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 infoAlumno.getFechaNacimiento(),
                 edad,
                 dto.getDeportes(),
+                totalAmigos,
+                totalEntrenadores,
                 "Perfil actualizado exitosamente"
         );
     }

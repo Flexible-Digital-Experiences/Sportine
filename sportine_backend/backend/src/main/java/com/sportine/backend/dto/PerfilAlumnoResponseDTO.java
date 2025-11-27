@@ -26,5 +26,7 @@ public class PerfilAlumnoResponseDTO {
     private LocalDate fechaNacimiento;
     private Integer edad; // Calculada automáticamente
     private List<String> deportes;
+    private Integer totalAmigos;
+    private Integer totalEntrenadores;
     private String mensaje;
 }

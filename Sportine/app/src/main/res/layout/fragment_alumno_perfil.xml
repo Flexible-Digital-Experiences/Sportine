@@ -393,6 +393,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="#4CAF50"
                         android:textSize="22sp"
+                        android:id="@+id/tvTotalAmigos"
                         android:textStyle="bold"/>
 
                     <TextView
@@ -430,6 +431,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="#FF9800"
                         android:textSize="22sp"
+                        android:id="@+id/tvTotalEntrenadores"
                         android:textStyle="bold"/>
 
                     <TextView

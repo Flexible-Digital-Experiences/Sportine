@@ -1,5 +1,7 @@
 package com.example.sportine.ui.usuarios.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 import java.util.List;
 
@@ -15,15 +17,33 @@ public class PerfilAlumnoResponseDTO {
     private String lesiones;
     private String nivel;
     private String padecimientos;
+
+    @SerializedName("fotoPerfil")
     private String fotoPerfil;
+
+    @SerializedName("fechaNacimiento")
     private Date fechaNacimiento;
+
     private Integer edad;
     private List<String> deportes;
+
+    // ========================================
+    // NUEVOS CAMPOS: Contadores
+    // ========================================
+    @SerializedName("totalAmigos")
+    private Integer totalAmigos;
+
+    @SerializedName("totalEntrenadores")
+    private Integer totalEntrenadores;
+    // ========================================
+
     private String mensaje;
 
     public PerfilAlumnoResponseDTO() {}
 
+    // ========================================
     // Getters
+    // ========================================
     public String getUsuario() { return usuario; }
     public String getNombre() { return nombre; }
     public String getApellidos() { return apellidos; }
@@ -41,7 +61,21 @@ public class PerfilAlumnoResponseDTO {
     public List<String> getDeportes() { return deportes; }
     public String getMensaje() { return mensaje; }
 
+    // ========================================
+    // NUEVOS GETTERS: Retornan 0 si es null
+    // ========================================
+    public Integer getTotalAmigos() {
+        return totalAmigos != null ? totalAmigos : 0;
+    }
+
+    public Integer getTotalEntrenadores() {
+        return totalEntrenadores != null ? totalEntrenadores : 0;
+    }
+    // ========================================
+
+    // ========================================
     // Setters
+    // ========================================
     public void setUsuario(String usuario) { this.usuario = usuario; }
     public void setNombre(String nombre) { this.nombre = nombre; }
     public void setApellidos(String apellidos) { this.apellidos = apellidos; }
@@ -58,4 +92,16 @@ public class PerfilAlumnoResponseDTO {
     public void setEdad(Integer edad) { this.edad = edad; }
     public void setDeportes(List<String> deportes) { this.deportes = deportes; }
     public void setMensaje(String mensaje) { this.mensaje = mensaje; }
+
+    // ========================================
+    // NUEVOS SETTERS
+    // ========================================
+    public void setTotalAmigos(Integer totalAmigos) {
+        this.totalAmigos = totalAmigos;
+    }
+
+    public void setTotalEntrenadores(Integer totalEntrenadores) {
+        this.totalEntrenadores = totalEntrenadores;
+    }
+    // ========================================
 }
