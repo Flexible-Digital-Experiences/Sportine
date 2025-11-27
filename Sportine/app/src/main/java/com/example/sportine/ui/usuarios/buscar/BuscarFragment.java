@@ -4,12 +4,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,7 +21,6 @@ import com.example.sportine.data.ApiService;
 import com.example.sportine.data.RetrofitClient;
 import com.example.sportine.models.EntrenadorCardDTO;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -29,6 +31,8 @@ public class BuscarFragment extends Fragment implements ResultadosEntrenadoresAd
 
     private RecyclerView rvEntrenadores;
     private SearchView searchView;
+    private LinearLayout layoutEmptyState;
+    private TextView tvSeccionTitulo;
     private ResultadosEntrenadoresAdapter adapter;
     private ApiService apiService;
 
@@ -41,16 +45,18 @@ public class BuscarFragment extends Fragment implements ResultadosEntrenadoresAd
         // Inicializar API
         apiService = RetrofitClient.getClient(requireContext()).create(ApiService.class);
 
-        // Inicializar RecyclerView
+        // Inicializar vistas
         rvEntrenadores = view.findViewById(R.id.recycler_entrenadores);
-        rvEntrenadores.setLayoutManager(new LinearLayoutManager(getContext()));
+        layoutEmptyState = view.findViewById(R.id.layout_empty_state);
+        searchView = view.findViewById(R.id.search_view_entrenador);
+        tvSeccionTitulo = view.findViewById(R.id.tv_seccion_titulo);
 
-        // Inicializar Adapter
+        // Inicializar RecyclerView
+        rvEntrenadores.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new ResultadosEntrenadoresAdapter(this);
         rvEntrenadores.setAdapter(adapter);
 
-        // Inicializar SearchView
-        searchView = view.findViewById(R.id.search_view_entrenador);
+        // Configurar SearchView
         setupBuscador();
 
         // Cargar entrenadores iniciales (sin query = top del estado)
@@ -86,6 +92,9 @@ public class BuscarFragment extends Fragment implements ResultadosEntrenadoresAd
     private void cargarEntrenadores(String query) {
         if (!isAdded()) return; // Verificar que el Fragment esté adjunto
 
+        // Cambiar título según si hay búsqueda o no
+        actualizarTituloSeccion(query);
+
         apiService.buscarEntrenadores(query).enqueue(new Callback<List<EntrenadorCardDTO>>() {
             @Override
             public void onResponse(Call<List<EntrenadorCardDTO>> call,
@@ -97,11 +106,15 @@ public class BuscarFragment extends Fragment implements ResultadosEntrenadoresAd
                     adapter.setEntrenadores(entrenadores);
 
                     if (entrenadores.isEmpty()) {
-                        Toast.makeText(getContext(),
-                                "No se encontraron entrenadores",
-                                Toast.LENGTH_SHORT).show();
+                        // No hay resultados - Mostrar empty state
+                        mostrarEmptyState(true);
+                    } else {
+                        // Hay resultados - Mostrar recycler
+                        mostrarEmptyState(false);
                     }
                 } else {
+                    // Error en la respuesta
+                    mostrarEmptyState(true);
                     Toast.makeText(getContext(),
                             "Error al buscar: " + response.code(),
                             Toast.LENGTH_SHORT).show();
@@ -112,6 +125,8 @@ public class BuscarFragment extends Fragment implements ResultadosEntrenadoresAd
             public void onFailure(Call<List<EntrenadorCardDTO>> call, Throwable t) {
                 if (!isAdded()) return;
 
+                // Error de conexión
+                mostrarEmptyState(true);
                 Toast.makeText(getContext(),
                         "Error de conexión: " + t.getMessage(),
                         Toast.LENGTH_SHORT).show();
@@ -119,17 +134,45 @@ public class BuscarFragment extends Fragment implements ResultadosEntrenadoresAd
         });
     }
 
+    /**
+     * Actualiza el título de la sección según si hay búsqueda o no
+     */
+    private void actualizarTituloSeccion(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            // Sin búsqueda - Mostrar "Entrenadores recomendados"
+            tvSeccionTitulo.setText("Entrenadores recomendados");
+        } else {
+            // Con búsqueda - Mostrar "Entrenadores encontrados"
+            tvSeccionTitulo.setText("Entrenadores encontrados");
+        }
+    }
+
+    /**
+     * Muestra u oculta el empty state
+     * @param mostrar true para mostrar empty state, false para mostrar recycler
+     */
+    private void mostrarEmptyState(boolean mostrar) {
+        if (mostrar) {
+            rvEntrenadores.setVisibility(View.GONE);
+            layoutEmptyState.setVisibility(View.VISIBLE);
+            tvSeccionTitulo.setVisibility(View.GONE); // Ocultar título cuando no hay resultados
+        } else {
+            rvEntrenadores.setVisibility(View.VISIBLE);
+            layoutEmptyState.setVisibility(View.GONE);
+            tvSeccionTitulo.setVisibility(View.VISIBLE); // Mostrar título cuando hay resultados
+        }
+    }
+
     @Override
     public void onEntrenadorClick(EntrenadorCardDTO entrenador) {
-        // TODO: Navegar al perfil del entrenador o mostrar detalles
+        // Navegar al perfil del entrenador
         Toast.makeText(getContext(),
                 "Seleccionaste a " + entrenador.getNombreCompleto(),
                 Toast.LENGTH_SHORT).show();
 
-        // Ejemplo de navegación (cuando lo implementes):
-        // Bundle bundle = new Bundle();
-        // bundle.putString("usuario", entrenador.getUsuario());
-        // NavHostFragment.findNavController(this)
-        //     .navigate(R.id.action_buscarFragment_to_perfilEntrenadorFragment, bundle);
+        Bundle bundle = new Bundle();
+        bundle.putString("usuario", entrenador.getUsuario());
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_buscar_to_detallesEntrenador, bundle);
     }
-}
+} 

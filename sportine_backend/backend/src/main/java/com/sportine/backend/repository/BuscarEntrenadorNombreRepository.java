@@ -35,7 +35,6 @@ public interface BuscarEntrenadorNombreRepository extends JpaRepository<Usuario,
         WHERE r.rol = 'entrenador'
           AND (:query IS NULL OR LOWER(CONCAT(u.nombre, ' ', u.apellidos)) LIKE LOWER(CONCAT('%', :query, '%')))
         GROUP BY u.usuario, u.nombre, u.apellidos, ie.foto_perfil, ie.limite_alumnos
-        HAVING COUNT(DISTINCT ea.usuario_alumno) < ie.limite_alumnos
         ORDER BY ratingPromedio DESC, u.nombre ASC
         """, nativeQuery = true)
     List<Map<String, Object>> buscarEntrenadores(@Param("query") String query);
