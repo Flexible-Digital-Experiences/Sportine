@@ -353,7 +353,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="✅ Solicitud aceptada"
+                    android:text="Solicitud aceptada"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#059669"
@@ -390,10 +390,12 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="🎯 Entrenamiento activo"
+                    android:text="Entrenamiento activo"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#059669"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
                     android:layout_marginBottom="16dp" />
 
                 <com.google.android.material.button.MaterialButton
@@ -402,8 +404,8 @@
                     android:layout_height="56dp"
                     android:text="Cancelar mensualidad"
                     app:cornerRadius="12dp"
-                    android:layout_marginBottom="12dp"
-                    style="@style/Widget.Material3.Button.OutlinedButton" />
+                    android:backgroundTint="#CC0505"
+                    android:layout_marginBottom="12dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_calificar_activo"
@@ -411,7 +413,7 @@
                     android:layout_height="56dp"
                     android:text="⭐ Calificar entrenador"
                     app:cornerRadius="12dp"
-                    style="@style/Widget.Material3.Button.OutlinedButton" />
+                    />
 
             </LinearLayout>
 
@@ -430,7 +432,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="📋 Entrenamiento finalizado"
+                    android:text="Entrenamiento finalizado"
+                    android:textAlignment="center"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#0284C7"
@@ -442,6 +445,7 @@
                     android:layout_height="56dp"
                     android:text="Solicitar nuevamente"
                     app:cornerRadius="12dp"
+                    android:backgroundTint="#3F51B5"
                     android:layout_marginBottom="12dp" />
 
                 <com.google.android.material.button.MaterialButton
@@ -450,12 +454,10 @@
                     android:layout_height="56dp"
                     android:text="⭐ Calificar entrenador"
                     app:cornerRadius="12dp"
-                    style="@style/Widget.Material3.Button.OutlinedButton" />
+                    />
 
             </LinearLayout>
 
         </LinearLayout>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
