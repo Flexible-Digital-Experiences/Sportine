@@ -101,9 +101,10 @@
                 android:nestedScrollingEnabled="false"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:paddingBottom="16dp"
+                android:paddingBottom="100dp"
                 tools:itemCount="3"
-                tools:listitem="@layout/item_alumno_buscar_calentrenador" />
+                tools:listitem="@layout/item_alumno_buscar_calentrenador"
+                />
 
             <!-- LinearLayout para estado vacío (sin resultados) -->
             <LinearLayout

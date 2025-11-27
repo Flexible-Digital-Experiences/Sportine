@@ -25,13 +25,20 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
             u.nombre as nombre,
             u.apellidos as apellidos,
             u.ciudad as ciudad,
-            u.estado as estado,
+            e.estado as estado,
             ie.foto_perfil as fotoPerfil,
             ie.descripcion_perfil as descripcionPerfil,
-            ie.costo_mensualidad as costoMensualidad
+            ie.costo_mensualidad as costoMensualidad,
+            ie.limite_alumnos AS limiteAlumnos,
+            COUNT(DISTINCT ea.usuario_alumno) AS alumnosActuales
         FROM Usuario u
+        LEFT JOIN Estado e ON u.id_estado = e.id_estado
         LEFT JOIN Informacion_Entrenador ie ON u.usuario = ie.usuario
+        LEFT JOIN Entrenador_Alumno ea ON u.usuario = ea.usuario_entrenador 
+            AND ea.status_relacion = 'activo'
         WHERE u.usuario = :usuario
+        GROUP BY u.usuario, u.nombre, u.apellidos, u.ciudad, e.estado, 
+                 ie.foto_perfil, ie.descripcion_perfil, ie.costo_mensualidad, ie.limite_alumnos
         """, nativeQuery = true)
     Optional<Map<String, Object>> obtenerDatosEntrenador(@Param("usuario") String usuario);
 
@@ -46,7 +53,7 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
             COALESCE(AVG(calificacion), 0.0) as ratingPromedio,
             COUNT(*) as totalResenas
         FROM Calificaciones
-        WHERE usuario = :usuario
+        WHERE usuario_calificado = :usuario
         """, nativeQuery = true)
     Optional<Map<String, Object>> obtenerCalificaciones(@Param("usuario") String usuario);
 
@@ -57,10 +64,11 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
      * @return Lista de deportes
      */
     @Query(value = """
-        SELECT deporte
-        FROM Entrenador_Deporte
-        WHERE usuario = :usuario
-        ORDER BY deporte
+        SELECT d.nombre_deporte
+        FROM Entrenador_Deporte ed
+        INNER JOIN Deporte d ON ed.id_deporte = d.id_deporte
+        WHERE ed.usuario = :usuario
+        ORDER BY d.nombre_deporte
         """, nativeQuery = true)
     List<String> obtenerEspecialidades(@Param("usuario") String usuario);
 
@@ -74,12 +82,12 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
         SELECT 
             c.calificacion as ratingDado,
             c.comentarios as comentario,
-            u.nombre as nombreAlumno,
+            CONCAT(u.nombre, ' ', u.apellidos) as nombreAlumno,
             COALESCE(ia.foto_perfil, '') as fotoAlumno
         FROM Calificaciones c
         INNER JOIN Usuario u ON c.usuario = u.usuario
         LEFT JOIN Informacion_Alumno ia ON u.usuario = ia.usuario
-        WHERE c.usuario = :usuario
+        WHERE c.usuario_calificado = :usuario
         ORDER BY c.id_calificacion DESC
         """, nativeQuery = true)
     List<Map<String, Object>> obtenerResenas(@Param("usuario") String usuario);

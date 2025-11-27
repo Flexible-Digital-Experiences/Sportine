@@ -175,4 +175,4 @@ public class BuscarFragment extends Fragment implements ResultadosEntrenadoresAd
         NavHostFragment.findNavController(this)
                 .navigate(R.id.action_buscar_to_detallesEntrenador, bundle);
     }
-} 
+}
