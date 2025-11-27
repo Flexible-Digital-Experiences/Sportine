@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,10 +22,9 @@ import com.bumptech.glide.Glide;
 import com.example.sportine.R;
 import com.example.sportine.data.ApiService;
 import com.example.sportine.data.RetrofitClient;
+import com.example.sportine.models.EstadoRelacionDTO;
 import com.example.sportine.models.PerfilEntrenadorDTO;
 import com.example.sportine.models.ResenaDTO;
-import com.example.sportine.ui.usuarios.detallesEntrenador.DeportesAdapter;
-import com.example.sportine.ui.usuarios.detallesEntrenador.ResenasAdapter;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
@@ -35,14 +35,14 @@ import retrofit2.Response;
 
 public class DetallesEntrenadorFragment extends Fragment {
 
-    private static final int MAX_RESENAS_VISIBLES = 3; // Máximo de reseñas a mostrar inicialmente
+    private static final int MAX_RESENAS_VISIBLES = 3;
 
     private ApiService apiService;
     private String usuarioEntrenador;
-    private List<ResenaDTO> todasLasResenas; // Lista completa de reseñas
-    private boolean mostrandoTodas = false; // Estado actual
+    private List<ResenaDTO> todasLasResenas;
+    private boolean mostrandoTodas = false;
 
-    // Views
+    // Views principales
     private ImageButton btnBack;
     private ImageView imagePerfil;
     private TextView textNombre;
@@ -52,7 +52,6 @@ public class DetallesEntrenadorFragment extends Fragment {
     private TextView textUbicacion;
     private TextView textAcerca;
     private TextView textPrecio;
-    private MaterialButton btnContratar;
     private TextView btnVerTodas;
     private TextView textSinResenas;
 
@@ -63,6 +62,22 @@ public class DetallesEntrenadorFragment extends Fragment {
     // Adapters
     private DeportesAdapter deportesAdapter;
     private ResenasAdapter resenasAdapter;
+
+    // ============================================
+    // NUEVOS VIEWS PARA ESTADOS DE RELACIÓN
+    // ============================================
+    private LinearLayout layoutSinRelacion;
+    private LinearLayout layoutPendiente;
+    private LinearLayout layoutActivo;
+    private LinearLayout layoutFinalizado;
+
+    // Botones por estado
+    private MaterialButton btnEnviarSolicitud;
+    private MaterialButton btnIrAPagar;
+    private MaterialButton btnCancelarMensualidad;
+    private MaterialButton btnCalificarActivo;
+    private MaterialButton btnSolicitarNuevamente;
+    private MaterialButton btnCalificarFinalizado;
 
     @Nullable
     @Override
@@ -100,6 +115,7 @@ public class DetallesEntrenadorFragment extends Fragment {
     }
 
     private void initViews(View view) {
+        // Views principales
         btnBack = view.findViewById(R.id.btn_back);
         imagePerfil = view.findViewById(R.id.image_perfil);
         textNombre = view.findViewById(R.id.text_nombre);
@@ -109,11 +125,24 @@ public class DetallesEntrenadorFragment extends Fragment {
         textUbicacion = view.findViewById(R.id.text_ubicacion);
         textAcerca = view.findViewById(R.id.text_acerca);
         textPrecio = view.findViewById(R.id.text_precio);
-        btnContratar = view.findViewById(R.id.btn_contratar);
         btnVerTodas = view.findViewById(R.id.btn_ver_todas);
         textSinResenas = view.findViewById(R.id.text_sin_resenas);
         recyclerDeportes = view.findViewById(R.id.recycler_deportes);
         recyclerResenas = view.findViewById(R.id.recycler_resenas);
+
+        // Layouts de estados de relación
+        layoutSinRelacion = view.findViewById(R.id.layout_sin_relacion);
+        layoutPendiente = view.findViewById(R.id.layout_pendiente);
+        layoutActivo = view.findViewById(R.id.layout_activo);
+        layoutFinalizado = view.findViewById(R.id.layout_finalizado);
+
+        // Botones por estado
+        btnEnviarSolicitud = view.findViewById(R.id.btn_enviar_solicitud);
+        btnIrAPagar = view.findViewById(R.id.btn_ir_a_pagar);
+        btnCancelarMensualidad = view.findViewById(R.id.btn_cancelar_mensualidad);
+        btnCalificarActivo = view.findViewById(R.id.btn_calificar_activo);
+        btnSolicitarNuevamente = view.findViewById(R.id.btn_solicitar_nuevamente);
+        btnCalificarFinalizado = view.findViewById(R.id.btn_calificar_finalizado);
     }
 
     private void setupRecyclerViews() {
@@ -133,15 +162,26 @@ public class DetallesEntrenadorFragment extends Fragment {
     private void setupListeners() {
         btnBack.setOnClickListener(v -> NavHostFragment.findNavController(this).navigateUp());
 
-        btnContratar.setOnClickListener(v -> {
-            // TODO: Implementar lógica de contratación
-            Toast.makeText(getContext(),
-                    "Funcionalidad de contratación próximamente",
-                    Toast.LENGTH_SHORT).show();
-        });
-
         // Botón "Ver todas"
         btnVerTodas.setOnClickListener(v -> toggleResenas());
+
+        // ============================================
+        // LISTENERS PARA ESTADOS DE RELACIÓN
+        // ============================================
+
+        // SIN RELACIÓN
+        btnEnviarSolicitud.setOnClickListener(v -> enviarSolicitud());
+
+        // PENDIENTE
+        btnIrAPagar.setOnClickListener(v -> irAPagar());
+
+        // ACTIVO
+        btnCancelarMensualidad.setOnClickListener(v -> cancelarMensualidad());
+        btnCalificarActivo.setOnClickListener(v -> abrirDialogCalificacion());
+
+        // FINALIZADO
+        btnSolicitarNuevamente.setOnClickListener(v -> enviarSolicitud());
+        btnCalificarFinalizado.setOnClickListener(v -> abrirDialogCalificacion());
     }
 
     private void cargarPerfilEntrenador() {
@@ -209,24 +249,104 @@ public class DetallesEntrenadorFragment extends Fragment {
 
         // Reseñas con límite
         mostrarResenas(perfil.getResenas());
+
+        // ============================================
+        // MOSTRAR UI SEGÚN ESTADO DE RELACIÓN
+        // ============================================
+        mostrarUISegunEstadoRelacion(perfil.getEstadoRelacion());
     }
+
+    /**
+     * NUEVO: Muestra/oculta layouts según el estado de la relación
+     */
+    private void mostrarUISegunEstadoRelacion(EstadoRelacionDTO estado) {
+        // Ocultar todos los layouts primero
+        layoutSinRelacion.setVisibility(View.GONE);
+        layoutPendiente.setVisibility(View.GONE);
+        layoutActivo.setVisibility(View.GONE);
+        layoutFinalizado.setVisibility(View.GONE);
+
+        if (estado == null || !estado.getTieneRelacion()) {
+            // SIN RELACIÓN
+            layoutSinRelacion.setVisibility(View.VISIBLE);
+
+        } else {
+            String estadoRelacion = estado.getEstadoRelacion();
+
+            if ("pendiente".equals(estadoRelacion)) {
+                // PENDIENTE - Solicitud aceptada, falta pagar
+                layoutPendiente.setVisibility(View.VISIBLE);
+
+            } else if ("activo".equals(estadoRelacion)) {
+                // ACTIVO - Ya es su entrenador
+                layoutActivo.setVisibility(View.VISIBLE);
+
+                // Si ya calificó, ocultar el botón de calificar
+                if (estado.getYaCalificado() != null && estado.getYaCalificado()) {
+                    btnCalificarActivo.setVisibility(View.GONE);
+                }
+
+            } else if ("finalizado".equals(estadoRelacion)) {
+                // FINALIZADO - Relación terminada
+                layoutFinalizado.setVisibility(View.VISIBLE);
+
+                // Si ya calificó, ocultar el botón de calificar
+                if (estado.getYaCalificado() != null && estado.getYaCalificado()) {
+                    btnCalificarFinalizado.setVisibility(View.GONE);
+                }
+            }
+        }
+    }
+
+    // ============================================
+    // MÉTODOS PARA ACCIONES DE BOTONES
+    // ============================================
+
+    private void enviarSolicitud() {
+        // TODO: Implementar lógica para enviar solicitud
+        Toast.makeText(getContext(),
+                "Funcionalidad de enviar solicitud próximamente",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private void irAPagar() {
+        // TODO: Implementar navegación a pantalla de pago
+        Toast.makeText(getContext(),
+                "Funcionalidad de pago próximamente",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private void cancelarMensualidad() {
+        // TODO: Implementar lógica para cancelar mensualidad
+        Toast.makeText(getContext(),
+                "Funcionalidad de cancelar mensualidad próximamente",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private void abrirDialogCalificacion() {
+        // TODO: Implementar dialog para calificar al entrenador
+        Toast.makeText(getContext(),
+                "Funcionalidad de calificación próximamente",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    // ============================================
+    // MÉTODOS EXISTENTES (sin cambios)
+    // ============================================
 
     private void mostrarResenas(List<ResenaDTO> resenas) {
         todasLasResenas = resenas;
 
         if (resenas == null || resenas.isEmpty()) {
-            // No hay reseñas
             recyclerResenas.setVisibility(View.GONE);
             btnVerTodas.setVisibility(View.GONE);
             textSinResenas.setVisibility(View.VISIBLE);
         } else if (resenas.size() <= MAX_RESENAS_VISIBLES) {
-            // Hay 3 o menos reseñas - Mostrar todas sin botón
             recyclerResenas.setVisibility(View.VISIBLE);
             btnVerTodas.setVisibility(View.GONE);
             textSinResenas.setVisibility(View.GONE);
             resenasAdapter.setResenas(resenas);
         } else {
-            // Hay más de 3 reseñas - Mostrar solo 3 inicialmente
             recyclerResenas.setVisibility(View.VISIBLE);
             btnVerTodas.setVisibility(View.VISIBLE);
             textSinResenas.setVisibility(View.GONE);
@@ -241,12 +361,10 @@ public class DetallesEntrenadorFragment extends Fragment {
         }
 
         if (mostrandoTodas) {
-            // Mostrar solo las primeras 3
             resenasAdapter.setResenas(todasLasResenas.subList(0, MAX_RESENAS_VISIBLES));
             btnVerTodas.setText("Ver todas (" + todasLasResenas.size() + ")");
             mostrandoTodas = false;
         } else {
-            // Mostrar todas
             resenasAdapter.setResenas(todasLasResenas);
             btnVerTodas.setText("Ver menos");
             mostrandoTodas = true;

@@ -14,6 +14,7 @@ public class PerfilEntrenadorDTO {
     private CalificacionDTO calificacion;
     private List<String> especialidades;
     private List<ResenaDTO> resenas;
+    private EstadoRelacionDTO estadoRelacion; // NUEVO
 
     // Constructor vacío
     public PerfilEntrenadorDTO() {}
@@ -51,4 +52,7 @@ public class PerfilEntrenadorDTO {
 
     public List<ResenaDTO> getResenas() { return resenas; }
     public void setResenas(List<ResenaDTO> resenas) { this.resenas = resenas; }
+
+    public EstadoRelacionDTO getEstadoRelacion() { return estadoRelacion; }
+    public void setEstadoRelacion(EstadoRelacionDTO estadoRelacion) { this.estadoRelacion = estadoRelacion; }
 }
