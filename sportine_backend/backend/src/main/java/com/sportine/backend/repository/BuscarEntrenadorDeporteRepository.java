@@ -33,13 +33,12 @@ public interface BuscarEntrenadorDeporteRepository extends JpaRepository<Usuario
         LEFT JOIN Informacion_Entrenador ie ON u.usuario = ie.usuario
         LEFT JOIN Calificaciones c ON u.usuario = c.usuario_calificado
         LEFT JOIN Entrenador_Alumno ea ON u.usuario = ea.usuario_entrenador 
-            AND ea.status_relacion = 'activo'
+            AND ea.status_relacion = 'activo' 
             AND ea.id_deporte = d.id_deporte
         WHERE r.rol = 'entrenador'
           AND d.nombre_deporte = :deporte
           AND u.id_estado = :idEstado
         GROUP BY u.usuario, u.nombre, u.apellidos, ie.foto_perfil, ie.limite_alumnos
-        HAVING COUNT(DISTINCT ea.usuario_alumno) < ie.limite_alumnos
         ORDER BY ratingPromedio DESC, u.nombre ASC
         """, nativeQuery = true)
     List<Map<String, Object>> buscarEntrenadoresPorDeporteYEstado(

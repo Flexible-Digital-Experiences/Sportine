@@ -253,11 +253,7 @@ public class BuscarEntrenadorServiceImpl implements BuscarEntrenadorService {
                     alumnosActuales = ((Number) actualesObj).intValue();
                 }
             }
-
-            // Verificación adicional: solo agregar si tiene espacio disponible
-            // La query ya filtra, pero agregamos validación por seguridad
-            if (alumnosActuales < limiteAlumnos) {
-                // Obtener especialidades del entrenador
+             // Obtener especialidades del entrenador
                 List<String> especialidades = entrenadorNombreRepository.obtenerEspecialidadesEntrenador(usuario);
 
                 // Crear DTO con información de disponibilidad
@@ -272,15 +268,9 @@ public class BuscarEntrenadorServiceImpl implements BuscarEntrenadorService {
                 );
 
                 entrenadores.add(dto);
-
                 log.debug("Entrenador {} agregado - Alumnos: {}/{}",
                         usuario, alumnosActuales, limiteAlumnos);
-            } else {
-                log.debug("Entrenador {} omitido - Cupo lleno: {}/{}",
-                        usuario, alumnosActuales, limiteAlumnos);
-            }
         }
-
         log.info("Se encontraron {} entrenadores con disponibilidad", entrenadores.size());
         return entrenadores;
     }
