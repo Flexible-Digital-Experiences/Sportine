@@ -1,3 +1,4 @@
+create database sportine_db;
 use sportine_db;
 
 CREATE TABLE Estado(
@@ -143,9 +144,11 @@ CREATE TABLE Contrato (
     FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte)
 );
 
+-- TABLA ENTRENAMIENTO (CON LAS 3 COLUMNAS NUEVAS INCLUIDAS)
 CREATE TABLE Entrenamiento (
     id_entrenamiento INT PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(255),
+    usuario_entrenador VARCHAR(255),
     id_deporte INT,
     titulo_entrenamiento VARCHAR(255),
     objetivo VARCHAR(255),
@@ -153,7 +156,10 @@ CREATE TABLE Entrenamiento (
     hora_entrenamiento TIME,
     dificultad VARCHAR(50),
     estado_entrenamiento ENUM('pendiente', 'en_progreso', 'finalizado'),
+    creado_en DATETIME DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
+    FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
     FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte)
 );
 
@@ -271,6 +277,7 @@ CREATE TABLE Notificacion (
     FOREIGN KEY (usuario_destino) REFERENCES Usuario(usuario),
     FOREIGN KEY (usuario_actor) REFERENCES Usuario(usuario)
 );
+
 -- ============================================
 -- TABLAS DE ESTADÍSTICAS POR DEPORTE
 -- ============================================
@@ -541,5 +548,3 @@ INSERT INTO Nivel (nombre_nivel) VALUES
     ('Principiante'),
     ('Intermedio'),
     ('Avanzado');
-
-
