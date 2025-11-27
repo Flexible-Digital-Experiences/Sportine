@@ -21,4 +21,5 @@ public class PerfilEntrenadorDTO {
     private CalificacionDTO calificacion;
     private List<String> especialidades;
     private List<ResenaDTO> resenas;
+    private EstadoRelacionDTO estadoRelacion;
 }

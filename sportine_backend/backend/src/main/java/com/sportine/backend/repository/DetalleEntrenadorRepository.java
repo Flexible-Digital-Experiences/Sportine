@@ -13,12 +13,6 @@ import java.util.Optional;
 @Repository
 public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, String> {
 
-    /**
-     * Obtiene los datos principales del entrenador (perfil completo).
-     *
-     * @param usuario El username del entrenador
-     * @return Map con todos los datos del perfil
-     */
     @Query(value = """
         SELECT 
             u.usuario as usuario,
@@ -42,12 +36,6 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
         """, nativeQuery = true)
     Optional<Map<String, Object>> obtenerDatosEntrenador(@Param("usuario") String usuario);
 
-    /**
-     * Obtiene las estadísticas de calificación del entrenador.
-     *
-     * @param usuario El username del entrenador
-     * @return Map con ratingPromedio y totalResenas
-     */
     @Query(value = """
         SELECT 
             COALESCE(AVG(calificacion), 0.0) as ratingPromedio,
@@ -57,12 +45,6 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
         """, nativeQuery = true)
     Optional<Map<String, Object>> obtenerCalificaciones(@Param("usuario") String usuario);
 
-    /**
-     * Obtiene todas las especialidades del entrenador.
-     *
-     * @param usuario El username del entrenador
-     * @return Lista de deportes
-     */
     @Query(value = """
         SELECT d.nombre_deporte
         FROM Entrenador_Deporte ed
@@ -72,12 +54,6 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
         """, nativeQuery = true)
     List<String> obtenerEspecialidades(@Param("usuario") String usuario);
 
-    /**
-     * Obtiene todas las reseñas del entrenador con información del alumno.
-     *
-     * @param usuario El username del entrenador
-     * @return Lista de maps con datos de cada reseña
-     */
     @Query(value = """
         SELECT 
             c.calificacion as ratingDado,
@@ -91,4 +67,45 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
         ORDER BY c.id_calificacion DESC
         """, nativeQuery = true)
     List<Map<String, Object>> obtenerResenas(@Param("usuario") String usuario);
+
+    // ============================================
+    // NUEVAS QUERIES PARA ESTADO DE RELACIÓN
+    // ============================================
+
+    /**
+     * Obtiene el estado de la relación entre un alumno y un entrenador.
+     * Retorna información de la relación más reciente si existe.
+     */
+    @Query(value = """
+        SELECT 
+            ea.id_relacion as idRelacion,
+            ea.status_relacion as statusRelacion,
+            ea.id_deporte as idDeporte,
+            d.nombre_deporte as nombreDeporte,
+            ea.fecha_inicio as fechaInicio
+        FROM Entrenador_Alumno ea
+        INNER JOIN Deporte d ON ea.id_deporte = d.id_deporte
+        WHERE ea.usuario_entrenador = :usuarioEntrenador
+          AND ea.usuario_alumno = :usuarioAlumno
+        ORDER BY ea.fecha_inicio DESC
+        LIMIT 1
+        """, nativeQuery = true)
+    Optional<Map<String, Object>> obtenerEstadoRelacion(
+            @Param("usuarioEntrenador") String usuarioEntrenador,
+            @Param("usuarioAlumno") String usuarioAlumno
+    );
+
+    /**
+     * Verifica si el alumno ya calificó al entrenador.
+     */
+    @Query(value = """
+    SELECT COUNT(*)
+    FROM Calificaciones
+    WHERE usuario = :usuarioAlumno
+      AND usuario_calificado = :usuarioEntrenador
+    """, nativeQuery = true)
+    Long verificarSiYaCalifico(
+            @Param("usuarioAlumno") String usuarioAlumno,
+            @Param("usuarioEntrenador") String usuarioEntrenador
+    );
 }
