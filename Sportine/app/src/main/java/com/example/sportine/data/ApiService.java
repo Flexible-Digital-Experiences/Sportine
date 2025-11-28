@@ -2,9 +2,7 @@ package com.example.sportine.data;
 
 import com.example.sportine.models.Comentario;
 import com.example.sportine.models.EntrenadorCardDTO;
-import com.example.sportine.models.FormularioSolicitudDTO;
-import com.example.sportine.models.InfoDeporteAlumnoDTO;
-import com.example.sportine.models.PerfilEntrenadorDTO;
+import com.example.sportine.models.HomeAlumnoDTO;
 import com.example.sportine.models.Publicacion;
 import com.example.sportine.models.RespuestaRegistro;
 import com.example.sportine.models.Usuario;
@@ -34,6 +32,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+
 
 public interface ApiService {
 
@@ -118,4 +117,9 @@ public interface ApiService {
 
     @GET("/api/notificaciones")
     Call<List<com.example.sportine.models.Notificacion>> obtenerNotificaciones();
+
+    // Inicio
+    @GET("/api/alumnos/home/{usuario}")
+    Call<HomeAlumnoDTO> obtenerHomeAlumno(@Path("usuario") String usuario);
+
 }
