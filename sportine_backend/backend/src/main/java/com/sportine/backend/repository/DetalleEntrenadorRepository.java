@@ -13,74 +13,99 @@ import java.util.Optional;
 @Repository
 public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, String> {
 
-    /**
-     * Obtiene los datos principales del entrenador (perfil completo).
-     *
-     * @param usuario El username del entrenador
-     * @return Map con todos los datos del perfil
-     */
     @Query(value = """
         SELECT 
             u.usuario as usuario,
             u.nombre as nombre,
             u.apellidos as apellidos,
             u.ciudad as ciudad,
-            u.estado as estado,
+            e.estado as estado,
             ie.foto_perfil as fotoPerfil,
             ie.descripcion_perfil as descripcionPerfil,
-            ie.costo_mensualidad as costoMensualidad
+            ie.costo_mensualidad as costoMensualidad,
+            ie.limite_alumnos AS limiteAlumnos,
+            COUNT(DISTINCT ea.usuario_alumno) AS alumnosActuales
         FROM Usuario u
+        LEFT JOIN Estado e ON u.id_estado = e.id_estado
         LEFT JOIN Informacion_Entrenador ie ON u.usuario = ie.usuario
+        LEFT JOIN Entrenador_Alumno ea ON u.usuario = ea.usuario_entrenador 
+            AND ea.status_relacion = 'activo'
         WHERE u.usuario = :usuario
+        GROUP BY u.usuario, u.nombre, u.apellidos, u.ciudad, e.estado, 
+                 ie.foto_perfil, ie.descripcion_perfil, ie.costo_mensualidad, ie.limite_alumnos
         """, nativeQuery = true)
     Optional<Map<String, Object>> obtenerDatosEntrenador(@Param("usuario") String usuario);
 
-    /**
-     * Obtiene las estadísticas de calificación del entrenador.
-     *
-     * @param usuario El username del entrenador
-     * @return Map con ratingPromedio y totalResenas
-     */
     @Query(value = """
         SELECT 
             COALESCE(AVG(calificacion), 0.0) as ratingPromedio,
             COUNT(*) as totalResenas
         FROM Calificaciones
-        WHERE usuario = :usuario
+        WHERE usuario_calificado = :usuario
         """, nativeQuery = true)
     Optional<Map<String, Object>> obtenerCalificaciones(@Param("usuario") String usuario);
 
-    /**
-     * Obtiene todas las especialidades del entrenador.
-     *
-     * @param usuario El username del entrenador
-     * @return Lista de deportes
-     */
     @Query(value = """
-        SELECT deporte
-        FROM Entrenador_Deporte
-        WHERE usuario = :usuario
-        ORDER BY deporte
+        SELECT d.nombre_deporte
+        FROM Entrenador_Deporte ed
+        INNER JOIN Deporte d ON ed.id_deporte = d.id_deporte
+        WHERE ed.usuario = :usuario
+        ORDER BY d.nombre_deporte
         """, nativeQuery = true)
     List<String> obtenerEspecialidades(@Param("usuario") String usuario);
 
-    /**
-     * Obtiene todas las reseñas del entrenador con información del alumno.
-     *
-     * @param usuario El username del entrenador
-     * @return Lista de maps con datos de cada reseña
-     */
     @Query(value = """
         SELECT 
             c.calificacion as ratingDado,
             c.comentarios as comentario,
-            u.nombre as nombreAlumno,
+            CONCAT(u.nombre, ' ', u.apellidos) as nombreAlumno,
             COALESCE(ia.foto_perfil, '') as fotoAlumno
         FROM Calificaciones c
         INNER JOIN Usuario u ON c.usuario = u.usuario
         LEFT JOIN Informacion_Alumno ia ON u.usuario = ia.usuario
-        WHERE c.usuario = :usuario
+        WHERE c.usuario_calificado = :usuario
         ORDER BY c.id_calificacion DESC
         """, nativeQuery = true)
     List<Map<String, Object>> obtenerResenas(@Param("usuario") String usuario);
+
+    // ============================================
+    // NUEVAS QUERIES PARA ESTADO DE RELACIÓN
+    // ============================================
+
+    /**
+     * Obtiene el estado de la relación entre un alumno y un entrenador.
+     * Retorna información de la relación más reciente si existe.
+     */
+    @Query(value = """
+        SELECT 
+            ea.id_relacion as idRelacion,
+            ea.status_relacion as statusRelacion,
+            ea.id_deporte as idDeporte,
+            d.nombre_deporte as nombreDeporte,
+            ea.fecha_inicio as fechaInicio
+        FROM Entrenador_Alumno ea
+        INNER JOIN Deporte d ON ea.id_deporte = d.id_deporte
+        WHERE ea.usuario_entrenador = :usuarioEntrenador
+          AND ea.usuario_alumno = :usuarioAlumno
+        ORDER BY ea.fecha_inicio DESC
+        LIMIT 1
+        """, nativeQuery = true)
+    Optional<Map<String, Object>> obtenerEstadoRelacion(
+            @Param("usuarioEntrenador") String usuarioEntrenador,
+            @Param("usuarioAlumno") String usuarioAlumno
+    );
+
+    /**
+     * Verifica si el alumno ya calificó al entrenador.
+     */
+    @Query(value = """
+    SELECT COUNT(*)
+    FROM Calificaciones
+    WHERE usuario = :usuarioAlumno
+      AND usuario_calificado = :usuarioEntrenador
+    """, nativeQuery = true)
+    Long verificarSiYaCalifico(
+            @Param("usuarioAlumno") String usuarioAlumno,
+            @Param("usuarioEntrenador") String usuarioEntrenador
+    );
 }

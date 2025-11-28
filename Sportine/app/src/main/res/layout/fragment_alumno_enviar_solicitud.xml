@@ -27,8 +27,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:tint="#1A1A1A" />
 
-        <!-- Imagen de perfil -->
-
+        <!-- Título -->
         <TextView
             android:id="@+id/textSol"
             android:layout_width="200dp"
@@ -41,9 +40,7 @@
             android:layout_marginTop="24dp"
             android:gravity="center" />
 
-        <!-- Nombre del entrenador -->
-
-        <!-- Calificación -->
+        <!-- Imagen de perfil -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/image_perfil"
             android:layout_width="100dp"
@@ -51,7 +48,6 @@
             android:layout_marginTop="36dp"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textSol"
             app:shapeAppearanceOverlay="@style/CircularImageView"
@@ -59,11 +55,12 @@
             app:strokeWidth="3dp"
             tools:src="@tools:sample/avatars" />
 
+        <!-- Nombre del entrenador -->
         <TextView
             android:id="@+id/text_nombre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-medium"
             android:textColor="#1A1A1A"
             android:textSize="24sp"
@@ -73,63 +70,65 @@
             app:layout_constraintTop_toBottomOf="@id/image_perfil"
             tools:text="Entrenador" />
 
+        <!-- Calificación -->
         <LinearLayout
             android:id="@+id/layout_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_nombre"/>
+            app:layout_constraintTop_toBottomOf="@id/text_nombre">
 
-        <!-- Ubicación -->
+            <RatingBar
+                android:id="@+id/rating_de_entrenador"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:progressBackgroundTint="#E5E7EB"
+                android:progressTint="#FCD34D"
+                android:rating="0"
+                android:secondaryProgressTint="#FCD34D"
+                android:stepSize="0.5" />
 
-        <!-- Badge Entrenador -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/badge_deporte"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#E3F2FD"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="267dp" />
+            <TextView
+                android:id="@+id/text_rating_de_en"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                tools:text="4.5"
+                android:textColor="#1A1A1A"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
-        <!-- Tarjeta: Acerca de mí -->
+            <TextView
+                android:id="@+id/text_num_resenas_deen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                tools:text="(10)"
+                android:textColor="#6B7280"
+                android:textSize="13sp" />
+        </LinearLayout>
 
         <!-- Formulario de Solicitud -->
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_acerca"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="28dp"
-            android:layout_marginEnd="20dp"
-            android:backgroundTint="#FFFFFF"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/layout_rating" />
-
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_formulario"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="20dp"
             android:backgroundTint="#FFFFFF"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/card_acerca">
+            app:layout_constraintTop_toBottomOf="@id/layout_rating">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -167,13 +166,15 @@
 
                 <!-- Selector de Nivel -->
                 <TextView
+                    android:id="@+id/text_label_nivel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nivel "
+                    android:text="Nivel"
                     android:textColor="#1A1A1A"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone" />
 
                 <Spinner
                     android:id="@+id/spinner_nivel"
@@ -182,7 +183,21 @@
                     android:background="@android:drawable/btn_dropdown"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:layout_marginBottom="16dp" />
+                    android:layout_marginBottom="16dp"
+                    android:visibility="gone" />
+
+                <!-- TextView para mostrar nivel actual -->
+                <TextView
+                    android:id="@+id/text_nivel_actual"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:padding="12dp"
+                    android:background="@drawable/search_view_background"
+                    android:textColor="#6B7280"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    tools:text="Tu nivel actual: Intermedio" />
 
                 <!-- Campo de Motivo -->
                 <TextView

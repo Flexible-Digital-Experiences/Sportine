@@ -14,6 +14,7 @@ import com.example.sportine.ui.usuarios.dto.ComentarioRequest;
 // Asegúrate de que este DTO exista en tu Android, si no, usa UsuarioDetalle
 import com.example.sportine.ui.usuarios.dto.UsuarioDetalleDTO;
 import com.example.sportine.ui.usuarios.dto.PerfilAlumnoResponseDTO;
+import com.example.sportine.ui.usuarios.enviarsolicitud.EnviarSolicitud;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -90,13 +91,29 @@ public interface ApiService {
     @GET("/api/social/amigos")
     Call<List<UsuarioDetalle>> verMisAmigos();
 
+    @PUT("/api/social/post/{id}")
+    Call<Void> editarPost(@Path("id") Integer id, @Body com.example.sportine.models.Publicacion publicacionActualizada);
+
     // Buscar
 
     @GET("api/buscar-entrenadores")
     Call<List<EntrenadorCardDTO>> buscarEntrenadores(@Query("query") String query);
 
-    @PUT("/api/social/post/{id}")
-    Call<Void> editarPost(@Path("id") Integer id, @Body com.example.sportine.models.Publicacion publicacionActualizada);
+    @GET("api/buscar-entrenadores/ver/{usuario}")
+    Call<PerfilEntrenadorDTO> obtenerPerfilEntrenador(@Path("usuario") String usuario);
+
+    // Solicitudes
+
+    @GET("api/Solicitudes/formulario/{usuarioEntrenador}")
+    Call<FormularioSolicitudDTO> obtenerFormularioSolicitud(@Path("usuarioEntrenador") String usuarioEntrenador);
+
+    @GET("api/Solicitudes/deporte/{idDeporte}")
+    Call<InfoDeporteAlumnoDTO> obtenerInfoDeporte(@Path("idDeporte") Integer idDeporte);
+
+    @POST("api/Solicitudes/enviar")
+    Call<Map<String, String>> enviarSolicitud(@Body EnviarSolicitud.SolicitudRequest request);
+
+    // Notificaciones
 
     @GET("/api/notificaciones")
     Call<List<com.example.sportine.models.Notificacion>> obtenerNotificaciones();

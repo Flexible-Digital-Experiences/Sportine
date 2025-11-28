@@ -1,7 +1,7 @@
 package com.sportine.backend.service.impl;
 
-
 import com.sportine.backend.dto.CalificacionDTO;
+import com.sportine.backend.dto.EstadoRelacionDTO;
 import com.sportine.backend.dto.PerfilEntrenadorDTO;
 import com.sportine.backend.dto.ResenaDTO;
 import com.sportine.backend.repository.DetalleEntrenadorRepository;
@@ -24,24 +24,29 @@ public class DetalleEntrenadorServiceImpl implements DetalleEntrenadorService {
     private final DetalleEntrenadorRepository detalleEntrenadorRepository;
 
     @Override
-    public PerfilEntrenadorDTO obtenerPerfilEntrenador(String usuario) {
-        log.info("Obteniendo perfil completo del entrenador: {}", usuario);
+    public PerfilEntrenadorDTO obtenerPerfilEntrenador(String usuarioEntrenador, String usuarioAlumno) {
+        log.info("Obteniendo perfil completo del entrenador: {} para alumno: {}",
+                usuarioEntrenador, usuarioAlumno);
 
         // 1. Obtener datos principales del entrenador
         Map<String, Object> datosEntrenador = detalleEntrenadorRepository
-                .obtenerDatosEntrenador(usuario)
-                .orElseThrow(() -> new RuntimeException("Entrenador no encontrado: " + usuario));
+                .obtenerDatosEntrenador(usuarioEntrenador)
+                .orElseThrow(() -> new RuntimeException("Entrenador no encontrado: " + usuarioEntrenador));
 
         // 2. Obtener calificaciones
-        CalificacionDTO calificacion = obtenerCalificacionDTO(usuario);
+        CalificacionDTO calificacion = obtenerCalificacionDTO(usuarioEntrenador);
 
         // 3. Obtener especialidades
-        List<String> especialidades = detalleEntrenadorRepository.obtenerEspecialidades(usuario);
+        List<String> especialidades = detalleEntrenadorRepository
+                .obtenerEspecialidades(usuarioEntrenador);
 
         // 4. Obtener reseñas
-        List<ResenaDTO> resenas = obtenerResenasDTO(usuario);
+        List<ResenaDTO> resenas = obtenerResenasDTO(usuarioEntrenador);
 
-        // 5. Construir DTO principal
+        // 5. NUEVO: Obtener estado de relación con el alumno
+        EstadoRelacionDTO estadoRelacion = obtenerEstadoRelacionDTO(usuarioEntrenador, usuarioAlumno);
+
+        // 6. Construir DTO principal
         PerfilEntrenadorDTO perfil = new PerfilEntrenadorDTO();
         perfil.setUsuario((String) datosEntrenador.get("usuario"));
         perfil.setFotoPerfil((String) datosEntrenador.get("fotoPerfil"));
@@ -70,11 +75,39 @@ public class DetalleEntrenadorServiceImpl implements DetalleEntrenadorService {
         }
         perfil.setCostoMensual(costo);
 
+        // Manejar límite de alumnos
+        Object limiteObj = datosEntrenador.get("limiteAlumnos");
+        Integer limite = 0;
+        if (limiteObj != null) {
+            if (limiteObj instanceof Integer) {
+                limite = (Integer) limiteObj;
+            } else if (limiteObj instanceof Number) {
+                limite = ((Number) limiteObj).intValue();
+            }
+        }
+        perfil.setLimiteAlumnos(limite);
+
+        // Manejar alumnos actuales
+        Object actualesObj = datosEntrenador.get("alumnosActuales");
+        Integer actuales = 0;
+        if (actualesObj != null) {
+            if (actualesObj instanceof Long) {
+                actuales = ((Long) actualesObj).intValue();
+            } else if (actualesObj instanceof Integer) {
+                actuales = (Integer) actualesObj;
+            } else if (actualesObj instanceof Number) {
+                actuales = ((Number) actualesObj).intValue();
+            }
+        }
+        perfil.setAlumnosActuales(actuales);
+
         perfil.setCalificacion(calificacion);
         perfil.setEspecialidades(especialidades != null ? especialidades : new ArrayList<>());
         perfil.setResenas(resenas);
+        perfil.setEstadoRelacion(estadoRelacion);
 
-        log.info("Perfil del entrenador {} obtenido exitosamente", usuario);
+        log.info("Perfil del entrenador {} obtenido exitosamente. Estado relación: {}",
+                usuarioEntrenador, estadoRelacion.getEstadoRelacion());
         return perfil;
     }
 
@@ -96,7 +129,6 @@ public class DetalleEntrenadorServiceImpl implements DetalleEntrenadorService {
             }
         }
 
-        // Redondear a 1 decimal
         ratingPromedio = Math.round(ratingPromedio * 10.0) / 10.0;
 
         Integer totalResenas = 0;
@@ -142,4 +174,58 @@ public class DetalleEntrenadorServiceImpl implements DetalleEntrenadorService {
 
         return resenas;
     }
+
+    /**
+     * NUEVO: Método auxiliar para obtener el estado de relación entre alumno y entrenador.
+     */
+    private EstadoRelacionDTO obtenerEstadoRelacionDTO(String usuarioEntrenador, String usuarioAlumno) {
+        // Buscar si existe alguna relación
+        var relacionOpt = detalleEntrenadorRepository.obtenerEstadoRelacion(
+                usuarioEntrenador, usuarioAlumno);
+
+        log.info("Verificando relación - isPresent: {}", relacionOpt.isPresent());
+
+        if (!relacionOpt.isPresent()) {
+            // NO HAY RELACIÓN
+            log.info("No existe relación entre Alumno {} y Entrenador {}",
+                    usuarioAlumno, usuarioEntrenador);
+            return new EstadoRelacionDTO(false, null, null, null, false);
+        }
+
+        // SÍ HAY RELACIÓN - Extraer datos
+        Map<String, Object> relacionData = relacionOpt.get();
+        log.info("Datos de relación encontrados: {}", relacionData);
+
+        String statusRelacion = (String) relacionData.get("statusRelacion");
+
+        // Verificar si el status es null (significa que la query devolvió fila vacía)
+        if (statusRelacion == null) {
+            log.info("Status de relación es NULL - No hay relación real entre {} y {}",
+                    usuarioAlumno, usuarioEntrenador);
+            return new EstadoRelacionDTO(false, null, null, null, false);
+        }
+
+        Integer idDeporte = null;
+        Object idDeporteObj = relacionData.get("idDeporte");
+        if (idDeporteObj != null) {
+            if (idDeporteObj instanceof Integer) {
+                idDeporte = (Integer) idDeporteObj;
+            } else if (idDeporteObj instanceof Number) {
+                idDeporte = ((Number) idDeporteObj).intValue();
+            }
+        }
+
+        String nombreDeporte = (String) relacionData.get("nombreDeporte");
+
+        // Verificar si ya calificó (convertir Long a Boolean)
+        Long countCalificacion = detalleEntrenadorRepository.verificarSiYaCalifico(
+                usuarioAlumno, usuarioEntrenador);
+        Boolean yaCalificado = countCalificacion != null && countCalificacion > 0;
+
+        log.info("Relación ACTIVA encontrada: Alumno {} - Entrenador {} | Estado: {} | Deporte: {} | Ya calificó: {}",
+                usuarioAlumno, usuarioEntrenador, statusRelacion, nombreDeporte, yaCalificado);
+
+        return new EstadoRelacionDTO(true, statusRelacion, idDeporte, nombreDeporte, yaCalificado);
+    }
 }
+

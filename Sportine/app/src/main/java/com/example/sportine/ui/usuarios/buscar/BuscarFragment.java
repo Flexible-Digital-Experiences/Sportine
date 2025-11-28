@@ -165,14 +165,9 @@ public class BuscarFragment extends Fragment implements ResultadosEntrenadoresAd
 
     @Override
     public void onEntrenadorClick(EntrenadorCardDTO entrenador) {
-        // Navegar al perfil del entrenador
-        Toast.makeText(getContext(),
-                "Seleccionaste a " + entrenador.getNombreCompleto(),
-                Toast.LENGTH_SHORT).show();
-
         Bundle bundle = new Bundle();
         bundle.putString("usuario", entrenador.getUsuario());
         NavHostFragment.findNavController(this)
                 .navigate(R.id.action_buscar_to_detallesEntrenador, bundle);
     }
-} 
+}
