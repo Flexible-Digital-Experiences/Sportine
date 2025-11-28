@@ -47,12 +47,10 @@ CREATE TABLE Informacion_Alumno (
     estatura FLOAT,
     peso FLOAT,
     lesiones VARCHAR(255),
-    id_nivel INT,
     padecimientos VARCHAR(255),
     foto_perfil TEXT,
     fecha_nacimiento DATE,
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
-    FOREIGN KEY (id_nivel) REFERENCES Nivel(id_nivel)
+    FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
 -- TABLA INTERMEDIA ALUMNO-DEPORTE

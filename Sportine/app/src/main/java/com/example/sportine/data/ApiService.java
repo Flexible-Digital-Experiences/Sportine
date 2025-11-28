@@ -6,6 +6,7 @@ import com.example.sportine.models.RespuestaRegistro;
 import com.example.sportine.models.Usuario;
 import com.example.sportine.models.PublicacionFeedDTO;
 import com.example.sportine.models.UsuarioDetalle;
+import com.example.sportine.ui.usuarios.dto.ActualizarDatosAlumnoDTO;
 import com.example.sportine.ui.usuarios.dto.LoginRequest;
 import com.example.sportine.ui.usuarios.dto.LoginResponse;
 import com.example.sportine.ui.usuarios.dto.ComentarioRequest;
@@ -16,6 +17,7 @@ import com.example.sportine.ui.usuarios.dto.PerfilAlumnoResponseDTO;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Multipart;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 
 import java.util.List;
@@ -79,4 +81,10 @@ public interface ApiService {
 
     @GET("/api/social/amigos")
     Call<List<UsuarioDetalle>> verMisAmigos();
+
+    @PUT("api/alumnos/{usuario}/actualizar-datos")
+    Call<Void> actualizarDatosAlumno(
+            @Path("usuario") String usuario,
+            @Body ActualizarDatosAlumnoDTO datos
+    );
 }

@@ -2,8 +2,11 @@ package com.example.sportine.ui.usuarios.perfil;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -305,23 +308,17 @@ public class PerfilFragment extends Fragment {
     }
 
     /**
-     * Muestra los deportes que practica el usuario
-     * VERSIÓN CON DEBUG COMPLETO
+     * Muestra los deportes que practica el usuario CON su nivel
      */
-    private void mostrarDeportes(List<String> deportes) {
-        Log.d(TAG, "===== MOSTRANDO DEPORTES =====");
+    private void mostrarDeportes(List<PerfilAlumnoResponseDTO.DeporteConNivel> deportes) {
+        Log.d(TAG, "===== MOSTRANDO DEPORTES CON NIVEL =====");
         Log.d(TAG, "Deportes recibidos: " + deportes);
 
         // Limpiar el contenedor primero
         deportesContainer.removeAllViews();
 
-        if (deportes == null) {
-            Log.e(TAG, "❌ La lista de deportes es NULL");
-            return;
-        }
-
-        if (deportes.isEmpty()) {
-            Log.w(TAG, "⚠ La lista de deportes está VACÍA");
+        if (deportes == null || deportes.isEmpty()) {
+            Log.w(TAG, "⚠ El usuario no tiene deportes registrados");
             return;
         }
 
@@ -329,18 +326,22 @@ public class PerfilFragment extends Fragment {
 
         // Crear una card por cada deporte
         for (int i = 0; i < deportes.size(); i++) {
-            String deporte = deportes.get(i);
-            Log.d(TAG, "Procesando deporte [" + i + "]: '" + deporte + "'");
-            agregarCardDeporte(deporte);
+            PerfilAlumnoResponseDTO.DeporteConNivel deporteConNivel = deportes.get(i);
+            String nombreDeporte = deporteConNivel.getDeporte();
+            String nivelDeporte = deporteConNivel.getNivel();
+
+            Log.d(TAG, "Procesando deporte [" + i + "]: '" + nombreDeporte + "' - Nivel: " + nivelDeporte);
+
+            agregarCardDeporte(nombreDeporte, nivelDeporte);
         }
 
         Log.d(TAG, "✓ Deportes agregados al contenedor: " + deportesContainer.getChildCount());
     }
 
     /**
-     * Agrega una card de deporte al contenedor
+     * Agrega una card de deporte al contenedor CON su nivel
      */
-    private void agregarCardDeporte(String deporte) {
+    private void agregarCardDeporte(String deporte, String nivel) {
         // Crear la card programáticamente
         MaterialCardView card = new MaterialCardView(requireContext());
 
@@ -349,8 +350,8 @@ public class PerfilFragment extends Fragment {
                 0,  // width = 0 para usar weight
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        params.weight = 1;  // Distribuir equitativamente
-        params.setMarginEnd(dpToPx(8));  // Margen derecho
+        params.weight = 1;
+        params.setMarginEnd(dpToPx(8));
         card.setLayoutParams(params);
 
         // Configurar estilo de la card
@@ -358,18 +359,39 @@ public class PerfilFragment extends Fragment {
         card.setCardElevation(dpToPx(2));
         card.setCardBackgroundColor(obtenerColorDeporte(deporte));
 
+        // Crear un LinearLayout vertical para contener imagen y texto
+        LinearLayout container = new LinearLayout(requireContext());
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setGravity(Gravity.CENTER);
+        container.setPadding(dpToPx(10), dpToPx(10), dpToPx(10), dpToPx(10));
+
         // Crear el ImageView
         ImageView imageView = new ImageView(requireContext());
-        imageView.setLayoutParams(new LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams imgParams = new LinearLayout.LayoutParams(
                 dpToPx(50),
                 dpToPx(50)
-        ));
-        imageView.setPadding(dpToPx(10), dpToPx(10), dpToPx(10), dpToPx(10));
+        );
+        imageView.setLayoutParams(imgParams);
         imageView.setImageResource(obtenerImagenDeporte(deporte));
         imageView.setContentDescription(deporte);
+        container.addView(imageView);
 
-        // Agregar ImageView a la card
-        card.addView(imageView);
+        // Crear TextView para el nivel
+        TextView tvNivel = new TextView(requireContext());
+        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        textParams.topMargin = dpToPx(4);
+        tvNivel.setLayoutParams(textParams);
+        tvNivel.setText(nivel);
+        tvNivel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
+        tvNivel.setTypeface(null, Typeface.BOLD);
+        tvNivel.setTextColor(0xFF666666);  // Gris oscuro
+        container.addView(tvNivel);
+
+        // Agregar container a la card
+        card.addView(container);
 
         // Agregar card al contenedor
         deportesContainer.addView(card);

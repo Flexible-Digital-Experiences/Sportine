@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/alumnos")
@@ -145,6 +146,24 @@ public class AlumnoController {
             return ResponseEntity.noContent().build(); // 204 No Content
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    /**
+     * Endpoint para actualizar datos específicos del alumno (parcial)
+     * Solo actualiza los campos que vienen en el DTO
+     */
+    @PutMapping("/{usuario}/actualizar-datos")
+    public ResponseEntity<?> actualizarDatosAlumno(
+            @PathVariable String usuario,
+            @RequestBody ActualizarDatosAlumnoDTO datosDTO) {
+
+        try {
+            alumnoPerfilService.actualizarDatosAlumno(usuario, datosDTO);
+            return ResponseEntity.ok().body(Map.of("mensaje", "Datos actualizados correctamente"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("mensaje", e.getMessage()));
         }
     }
 }

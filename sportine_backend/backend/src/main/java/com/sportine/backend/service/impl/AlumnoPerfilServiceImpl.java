@@ -1,5 +1,6 @@
 package com.sportine.backend.service.impl;
 
+import com.sportine.backend.dto.ActualizarDatosAlumnoDTO;
 import com.sportine.backend.dto.PerfilAlumnoDTO;
 import com.sportine.backend.dto.PerfilAlumnoResponseDTO;
 import com.sportine.backend.model.*;
@@ -31,9 +32,9 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
     private final SeguidoresRepository seguidoresRepository;
     private final EntrenadorAlumnoRepository entrenadorAlumnoRepository;
 
-    // ========================================================
-    // MÉTODO OBTENER PERFIL - CORREGIDO
-    // ========================================================
+    // ========================================
+    // MÉTODO OBTENER PERFIL - ACTUALIZADO SIN NIVEL GENERAL
+    // ========================================
 
     @Override
     public PerfilAlumnoResponseDTO obtenerPerfilAlumno(String usuario) {
@@ -44,12 +45,14 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
         InformacionAlumno infoAlumno = informacionAlumnoRepository.findByUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("Perfil de alumno no encontrado"));
 
-        // ========================================
-        // CAMBIO CRÍTICO: Obtener nombres de deportes correctamente
-        // ========================================
+        // Obtener deportes CON su nivel específico
         List<AlumnoDeporte> deportesEntity = alumnoDeporteRepository.findByUsuario(usuario);
-        List<String> deportes = deportesEntity.stream()
-                .map(ad -> ad.getDeporte().getNombreDeporte())  // ← Usar relación
+        List<PerfilAlumnoResponseDTO.DeporteConNivelDTO> deportes = deportesEntity.stream()
+                .map(ad -> new PerfilAlumnoResponseDTO.DeporteConNivelDTO(
+                        ad.getDeporte().getNombreDeporte(),
+                        ad.getNivel().getNombreNivel(),  // ← Nivel por deporte
+                        ad.getFechaInicio()
+                ))
                 .collect(Collectors.toList());
 
         Integer edad = calcularEdad(infoAlumno.getFechaNacimiento());
@@ -58,15 +61,7 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 .orElse(null);
         String nombreEstado = estado != null ? estado.getEstado() : "";
 
-        // ========================================
-        // CAMBIO CRÍTICO: Obtener nombre del nivel
-        // ========================================
-        String nombreNivel = infoAlumno.getNivel() != null
-                ? infoAlumno.getNivel().getNombreNivel()
-                : null;
-
         Integer totalAmigos = seguidoresRepository.contarAmigos(usuario);
-
         Integer totalEntrenadores = entrenadorAlumnoRepository.contarEntrenadoresActivos(usuario);
 
         return new PerfilAlumnoResponseDTO(
@@ -79,21 +74,20 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 infoAlumno.getEstatura(),
                 infoAlumno.getPeso(),
                 infoAlumno.getLesiones(),
-                nombreNivel,  // ← Usar nombre, no objeto
                 infoAlumno.getPadecimientos(),
                 infoAlumno.getFotoPerfil(),
                 infoAlumno.getFechaNacimiento(),
                 edad,
-                deportes,
+                deportes,  // ← Deportes con nivel
                 totalAmigos,
                 totalEntrenadores,
                 "Perfil obtenido exitosamente"
         );
     }
 
-    // ========================================================
-    // MÉTODO CREAR PERFIL - CORREGIDO
-    // ========================================================
+    // ========================================
+    // MÉTODO CREAR PERFIL - ACTUALIZADO SIN NIVEL NI DEPORTES
+    // ========================================
 
     @Override
     @Transactional
@@ -107,17 +101,14 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
         }
 
         // ========================================
-        // CAMBIO CRÍTICO: Buscar el nivel por nombre
+        // Crear perfil básico SIN nivel ni deportes
         // ========================================
-        Nivel nivel = nivelRepository.findByNombreNivel(dto.getNivel())
-                .orElseThrow(() -> new RuntimeException("Nivel no encontrado: " + dto.getNivel()));
-
         InformacionAlumno infoAlumno = new InformacionAlumno();
         infoAlumno.setUsuario(dto.getUsuario());
         infoAlumno.setEstatura(dto.getEstatura());
         infoAlumno.setPeso(dto.getPeso());
         infoAlumno.setLesiones(dto.getLesiones());
-        infoAlumno.setNivel(nivel);  // ← Asignar objeto Nivel, no String
+        // NO hay nivel general
         infoAlumno.setPadecimientos(dto.getPadecimientos());
         infoAlumno.setFotoPerfil(dto.getFotoPerfil());
         infoAlumno.setFechaNacimiento(dto.getFechaNacimiento());
@@ -125,22 +116,11 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
         informacionAlumnoRepository.save(infoAlumno);
 
         // ========================================
-        // CAMBIO CRÍTICO: Buscar deportes por nombre
+        // Los deportes se agregarán DESPUÉS cuando:
+        // - El usuario busque entrenador
+        // - Se inscriba a una clase
+        // - Agregue deportes manualmente desde otra pantalla
         // ========================================
-        if (dto.getDeportes() != null && !dto.getDeportes().isEmpty()) {
-            for (String nombreDeporte : dto.getDeportes()) {
-                Deporte deporte = deporteRepository.findByNombreDeporte(nombreDeporte)
-                        .orElseThrow(() -> new RuntimeException("Deporte no encontrado: " + nombreDeporte));
-
-                AlumnoDeporte alumnoDeporte = new AlumnoDeporte();
-                alumnoDeporte.setUsuario(dto.getUsuario());
-                alumnoDeporte.setDeporte(deporte);  // ← Asignar objeto Deporte
-                alumnoDeporte.setNivel(nivel);  // ← Asignar nivel
-                alumnoDeporte.setFechaInicio(LocalDate.now());
-
-                alumnoDeporteRepository.save(alumnoDeporte);
-            }
-        }
 
         Integer edad = calcularEdad(dto.getFechaNacimiento());
 
@@ -161,21 +141,20 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 infoAlumno.getEstatura(),
                 infoAlumno.getPeso(),
                 infoAlumno.getLesiones(),
-                nivel.getNombreNivel(),  // ← Nombre del nivel
                 infoAlumno.getPadecimientos(),
                 infoAlumno.getFotoPerfil(),
                 infoAlumno.getFechaNacimiento(),
                 edad,
-                dto.getDeportes(),
+                List.of(),  // ← Lista vacía de deportes (se agregarán después)
                 totalAmigos,
                 totalEntrenadores,
                 "Perfil de alumno creado exitosamente"
         );
     }
 
-    // ========================================================
-    // MÉTODO ACTUALIZAR PERFIL - CORREGIDO
-    // ========================================================
+    // ========================================
+    // MÉTODO ACTUALIZAR PERFIL - ACTUALIZADO SIN NIVEL NI DEPORTES
+    // ========================================
 
     @Override
     @Transactional
@@ -187,38 +166,31 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
         InformacionAlumno infoAlumno = informacionAlumnoRepository.findByUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("Perfil de alumno no encontrado"));
 
-        // Buscar el nivel por nombre
-        Nivel nivel = nivelRepository.findByNombreNivel(dto.getNivel())
-                .orElseThrow(() -> new RuntimeException("Nivel no encontrado: " + dto.getNivel()));
-
+        // Actualizar datos básicos SIN nivel
         infoAlumno.setEstatura(dto.getEstatura());
         infoAlumno.setPeso(dto.getPeso());
         infoAlumno.setLesiones(dto.getLesiones());
-        infoAlumno.setNivel(nivel);  // ← Asignar objeto Nivel
+        // NO hay nivel general
         infoAlumno.setPadecimientos(dto.getPadecimientos());
         infoAlumno.setFotoPerfil(dto.getFotoPerfil());
         infoAlumno.setFechaNacimiento(dto.getFechaNacimiento());
 
         informacionAlumnoRepository.save(infoAlumno);
 
-        // Eliminar deportes anteriores
-        alumnoDeporteRepository.deleteByUsuario(usuario);
+        // ========================================
+        // Los deportes NO se modifican aquí
+        // Se modifican en otra pantalla específica
+        // ========================================
 
-        // Agregar nuevos deportes
-        if (dto.getDeportes() != null && !dto.getDeportes().isEmpty()) {
-            for (String nombreDeporte : dto.getDeportes()) {
-                Deporte deporte = deporteRepository.findByNombreDeporte(nombreDeporte)
-                        .orElseThrow(() -> new RuntimeException("Deporte no encontrado: " + nombreDeporte));
-
-                AlumnoDeporte alumnoDeporte = new AlumnoDeporte();
-                alumnoDeporte.setUsuario(usuario);
-                alumnoDeporte.setDeporte(deporte);
-                alumnoDeporte.setNivel(nivel);
-                alumnoDeporte.setFechaInicio(LocalDate.now());
-
-                alumnoDeporteRepository.save(alumnoDeporte);
-            }
-        }
+        // Obtener deportes actuales
+        List<AlumnoDeporte> deportesEntity = alumnoDeporteRepository.findByUsuario(usuario);
+        List<PerfilAlumnoResponseDTO.DeporteConNivelDTO> deportes = deportesEntity.stream()
+                .map(ad -> new PerfilAlumnoResponseDTO.DeporteConNivelDTO(
+                        ad.getDeporte().getNombreDeporte(),
+                        ad.getNivel().getNombreNivel(),
+                        ad.getFechaInicio()
+                ))
+                .collect(Collectors.toList());
 
         Integer edad = calcularEdad(dto.getFechaNacimiento());
 
@@ -239,16 +211,111 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 infoAlumno.getEstatura(),
                 infoAlumno.getPeso(),
                 infoAlumno.getLesiones(),
-                nivel.getNombreNivel(),
                 infoAlumno.getPadecimientos(),
                 infoAlumno.getFotoPerfil(),
                 infoAlumno.getFechaNacimiento(),
                 edad,
-                dto.getDeportes(),
+                deportes,
                 totalAmigos,
                 totalEntrenadores,
                 "Perfil actualizado exitosamente"
         );
+    }
+
+    // ========================================
+    // 🆕 NUEVO MÉTODO: ACTUALIZAR DATOS PARCIALES
+    // ========================================
+
+    /**
+     * Actualiza datos específicos del alumno de forma parcial
+     * Solo actualiza los campos que vienen en el DTO (no nulos)
+     *
+     * Este método es diferente a actualizarPerfilAlumno() porque:
+     * - Permite actualizaciones parciales (solo lo que envíes)
+     * - No requiere enviar todos los campos
+     * - Ideal para el formulario "Completar Datos"
+     */
+    @Override
+    @Transactional
+    public void actualizarDatosAlumno(String usuario, ActualizarDatosAlumnoDTO datosDTO) {
+
+        System.out.println("=== INICIANDO ACTUALIZACIÓN DE DATOS PARCIALES ===");
+        System.out.println("Usuario: " + usuario);
+        System.out.println("Datos recibidos: " + datosDTO);
+
+        // 1. Verificar que el usuario existe
+        Usuario usuarioEntity = usuarioRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + usuario));
+
+        System.out.println("✓ Usuario encontrado: " + usuarioEntity.getNombre());
+
+        // 2. Obtener o crear Informacion_Alumno
+        InformacionAlumno infoAlumno = informacionAlumnoRepository
+                .findByUsuario(usuario)
+                .orElseGet(() -> {
+                    System.out.println("⚠ No existe información del alumno, creando nueva entrada...");
+                    InformacionAlumno nuevaInfo = new InformacionAlumno();
+                    nuevaInfo.setUsuario(usuario);
+                    return nuevaInfo;
+                });
+
+        // 3. Actualizar solo los campos que vienen en el DTO (no nulos)
+        boolean huboActualizacion = false;
+
+        if (datosDTO.getEstatura() != null) {
+            System.out.println("✓ Actualizando estatura: " + datosDTO.getEstatura());
+            infoAlumno.setEstatura(datosDTO.getEstatura());
+            huboActualizacion = true;
+        }
+
+        if (datosDTO.getPeso() != null) {
+            System.out.println("✓ Actualizando peso: " + datosDTO.getPeso());
+            infoAlumno.setPeso(datosDTO.getPeso());
+            huboActualizacion = true;
+        }
+
+        if (datosDTO.getLesiones() != null && !datosDTO.getLesiones().trim().isEmpty()) {
+            System.out.println("✓ Actualizando lesiones: " + datosDTO.getLesiones());
+            infoAlumno.setLesiones(datosDTO.getLesiones());
+            huboActualizacion = true;
+        }
+
+        if (datosDTO.getPadecimientos() != null && !datosDTO.getPadecimientos().trim().isEmpty()) {
+            System.out.println("✓ Actualizando padecimientos: " + datosDTO.getPadecimientos());
+            infoAlumno.setPadecimientos(datosDTO.getPadecimientos());
+            huboActualizacion = true;
+        }
+
+        if (datosDTO.getFechaNacimiento() != null && !datosDTO.getFechaNacimiento().isEmpty()) {
+            try {
+                LocalDate fechaNacimiento = LocalDate.parse(datosDTO.getFechaNacimiento());
+                System.out.println("✓ Actualizando fecha de nacimiento: " + fechaNacimiento);
+                infoAlumno.setFechaNacimiento(fechaNacimiento);
+                huboActualizacion = true;
+            } catch (Exception e) {
+                System.err.println("❌ Error al parsear fecha: " + datosDTO.getFechaNacimiento());
+                throw new RuntimeException("Formato de fecha inválido. Use: yyyy-MM-dd");
+            }
+        }
+
+        // 4. Actualizar sexo en la tabla Usuario si viene en el DTO
+        if (datosDTO.getSexo() != null && !datosDTO.getSexo().isEmpty()) {
+            System.out.println("✓ Actualizando sexo en Usuario: " + datosDTO.getSexo());
+            usuarioEntity.setSexo(datosDTO.getSexo());
+            usuarioRepository.save(usuarioEntity);
+            huboActualizacion = true;
+        }
+
+        // 5. Guardar cambios solo si hubo al menos una actualización
+        if (huboActualizacion) {
+            informacionAlumnoRepository.save(infoAlumno);
+            System.out.println("✓✓✓ Datos del alumno actualizados correctamente");
+        } else {
+            System.out.println("⚠ No se enviaron campos para actualizar");
+            throw new RuntimeException("No se proporcionaron datos para actualizar");
+        }
+
+        System.out.println("=== FIN ACTUALIZACIÓN ===");
     }
 
     // ========================================================
