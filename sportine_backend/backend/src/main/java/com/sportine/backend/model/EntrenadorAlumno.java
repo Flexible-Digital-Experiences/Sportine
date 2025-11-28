@@ -28,6 +28,9 @@ public class EntrenadorAlumno {
     @Column(name = "usuario_alumno")
     private String usuarioAlumno;
 
+    @Column(name = "id_deporte")
+    private Integer idDeporte;
+
     @Column(name = "fecha_inicio")
     private LocalDate fechaInicio;
 
