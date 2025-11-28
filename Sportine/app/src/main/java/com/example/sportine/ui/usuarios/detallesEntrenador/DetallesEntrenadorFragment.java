@@ -303,10 +303,10 @@ public class DetallesEntrenadorFragment extends Fragment {
     // ============================================
 
     private void enviarSolicitud() {
-        // TODO: Implementar lógica para enviar solicitud
-        Toast.makeText(getContext(),
-                "Funcionalidad de enviar solicitud próximamente",
-                Toast.LENGTH_SHORT).show();
+        Bundle bundle = new Bundle();
+        bundle.putString("usuario", usuarioEntrenador);
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_navigation_detallesEntrenador_to_enviarSolicitud, bundle);
     }
 
     private void irAPagar() {
