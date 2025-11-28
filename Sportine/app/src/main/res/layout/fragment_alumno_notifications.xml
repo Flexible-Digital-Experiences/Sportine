@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:elevation="4dp"
+        app:navigationIcon="@drawable/ic_flechaatras"
+        app:navigationIconTint="?attr/colorPrimary"
         app:title="Notificaciones"
         app:titleTextColor="@android:color/black" />
 
