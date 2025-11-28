@@ -109,7 +109,7 @@
                 android:textColor="@color/colorTextSecondary"
                 android:background="@drawable/bg_metrica_ejercicio"
                 android:visibility="gone" />
-
+'
             <!-- Duración -->
             <TextView
                 android:id="@+id/text_duracion"
