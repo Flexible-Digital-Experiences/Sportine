@@ -7,6 +7,8 @@ import com.example.sportine.models.InfoDeporteAlumnoDTO;
 import com.example.sportine.models.PerfilEntrenadorDTO;
 import com.example.sportine.models.Publicacion;
 import com.example.sportine.models.RespuestaRegistro;
+import com.example.sportine.models.SolicitudRequestDTO;
+import com.example.sportine.models.SolicitudResponseDTO;
 import com.example.sportine.models.Usuario;
 import com.example.sportine.models.PublicacionFeedDTO;
 import com.example.sportine.models.UsuarioDetalle;
@@ -112,7 +114,7 @@ public interface ApiService {
     Call<InfoDeporteAlumnoDTO> obtenerInfoDeporte(@Path("idDeporte") Integer idDeporte);
 
     @POST("api/Solicitudes/enviar")
-    Call<Map<String, String>> enviarSolicitud(@Body EnviarSolicitud.SolicitudRequest request);
+    Call<SolicitudResponseDTO> enviarSolicitud(@Body SolicitudRequestDTO request);
 
     // Notificaciones
 

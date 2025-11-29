@@ -1,16 +1,16 @@
 package com.sportine.backend.service.impl;
 
-import com.sportine.backend.dto.DeporteDisponibleDTO;
-import com.sportine.backend.dto.FormularioSolicitudDTO;
-import com.sportine.backend.dto.InfoDeporteAlumnoDTO;
-import com.sportine.backend.repository.SolicitudEntrenadorRepository;
-import com.sportine.backend.repository.UsuarioRepository;
+import com.sportine.backend.dto.*;
+import com.sportine.backend.model.SolicitudEntrenamiento;
+import com.sportine.backend.repository.*;
+import com.sportine.backend.service.EnviarSolicitudEntrenadorService;
 import com.sportine.backend.service.SolicitudEntrenadorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +19,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
-public class SolicitudEntrenadorServiceImpl implements SolicitudEntrenadorService {
+public class EnviarSolicitudEntrenadorServiceImpl implements EnviarSolicitudEntrenadorService {
 
     private final SolicitudEntrenadorRepository solicitudRepository;
     private final UsuarioRepository usuarioRepository;
+    private final SolicitudEntrenamientoRepository solicitudEntrenamientoRepository;
+    private final AlumnoDeporteRepository alumnoDeporteRepository;
 
     @Override
     public FormularioSolicitudDTO obtenerFormularioSolicitud(String usuarioEntrenador, String usuarioAlumno) {
@@ -82,7 +84,6 @@ public class SolicitudEntrenadorServiceImpl implements SolicitudEntrenadorServic
             if (tieneNivelObj instanceof Boolean) {
                 tieneNivel = (Boolean) tieneNivelObj;
             } else if (tieneNivelObj instanceof Number) {
-                // MySQL devuelve 1 o 0 como Long
                 tieneNivel = ((Number) tieneNivelObj).intValue() == 1;
             }
         }
@@ -100,5 +101,63 @@ public class SolicitudEntrenadorServiceImpl implements SolicitudEntrenadorServic
                 nombreDeporte, tieneNivel, nivelActual);
 
         return info;
+    }
+
+    @Override
+    @Transactional
+    public SolicitudResponseDTO enviarSolicitud(SolicitudRequestDTO request, String usuarioAlumno) {
+        log.info("Procesando solicitud de {} para entrenador {} en deporte {}",
+                usuarioAlumno, request.getUsuarioEntrenador(), request.getIdDeporte());
+
+        // 1. Verificar que no exista una solicitud pendiente o aprobada
+        boolean existeSolicitud = solicitudEntrenamientoRepository
+                .existeSolicitudActivaOPendiente(
+                        usuarioAlumno,
+                        request.getUsuarioEntrenador(),
+                        request.getIdDeporte()
+                );
+
+        if (existeSolicitud) {
+            log.warn("Ya existe una solicitud activa entre {} y {} para deporte {}",
+                    usuarioAlumno, request.getUsuarioEntrenador(), request.getIdDeporte());
+            throw new RuntimeException("Ya tienes una solicitud pendiente o aprobada con este entrenador para este deporte");
+        }
+
+        // 2. Si el alumno NO tiene nivel registrado en este deporte, crearlo
+        var alumnoDeporteOpt = alumnoDeporteRepository
+                .findByUsuarioAndIdDeporte(usuarioAlumno, request.getIdDeporte());
+
+        if (alumnoDeporteOpt.isEmpty() && request.getNivel() != null) {
+            log.info("Registrando nivel {} para alumno {} en deporte {}",
+                    request.getNivel(), usuarioAlumno, request.getIdDeporte());
+
+            // Insertar directamente con query nativo
+            alumnoDeporteRepository.insertarAlumnoDeporte(
+                    usuarioAlumno,
+                    request.getIdDeporte(),
+                    request.getNivel(),
+                    LocalDate.now()
+            );
+        }
+
+        // 3. Crear la solicitud
+        SolicitudEntrenamiento solicitud = new SolicitudEntrenamiento();
+        solicitud.setUsuarioAlumno(usuarioAlumno);
+        solicitud.setUsuarioEntrenador(request.getUsuarioEntrenador());
+        solicitud.setIdDeporte(request.getIdDeporte());
+        solicitud.setDescripcionSolicitud(request.getMotivo());
+        solicitud.setFechaSolicitud(LocalDate.now());
+        solicitud.setStatusSolicitud(SolicitudEntrenamiento.StatusSolicitud.En_revisión);
+
+        SolicitudEntrenamiento solicitudGuardada = solicitudEntrenamientoRepository.save(solicitud);
+
+        log.info("✅ Solicitud {} creada exitosamente", solicitudGuardada.getIdSolicitud());
+
+        return new SolicitudResponseDTO(
+                solicitudGuardada.getIdSolicitud(),
+                "Solicitud enviada exitosamente",
+                "En_revisión",
+                solicitudGuardada.getFechaSolicitud().toString()
+        );
     }
 }

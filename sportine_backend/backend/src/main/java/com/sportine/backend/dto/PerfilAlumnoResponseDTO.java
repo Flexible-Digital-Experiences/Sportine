@@ -25,6 +25,6 @@ public class PerfilAlumnoResponseDTO {
     private String fotoPerfil;
     private LocalDate fechaNacimiento;
     private Integer edad; // Calculada automáticamente
-    private List<String> deportes;
+    private List<Integer> deportes;
     private String mensaje;
 }

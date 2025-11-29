@@ -13,14 +13,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface AlumnoDeporteRepository extends JpaRepository<AlumnoDeporte, Integer> {
+public interface NuevoDeporteAlumnoRepository extends JpaRepository<AlumnoDeporte, Integer> {
 
     List<AlumnoDeporte> findByUsuario(String usuario);
 
-    void deleteByUsuario(String usuario);
-
     /**
-     * Busca la relación alumno-deporte
+     * Busca la relación alumno-deporte (ahora SÍ funciona con JPQL)
      */
     @Query("SELECT ad FROM AlumnoDeporte ad " +
             "WHERE ad.usuario = :usuario AND ad.idDeporte = :idDeporte")

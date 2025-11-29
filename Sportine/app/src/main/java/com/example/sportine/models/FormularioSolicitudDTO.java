@@ -1,6 +1,6 @@
 package com.example.sportine.models;
 
-import com.example.sportine.ui.usuarios.enviarsolicitud.EnviarSolicitud.DeporteDisponibleDTO;
+import com.example.sportine.models.DeporteDisponibleDTO;
 import java.util.List;
 
 public class FormularioSolicitudDTO {
