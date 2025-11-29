@@ -19,5 +19,5 @@ public class PerfilAlumnoDTO {
     private String padecimientos;
     private String fotoPerfil;
     private LocalDate fechaNacimiento;
-    private List<String> deportes; // Lista de deportes que practica
+    private List<Integer> deportes; // Lista de deportes que practica
 }

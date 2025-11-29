@@ -54,11 +54,14 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
 
         informacionAlumnoRepository.save(infoAlumno);
 
+        // ✅ CORREGIDO: usa Integer y setIdDeporte
         if (dto.getDeportes() != null && !dto.getDeportes().isEmpty()) {
-            for (String deporte : dto.getDeportes()) {
+            for (Integer idDeporte : dto.getDeportes()) {
                 AlumnoDeporte alumnoDeporte = new AlumnoDeporte();
                 alumnoDeporte.setUsuario(dto.getUsuario());
-                alumnoDeporte.setDeporte(deporte);
+                alumnoDeporte.setIdDeporte(idDeporte);  // ✅ Cambio aquí
+                alumnoDeporte.setFechaInicio(LocalDate.now());  // ✅ Agregar fecha
+                // Si tienes idNivel en el DTO, puedes agregarlo aquí también
                 alumnoDeporteRepository.save(alumnoDeporte);
             }
         }
@@ -99,8 +102,10 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 .orElseThrow(() -> new RuntimeException("Perfil de alumno no encontrado"));
 
         List<AlumnoDeporte> deportesEntity = alumnoDeporteRepository.findByUsuario(usuario);
-        List<String> deportes = deportesEntity.stream()
-                .map(AlumnoDeporte::getDeporte)
+
+        // ✅ CORREGIDO: usa getIdDeporte en lugar de getDeporte
+        List<Integer> deportes = deportesEntity.stream()
+                .map(AlumnoDeporte::getIdDeporte)  // ✅ Cambio aquí
                 .collect(Collectors.toList());
 
         Integer edad = calcularEdad(infoAlumno.getFechaNacimiento());
@@ -151,11 +156,13 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
 
         alumnoDeporteRepository.deleteByUsuario(usuario);
 
+        // ✅ YA ESTÁ CORRECTO
         if (dto.getDeportes() != null && !dto.getDeportes().isEmpty()) {
-            for (String deporte : dto.getDeportes()) {
+            for (Integer idDeporte : dto.getDeportes()) {
                 AlumnoDeporte alumnoDeporte = new AlumnoDeporte();
                 alumnoDeporte.setUsuario(usuario);
-                alumnoDeporte.setDeporte(deporte);
+                alumnoDeporte.setIdDeporte(idDeporte);
+                alumnoDeporte.setFechaInicio(LocalDate.now());
                 alumnoDeporteRepository.save(alumnoDeporte);
             }
         }
