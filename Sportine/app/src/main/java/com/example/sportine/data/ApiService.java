@@ -10,6 +10,7 @@ import com.example.sportine.models.SolicitudResponseDTO;
 import com.example.sportine.models.Usuario;
 import com.example.sportine.models.PublicacionFeedDTO;
 import com.example.sportine.models.UsuarioDetalle;
+import com.example.sportine.ui.usuarios.dto.ActualizarDatosAlumnoDTO;
 import com.example.sportine.ui.usuarios.dto.LoginRequest;
 import com.example.sportine.ui.usuarios.dto.LoginResponse;
 import com.example.sportine.ui.usuarios.dto.ComentarioRequest;
@@ -93,6 +94,11 @@ public interface ApiService {
     @GET("/api/social/amigos")
     Call<List<UsuarioDetalle>> verMisAmigos();
 
+    @PUT("api/alumnos/{usuario}/actualizar-datos")
+    Call<Void> actualizarDatosAlumno(
+            @Path("usuario") String usuario,
+            @Body ActualizarDatosAlumnoDTO datos
+    );
     @PUT("/api/social/post/{id}")
     Call<Void> editarPost(@Path("id") Integer id, @Body com.example.sportine.models.Publicacion publicacionActualizada);
 

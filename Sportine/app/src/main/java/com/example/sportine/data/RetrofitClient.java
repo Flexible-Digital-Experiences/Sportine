@@ -32,6 +32,8 @@ public class RetrofitClient {
     // IP PARA CELULAR --JP--
     //public static final String BASE_URL = "http://192.168.1.77:8080/";
 
+    //IP para Escuela Alonso
+    //public static final String BASE_URL = "https://jason-waterworn-kaysen.ngrok-free.dev/";
     // IP para grok (escuela)
     public static  final String BASE_URL = "https://chasmal-plastometric-isabell.ngrok-free.dev/";
 

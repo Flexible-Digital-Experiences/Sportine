@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 
 @Entity
@@ -26,9 +27,6 @@ public class InformacionAlumno {
     @Column(name = "lesiones")
     private String lesiones;
 
-    @Column(name = "nivel")
-    private String nivel;
-
     @Column(name = "padecimientos")
     private String padecimientos;
 
@@ -37,4 +35,6 @@ public class InformacionAlumno {
 
     @Column(name = "fecha_nacimiento")
     private LocalDate fechaNacimiento;
+
+
 }

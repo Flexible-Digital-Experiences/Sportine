@@ -91,9 +91,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scaleType="centerCrop"
+                            android:src="@drawable/ic_avatar_default"
                             android:contentDescription="Foto de perfil"/>
-
-
                     </FrameLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -141,64 +140,14 @@
                             android:textStyle="bold"
                             android:layout_marginBottom="16dp"/>
 
+                        <!-- ⭐ CONTENEDOR DINÁMICO DE DEPORTES -->
                         <LinearLayout
+                            android:id="@+id/deportesContainer"
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center">
-
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_marginEnd="8dp"
-                                app:cardCornerRadius="12dp"
-                                app:cardElevation="2dp"
-                                app:cardBackgroundColor="#FFF3E0">
-
-                                <ImageView
-                                    android:layout_width="50dp"
-                                    android:layout_height="50dp"
-                                    android:padding="10dp"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/balon_futbol"
-                                    android:contentDescription="Fútbol"/>
-                            </com.google.android.material.card.MaterialCardView>
-
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:layout_marginEnd="8dp"
-                                app:cardCornerRadius="12dp"
-                                app:cardElevation="2dp"
-                                app:cardBackgroundColor="#FFE0E0">
-
-                                <ImageView
-                                    android:layout_width="50dp"
-                                    android:layout_height="50dp"
-                                    android:padding="10dp"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/balon_basket"
-                                    android:contentDescription="Basquet"/>
-                            </com.google.android.material.card.MaterialCardView>
-
-                            <com.google.android.material.card.MaterialCardView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                app:cardCornerRadius="12dp"
-                                app:cardElevation="2dp"
-                                app:cardBackgroundColor="#E0F2F1">
-
-                                <ImageView
-                                    android:layout_width="50dp"
-                                    android:layout_height="50dp"
-                                    android:padding="10dp"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/pelota_tenis"
-                                    android:contentDescription="Tenis"/>
-                            </com.google.android.material.card.MaterialCardView>
+                            <!-- Los deportes se agregan dinámicamente aquí -->
                         </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -444,6 +393,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="#4CAF50"
                         android:textSize="22sp"
+                        android:id="@+id/tvTotalAmigos"
                         android:textStyle="bold"/>
 
                     <TextView
@@ -481,6 +431,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="#FF9800"
                         android:textSize="22sp"
+                        android:id="@+id/tvTotalEntrenadores"
                         android:textStyle="bold"/>
 
                     <TextView
