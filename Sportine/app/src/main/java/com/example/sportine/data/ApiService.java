@@ -1,5 +1,7 @@
 package com.example.sportine.data;
 
+import com.example.sportine.models.CalificacionRequestDTO;
+import com.example.sportine.models.CalificacionResponseDTO;
 import com.example.sportine.models.Comentario;
 import com.example.sportine.models.EntrenadorCardDTO;
 import com.example.sportine.models.FormularioSolicitudDTO;
@@ -136,6 +138,10 @@ public interface ApiService {
 
     @DELETE("api/Solicitudes/{idSolicitud}")
     Call<Void> eliminarSolicitud(@Path("idSolicitud") Integer idSolicitud);
+
+    // Enviar calificación
+    @POST("api/calificaciones/enviar")
+    Call<CalificacionResponseDTO> enviarCalificacion(@Body CalificacionRequestDTO request);
 
     // Notificaciones
 
