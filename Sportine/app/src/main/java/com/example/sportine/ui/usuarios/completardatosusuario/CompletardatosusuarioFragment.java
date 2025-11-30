@@ -108,16 +108,26 @@ public class CompletardatosusuarioFragment extends Fragment {
      * Inicializa todas las vistas del layout
      */
     private void inicializarComponentes(View view) {
+        Log.d(TAG, "Inicializando componentes...");
+
         // Foto de perfil
         ivAvatarCompletar = view.findViewById(R.id.iv_avatar_completar);
 
-        // TextViews de datos actuales (los que NO se pueden editar)
-        tvLesionesActual = obtenerTextViewEnCard(view, "Lesiones", false);
-        tvPadecimientosActual = obtenerTextViewEnCard(view, "Padecimientos", false);
-        tvGeneroActual = obtenerTextViewEnCard(view, "Género", false);
-        tvEstaturaActual = obtenerTextViewEnCard(view, "Estatura (m)", false);
-        tvPesoActual = obtenerTextViewEnCard(view, "Peso (Kg)", false);
-        tvEdadActual = obtenerTextViewEnCard(view, "Edad", false);
+        // TextViews de datos actuales (con IDs agregados)
+        tvLesionesActual = view.findViewById(R.id.tvLesionesActual);
+        tvPadecimientosActual = view.findViewById(R.id.tvPadecimientosActual);
+        tvGeneroActual = view.findViewById(R.id.tvGeneroActual);
+        tvEstaturaActual = view.findViewById(R.id.tvEstaturaActual);
+        tvPesoActual = view.findViewById(R.id.tvPesoActual);
+        tvEdadActual = view.findViewById(R.id.tvEdadActual);
+
+        // Verificar que los TextViews se encontraron
+        if (tvLesionesActual == null) Log.e(TAG, "❌ tvLesionesActual es NULL");
+        if (tvPadecimientosActual == null) Log.e(TAG, "❌ tvPadecimientosActual es NULL");
+        if (tvGeneroActual == null) Log.e(TAG, "❌ tvGeneroActual es NULL");
+        if (tvEstaturaActual == null) Log.e(TAG, "❌ tvEstaturaActual es NULL");
+        if (tvPesoActual == null) Log.e(TAG, "❌ tvPesoActual es NULL");
+        if (tvEdadActual == null) Log.e(TAG, "❌ tvEdadActual es NULL");
 
         // EditTexts y Spinners (campos editables)
         etLesiones = view.findViewById(R.id.etLesiones);
@@ -130,21 +140,8 @@ public class CompletardatosusuarioFragment extends Fragment {
         // Botones
         btnBack = view.findViewById(R.id.btnBack);
         btnActualizar = view.findViewById(R.id.btnActualizar);
-    }
 
-    /**
-     * Método auxiliar para obtener TextViews dentro de las cards
-     * (Busca el segundo TextView dentro de cada LinearLayout que contenga el label)
-     */
-    private TextView obtenerTextViewEnCard(View parentView, String labelText, boolean esEditable) {
-        // Este método es un helper para encontrar los TextViews de "datos actuales"
-        // En tu XML, cada campo tiene un TextView con el label y otro con el valor "-"
-
-        // Para simplificar, vamos a usar los IDs directos si los defines en el XML
-        // Si no, este método puede buscar por el texto del label
-
-        // Por ahora, devolvemos null y los asignamos manualmente
-        return null;
+        Log.d(TAG, "✓ Componentes inicializados");
     }
 
     /**
@@ -228,18 +225,19 @@ public class CompletardatosusuarioFragment extends Fragment {
                                    Response<PerfilAlumnoResponseDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     perfilActual = response.body();
+                    Log.d(TAG, "✓ Perfil cargado exitosamente");
                     mostrarDatosActuales(perfilActual);
                 } else if (response.code() == 404) {
-                    Log.w(TAG, "Perfil no completado aún");
+                    Log.w(TAG, "⚠ Perfil no completado aún (404)");
                     // Dejar los campos vacíos para que el usuario los llene
                 } else {
-                    Log.e(TAG, "Error al cargar datos: " + response.code());
+                    Log.e(TAG, "❌ Error al cargar datos: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<PerfilAlumnoResponseDTO> call, Throwable t) {
-                Log.e(TAG, "Error de conexión: " + t.getMessage(), t);
+                Log.e(TAG, "❌ Error de conexión: " + t.getMessage(), t);
                 Toast.makeText(requireContext(),
                         "Error de conexión",
                         Toast.LENGTH_SHORT).show();
@@ -251,7 +249,7 @@ public class CompletardatosusuarioFragment extends Fragment {
      * Muestra los datos actuales en la sección "Datos Actuales"
      */
     private void mostrarDatosActuales(PerfilAlumnoResponseDTO perfil) {
-        Log.d(TAG, "Mostrando datos actuales del perfil");
+        Log.d(TAG, "===== MOSTRANDO DATOS ACTUALES =====");
 
         // Cargar foto de perfil
         if (perfil.getFotoPerfil() != null && !perfil.getFotoPerfil().isEmpty()) {
@@ -265,31 +263,52 @@ public class CompletardatosusuarioFragment extends Fragment {
         }
 
         // Mostrar datos en la sección "Datos Actuales"
-        // NOTA: Necesitas agregar IDs específicos a estos TextViews en tu XML
-        // Por ahora, los dejamos comentados hasta que tengas los IDs
+        if (tvLesionesActual != null) {
+            String lesiones = perfil.getLesiones() != null && !perfil.getLesiones().isEmpty()
+                    ? perfil.getLesiones() : "-";
+            tvLesionesActual.setText(lesiones);
+            Log.d(TAG, "Lesiones: " + lesiones);
+        }
 
-        /*
-        tvLesionesActual.setText(
-                perfil.getLesiones() != null ? perfil.getLesiones() : "-"
-        );
-        tvPadecimientosActual.setText(
-                perfil.getPadecimientos() != null ? perfil.getPadecimientos() : "-"
-        );
-        tvGeneroActual.setText(
-                perfil.getSexo() != null ? perfil.getSexo() : "-"
-        );
-        tvEstaturaActual.setText(
-                perfil.getEstatura() != null ?
-                String.format(Locale.getDefault(), "%.2f", perfil.getEstatura()) : "-"
-        );
-        tvPesoActual.setText(
-                perfil.getPeso() != null ?
-                String.format(Locale.getDefault(), "%.2f", perfil.getPeso()) : "-"
-        );
-        tvEdadActual.setText(
-                perfil.getEdad() != null ? String.valueOf(perfil.getEdad()) : "-"
-        );
-        */
+        if (tvPadecimientosActual != null) {
+            String padecimientos = perfil.getPadecimientos() != null && !perfil.getPadecimientos().isEmpty()
+                    ? perfil.getPadecimientos() : "-";
+            tvPadecimientosActual.setText(padecimientos);
+            Log.d(TAG, "Padecimientos: " + padecimientos);
+        }
+
+        if (tvGeneroActual != null) {
+            String sexo = perfil.getSexo() != null && !perfil.getSexo().isEmpty()
+                    ? perfil.getSexo() : "-";
+            tvGeneroActual.setText(sexo);
+            Log.d(TAG, "Género: " + sexo);
+        }
+
+        if (tvEstaturaActual != null) {
+            String estatura = perfil.getEstatura() != null
+                    ? String.format(Locale.getDefault(), "%.2f m", perfil.getEstatura())
+                    : "-";
+            tvEstaturaActual.setText(estatura);
+            Log.d(TAG, "Estatura: " + estatura);
+        }
+
+        if (tvPesoActual != null) {
+            String peso = perfil.getPeso() != null
+                    ? String.format(Locale.getDefault(), "%.1f kg", perfil.getPeso())
+                    : "-";
+            tvPesoActual.setText(peso);
+            Log.d(TAG, "Peso: " + peso);
+        }
+
+        if (tvEdadActual != null) {
+            String edad = perfil.getEdad() != null
+                    ? String.valueOf(perfil.getEdad()) + " años"
+                    : "-";
+            tvEdadActual.setText(edad);
+            Log.d(TAG, "Edad: " + edad);
+        }
+
+        Log.d(TAG, "===== FIN MOSTRAR DATOS =====");
     }
 
     /**
@@ -423,9 +442,6 @@ public class CompletardatosusuarioFragment extends Fragment {
 
                     // Recargar datos actuales
                     cargarDatosActuales();
-
-                    // Opcional: volver atrás automáticamente
-                    // requireActivity().onBackPressed();
 
                 } else {
                     Log.e(TAG, "Error al actualizar: " + response.code());

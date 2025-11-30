@@ -30,10 +30,10 @@ public class RetrofitClient {
     //public static final String BASE_URL = "http://192.168.1.77:8080/";
 
     //IP para Escuela Alonso
-    public static final String BASE_URL = "https://jason-waterworn-kaysen.ngrok-free.dev/";
+    //public static final String BASE_URL = "https://jason-waterworn-kaysen.ngrok-free.dev/";
 
     // IP PARA EMULADOR
-    //private static final String BASE_URL = "http://10.0.2.2:8080/";
+    private static final String BASE_URL = "http://10.0.2.2:8080/";
 
     public static Retrofit getClient(Context context) {
 
