@@ -5,9 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/spacing_small"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="0dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
     app:strokeWidth="1dp"
     app:strokeColor="@color/colorDivider"
     android:backgroundTint="@color/colorCardBackground">
@@ -15,9 +15,17 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_medium">
+        android:padding="16dp">
 
-        <!-- Número del ejercicio -->
+        <CheckBox
+            android:id="@+id/checkbox_ejercicio"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:button="@drawable/checkbox_selector"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
         <TextView
             android:id="@+id/text_numero_ejercicio"
             android:layout_width="32dp"
@@ -28,100 +36,99 @@
             android:textColor="@color/colorAccent"
             android:background="@drawable/bg_numero_ejercicio"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="1"/>
 
-        <!-- Nombre del ejercicio -->
         <TextView
             android:id="@+id/text_nombre_ejercicio"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_medium"
-            android:textSize="15sp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/colorTextPrimary"
             android:fontFamily="sans-serif-medium"
             android:maxLines="2"
             android:ellipsize="end"
             app:layout_constraintStart_toEndOf="@id/text_numero_ejercicio"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/text_numero_ejercicio" />
+            app:layout_constraintEnd_toStartOf="@id/checkbox_ejercicio"
+            app:layout_constraintTop_toTopOf="@id/text_numero_ejercicio"
+            tools:text="Ejercicio de Ejemplo"/>
 
-        <!-- Descripción breve del ejercicio -->
-        <TextView
-            android:id="@+id/text_descripcion_ejercicio"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textSize="13sp"
-            android:textColor="@color/colorTextSecondary"
-            android:maxLines="2"
-            android:ellipsize="end"
-            app:layout_constraintStart_toStartOf="@id/text_nombre_ejercicio"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_nombre_ejercicio" />
-
-        <!-- Métricas del ejercicio -->
         <LinearLayout
             android:id="@+id/layout_metricas"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginTop="8dp"
             android:orientation="horizontal"
-            android:gravity="start"
-            app:layout_constraintTop_toBottomOf="@id/text_descripcion_ejercicio"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@id/text_nombre_ejercicio"
             app:layout_constraintStart_toStartOf="@id/text_nombre_ejercicio"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toStartOf="@id/checkbox_ejercicio">
 
-            <!-- Series -->
             <TextView
                 android:id="@+id/text_series"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"
-                android:textSize="12sp"
+                android:paddingEnd="12dp"
+                android:textSize="13sp"
                 android:textColor="@color/colorTextSecondary"
-                android:background="@drawable/bg_metrica_ejercicio"
-                android:visibility="gone" />
+                android:drawablePadding="4dp"
+                app:drawableStartCompat="@drawable/ic_series"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:text="4 series"/>
 
-            <!-- Repeticiones -->
             <TextView
                 android:id="@+id/text_repeticiones"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"
-                android:textSize="12sp"
+                android:paddingEnd="12dp"
+                android:textSize="13sp"
                 android:textColor="@color/colorTextSecondary"
-                android:background="@drawable/bg_metrica_ejercicio"
-                android:visibility="gone" />
+                android:drawablePadding="4dp"
+                app:drawableStartCompat="@drawable/ic_repeticiones"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:text="12 reps"/>
 
-            <!-- Peso -->
             <TextView
-                android:id="@+id/text_peso"
+                android:id="@+id/text_distancia"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"
-                android:textSize="12sp"
+                android:paddingEnd="12dp"
+                android:textSize="13sp"
                 android:textColor="@color/colorTextSecondary"
-                android:background="@drawable/bg_metrica_ejercicio"
-                android:visibility="gone" />
-'
-            <!-- Duración -->
+                android:drawablePadding="4dp"
+                app:drawableStartCompat="@drawable/ic_distancia"
+                android:visibility="gone"
+                tools:text="5 km"/>
+
             <TextView
                 android:id="@+id/text_duracion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"
-                android:textSize="12sp"
+                android:paddingEnd="12dp"
+                android:textSize="13sp"
                 android:textColor="@color/colorTextSecondary"
-                android:background="@drawable/bg_metrica_ejercicio"
-                android:visibility="gone" />
+                android:drawablePadding="4dp"
+                app:drawableStartCompat="@drawable/ic_duracion"
+                android:visibility="gone"
+                tools:text="30 min"/>
+
+            <TextView
+                android:id="@+id/text_peso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorAccent"
+                android:drawablePadding="4dp"
+                app:drawableStartCompat="@drawable/ic_peso"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:text="20kg"/>
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

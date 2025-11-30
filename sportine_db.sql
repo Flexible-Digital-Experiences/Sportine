@@ -149,28 +149,21 @@ CREATE TABLE Entrenamiento (
     FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte)
 );
 
-CREATE TABLE Catalogo_Ejercicios (
-    id_catalogo INT PRIMARY KEY AUTO_INCREMENT,
-    id_deporte INT,
-    nombre_ejercicio VARCHAR(255),
-    descripcion VARCHAR(255),
-    tipo_medida VARCHAR(50),
-    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte)
-);
-
+-- ==========================================================
+-- MODIFICADO: Tabla simplificada (Sin catálogo, con nombre manual)
+-- ==========================================================
 CREATE TABLE Ejercicios_Asignados (
     id_asignado INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT,
-    id_catalogo INT,
     usuario VARCHAR(255),
-    repeticiones INT,
+    nombre_ejercicio VARCHAR(255) NOT NULL, -- Aquí se guarda el texto manual
     series INT,
-    duracion INT,
-    distancia FLOAT,
-    peso FLOAT,
-    status_ejercicio ENUM('pendiente', 'completado', 'omitido'),
+    repeticiones INT,
+    peso FLOAT,         -- Opcional (para gym)
+    duracion INT,       -- Opcional (minutos para cardio)
+    distancia FLOAT,    -- Opcional (km para running)
+    status_ejercicio ENUM('pendiente', 'completado', 'omitido') DEFAULT 'pendiente',
     FOREIGN KEY (id_entrenamiento) REFERENCES Entrenamiento(id_entrenamiento),
-    FOREIGN KEY (id_catalogo) REFERENCES Catalogo_Ejercicios(id_catalogo),
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 

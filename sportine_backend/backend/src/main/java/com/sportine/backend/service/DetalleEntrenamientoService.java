@@ -2,18 +2,18 @@ package com.sportine.backend.service;
 
 import com.sportine.backend.dto.DetalleEntrenamientoDTO;
 
-/**
- * Interface para el servicio de detalle de entrenamientos.
- * Define las operaciones para obtener información completa de un entrenamiento.
- */
 public interface DetalleEntrenamientoService {
 
     /**
      * Obtiene el detalle completo de un entrenamiento para mostrarlo al alumno
-     *
-     * @param idEntrenamiento ID del entrenamiento
-     * @param username Usuario del alumno (para validación)
-     * @return DTO con toda la información del entrenamiento
      */
     DetalleEntrenamientoDTO obtenerDetalleEntrenamiento(Integer idEntrenamiento, String username);
+
+    /**
+     * Cambia el estado de un ejercicio (completado/pendiente)
+     * Se usa cuando el alumno marca el CheckBox
+     * * @param idAsignado ID del ejercicio
+     * @param completado true si se marcó, false si se desmarcó
+     */
+    void cambiarEstadoEjercicio(Integer idAsignado, boolean completado);
 }

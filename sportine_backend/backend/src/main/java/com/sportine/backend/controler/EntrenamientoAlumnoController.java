@@ -107,4 +107,36 @@ public class EntrenamientoAlumnoController {
      * Clase interna para respuestas exitosas
      */
     private record SuccessResponse(String mensaje) {}
+
+    /**
+     * Cambia el estado de un ejercicio específico (Check/Uncheck)
+     *
+     * PUT /api/alumno/entrenamientos/ejercicio/{idAsignado}/estado?completado=true
+     */
+    @PutMapping("/ejercicio/{idAsignado}/estado")
+    public ResponseEntity<?> cambiarEstadoEjercicio(
+            @PathVariable Integer idAsignado,
+            @RequestParam boolean completado,
+            Authentication authentication) {
+
+        try {
+            // No necesitamos el username para esto, pero podríamos usarlo para validar seguridad extra si quisieras
+            // String username = authentication.getName();
+
+            log.info("PUT Cambiar estado ejercicio {} a completado={}", idAsignado, completado);
+
+            detalleEntrenamientoService.cambiarEstadoEjercicio(idAsignado, completado);
+
+            return ResponseEntity.ok(new SuccessResponse("Estado actualizado correctamente"));
+
+        } catch (RuntimeException e) {
+            log.error("Error al actualizar ejercicio {}: {}", idAsignado, e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error inesperado al actualizar ejercicio {}: {}", idAsignado, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Error interno del servidor"));
+        }
+    }
 }

@@ -18,7 +18,6 @@
         android:paddingBottom="@dimen/spacing_xxlarge"
         android:layout_marginTop="@dimen/spacing_large">
 
-        <!-- Botón de regreso -->
         <ImageView
             android:id="@+id/btnBack"
             android:layout_width="@dimen/back_button_size"
@@ -28,7 +27,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Título de la página -->
         <TextView
             android:id="@+id/text_titulo_pagina"
             android:layout_width="0dp"
@@ -44,7 +42,6 @@
             app:layout_constraintTop_toTopOf="@id/btnBack"
             app:layout_constraintBottom_toBottomOf="@id/btnBack" />
 
-        <!-- Línea separadora -->
         <View
             android:id="@+id/divider_header"
             android:layout_width="0dp"
@@ -55,7 +52,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Fecha del entrenamiento -->
         <LinearLayout
             android:id="@+id/layout_fecha"
             android:layout_width="wrap_content"
@@ -72,17 +68,16 @@
                 android:background="@color/colorAccent"
                 android:layout_marginEnd="@dimen/spacing_small" />
 
-            <!-- Fecha desde backend -->
             <TextView
                 android:id="@+id/text_fecha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorTextSecondary"
                 android:textSize="@dimen/font_size_date"
-                android:fontFamily="sans-serif-medium" />
+                android:fontFamily="sans-serif-medium"
+                tools:text="Lunes, 24 de Octubre" />
         </LinearLayout>
 
-        <!-- Título del entrenamiento desde backend -->
         <TextView
             android:id="@+id/text_titulo_entrenamiento"
             android:layout_width="0dp"
@@ -92,11 +87,11 @@
             android:textStyle="bold"
             android:textColor="@color/colorTextPrimary"
             android:fontFamily="sans-serif-medium"
+            tools:text="Entrenamiento de Fuerza"
             app:layout_constraintTop_toBottomOf="@id/layout_fecha"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Línea separadora -->
         <View
             android:id="@+id/divider_titulo"
             android:layout_width="0dp"
@@ -107,7 +102,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Label "Entrenador" -->
         <TextView
             android:id="@+id/label_entrenador"
             android:layout_width="wrap_content"
@@ -121,7 +115,6 @@
             app:layout_constraintTop_toBottomOf="@id/divider_titulo"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <!-- Tarjeta de entrenador y deporte -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_entrenador_deporte"
             android:layout_width="0dp"
@@ -140,7 +133,6 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/spacing_large">
 
-                <!-- Avatar del entrenador (URL desde backend) -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/card_avatar_entrenador"
                     android:layout_width="@dimen/avatar_size"
@@ -156,10 +148,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        android:contentDescription="@string/avatar_entrenador_desc" />
+                        android:contentDescription="@string/avatar_entrenador_desc"
+                        tools:src="@drawable/ic_launcher_background"/>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Información del entrenador desde backend -->
                 <LinearLayout
                     android:id="@+id/layout_info_entrenador"
                     android:layout_width="0dp"
@@ -172,7 +164,6 @@
                     app:layout_constraintTop_toTopOf="@id/card_avatar_entrenador"
                     app:layout_constraintBottom_toBottomOf="@id/card_avatar_entrenador">
 
-                    <!-- Nombre del entrenador -->
                     <TextView
                         android:id="@+id/text_nombre_entrenador"
                         android:layout_width="wrap_content"
@@ -180,19 +171,19 @@
                         android:textSize="@dimen/font_size_name"
                         android:textStyle="bold"
                         android:textColor="@color/colorTextPrimary"
-                        android:fontFamily="sans-serif-medium" />
+                        android:fontFamily="sans-serif-medium"
+                        tools:text="Carlos Rodríguez" />
 
-                    <!-- Especialidad del entrenador -->
                     <TextView
                         android:id="@+id/text_especialidad"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_xsmall"
                         android:textSize="@dimen/font_size_specialty"
-                        android:textColor="@color/colorTextSecondary" />
+                        android:textColor="@color/colorTextSecondary"
+                        tools:text="Entrenador de Gimnasio" />
                 </LinearLayout>
 
-                <!-- Ícono del deporte (drawable dinámico desde backend) -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/card_deporte_icon"
                     android:layout_width="@dimen/avatar_size"
@@ -210,13 +201,13 @@
                         android:layout_height="match_parent"
                         android:padding="@dimen/icon_padding"
                         android:scaleType="fitCenter"
-                        android:contentDescription="@string/icono_deporte_desc" />
+                        android:contentDescription="@string/icono_deporte_desc"
+                        tools:src="@drawable/ic_fitness_center_black_24dp"/>
                 </com.google.android.material.card.MaterialCardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Línea separadora -->
         <View
             android:id="@+id/divider_descripcion"
             android:layout_width="0dp"
@@ -227,7 +218,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Label "Descripción" -->
         <TextView
             android:id="@+id/label_descripcion"
             android:layout_width="wrap_content"
@@ -241,7 +231,6 @@
             app:layout_constraintTop_toBottomOf="@id/divider_descripcion"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <!-- Tarjeta de descripción -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_descripcion"
             android:layout_width="0dp"
@@ -255,7 +244,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- Descripción del entrenamiento desde backend -->
             <TextView
                 android:id="@+id/text_descripcion"
                 android:layout_width="match_parent"
@@ -263,11 +251,10 @@
                 android:padding="@dimen/spacing_xlarge"
                 android:textSize="@dimen/font_size_description"
                 android:textColor="@color/colorTextDescription"
-                android:lineSpacingExtra="@dimen/spacing_xsmall" />
+                android:lineSpacingExtra="@dimen/spacing_xsmall"
+                tools:text="Descripción del entrenamiento..." />
         </com.google.android.material.card.MaterialCardView>
 
-
-        <!-- Línea separadora -->
         <View
             android:id="@+id/divider_ejercicios"
             android:layout_width="0dp"
@@ -278,7 +265,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Label "Ejercicios" -->
         <LinearLayout
             android:id="@+id/layout_header_ejercicios"
             android:layout_width="0dp"
@@ -291,6 +277,7 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
+                android:id="@+id/label_ejercicios"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -304,10 +291,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/font_size_specialty"
-                android:textColor="@color/colorTextSecondary" />
+                android:textColor="@color/colorTextSecondary"
+                tools:text="0 ejercicios"/>
         </LinearLayout>
 
-        <!-- RecyclerView de ejercicios -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_ejercicios"
             android:layout_width="0dp"
@@ -316,16 +303,17 @@
             android:nestedScrollingEnabled="false"
             app:layout_constraintTop_toBottomOf="@id/layout_header_ejercicios"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_ejercicio_detalle"/>
 
-        <!-- Comentario opcional -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_layout_comentario"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_xxlarge"
-            android:hint="Comentario (opcional)"
+            android:hint="@string/hint_comentario_opcional"
             app:boxStrokeColor="@color/colorAccent"
             app:layout_constraintTop_toBottomOf="@id/recycler_ejercicios"
             app:layout_constraintStart_toStartOf="parent"
@@ -339,14 +327,13 @@
                 android:inputType="textCapSentences|textMultiLine" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Botón "Marcar como completado" -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_marcar_completado"
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_marginTop="@dimen/spacing_xxlarge"
             android:layout_marginBottom="@dimen/spacing_xxlarge"
-            android:text="Marcar como completado"
+            android:text="@string/btn_marcar_completado"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
