@@ -5,15 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.bumptech.glide.Glide;
 import com.example.sportine.databinding.FragmentAlumnoDetallesEntrenamientoBinding;
+import com.example.sportine.models.AsignarEjercicioDTO;
 
 public class DetallesEntrenamientoFragment extends Fragment {
 
@@ -25,7 +24,6 @@ public class DetallesEntrenamientoFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Recibimos el ID que viene del Home
         if (getArguments() != null) {
             idEntrenamiento = getArguments().getInt("idEntrenamiento", -1);
         }
@@ -43,7 +41,7 @@ public class DetallesEntrenamientoFragment extends Fragment {
 
         setupRecyclerView();
         setupViewModel();
-        setupListeners();
+        setupListeners(); // Aquí está la magia nueva
 
         if (idEntrenamiento != -1) {
             viewModel.cargarDetalles(idEntrenamiento);
@@ -57,7 +55,10 @@ public class DetallesEntrenamientoFragment extends Fragment {
         binding.recyclerEjercicios.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerEjercicios.setAdapter(adapter);
 
+        // Listener para actualizar estado individual (CheckBox)
         adapter.setOnEjercicioCheckListener((ejercicio, isChecked) -> {
+            // Importante: Actualizamos el objeto local para la validación final
+            ejercicio.setCompletado(isChecked);
             viewModel.cambiarEstadoEjercicio(ejercicio.getIdAsignado(), isChecked);
         });
     }
@@ -65,6 +66,7 @@ public class DetallesEntrenamientoFragment extends Fragment {
     private void setupViewModel() {
         viewModel = new ViewModelProvider(this).get(DetallesViewModel.class);
 
+        // Observar datos del entrenamiento
         viewModel.getDetalle().observe(getViewLifecycleOwner(), dto -> {
             binding.textTituloEntrenamiento.setText(dto.getTitulo());
             binding.textFecha.setText(dto.getFecha() + " " + dto.getHora());
@@ -82,6 +84,14 @@ public class DetallesEntrenamientoFragment extends Fragment {
             }
         });
 
+        // Observar éxito al completar
+        viewModel.getEntrenamientoCompletado().observe(getViewLifecycleOwner(), exito -> {
+            if (exito) {
+                Toast.makeText(getContext(), "¡Entrenamiento completado! 💪", Toast.LENGTH_SHORT).show();
+                if (getActivity() != null) getActivity().onBackPressed();
+            }
+        });
+
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
             if (error != null) Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
         });
@@ -90,6 +100,69 @@ public class DetallesEntrenamientoFragment extends Fragment {
     private void setupListeners() {
         binding.btnBack.setOnClickListener(v -> {
             if (getActivity() != null) getActivity().onBackPressed();
+        });
+
+        // Feedback visual de los Sliders (Opcional)
+        binding.sliderCansancio.addOnChangeListener((slider, value, fromUser) -> {
+            binding.labelCansancio.setText("Nivel de Cansancio (" + (int)value + "/10)");
+        });
+        binding.sliderDificultad.addOnChangeListener((slider, value, fromUser) -> {
+            binding.labelDificultad.setText("Dificultad (" + (int)value + "/10)");
+        });
+
+        // CLICK DEL BOTÓN COMPLETAR
+        binding.btnMarcarCompletado.setOnClickListener(v -> {
+
+            // 1. Validar si hay ejercicios pendientes
+            boolean hayPendientes = false;
+            // Usamos la lista actual del ViewModel que hemos ido actualizando con los CheckBox
+            if (viewModel.getDetalle().getValue() != null &&
+                    viewModel.getDetalle().getValue().getEjercicios() != null) {
+
+                for (AsignarEjercicioDTO ejercicio : viewModel.getDetalle().getValue().getEjercicios()) {
+                    if (!ejercicio.isCompletado()) {
+                        hayPendientes = true;
+                        break;
+                    }
+                }
+            }
+
+            // 2. Recolectar datos del formulario
+            String comentario = "";
+            if (binding.inputComentario.getText() != null) {
+                comentario = binding.inputComentario.getText().toString();
+            }
+
+            int cansancio = (int) binding.sliderCansancio.getValue();
+            int dificultad = (int) binding.sliderDificultad.getValue();
+
+            // Obtener el texto del Chip seleccionado
+            String animo = "Normal";
+            int chipId = binding.chipGroupAnimo.getCheckedChipId();
+            if (chipId != -1) {
+                com.google.android.material.chip.Chip chip = binding.getRoot().findViewById(chipId);
+                if(chip != null) animo = chip.getText().toString();
+            }
+
+            // Variables finales para usar dentro del lambda
+            final String comFinal = comentario;
+            final int cansFinal = cansancio;
+            final int difFinal = dificultad;
+            final String animoFinal = animo;
+
+            // 3. Lógica de decisión
+            if (hayPendientes) {
+                new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                        .setTitle("Ejercicios pendientes")
+                        .setMessage("No has marcado todos los ejercicios. ¿Deseas finalizar de todas formas?")
+                        .setPositiveButton("Sí, terminar", (dialog, which) -> {
+                            viewModel.completarEntrenamiento(idEntrenamiento, comFinal, cansFinal, difFinal, animoFinal);
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            } else {
+                viewModel.completarEntrenamiento(idEntrenamiento, comFinal, cansFinal, difFinal, animoFinal);
+            }
         });
     }
 

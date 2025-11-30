@@ -1,6 +1,7 @@
 package com.example.sportine.data;
 
 import com.example.sportine.models.Comentario;
+import com.example.sportine.models.CompletarEntrenamientoRequestDTO;
 import com.example.sportine.models.DetalleEntrenamientoDTO;
 import com.example.sportine.models.EntrenadorCardDTO;
 import com.example.sportine.models.FormularioSolicitudDTO;
@@ -136,5 +137,9 @@ public interface ApiService {
             @Path("idAsignado") Integer idAsignado,
             @Query("completado") boolean completado
     );
+
+    // Endpoint para completar el entrenamiento y mandar feedback
+    @POST("/api/alumno/entrenamientos/completar")
+    Call<Void> completarEntrenamiento(@Body CompletarEntrenamientoRequestDTO request);
 
 }

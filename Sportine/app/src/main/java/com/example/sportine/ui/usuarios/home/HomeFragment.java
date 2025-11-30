@@ -226,7 +226,10 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Refrescar datos cuando el usuario vuelve a esta pantalla
-        // viewModel.refrescarDatos();
+        // Esto hace que al volver (con el botón atrás), se recarguen los datos
+        // y la tarjeta cambie de "Pendiente" a "Completado" o desaparezca.
+        if (viewModel != null) {
+            viewModel.cargarHomeAlumno(); // O refrescarDatos()
+        }
     }
 }
