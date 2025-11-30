@@ -19,6 +19,7 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView alumnosRecyclerView;
     private AlumnosAdapter alumnosAdapter;
+    private EntrenadorHomeViewModel viewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,6 +34,17 @@ public class HomeFragment extends Fragment {
 
         alumnosRecyclerView = view.findViewById(R.id.recycler_alumnos);
         setupRecyclerView();
+
+        // Inicializar ViewModel
+        viewModel = new androidx.lifecycle.ViewModelProvider(this).get(EntrenadorHomeViewModel.class);
+
+        // Observar cambios
+        viewModel.getAlumnos().observe(getViewLifecycleOwner(), lista -> {
+            alumnosAdapter.setAlumnos(lista);
+        });
+
+        // Cargar datos
+        viewModel.cargarDatos();
     }
 
     private void setupRecyclerView() {
