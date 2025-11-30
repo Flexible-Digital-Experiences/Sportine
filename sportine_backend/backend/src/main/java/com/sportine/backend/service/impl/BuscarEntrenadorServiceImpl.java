@@ -31,8 +31,13 @@ public class BuscarEntrenadorServiceImpl implements BuscarEntrenadorService {
         put("futbol", "Fútbol");
         put("fútbol", "Fútbol");
         put("fut", "Fútbol");
+        put("futb", "Fútbol");
+        put("futbo", "Fútbol");
+        put("fútb", "Fútbol");
+        put("fútbo", "Fútbol");
         put("soccer", "Fútbol");
         put("football", "Fútbol");
+        put("f", "Fútbol");
 
         // Basketball
         put("basketball", "Basketball");
@@ -40,10 +45,24 @@ public class BuscarEntrenadorServiceImpl implements BuscarEntrenadorService {
         put("basquet", "Basketball");
         put("basket", "Basketball");
         put("bask", "Basketball");
+        put("b", "Basketball");
+        put("ba", "Basketball");
+        put("bas", "Basketball");
+        put("baske", "Basketball");
+        put("basketb", "Basketball");
+        put("basketba", "Basketball");
+        put("basketbal", "Basketball");
         put("basquetball", "Basketball");
 
         // Natación
         put("natacion", "Natación");
+        put("n", "Natación");
+        put("na", "Natación");
+        put("nat", "Natación");
+        put("natac", "Natación");
+        put("nataci", "Natación");
+        put("natacio", "Natación");
+        put("natació", "Natación");
         put("natación", "Natación");
         put("nata", "Natación");
         put("swimming", "Natación");
@@ -53,7 +72,17 @@ public class BuscarEntrenadorServiceImpl implements BuscarEntrenadorService {
 
         // Running
         put("running", "Running");
+        put("r", "Running");
+        put("ru", "Running");
+        put("runn", "Running");
+        put("runni", "Running");
+        put("runnin", "Running");
         put("correr", "Running");
+        put("c", "Running");
+        put("co", "Running");
+        put("cor", "Running");
+        put("corr", "Running");
+        put("corre", "Running");
         put("run", "Running");
         put("atletismo", "Running");
         put("trote", "Running");
@@ -64,17 +93,34 @@ public class BuscarEntrenadorServiceImpl implements BuscarEntrenadorService {
         put("boxeo", "Boxeo");
         put("box", "Boxeo");
         put("boxing", "Boxeo");
+        put("bo", "Boxeo");
         put("pugilismo", "Boxeo");
 
         // Tenis
         put("tenis", "Tenis");
+        put("teni", "Tenis");
         put("tennis", "Tenis");
+        put("tenn", "Tenis");
+        put("tenni", "Tenis");
         put("ten", "Tenis");
+        put("te", "Tenis");
+        put("t", "Tenis");
 
         // Gimnasio
         put("gimnasio", "Gimnasio");
+        put("g", "Gimnasio");
+        put("gi", "Gimnasio");
+        put("gim", "Gimnasio");
+        put("gimn", "Gimnasio");
+        put("gimna", "Gimnasio");
+        put("gimnas", "Gimnasio");
+        put("gimnasi", "Gimnasio");
         put("gym", "Gimnasio");
         put("pesas", "Gimnasio");
+        put("p", "Gimnasio");
+        put("pe", "Gimnasio");
+        put("pes", "Gimnasio");
+        put("pesa", "Gimnasio");
         put("fitness", "Gimnasio");
         put("musculacion", "Gimnasio");
         put("musculación", "Gimnasio");
@@ -84,17 +130,35 @@ public class BuscarEntrenadorServiceImpl implements BuscarEntrenadorService {
 
         // Ciclismo
         put("ciclismo", "Ciclismo");
+        put("ci", "Ciclismo");
+        put("cic", "Ciclismo");
+        put("cicl", "Ciclismo");
+        put("cicli", "Ciclismo");
+        put("ciclis", "Ciclismo");
+        put("ciclism", "Ciclismo");
         put("bici", "Ciclismo");
         put("bicicleta", "Ciclismo");
         put("cycling", "Ciclismo");
         put("bike", "Ciclismo");
         put("bicis", "Ciclismo");
-        put("pedal", "Ciclismo");
 
         // Béisbol
         put("beisbol", "Béisbol");
+        put("be", "Béisbol");
+        put("bei", "Béisbol");
+        put("beisb", "Béisbol");
+        put("beisbo", "Béisbol");
+        put("bé", "Béisbol");
+        put("béi", "Béisbol");
+        put("béis", "Béisbol");
+        put("béisb", "Béisbol");
+        put("béisbo", "Béisbol");
         put("béisbol", "Béisbol");
         put("baseball", "Béisbol");
+        put("base", "Béisbol");
+        put("baseb", "Béisbol");
+        put("baseba", "Béisbol");
+        put("basebal", "Béisbol");
         put("beis", "Béisbol");
         put("pelota", "Béisbol");
     }};
@@ -166,22 +230,48 @@ public class BuscarEntrenadorServiceImpl implements BuscarEntrenadorService {
             // Redondear a 1 decimal
             ratingPromedio = Math.round(ratingPromedio * 10.0) / 10.0;
 
-            // Obtener especialidades del entrenador
-            List<String> especialidades = entrenadorNombreRepository.obtenerEspecialidadesEntrenador(usuario);
+            // NUEVO: Obtener información de disponibilidad
+            Integer limiteAlumnos = 0;
+            Integer alumnosActuales = 0;
 
-            // Crear DTO
-            EntrenadorCardDTO dto = new EntrenadorCardDTO(
-                    usuario,
-                    nombreCompleto,
-                    fotoPerfil,
-                    ratingPromedio,
-                    especialidades != null ? especialidades : new ArrayList<>()
-            );
+            Object limiteObj = data.get("limiteAlumnos");
+            if (limiteObj != null) {
+                if (limiteObj instanceof Integer) {
+                    limiteAlumnos = (Integer) limiteObj;
+                } else if (limiteObj instanceof Number) {
+                    limiteAlumnos = ((Number) limiteObj).intValue();
+                }
+            }
 
-            entrenadores.add(dto);
+            Object actualesObj = data.get("alumnosActuales");
+            if (actualesObj != null) {
+                if (actualesObj instanceof Long) {
+                    alumnosActuales = ((Long) actualesObj).intValue();
+                } else if (actualesObj instanceof Integer) {
+                    alumnosActuales = (Integer) actualesObj;
+                } else if (actualesObj instanceof Number) {
+                    alumnosActuales = ((Number) actualesObj).intValue();
+                }
+            }
+             // Obtener especialidades del entrenador
+                List<String> especialidades = entrenadorNombreRepository.obtenerEspecialidadesEntrenador(usuario);
+
+                // Crear DTO con información de disponibilidad
+                EntrenadorCardDTO dto = new EntrenadorCardDTO(
+                        usuario,
+                        nombreCompleto,
+                        fotoPerfil,
+                        ratingPromedio,
+                        especialidades != null ? especialidades : new ArrayList<>(),
+                        limiteAlumnos,
+                        alumnosActuales
+                );
+
+                entrenadores.add(dto);
+                log.debug("Entrenador {} agregado - Alumnos: {}/{}",
+                        usuario, alumnosActuales, limiteAlumnos);
         }
-
-        log.info("Se encontraron {} entrenadores", entrenadores.size());
+        log.info("Se encontraron {} entrenadores con disponibilidad", entrenadores.size());
         return entrenadores;
     }
 

@@ -1,5 +1,5 @@
 [versions]
-agp = "8.12.2"
+agp = "8.8.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -10,7 +10,7 @@ lifecycleLivedataKtx = "2.6.1"
 lifecycleViewmodelKtx = "2.6.1"
 navigationFragment = "2.6.0"
 navigationUi = "2.6.0"
-activity = "1.11.0"
+activity = "1.9.2"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }

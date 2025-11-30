@@ -27,5 +27,5 @@ public class PerfilAlumnoDTO {
 
     // Fecha de nacimiento
     private LocalDate fechaNacimiento;
-
+    private List<Integer> deportes; // Lista de deportes que practica
 }

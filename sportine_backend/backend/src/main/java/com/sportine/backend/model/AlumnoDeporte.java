@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AlumnoDeporte {
+public class AlumnoDeporte{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,19 +22,12 @@ public class AlumnoDeporte {
     @Column(name = "usuario")
     private String usuario;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_deporte", referencedColumnName = "id_deporte")
-    private Deporte deporte;
+    @Column(name = "id_deporte")
+    private Integer idDeporte;
 
     @Column(name = "fecha_inicio")
     private LocalDate fechaInicio;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_nivel", referencedColumnName = "id_nivel")
-    private Nivel nivel;
-
-    // Método helper para obtener el nombre del deporte
-    public String getNombreDeporte() {
-        return deporte != null ? deporte.getNombreDeporte() : null;
-    }
+    @Column(name = "id_nivel")
+    private Integer idNivel;
 }

@@ -1,8 +1,12 @@
 package com.example.sportine.data;
 
 import com.example.sportine.models.Comentario;
+import com.example.sportine.models.EntrenadorCardDTO;
+import com.example.sportine.models.HomeAlumnoDTO;
 import com.example.sportine.models.Publicacion;
 import com.example.sportine.models.RespuestaRegistro;
+import com.example.sportine.models.SolicitudRequestDTO;
+import com.example.sportine.models.SolicitudResponseDTO;
 import com.example.sportine.models.Usuario;
 import com.example.sportine.models.PublicacionFeedDTO;
 import com.example.sportine.models.UsuarioDetalle;
@@ -13,6 +17,7 @@ import com.example.sportine.ui.usuarios.dto.ComentarioRequest;
 // Asegúrate de que este DTO exista en tu Android, si no, usa UsuarioDetalle
 import com.example.sportine.ui.usuarios.dto.UsuarioDetalleDTO;
 import com.example.sportine.ui.usuarios.dto.PerfilAlumnoResponseDTO;
+import com.example.sportine.ui.usuarios.enviarsolicitud.EnviarSolicitud;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -31,7 +36,10 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
+
 public interface ApiService {
+
+    // Usuarios
 
     @POST("/api/usuarios/login")
     Call<LoginResponse> login(@Body LoginRequest loginRequest);
@@ -42,8 +50,12 @@ public interface ApiService {
     @GET("/api/usuarios/{usuario}")
     Call<UsuarioDetalleDTO> obtenerUsuario(@Path("usuario") String usuario);
 
+    // Alumnos
+
     @GET("/api/alumnos/perfil/{usuario}")
     Call<PerfilAlumnoResponseDTO> obtenerPerfilAlumno(@Path("usuario") String usuario);
+
+    // Social
 
     @GET("/api/social/feed")
     Call<List<PublicacionFeedDTO>> getSocialFeed();
@@ -87,4 +99,35 @@ public interface ApiService {
             @Path("usuario") String usuario,
             @Body ActualizarDatosAlumnoDTO datos
     );
+    @PUT("/api/social/post/{id}")
+    Call<Void> editarPost(@Path("id") Integer id, @Body com.example.sportine.models.Publicacion publicacionActualizada);
+
+    // Buscar
+
+    @GET("api/buscar-entrenadores")
+    Call<List<EntrenadorCardDTO>> buscarEntrenadores(@Query("query") String query);
+
+    @GET("api/buscar-entrenadores/ver/{usuario}")
+    Call<PerfilEntrenadorDTO> obtenerPerfilEntrenador(@Path("usuario") String usuario);
+
+    // Solicitudes
+
+    @GET("api/Solicitudes/formulario/{usuarioEntrenador}")
+    Call<FormularioSolicitudDTO> obtenerFormularioSolicitud(@Path("usuarioEntrenador") String usuarioEntrenador);
+
+    @GET("api/Solicitudes/deporte/{idDeporte}")
+    Call<InfoDeporteAlumnoDTO> obtenerInfoDeporte(@Path("idDeporte") Integer idDeporte);
+
+    @POST("api/Solicitudes/enviar")
+    Call<SolicitudResponseDTO> enviarSolicitud(@Body SolicitudRequestDTO request);
+
+    // Notificaciones
+
+    @GET("/api/notificaciones")
+    Call<List<com.example.sportine.models.Notificacion>> obtenerNotificaciones();
+
+    // Inicio
+    @GET("/api/alumnos/home/{usuario}")
+    Call<HomeAlumnoDTO> obtenerHomeAlumno(@Path("usuario") String usuario);
+
 }

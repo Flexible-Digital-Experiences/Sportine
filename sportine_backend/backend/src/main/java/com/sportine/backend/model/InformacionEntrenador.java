@@ -23,6 +23,9 @@ public class InformacionEntrenador {
     @Column(name = "costo_mensualidad")
     private Integer costoMensualidad;
 
+    @Column(name = "limite_alumnos")
+    private Integer limiteAlumnos;
+
     @Column(name = "descripcion_perfil")
     private String descripcionPerfil;
 

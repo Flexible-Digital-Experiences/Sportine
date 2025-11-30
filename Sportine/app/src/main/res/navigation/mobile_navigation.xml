@@ -5,7 +5,7 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_home">
 
-    <!-- ... TUS OTROS FRAGMENTOS ... -->
+    <!-- Home y otros (Sin cambios) -->
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.sportine.ui.usuarios.home.HomeFragment"
@@ -22,7 +22,7 @@
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.example.sportine.ui.usuarios.notifications.NotificationsFragment"
+        android:name="com.example.sportine.ui.usuarios.social.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_alumno_notifications" />
 
@@ -91,7 +91,7 @@
         tools:layout="@layout/fragment_alumno_completar_datos" />
 
 
-    <!-- FRAGMENT SOCIAL -->
+    <!-- FRAGMENT SOCIAL (AQUÍ ESTÁ LA MAGIA) -->
     <fragment
         android:id="@+id/navigation_social"
         android:name="com.example.sportine.ui.usuarios.social.SocialFragment"
@@ -114,7 +114,7 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
 
-        <!-- ¡ACCIÓN NUEVA PARA LA TRANSICIÓN! (Sin animaciones default para que jale el Shared Element) -->
+        <!-- ACCIÓN DE TRANSICIÓN AL DETALLE -->
         <action
             android:id="@+id/action_social_to_detallePost"
             app:destination="@id/navigation_detallePost" />
@@ -132,7 +132,7 @@
         android:label="Mis Amigos"
         tools:layout="@layout/fragment_alumno_lista_amigos" />
 
-    <!-- NUEVO DESTINO: DETALLE POST -->
+    <!-- DESTINO DETALLE -->
     <fragment
         android:id="@+id/navigation_detallePost"
         android:name="com.example.sportine.ui.usuarios.social.DetallePostFragment"
@@ -159,7 +159,6 @@
             android:id="@+id/action_navigation_detallesEntrenador_to_enviarSolicitud"
             app:destination="@id/enviarSolicitud" />
     </fragment>
-
 
     <fragment
         android:id="@+id/detallesEntrenamientoFragment"

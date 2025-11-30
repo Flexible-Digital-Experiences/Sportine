@@ -34,13 +34,10 @@ public class PerfilAlumnoResponseDTO {
 
     // Fecha de nacimiento y edad
     private LocalDate fechaNacimiento;
-    private Integer edad;
-
-
-    // Deportes que practica (con su nivel específico)
-    private List<DeporteConNivelDTO> deportes;
-
-    // Contadores
+    private Integer edad; // Calculada automáticamente
+    private List<Integer> deportes;
+  
+  // Contadores
     private Integer totalAmigos;
     private Integer totalEntrenadores;
 
