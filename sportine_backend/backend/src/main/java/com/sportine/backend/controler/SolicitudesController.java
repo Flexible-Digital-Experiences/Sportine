@@ -113,7 +113,7 @@ public class SolicitudesController {
 
         return ResponseEntity.ok(solicitudes);
     }
-    
+
     @DeleteMapping("/{idSolicitud}")
     public ResponseEntity<Void> eliminarSolicitud(
             @PathVariable Integer idSolicitud,
