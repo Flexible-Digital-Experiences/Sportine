@@ -386,7 +386,10 @@ public class DetallesEntrenadorFragment extends Fragment {
     }
 
     private void abrirDialogCalificacion() {
-        Toast.makeText(getContext(), "Funcionalidad de calificación próximamente", Toast.LENGTH_SHORT).show();
+        Bundle bundle = new Bundle();
+        bundle.putString("usuario", usuarioEntrenador);
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_navigation_detallesEntrenador_to_calificarEntrenador, bundle);
     }
 
     private void mostrarResenas(List<ResenaDTO> resenas) {
