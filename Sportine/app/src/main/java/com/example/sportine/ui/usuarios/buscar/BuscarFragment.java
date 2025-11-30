@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class BuscarFragment extends Fragment implements ResultadosEntrenadoresAdapter.OnEntrenadorClickListener {
+public class BuscarFragment extends Fragment implements ResultadosEntrenadoresAdapter.OnEntrenadorClickListener, View.OnClickListener {
 
     private RecyclerView rvEntrenadores;
     private SearchView searchView;
@@ -35,6 +36,7 @@ public class BuscarFragment extends Fragment implements ResultadosEntrenadoresAd
     private TextView tvSeccionTitulo;
     private ResultadosEntrenadoresAdapter adapter;
     private ApiService apiService;
+    private ImageButton solenv;
 
     @Nullable
     @Override
@@ -50,6 +52,8 @@ public class BuscarFragment extends Fragment implements ResultadosEntrenadoresAd
         layoutEmptyState = view.findViewById(R.id.layout_empty_state);
         searchView = view.findViewById(R.id.search_view_entrenador);
         tvSeccionTitulo = view.findViewById(R.id.tv_seccion_titulo);
+        solenv = view.findViewById(R.id.solis);
+        solenv.setOnClickListener(this);
 
         // Inicializar RecyclerView
         rvEntrenadores.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -169,5 +173,11 @@ public class BuscarFragment extends Fragment implements ResultadosEntrenadoresAd
         bundle.putString("usuario", entrenador.getUsuario());
         NavHostFragment.findNavController(this)
                 .navigate(R.id.action_buscar_to_detallesEntrenador, bundle);
+    }
+
+    @Override
+    public void onClick(View view) {
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_navigation_buscar_to_solicitudesEnviadas);
     }
 }

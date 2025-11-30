@@ -1,9 +1,6 @@
 package com.sportine.backend.controler;
 
-import com.sportine.backend.dto.FormularioSolicitudDTO;
-import com.sportine.backend.dto.InfoDeporteAlumnoDTO;
-import com.sportine.backend.dto.SolicitudRequestDTO;
-import com.sportine.backend.dto.SolicitudResponseDTO;
+import com.sportine.backend.dto.*;
 import com.sportine.backend.service.EnviarSolicitudEntrenadorService;
 import com.sportine.backend.service.SolicitudEntrenadorService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/Solicitudes")
 @Slf4j
@@ -19,12 +18,6 @@ import org.springframework.web.bind.annotation.*;
 public class SolicitudesController {
 
     private final EnviarSolicitudEntrenadorService solicitudService;
-
-    /**
-     * Obtiene el formulario inicial con los deportes disponibles.
-     *
-     * GET /api/Solicitudes/formulario/{usuarioEntrenador}
-     */
     @GetMapping("/formulario/{usuarioEntrenador}")
     public ResponseEntity<FormularioSolicitudDTO> obtenerFormulario(
             @PathVariable String usuarioEntrenador,
@@ -45,7 +38,7 @@ public class SolicitudesController {
     /**
      * Obtiene información específica de un deporte para el alumno.
      * Se llama cuando el alumno selecciona un deporte del spinner.
-     *
+     * <p>
      * GET /api/Solicitudes/deporte/{idDeporte}
      */
     @GetMapping("/deporte/{idDeporte}")
@@ -89,6 +82,52 @@ public class SolicitudesController {
                             "error",
                             null
                     ));
+        }
+    }
+
+    @GetMapping("/pendiente/{usuarioEntrenador}")
+    public ResponseEntity<SolicitudPendienteDTO> verificarSolicitudPendiente(
+            @PathVariable String usuarioEntrenador,
+            Authentication authentication) {
+
+        String usuarioAlumno = authentication.getName();
+        log.info("Verificando solicitud pendiente entre {} y {}",
+                usuarioAlumno, usuarioEntrenador);
+
+        SolicitudPendienteDTO solicitudPendiente = solicitudService.verificarSolicitudPendiente(
+                usuarioEntrenador,
+                usuarioAlumno
+        );
+
+        return ResponseEntity.ok(solicitudPendiente);
+    }
+
+    @GetMapping("/enviadas")
+    public ResponseEntity<List<SolicitudEnviadaDTO>> obtenerSolicitudesEnviadas(
+            Authentication authentication) {
+
+        String usuarioAlumno = authentication.getName();
+        log.info("Obteniendo solicitudes enviadas por alumno {}", usuarioAlumno);
+
+        List<SolicitudEnviadaDTO> solicitudes = solicitudService.obtenerSolicitudesEnviadas(usuarioAlumno);
+
+        return ResponseEntity.ok(solicitudes);
+    }
+    
+    @DeleteMapping("/{idSolicitud}")
+    public ResponseEntity<Void> eliminarSolicitud(
+            @PathVariable Integer idSolicitud,
+            Authentication authentication) {
+
+        String usuarioAlumno = authentication.getName();
+        log.info("Alumno {} eliminando solicitud {}", usuarioAlumno, idSolicitud);
+
+        try {
+            solicitudService.eliminarSolicitud(idSolicitud, usuarioAlumno);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            log.error("Error al eliminar solicitud: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 

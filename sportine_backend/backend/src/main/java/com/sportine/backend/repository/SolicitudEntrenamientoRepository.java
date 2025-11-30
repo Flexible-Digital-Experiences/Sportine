@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -38,4 +39,12 @@ public interface SolicitudEntrenamientoRepository extends JpaRepository<Solicitu
             @Param("usuarioEntrenador") String usuarioEntrenador,
             @Param("idDeporte") Integer idDeporte
     );
+
+    List<SolicitudEntrenamiento> findByUsuarioAlumnoAndUsuarioEntrenadorAndStatusSolicitud(
+            String usuarioAlumno,
+            String usuarioEntrenador,
+            SolicitudEntrenamiento.StatusSolicitud status
+    );
+
+    List<SolicitudEntrenamiento> findByUsuarioAlumnoOrderByFechaSolicitudDesc(String usuarioAlumno);
 }

@@ -7,6 +7,8 @@ import com.example.sportine.models.InfoDeporteAlumnoDTO;
 import com.example.sportine.models.PerfilEntrenadorDTO;
 import com.example.sportine.models.Publicacion;
 import com.example.sportine.models.RespuestaRegistro;
+import com.example.sportine.models.SolicitudEnviadaDTO;
+import com.example.sportine.models.SolicitudPendienteDTO;
 import com.example.sportine.models.SolicitudRequestDTO;
 import com.example.sportine.models.SolicitudResponseDTO;
 import com.example.sportine.models.Usuario;
@@ -115,6 +117,17 @@ public interface ApiService {
 
     @POST("api/Solicitudes/enviar")
     Call<SolicitudResponseDTO> enviarSolicitud(@Body SolicitudRequestDTO request);
+
+    @GET("api/Solicitudes/pendiente/{usuarioEntrenador}")
+    Call<SolicitudPendienteDTO> verificarSolicitudPendiente(
+            @Path("usuarioEntrenador") String usuarioEntrenador
+    );
+
+    @GET("api/Solicitudes/enviadas")
+    Call<List<SolicitudEnviadaDTO>> obtenerSolicitudesEnviadas();
+
+    @DELETE("api/Solicitudes/{idSolicitud}")
+    Call<Void> eliminarSolicitud(@Path("idSolicitud") Integer idSolicitud);
 
     // Notificaciones
 

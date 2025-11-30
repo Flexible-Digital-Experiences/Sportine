@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_solicitud"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    android:backgroundTint="#FFFFFF">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Foto del entrenador -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/img_entrenador"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/CircularImageView"
+            app:strokeColor="#E0E0E0"
+            app:strokeWidth="2dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <!-- Botón eliminar (icono de basura) -->
+        <ImageButton
+            android:id="@+id/btn_eliminar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_delete_black_24dp"
+            android:contentDescription="Eliminar solicitud"
+            app:tint="#EF4444"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Nombre del entrenador -->
+        <TextView
+            android:id="@+id/tv_nombre_entrenador"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            tools:text="Carlos Martínez"
+            android:textColor="#1A1A1A"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/btn_eliminar"
+            app:layout_constraintStart_toEndOf="@id/img_entrenador"
+            app:layout_constraintTop_toTopOf="@id/img_entrenador" />
+
+        <!-- Deporte -->
+        <TextView
+            android:id="@+id/tv_deporte"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            tools:text="Fútbol"
+            android:textColor="#6B7280"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@id/btn_eliminar"
+            app:layout_constraintStart_toEndOf="@id/img_entrenador"
+            app:layout_constraintTop_toBottomOf="@id/tv_nombre_entrenador" />
+
+        <!-- Estado -->
+        <TextView
+            android:id="@+id/tv_estado"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            tools:text="En revisión"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/btn_eliminar"
+            app:layout_constraintStart_toEndOf="@id/img_entrenador"
+            app:layout_constraintBottom_toBottomOf="@id/img_entrenador" />
+
+        <!-- Fecha -->
+        <TextView
+            android:id="@+id/tv_fecha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            tools:text="Enviada: 2024-11-28"
+            android:textColor="#9CA3AF"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/img_entrenador" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

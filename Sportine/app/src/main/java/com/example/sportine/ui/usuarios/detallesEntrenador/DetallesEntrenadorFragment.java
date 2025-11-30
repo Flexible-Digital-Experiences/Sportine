@@ -26,6 +26,7 @@ import com.example.sportine.models.EstadoRelacionDTO;
 import com.example.sportine.models.FormularioSolicitudDTO;
 import com.example.sportine.models.PerfilEntrenadorDTO;
 import com.example.sportine.models.ResenaDTO;
+import com.example.sportine.models.SolicitudPendienteDTO;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
@@ -43,7 +44,7 @@ public class DetallesEntrenadorFragment extends Fragment {
     private String usuarioEntrenador;
     private List<ResenaDTO> todasLasResenas;
     private boolean mostrandoTodas = false;
-    private boolean hayDeportesDisponibles = true; // ← NUEVO FLAG
+    private boolean hayDeportesDisponibles = true;
 
     // Views principales
     private ImageButton btnBack;
@@ -73,6 +74,9 @@ public class DetallesEntrenadorFragment extends Fragment {
     private LinearLayout layoutPendiente;
     private LinearLayout layoutActivo;
     private LinearLayout layoutFinalizado;
+    private LinearLayout layoutEsperandoRespuesta;
+    private RecyclerView recyclerSolicitudesPendientes;
+    private SolicitudesPendientesAdapter solicitudesPendientesAdapter;
 
     // Botones por estado
     private MaterialButton btnEnviarSolicitud;
@@ -104,9 +108,7 @@ public class DetallesEntrenadorFragment extends Fragment {
         setupRecyclerViews();
         setupListeners();
 
-        // ✅ PRIMERO verificar deportes disponibles
         verificarDeportesDisponibles();
-        // DESPUÉS cargar perfil
         cargarPerfilEntrenador();
 
         return view;
@@ -141,6 +143,9 @@ public class DetallesEntrenadorFragment extends Fragment {
         btnCalificarActivo = view.findViewById(R.id.btn_calificar_activo);
         btnSolicitarNuevamente = view.findViewById(R.id.btn_solicitar_nuevamente);
         btnCalificarFinalizado = view.findViewById(R.id.btn_calificar_finalizado);
+
+        layoutEsperandoRespuesta = view.findViewById(R.id.layout_esperando_respuesta);
+        recyclerSolicitudesPendientes = view.findViewById(R.id.recycler_solicitudes_pendientes);
     }
 
     private void setupRecyclerViews() {
@@ -153,6 +158,10 @@ public class DetallesEntrenadorFragment extends Fragment {
         recyclerResenas.setLayoutManager(new LinearLayoutManager(getContext()));
         resenasAdapter = new ResenasAdapter();
         recyclerResenas.setAdapter(resenasAdapter);
+
+        recyclerSolicitudesPendientes.setLayoutManager(new LinearLayoutManager(getContext()));
+        solicitudesPendientesAdapter = new SolicitudesPendientesAdapter();
+        recyclerSolicitudesPendientes.setAdapter(solicitudesPendientesAdapter);
     }
 
     private void setupListeners() {
@@ -167,9 +176,6 @@ public class DetallesEntrenadorFragment extends Fragment {
         btnCalificarFinalizado.setOnClickListener(v -> abrirDialogCalificacion());
     }
 
-    // ============================================
-    // ✅ ACTUALIZADO: Verificar deportes disponibles
-    // ============================================
     private void verificarDeportesDisponibles() {
         if (!isAdded()) return;
 
@@ -182,32 +188,95 @@ public class DetallesEntrenadorFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     FormularioSolicitudDTO formulario = response.body();
 
-                    if (formulario.getDeportesDisponibles().isEmpty()) {
-                        // ❌ NO hay deportes disponibles
-                        hayDeportesDisponibles = false;
-                        cardNoDisponible.setVisibility(View.VISIBLE);
-                        textPrecio.setVisibility(View.GONE);
-                        textCosto.setVisibility(View.GONE);
-
-
-                        // ✅ OCULTAR TODOS LOS LAYOUTS DE ACCIÓN
-                        layoutSinRelacion.setVisibility(View.GONE);
-                        layoutPendiente.setVisibility(View.GONE);
-                        layoutActivo.setVisibility(View.GONE);
-                        layoutFinalizado.setVisibility(View.GONE);
-                    } else {
-                        // ✅ SÍ hay deportes disponibles
-                        hayDeportesDisponibles = true;
-                        cardNoDisponible.setVisibility(View.GONE);
-                    }
+                    // ✅ SIEMPRE verificar si hay solicitudes pendientes primero
+                    verificarSolicitudPendiente(formulario.getDeportesDisponibles().isEmpty());
                 }
             }
 
             @Override
             public void onFailure(Call<FormularioSolicitudDTO> call, Throwable t) {
                 if (isAdded()) {
-                    hayDeportesDisponibles = true; // Por defecto permitir
+                    hayDeportesDisponibles = true;
                     cardNoDisponible.setVisibility(View.GONE);
+                    layoutEsperandoRespuesta.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
+    private void verificarSolicitudPendiente(boolean noHayDeportesDisponibles) {
+        if (!isAdded()) return;
+
+        apiService.verificarSolicitudPendiente(usuarioEntrenador).enqueue(new Callback<SolicitudPendienteDTO>() {
+            @Override
+            public void onResponse(Call<SolicitudPendienteDTO> call,
+                                   Response<SolicitudPendienteDTO> response) {
+                if (!isAdded()) return;
+
+                if (response.isSuccessful() && response.body() != null) {
+                    SolicitudPendienteDTO solicitud = response.body();
+
+                    if (solicitud.getTieneSolicitudPendiente() &&
+                            solicitud.getSolicitudes() != null &&
+                            !solicitud.getSolicitudes().isEmpty()) {
+
+                        // ✅ SIEMPRE mostrar solicitudes pendientes si existen
+                        layoutEsperandoRespuesta.setVisibility(View.VISIBLE);
+                        solicitudesPendientesAdapter.setSolicitudes(solicitud.getSolicitudes());
+
+                        // Decidir qué más mostrar según si hay deportes disponibles
+                        if (noHayDeportesDisponibles) {
+                            // ❌ NO hay deportes disponibles - solo mostrar solicitudes
+                            hayDeportesDisponibles = false;
+                            cardNoDisponible.setVisibility(View.GONE);
+                            textPrecio.setVisibility(View.GONE);
+                            textCosto.setVisibility(View.GONE);
+
+                            layoutSinRelacion.setVisibility(View.GONE);
+                            layoutPendiente.setVisibility(View.GONE);
+                            layoutActivo.setVisibility(View.GONE);
+                            layoutFinalizado.setVisibility(View.GONE);
+                        } else {
+                            // ✅ SÍ hay deportes disponibles - mostrar solicitudes Y permitir enviar más
+                            hayDeportesDisponibles = true;
+                            cardNoDisponible.setVisibility(View.GONE);
+                            textPrecio.setVisibility(View.VISIBLE);
+                            textCosto.setVisibility(View.VISIBLE);
+
+                            // Los layouts de relación se mostrarán después en mostrarUISegunEstadoRelacion
+                        }
+                    } else {
+                        // No hay solicitudes pendientes
+                        layoutEsperandoRespuesta.setVisibility(View.GONE);
+
+                        if (noHayDeportesDisponibles) {
+                            // ❌ No hay deportes ni solicitudes - mostrar "no disponible"
+                            hayDeportesDisponibles = false;
+                            cardNoDisponible.setVisibility(View.VISIBLE);
+                            textPrecio.setVisibility(View.GONE);
+                            textCosto.setVisibility(View.GONE);
+
+                            layoutSinRelacion.setVisibility(View.GONE);
+                            layoutPendiente.setVisibility(View.GONE);
+                            layoutActivo.setVisibility(View.GONE);
+                            layoutFinalizado.setVisibility(View.GONE);
+                        } else {
+                            // ✅ Hay deportes disponibles
+                            hayDeportesDisponibles = true;
+                            cardNoDisponible.setVisibility(View.GONE);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SolicitudPendienteDTO> call, Throwable t) {
+                if (isAdded()) {
+                    layoutEsperandoRespuesta.setVisibility(View.GONE);
+
+                    if (noHayDeportesDisponibles) {
+                        cardNoDisponible.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         });
@@ -268,7 +337,6 @@ public class DetallesEntrenadorFragment extends Fragment {
         deportesAdapter.setDeportes(perfil.getEspecialidades());
         mostrarResenas(perfil.getResenas());
 
-        // ✅ SOLO mostrar UI de relación SI hay deportes disponibles
         if (hayDeportesDisponibles) {
             mostrarUISegunEstadoRelacion(perfil.getEstadoRelacion());
         }
@@ -279,6 +347,7 @@ public class DetallesEntrenadorFragment extends Fragment {
         layoutPendiente.setVisibility(View.GONE);
         layoutActivo.setVisibility(View.GONE);
         layoutFinalizado.setVisibility(View.GONE);
+        // ✅ NO ocultar layoutEsperandoRespuesta aquí - se maneja por separado
 
         if (estado == null || !estado.getTieneRelacion()) {
             layoutSinRelacion.setVisibility(View.VISIBLE);
@@ -292,7 +361,7 @@ public class DetallesEntrenadorFragment extends Fragment {
                 if (estado.getYaCalificado() != null && estado.getYaCalificado()) {
                     btnCalificarActivo.setVisibility(View.GONE);
                 }
-            } else if ("finalizado".equals(estadoRelacion)) {
+             } else if ("finalizado".equals(estadoRelacion)) {
                 layoutFinalizado.setVisibility(View.VISIBLE);
                 if (estado.getYaCalificado() != null && estado.getYaCalificado()) {
                     btnCalificarFinalizado.setVisibility(View.GONE);

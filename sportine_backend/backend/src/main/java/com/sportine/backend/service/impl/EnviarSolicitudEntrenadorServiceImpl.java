@@ -25,6 +25,7 @@ public class EnviarSolicitudEntrenadorServiceImpl implements EnviarSolicitudEntr
     private final UsuarioRepository usuarioRepository;
     private final SolicitudEntrenamientoRepository solicitudEntrenamientoRepository;
     private final AlumnoDeporteRepository alumnoDeporteRepository;
+    private final InformacionEntrenadorRepository informacionEntrenadorRepository;
 
     @Override
     public FormularioSolicitudDTO obtenerFormularioSolicitud(String usuarioEntrenador, String usuarioAlumno) {
@@ -69,6 +70,29 @@ public class EnviarSolicitudEntrenadorServiceImpl implements EnviarSolicitudEntr
     }
 
     @Override
+    @Transactional
+    public void eliminarSolicitud(Integer idSolicitud, String usuarioAlumno) {
+        log.info("Eliminando solicitud {} del alumno {}", idSolicitud, usuarioAlumno);
+
+        // Buscar la solicitud
+        SolicitudEntrenamiento solicitud = solicitudEntrenamientoRepository.findById(idSolicitud)
+                .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
+
+        // Verificar que la solicitud pertenece al alumno
+        if (!solicitud.getUsuarioAlumno().equals(usuarioAlumno)) {
+            throw new RuntimeException("No tienes permiso para eliminar esta solicitud");
+        }
+
+        // Solo se pueden eliminar solicitudes que NO estén aprobadas
+        if (solicitud.getStatusSolicitud() == SolicitudEntrenamiento.StatusSolicitud.Aprobada) {
+            throw new RuntimeException("No puedes eliminar una solicitud aprobada");
+        }
+
+        solicitudEntrenamientoRepository.delete(solicitud);
+        log.info("✅ Solicitud {} eliminada exitosamente", idSolicitud);
+    }
+
+    @Override
     public InfoDeporteAlumnoDTO obtenerInfoDeporte(Integer idDeporte, String usuarioAlumno) {
         log.info("Obteniendo info del deporte {} para alumno {}", idDeporte, usuarioAlumno);
 
@@ -101,6 +125,96 @@ public class EnviarSolicitudEntrenadorServiceImpl implements EnviarSolicitudEntr
                 nombreDeporte, tieneNivel, nivelActual);
 
         return info;
+    }
+
+    @Override
+    public SolicitudPendienteDTO verificarSolicitudPendiente(String usuarioEntrenador, String usuarioAlumno) {
+        log.info("Verificando solicitudes pendientes entre alumno {} y entrenador {}",
+                usuarioAlumno, usuarioEntrenador);
+
+        // Buscar TODAS las solicitudes en revisión
+        List<SolicitudEntrenamiento> solicitudesPendientes = solicitudEntrenamientoRepository
+                .findByUsuarioAlumnoAndUsuarioEntrenadorAndStatusSolicitud(
+                        usuarioAlumno,
+                        usuarioEntrenador,
+                        SolicitudEntrenamiento.StatusSolicitud.En_revisión
+                );
+
+        if (solicitudesPendientes.isEmpty()) {
+            return new SolicitudPendienteDTO(false, new ArrayList<>());
+        }
+
+        // Mapear todas las solicitudes a DTOs
+        List<SolicitudDetalleDTO> solicitudesDetalle = new ArrayList<>();
+
+        for (SolicitudEntrenamiento solicitud : solicitudesPendientes) {
+            // Obtener el nombre del deporte
+            String nombreDeporte = solicitudRepository.obtenerNombreDeporte(solicitud.getIdDeporte())
+                    .orElse("Deporte desconocido");
+
+            SolicitudDetalleDTO detalle = new SolicitudDetalleDTO(
+                    solicitud.getIdSolicitud(),
+                    nombreDeporte,
+                    solicitud.getFechaSolicitud().toString(),
+                    solicitud.getDescripcionSolicitud()
+            );
+
+            solicitudesDetalle.add(detalle);
+        }
+
+        return new SolicitudPendienteDTO(true, solicitudesDetalle);
+    }
+
+    @Override
+    public List<SolicitudEnviadaDTO> obtenerSolicitudesEnviadas(String usuarioAlumno) {
+        log.info("Obteniendo solicitudes enviadas por alumno {}", usuarioAlumno);
+
+        // Obtener todas las solicitudes del alumno
+        List<SolicitudEntrenamiento> solicitudes = solicitudEntrenamientoRepository
+                .findByUsuarioAlumnoOrderByFechaSolicitudDesc(usuarioAlumno);
+
+        List<SolicitudEnviadaDTO> solicitudesDTO = new ArrayList<>();
+
+        for (SolicitudEntrenamiento solicitud : solicitudes) {
+            // Obtener info del entrenador
+            var entrenador = usuarioRepository.findById(solicitud.getUsuarioEntrenador())
+                    .orElse(null);
+
+            if (entrenador == null) continue;
+
+            String nombreEntrenador = entrenador.getNombre() + " " + entrenador.getApellidos();
+
+            // Obtener foto del entrenador
+            String fotoEntrenador = null;
+            var infoEntrenador = informacionEntrenadorRepository
+                    .findByUsuario(solicitud.getUsuarioEntrenador())
+                    .orElse(null);
+
+            if (infoEntrenador != null) {
+                fotoEntrenador = infoEntrenador.getFotoPerfil();
+            }
+
+            // Obtener nombre del deporte
+            String nombreDeporte = solicitudRepository.obtenerNombreDeporte(solicitud.getIdDeporte())
+                    .orElse("Deporte desconocido");
+
+            SolicitudEnviadaDTO dto = new SolicitudEnviadaDTO(
+                    solicitud.getIdSolicitud(),
+                    solicitud.getUsuarioEntrenador(),
+                    nombreEntrenador,
+                    fotoEntrenador,
+                    nombreDeporte,
+                    solicitud.getStatusSolicitud().name(),
+                    solicitud.getFechaSolicitud().toString(),
+                    solicitud.getDescripcionSolicitud()
+            );
+
+            solicitudesDTO.add(dto);
+        }
+
+        log.info("Se encontraron {} solicitudes para el alumno {}", solicitudesDTO.size(), usuarioAlumno);
+
+        return solicitudesDTO;
     }
 
     @Override
