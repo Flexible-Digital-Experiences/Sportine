@@ -3,6 +3,8 @@ package com.example.sportine.data;
 import com.example.sportine.models.CalificacionRequestDTO;
 import com.example.sportine.models.CalificacionResponseDTO;
 import com.example.sportine.models.Comentario;
+import com.example.sportine.models.CompletarEntrenamientoRequestDTO;
+import com.example.sportine.models.DetalleEntrenamientoDTO;
 import com.example.sportine.models.EntrenadorCardDTO;
 import com.example.sportine.models.FormularioSolicitudDTO;
 import com.example.sportine.models.HomeAlumnoDTO;
@@ -151,5 +153,20 @@ public interface ApiService {
     // Inicio
     @GET("/api/alumnos/home/{usuario}")
     Call<HomeAlumnoDTO> obtenerHomeAlumno(@Path("usuario") String usuario);
+    // --- DETALLES ENTRENAMIENTO ALUMNO ---
+
+    @GET("/api/alumno/entrenamientos/{id}") // Antes era /entrenamiento/{id}
+    Call<DetalleEntrenamientoDTO> obtenerDetalleEntrenamiento(@Path("id") Integer idEntrenamiento);
+
+    // Marcar CheckBox (Ruta Actualizada)
+    @PUT("/api/alumno/entrenamientos/ejercicio/{idAsignado}/estado")
+    Call<Void> cambiarEstadoEjercicio(
+            @Path("idAsignado") Integer idAsignado,
+            @Query("completado") boolean completado
+    );
+
+    // Endpoint para completar el entrenamiento y mandar feedback
+    @POST("/api/alumno/entrenamientos/completar")
+    Call<Void> completarEntrenamiento(@Body CompletarEntrenamientoRequestDTO request);
 
 }

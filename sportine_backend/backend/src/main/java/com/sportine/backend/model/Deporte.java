@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Entity
 @Table(name = "Deporte")
@@ -17,6 +20,6 @@ public class Deporte {
     @Column(name = "id_deporte")
     private Integer idDeporte;
 
-    @Column(name = "nombre_deporte", unique = true, nullable = false)
+    @Column(name = "nombre_deporte", nullable = false, unique = true)
     private String nombreDeporte;
 }

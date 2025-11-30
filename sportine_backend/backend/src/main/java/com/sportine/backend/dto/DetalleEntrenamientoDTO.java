@@ -4,36 +4,31 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalTime; // Asegúrate de importar esto si usas LocalTime o String según tu base
 import java.util.List;
 
 /**
  * DTO para mostrar el detalle completo de un entrenamiento al alumno.
- * Incluye información del entrenador y lista de ejercicios.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class DetalleEntrenamientoDTO {
 
+    // Cabecera
     private Integer idEntrenamiento;
     private String titulo;
     private String objetivo;
     private LocalDate fecha;
-    private LocalTime hora;
-    private String dificultad;
-    private String estadoEntrenamiento;
+    private String hora; // String suele ser más fácil para formatear "10:30 AM", pero LocalTime también sirve
+    private String estado; // pendiente, en_progreso, finalizado
 
-    // Información del entrenador
+    // Información del Entrenador
     private String nombreEntrenador;
-    private String apellidosEntrenador;
-    private String fotoPerfil;
-    private String deporte; // Del entrenador
+    private String especialidadEntrenador; // O apellidos, según prefieras mostrar
+    private String fotoEntrenador;
+    private String deporteIcono; // Para saber qué icono poner
 
-    // Lista de ejercicios
-    private List<EjercicioDetalleDTO> ejercicios;
-
-    // Contador de ejercicios
-    private Integer totalEjercicios;
-    private Integer ejerciciosCompletados;
+    // La Lista de Ejercicios (Usamos el DTO unificado)
+    private List<AsignarEjercicioDTO> ejercicios;
 }

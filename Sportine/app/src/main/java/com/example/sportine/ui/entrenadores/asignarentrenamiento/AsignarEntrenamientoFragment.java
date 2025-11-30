@@ -17,4 +17,11 @@ public class AsignarEntrenamientoFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_entrenador_asignar_entrenamiento, container, false);
     }
+
+
+
+
+
+
+
 }
