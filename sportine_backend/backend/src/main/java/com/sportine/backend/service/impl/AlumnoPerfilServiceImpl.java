@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +35,7 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
     private final EntrenadorAlumnoRepository entrenadorAlumnoRepository;
 
     // ========================================
-    // MÉTODO OBTENER PERFIL - ACTUALIZADO SIN NIVEL GENERAL
+    // MÉTODO OBTENER PERFIL
     // ========================================
 
     @Override
@@ -45,14 +47,24 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
         InformacionAlumno infoAlumno = informacionAlumnoRepository.findByUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("Perfil de alumno no encontrado"));
 
-        // Obtener deportes CON su nivel específico
+        // Obtener deportes como IDs y buscar nombres manualmente
         List<AlumnoDeporte> deportesEntity = alumnoDeporteRepository.findByUsuario(usuario);
         List<PerfilAlumnoResponseDTO.DeporteConNivelDTO> deportes = deportesEntity.stream()
-                .map(ad -> new PerfilAlumnoResponseDTO.DeporteConNivelDTO(
-                        ad.getDeporte().getNombreDeporte(),
-                        ad.getNivel().getNombreNivel(),  // ← Nivel por deporte
-                        ad.getFechaInicio()
-                ))
+                .map(ad -> {
+                    // Buscar el deporte por ID
+                    Deporte deporte = deporteRepository.findById(ad.getIdDeporte())
+                            .orElse(null);
+
+                    // Buscar el nivel por ID
+                    Nivel nivel = nivelRepository.findById(ad.getIdNivel())
+                            .orElse(null);
+
+                    return new PerfilAlumnoResponseDTO.DeporteConNivelDTO(
+                            deporte != null ? deporte.getNombreDeporte() : "Desconocido",
+                            nivel != null ? nivel.getNombreNivel() : "Sin nivel",
+                            ad.getFechaInicio()
+                    );
+                })
                 .collect(Collectors.toList());
 
         Integer edad = calcularEdad(infoAlumno.getFechaNacimiento());
@@ -78,7 +90,7 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 infoAlumno.getFotoPerfil(),
                 infoAlumno.getFechaNacimiento(),
                 edad,
-                deportes,  // ← Deportes con nivel
+                deportes,
                 totalAmigos,
                 totalEntrenadores,
                 "Perfil obtenido exitosamente"
@@ -86,7 +98,7 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
     }
 
     // ========================================
-    // MÉTODO CREAR PERFIL - ACTUALIZADO SIN NIVEL NI DEPORTES
+    // MÉTODO CREAR PERFIL - CORREGIDO
     // ========================================
 
     @Override
@@ -100,28 +112,19 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
             throw new RuntimeException("El alumno ya tiene un perfil creado");
         }
 
-        // ========================================
-        // Crear perfil básico SIN nivel ni deportes
-        // ========================================
+        // Crear perfil básico SIN deportes
         InformacionAlumno infoAlumno = new InformacionAlumno();
         infoAlumno.setUsuario(dto.getUsuario());
         infoAlumno.setEstatura(dto.getEstatura());
         infoAlumno.setPeso(dto.getPeso());
         infoAlumno.setLesiones(dto.getLesiones());
-        // NO hay nivel general
         infoAlumno.setPadecimientos(dto.getPadecimientos());
         infoAlumno.setFotoPerfil(dto.getFotoPerfil());
         infoAlumno.setFechaNacimiento(dto.getFechaNacimiento());
 
         informacionAlumnoRepository.save(infoAlumno);
 
-        // ========================================
-        // Los deportes se agregarán DESPUÉS cuando:
-        // - El usuario busque entrenador
-        // - Se inscriba a una clase
-        // - Agregue deportes manualmente desde otra pantalla
-        // ========================================
-
+        // Los deportes se agregan después
         Integer edad = calcularEdad(dto.getFechaNacimiento());
 
         Estado estado = estadoRepository.findById(usuario.getIdEstado())
@@ -131,6 +134,9 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
         Integer totalAmigos = seguidoresRepository.contarAmigos(dto.getUsuario());
         Integer totalEntrenadores = entrenadorAlumnoRepository.contarEntrenadoresActivos(dto.getUsuario());
 
+        // ========================================
+        // CORRECCIÓN: Lista vacía del tipo correcto
+        // ========================================
         return new PerfilAlumnoResponseDTO(
                 usuario.getUsuario(),
                 usuario.getNombre(),
@@ -145,7 +151,7 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 infoAlumno.getFotoPerfil(),
                 infoAlumno.getFechaNacimiento(),
                 edad,
-                List.of(),  // ← Lista vacía de deportes (se agregarán después)
+                new ArrayList<>(),  // ✅ Lista vacía de DeporteConNivelDTO
                 totalAmigos,
                 totalEntrenadores,
                 "Perfil de alumno creado exitosamente"
@@ -153,7 +159,7 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
     }
 
     // ========================================
-    // MÉTODO ACTUALIZAR PERFIL - ACTUALIZADO SIN NIVEL NI DEPORTES
+    // MÉTODO ACTUALIZAR PERFIL - CORREGIDO
     // ========================================
 
     @Override
@@ -166,30 +172,34 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
         InformacionAlumno infoAlumno = informacionAlumnoRepository.findByUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("Perfil de alumno no encontrado"));
 
-        // Actualizar datos básicos SIN nivel
+        // Actualizar datos básicos
         infoAlumno.setEstatura(dto.getEstatura());
         infoAlumno.setPeso(dto.getPeso());
         infoAlumno.setLesiones(dto.getLesiones());
-        // NO hay nivel general
         infoAlumno.setPadecimientos(dto.getPadecimientos());
         infoAlumno.setFotoPerfil(dto.getFotoPerfil());
         infoAlumno.setFechaNacimiento(dto.getFechaNacimiento());
 
         informacionAlumnoRepository.save(infoAlumno);
 
-        // ========================================
-        // Los deportes NO se modifican aquí
-        // Se modifican en otra pantalla específica
-        // ========================================
-
-        // Obtener deportes actuales
+        // Obtener deportes usando IDs
         List<AlumnoDeporte> deportesEntity = alumnoDeporteRepository.findByUsuario(usuario);
         List<PerfilAlumnoResponseDTO.DeporteConNivelDTO> deportes = deportesEntity.stream()
-                .map(ad -> new PerfilAlumnoResponseDTO.DeporteConNivelDTO(
-                        ad.getDeporte().getNombreDeporte(),
-                        ad.getNivel().getNombreNivel(),
-                        ad.getFechaInicio()
-                ))
+                .map(ad -> {
+                    // Buscar el deporte por ID
+                    Deporte deporte = deporteRepository.findById(ad.getIdDeporte())
+                            .orElse(null);
+
+                    // Buscar el nivel por ID
+                    Nivel nivel = nivelRepository.findById(ad.getIdNivel())
+                            .orElse(null);
+
+                    return new PerfilAlumnoResponseDTO.DeporteConNivelDTO(
+                            deporte != null ? deporte.getNombreDeporte() : "Desconocido",
+                            nivel != null ? nivel.getNombreNivel() : "Sin nivel",
+                            ad.getFechaInicio()
+                    );
+                })
                 .collect(Collectors.toList());
 
         Integer edad = calcularEdad(dto.getFechaNacimiento());
@@ -223,18 +233,9 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
     }
 
     // ========================================
-    // 🆕 NUEVO MÉTODO: ACTUALIZAR DATOS PARCIALES
+    // MÉTODO ACTUALIZAR DATOS PARCIALES
     // ========================================
 
-    /**
-     * Actualiza datos específicos del alumno de forma parcial
-     * Solo actualiza los campos que vienen en el DTO (no nulos)
-     *
-     * Este método es diferente a actualizarPerfilAlumno() porque:
-     * - Permite actualizaciones parciales (solo lo que envíes)
-     * - No requiere enviar todos los campos
-     * - Ideal para el formulario "Completar Datos"
-     */
     @Override
     @Transactional
     public void actualizarDatosAlumno(String usuario, ActualizarDatosAlumnoDTO datosDTO) {
@@ -243,13 +244,11 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
         System.out.println("Usuario: " + usuario);
         System.out.println("Datos recibidos: " + datosDTO);
 
-        // 1. Verificar que el usuario existe
         Usuario usuarioEntity = usuarioRepository.findByUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + usuario));
 
         System.out.println("✓ Usuario encontrado: " + usuarioEntity.getNombre());
 
-        // 2. Obtener o crear Informacion_Alumno
         InformacionAlumno infoAlumno = informacionAlumnoRepository
                 .findByUsuario(usuario)
                 .orElseGet(() -> {
@@ -259,7 +258,6 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                     return nuevaInfo;
                 });
 
-        // 3. Actualizar solo los campos que vienen en el DTO (no nulos)
         boolean huboActualizacion = false;
 
         if (datosDTO.getEstatura() != null) {
@@ -298,7 +296,6 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
             }
         }
 
-        // 4. Actualizar sexo en la tabla Usuario si viene en el DTO
         if (datosDTO.getSexo() != null && !datosDTO.getSexo().isEmpty()) {
             System.out.println("✓ Actualizando sexo en Usuario: " + datosDTO.getSexo());
             usuarioEntity.setSexo(datosDTO.getSexo());
@@ -306,7 +303,6 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
             huboActualizacion = true;
         }
 
-        // 5. Guardar cambios solo si hubo al menos una actualización
         if (huboActualizacion) {
             informacionAlumnoRepository.save(infoAlumno);
             System.out.println("✓✓✓ Datos del alumno actualizados correctamente");
@@ -319,7 +315,7 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
     }
 
     // ========================================================
-    // MÉTODOS DE TARJETAS (CONFIGURACIÓN DEL PERFIL)
+    // MÉTODOS DE TARJETAS
     // ========================================================
 
     @Override

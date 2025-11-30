@@ -27,7 +27,7 @@ public class RetrofitClient {
     //public static final String BASE_URL = "http://192.168.100.5:8080/";
 
     //IP PARA ESCUELA --EMMANUEL--
-    private static final String BASE_URL = "https://noncommodious-ingrid-geomorphologic.ngrok-free.dev/";
+    //private static final String BASE_URL = "https://noncommodious-ingrid-geomorphologic.ngrok-free.dev/";
 
     // IP PARA CELULAR --JP--
     //public static final String BASE_URL = "http://192.168.1.77:8080/";

@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,15 +34,23 @@ public class PerfilAlumnoResponseDTO {
     // Fecha de nacimiento y edad
     private LocalDate fechaNacimiento;
     private Integer edad; // Calculada automáticamente
-    private List<Integer> deportes;
-  
-  // Contadores
+
+    // ========================================
+    // CAMBIO CRÍTICO: DeporteConNivelDTO en lugar de List<Integer>
+    // ========================================
+    private List<DeporteConNivelDTO> deportes;  // ✅ CORRECTO
+    // private List<Integer> deportes;  // ❌ ELIMINAR
+
+    // Contadores
     private Integer totalAmigos;
     private Integer totalEntrenadores;
 
     // Mensaje
     private String mensaje;
 
+    // ========================================
+    // CLASE INTERNA NECESARIA
+    // ========================================
     /**
      * DTO interno para deportes con su nivel específico
      */
@@ -51,8 +58,8 @@ public class PerfilAlumnoResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DeporteConNivelDTO {
-        private String deporte;
-        private String nivel;  // ← El nivel está POR DEPORTE
-        private LocalDate fechaInicio;
+        private String deporte;      // Nombre del deporte (ej: "Fútbol")
+        private String nivel;         // Nivel específico (ej: "Intermedio")
+        private LocalDate fechaInicio; // Fecha de inicio
     }
 }

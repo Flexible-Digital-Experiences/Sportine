@@ -2,7 +2,10 @@ package com.example.sportine.data;
 
 import com.example.sportine.models.Comentario;
 import com.example.sportine.models.EntrenadorCardDTO;
+import com.example.sportine.models.FormularioSolicitudDTO;
 import com.example.sportine.models.HomeAlumnoDTO;
+import com.example.sportine.models.InfoDeporteAlumnoDTO;
+import com.example.sportine.models.PerfilEntrenadorDTO;
 import com.example.sportine.models.Publicacion;
 import com.example.sportine.models.RespuestaRegistro;
 import com.example.sportine.models.SolicitudRequestDTO;
