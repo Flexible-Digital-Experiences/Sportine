@@ -514,6 +514,55 @@
 
             </LinearLayout>
 
+            <!-- ============================================
+            LAYOUT ESPERANDO RESPUESTA (Solicitudes pendientes)
+            ============================================ -->
+            <LinearLayout
+                android:id="@+id/layout_esperando_respuesta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="#FEF3C7"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_clock"
+                    app:tint="#F59E0B"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Solicitudes en revisión"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#D97706"
+                    android:textAlignment="center"
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="El entrenador está revisando tus solicitudes. Te notificaremos cuando responda."
+                    android:textSize="14sp"
+                    android:textColor="#92400E"
+                    android:textAlignment="center"
+                    android:lineSpacingExtra="4dp"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- RecyclerView de solicitudes pendientes -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_solicitudes_pendientes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

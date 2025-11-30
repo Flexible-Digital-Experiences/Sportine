@@ -101,4 +101,5 @@ public class SolicitudEntrenadorServiceImpl implements SolicitudEntrenadorServic
 
         return info;
     }
+
 }

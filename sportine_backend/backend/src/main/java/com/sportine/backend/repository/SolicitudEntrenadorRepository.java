@@ -15,7 +15,8 @@ public interface SolicitudEntrenadorRepository extends JpaRepository<Usuario, St
 
     /**
      * Obtiene los deportes del entrenador que el alumno puede solicitar.
-     * Excluye deportes donde el alumno ya tiene una relación ACTIVA con otro entrenador.
+     * Excluye deportes donde el alumno ya tiene una relación ACTIVA con otro entrenador
+     * Y excluye deportes donde ya tiene una solicitud pendiente o aprobada con ESTE entrenador.
      */
     @Query(value = """
         SELECT 
@@ -30,6 +31,14 @@ public interface SolicitudEntrenadorRepository extends JpaRepository<Usuario, St
               WHERE ea.usuario_alumno = :usuarioAlumno
                 AND ea.id_deporte = d.id_deporte
                 AND ea.status_relacion = 'activo'
+          )
+          AND NOT EXISTS (
+              SELECT 1
+              FROM Solicitudes_Entrenamiento se
+              WHERE se.usuario_alumno = :usuarioAlumno
+                AND se.usuario_entrenador = :usuarioEntrenador
+                AND se.id_deporte = d.id_deporte
+                AND se.status_solicitud IN ('En_revisión', 'Aprobada')
           )
         ORDER BY d.nombre_deporte
         """, nativeQuery = true)
@@ -61,4 +70,11 @@ public interface SolicitudEntrenadorRepository extends JpaRepository<Usuario, St
             @Param("idDeporte") Integer idDeporte,
             @Param("usuarioAlumno") String usuarioAlumno
     );
+
+    /**
+     * Obtiene el nombre de un deporte por su ID
+     */
+    @Query(value = "SELECT nombre_deporte FROM Deporte WHERE id_deporte = :idDeporte",
+            nativeQuery = true)
+    Optional<String> obtenerNombreDeporte(@Param("idDeporte") Integer idDeporte);
 }
