@@ -8,6 +8,7 @@ import com.example.sportine.models.DetalleEntrenamientoDTO;
 import com.example.sportine.models.EntrenadorCardDTO;
 import com.example.sportine.models.FormularioSolicitudDTO;
 import com.example.sportine.models.HomeAlumnoDTO;
+import com.example.sportine.models.HomeEntrenadorDTO;
 import com.example.sportine.models.InfoDeporteAlumnoDTO;
 import com.example.sportine.models.PerfilEntrenadorDTO;
 import com.example.sportine.models.Publicacion;
@@ -169,4 +170,15 @@ public interface ApiService {
     @POST("/api/alumno/entrenamientos/completar")
     Call<Void> completarEntrenamiento(@Body CompletarEntrenamientoRequestDTO request);
 
+    // --- ENTRENADORES ---
+
+    @GET("/api/entrenador/home")
+    Call<HomeEntrenadorDTO> obtenerHomeEntrenador();
+
+    @POST("/api/entrenador/entrenamientos")
+    Call<Void> crearEntrenamiento(@Body com.example.sportine.models.CrearEntrenamientoRequestDTO request);
+
+    // ... otros endpoints
+    @GET("/api/entrenador/feedback")
+    Call<List<com.example.sportine.models.FeedbackResumenDTO>> obtenerFeedbackEntrenador();
 }

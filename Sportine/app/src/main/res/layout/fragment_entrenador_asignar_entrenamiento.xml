@@ -6,11 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPageBackground"
-    tools:context="ui.entrenadores.asignarentrenamiento.AsignarEntrenamientoFragment">
+    tools:context="com.example.sportine.ui.entrenadores.asignarentrenamiento.AsignarEntrenamientoFragment">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:fillViewport="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,17 +20,15 @@
             android:paddingStart="@dimen/spacing_xlarge"
             android:paddingEnd="@dimen/spacing_xlarge"
             android:paddingTop="@dimen/spacing_large"
-            android:paddingBottom="120dp">
 
-            <!-- Header: Botón de regreso y título -->
-            <ImageView
-                android:id="@+id/btnBack"
-                android:layout_width="@dimen/back_button_size"
-                android:layout_height="@dimen/back_button_size"
-                android:src="@drawable/ic_flechaatras"
-                android:contentDescription="@string/volver"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            android:paddingBottom="200dp"> <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="@dimen/back_button_size"
+            android:layout_height="@dimen/back_button_size"
+            android:src="@drawable/ic_flechaatras"
+            android:contentDescription="@string/volver"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/text_titulo_pagina"
@@ -56,7 +55,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <!-- Sección: Info del Alumno -->
             <TextView
                 android:id="@+id/label_alumno"
                 android:layout_width="wrap_content"
@@ -70,7 +68,6 @@
                 app:layout_constraintTop_toBottomOf="@id/divider_header"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <!-- Reutilizando el card del alumno existente -->
             <include
                 android:id="@+id/card_alumno"
                 layout="@layout/item_entrenador_alumno"
@@ -93,7 +90,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <!-- Sección: Datos del Entrenamiento -->
             <TextView
                 android:id="@+id/label_datos_entrenamiento"
                 android:layout_width="wrap_content"
@@ -126,7 +122,6 @@
                     android:orientation="vertical"
                     android:padding="@dimen/spacing_xlarge">
 
-                    <!-- Título del entrenamiento -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/layout_titulo"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -144,7 +139,6 @@
                             android:maxLines="1" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Objetivo -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/layout_objetivo"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -165,14 +159,12 @@
                             android:gravity="top|start" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Fecha y Hora en fila -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginTop="@dimen/spacing_large">
 
-                        <!-- Fecha -->
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/layout_fecha"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -195,7 +187,6 @@
                                 android:inputType="none" />
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <!-- Hora -->
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/layout_hora"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -219,7 +210,6 @@
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
 
-                    <!-- Dificultad -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/layout_dificultad"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -250,7 +240,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <!-- Sección: Ejercicios -->
             <LinearLayout
                 android:id="@+id/layout_header_ejercicios"
                 android:layout_width="0dp"
@@ -283,7 +272,13 @@
                     android:fontFamily="sans-serif-medium" />
             </LinearLayout>
 
-            <!-- Estado vacío cuando no hay ejercicios -->
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_ejercicios"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="recycler_ejercicios,card_empty_state" />
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_empty_state"
                 android:layout_width="0dp"
@@ -331,7 +326,6 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- RecyclerView de ejercicios -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_ejercicios"
                 android:layout_width="0dp"
@@ -345,14 +339,12 @@
                 tools:listitem="@layout/item_ejercicio_asignado"
                 tools:itemCount="3" />
 
-            <!-- Espacio flexible que cambia según hay ejercicios o no -->
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/group_ejercicios_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:constraint_referenced_ids="recycler_ejercicios,card_empty_state" />
 
-            <!-- Botón Guardar Entrenamiento -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_guardar_entrenamiento"
                 android:layout_width="0dp"
@@ -364,20 +356,23 @@
                 android:textColor="@android:color/white"
                 app:cornerRadius="@dimen/corner_radius_card"
                 app:backgroundTint="@color/colorAccent"
-                app:layout_constraintTop_toBottomOf="@id/recycler_ejercicios"
+
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrier_ejercicios"
+                app:layout_constraintVertical_bias="1.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- FAB para agregar ejercicios -->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab_agregar_ejercicio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/spacing_xlarge"
+        android:layout_marginEnd="@dimen/spacing_xlarge"
+        android:layout_marginBottom="90dp"
         android:text="Agregar ejercicio"
         android:textColor="@android:color/white"
         app:icon="@drawable/ic_add"
