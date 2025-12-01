@@ -9,7 +9,9 @@ import com.sportine.backend.dto.TarjetaDTO;
 import com.sportine.backend.dto.TarjetaResponseDTO;
 import com.sportine.backend.repository.*;
 import com.sportine.backend.service.AlumnoPerfilService;
+import com.sportine.backend.service.CloudinaryService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +21,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
 
@@ -33,6 +38,7 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
     private final DeporteRepository deporteRepository;
     private final SeguidoresRepository seguidoresRepository;
     private final EntrenadorAlumnoRepository entrenadorAlumnoRepository;
+    private final CloudinaryService cloudinaryService;
 
     // ========================================
     // MÉTODO OBTENER PERFIL
@@ -432,5 +438,56 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
         }
         String ultimosCuatro = numeroTarjeta.substring(numeroTarjeta.length() - 4);
         return "**** **** **** " + ultimosCuatro;
+    }
+
+    /**
+     * Actualiza solo la foto de perfil del alumno
+     * Sube la nueva imagen a Cloudinary y actualiza la URL en la base de datos
+     *
+     * @param usuario Username del alumno
+     * @param foto Archivo de imagen a subir
+     * @return URL de la nueva foto de perfil
+     */
+    @Transactional
+    public String actualizarFotoPerfil(String usuario, MultipartFile foto) {
+        log.info("📸 Actualizando foto de perfil para: {}", usuario);
+
+        // 1. Verificar que el alumno existe
+        InformacionAlumno infoAlumno = informacionAlumnoRepository.findById(usuario)
+                .orElseThrow(() -> new RuntimeException("No se encontró perfil para el usuario: " + usuario));
+
+        try {
+            // 2. Eliminar la foto anterior de Cloudinary (si existe)
+            if (infoAlumno.getFotoPerfil() != null && !infoAlumno.getFotoPerfil().isEmpty()) {
+                try {
+                    String publicId = cloudinaryService.extraerPublicId(infoAlumno.getFotoPerfil());
+                    if (publicId != null) {
+                        cloudinaryService.eliminarImagen(publicId);
+                        log.info("🗑️ Foto anterior eliminada de Cloudinary");
+                    }
+                } catch (Exception e) {
+                    log.warn("⚠️ No se pudo eliminar la foto anterior: {}", e.getMessage());
+                    // No detenemos el proceso si falla la eliminación
+                }
+            }
+
+            // 3. Subir nueva foto a Cloudinary
+            String nuevaUrl = cloudinaryService.subirImagen(foto, "sportine/perfiles");
+            log.info("✅ Nueva foto subida a Cloudinary: {}", nuevaUrl);
+
+            // 4. Actualizar URL en la base de datos
+            infoAlumno.setFotoPerfil(nuevaUrl);
+            informacionAlumnoRepository.save(infoAlumno);
+            log.info("✅ URL de foto actualizada en la base de datos");
+
+            return nuevaUrl;
+
+        } catch (IOException e) {
+            log.error("❌ Error al subir imagen a Cloudinary: {}", e.getMessage());
+            throw new RuntimeException("Error al subir la imagen: " + e.getMessage());
+        } catch (Exception e) {
+            log.error("❌ Error inesperado al actualizar foto: {}", e.getMessage());
+            throw new RuntimeException("Error al actualizar la foto de perfil: " + e.getMessage());
+        }
     }
 }

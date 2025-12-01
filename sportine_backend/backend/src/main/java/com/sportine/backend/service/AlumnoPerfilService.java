@@ -5,6 +5,7 @@ import com.sportine.backend.dto.PerfilAlumnoDTO;
 import com.sportine.backend.dto.PerfilAlumnoResponseDTO;
 import com.sportine.backend.dto.TarjetaDTO;
 import com.sportine.backend.dto.TarjetaResponseDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -63,4 +64,6 @@ public interface AlumnoPerfilService {
      * Elimina una tarjeta
      */
     void eliminarTarjeta(String usuario, Integer idTarjeta);
+
+    String actualizarFotoPerfil(String usuario, MultipartFile foto);
 }
