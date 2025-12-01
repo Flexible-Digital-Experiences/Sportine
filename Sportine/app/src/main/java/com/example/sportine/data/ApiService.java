@@ -1,5 +1,7 @@
 package com.example.sportine.data;
 
+import com.example.sportine.models.CalificacionRequestDTO;
+import com.example.sportine.models.CalificacionResponseDTO;
 import com.example.sportine.models.Comentario;
 import com.example.sportine.models.CompletarEntrenamientoRequestDTO;
 import com.example.sportine.models.DetalleEntrenamientoDTO;
@@ -11,9 +13,14 @@ import com.example.sportine.models.InfoDeporteAlumnoDTO;
 import com.example.sportine.models.PerfilEntrenadorDTO;
 import com.example.sportine.models.Publicacion;
 import com.example.sportine.models.RespuestaRegistro;
+import com.example.sportine.models.SolicitudEnviadaDTO;
+import com.example.sportine.models.SolicitudPendienteDTO;
+import com.example.sportine.models.SolicitudRequestDTO;
+import com.example.sportine.models.SolicitudResponseDTO;
 import com.example.sportine.models.Usuario;
 import com.example.sportine.models.PublicacionFeedDTO;
 import com.example.sportine.models.UsuarioDetalle;
+import com.example.sportine.ui.usuarios.dto.ActualizarDatosAlumnoDTO;
 import com.example.sportine.ui.usuarios.dto.LoginRequest;
 import com.example.sportine.ui.usuarios.dto.LoginResponse;
 import com.example.sportine.ui.usuarios.dto.ComentarioRequest;
@@ -97,6 +104,11 @@ public interface ApiService {
     @GET("/api/social/amigos")
     Call<List<UsuarioDetalle>> verMisAmigos();
 
+    @PUT("api/alumnos/{usuario}/actualizar-datos")
+    Call<Void> actualizarDatosAlumno(
+            @Path("usuario") String usuario,
+            @Body ActualizarDatosAlumnoDTO datos
+    );
     @PUT("/api/social/post/{id}")
     Call<Void> editarPost(@Path("id") Integer id, @Body com.example.sportine.models.Publicacion publicacionActualizada);
 
@@ -117,7 +129,22 @@ public interface ApiService {
     Call<InfoDeporteAlumnoDTO> obtenerInfoDeporte(@Path("idDeporte") Integer idDeporte);
 
     @POST("api/Solicitudes/enviar")
-    Call<Map<String, String>> enviarSolicitud(@Body EnviarSolicitud.SolicitudRequest request);
+    Call<SolicitudResponseDTO> enviarSolicitud(@Body SolicitudRequestDTO request);
+
+    @GET("api/Solicitudes/pendiente/{usuarioEntrenador}")
+    Call<SolicitudPendienteDTO> verificarSolicitudPendiente(
+            @Path("usuarioEntrenador") String usuarioEntrenador
+    );
+
+    @GET("api/Solicitudes/enviadas")
+    Call<List<SolicitudEnviadaDTO>> obtenerSolicitudesEnviadas();
+
+    @DELETE("api/Solicitudes/{idSolicitud}")
+    Call<Void> eliminarSolicitud(@Path("idSolicitud") Integer idSolicitud);
+
+    // Enviar calificación
+    @POST("api/calificaciones/enviar")
+    Call<CalificacionResponseDTO> enviarCalificacion(@Body CalificacionRequestDTO request);
 
     // Notificaciones
 
@@ -143,9 +170,15 @@ public interface ApiService {
     @POST("/api/alumno/entrenamientos/completar")
     Call<Void> completarEntrenamiento(@Body CompletarEntrenamientoRequestDTO request);
 
+    // --- ENTRENADORES ---
 
-    // Home Entrenador
-    @GET("/api/entrenador/home/{usuario}")
-    Call<HomeEntrenadorDTO> obtenerHomeEntrenador(@Path("usuario") String usuario);
+    @GET("/api/entrenador/home")
+    Call<HomeEntrenadorDTO> obtenerHomeEntrenador();
 
+    @POST("/api/entrenador/entrenamientos")
+    Call<Void> crearEntrenamiento(@Body com.example.sportine.models.CrearEntrenamientoRequestDTO request);
+
+    // ... otros endpoints
+    @GET("/api/entrenador/feedback")
+    Call<List<com.example.sportine.models.FeedbackResumenDTO>> obtenerFeedbackEntrenador();
 }

@@ -47,10 +47,11 @@
             android:layout_marginTop="12dp"
             android:textColor="@android:color/black"
             android:textSize="15sp"
+            android:autoLink="web"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_user_avatar"
-            tools:text="Aquí va la descripción de lo que entrené hoy... 💪 Si es puro texto se ve así." />
+            tools:text="Aquí va la descripción de lo que entrené hoy... 💪 Si es puro texto se ve así, compacto." />
 
         <ImageView
             android:id="@+id/iv_post_image"
@@ -70,12 +71,14 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/ic_favorite_black_24dp"
-            app:tint="#FD0000"
+            app:tint="#FF0404"
             android:visibility="invisible"
             android:alpha="0"
             android:elevation="10dp"
             app:layout_constraintStart_toStartOf="@id/iv_post_image"
-            app:layout_constraintTop_toTopOf="@id/iv_post_image" />
+            app:layout_constraintEnd_toEndOf="@id/iv_post_image"
+            app:layout_constraintTop_toTopOf="@id/iv_post_image"
+            app:layout_constraintBottom_toBottomOf="@id/iv_post_image" />
 
         <LinearLayout
             android:id="@+id/ll_actions"

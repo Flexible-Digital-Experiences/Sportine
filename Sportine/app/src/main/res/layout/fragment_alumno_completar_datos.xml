@@ -121,33 +121,6 @@
                                 android:layout_weight="1"
                                 android:layout_marginEnd="12dp">
 
-                                <!-- Nivel -->
-                                <LinearLayout
-                                    android:orientation="vertical"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/fondo_campos_perfil"
-                                    android:padding="12dp"
-                                    android:layout_marginBottom="12dp">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Nivel"
-                                        android:textColor="#9CA3AF"
-                                        android:textSize="11sp"
-                                        android:textStyle="bold"
-                                        android:letterSpacing="0.05"/>
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:text="-"
-                                        android:textColor="#1A1A1A"
-                                        android:textSize="14sp"
-                                        android:layout_marginTop="4dp"/>
-                                </LinearLayout>
-
                                 <!-- Lesiones -->
                                 <LinearLayout
                                     android:orientation="vertical"
@@ -167,6 +140,7 @@
                                         android:letterSpacing="0.05"/>
 
                                     <TextView
+                                        android:id="@+id/tvLesionesActual"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:text="-"
@@ -194,6 +168,7 @@
                                         android:letterSpacing="0.05"/>
 
                                     <TextView
+                                        android:id="@+id/tvPadecimientosActual"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:text="-"
@@ -202,7 +177,7 @@
                                         android:layout_marginTop="4dp"/>
                                 </LinearLayout>
 
-                                <!-- Deportes -->
+                                <!-- Género -->
                                 <LinearLayout
                                     android:orientation="vertical"
                                     android:layout_width="match_parent"
@@ -213,13 +188,14 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="Deportes"
+                                        android:text="Género"
                                         android:textColor="#9CA3AF"
                                         android:textSize="11sp"
                                         android:textStyle="bold"
                                         android:letterSpacing="0.05"/>
 
                                     <TextView
+                                        android:id="@+id/tvGeneroActual"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:text="-"
@@ -255,6 +231,7 @@
                                         android:letterSpacing="0.05"/>
 
                                     <TextView
+                                        android:id="@+id/tvEstaturaActual"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:text="-"
@@ -282,6 +259,7 @@
                                         android:letterSpacing="0.05"/>
 
                                     <TextView
+                                        android:id="@+id/tvPesoActual"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:text="-"
@@ -309,6 +287,7 @@
                                         android:letterSpacing="0.05"/>
 
                                     <TextView
+                                        android:id="@+id/tvEdadActual"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:text="-"
@@ -317,31 +296,6 @@
                                         android:layout_marginTop="4dp"/>
                                 </LinearLayout>
 
-                                <!-- Género -->
-                                <LinearLayout
-                                    android:orientation="vertical"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/fondo_campos_perfil"
-                                    android:padding="12dp">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Género"
-                                        android:textColor="#9CA3AF"
-                                        android:textSize="11sp"
-                                        android:textStyle="bold"
-                                        android:letterSpacing="0.05"/>
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:text="-"
-                                        android:textColor="#1A1A1A"
-                                        android:textSize="14sp"
-                                        android:layout_marginTop="4dp"/>
-                                </LinearLayout>
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
@@ -392,33 +346,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:layout_marginEnd="12dp">
-
-                                <!-- Spinner Nivel con label -->
-                                <LinearLayout
-                                    android:orientation="vertical"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/fondo_campos_perfil"
-                                    android:padding="12dp"
-                                    android:layout_marginBottom="12dp">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Nivel"
-                                        android:textColor="#9CA3AF"
-                                        android:textSize="11sp"
-                                        android:textStyle="bold"
-                                        android:letterSpacing="0.05"
-                                        android:layout_marginBottom="4dp"/>
-
-                                    <Spinner
-                                        android:id="@+id/spinnerNivel"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:minHeight="32dp"
-                                        android:background="@null"/>
-                                </LinearLayout>
 
                                 <!-- EditText Lesiones -->
                                 <LinearLayout
@@ -480,7 +407,7 @@
                                         android:inputType="text"/>
                                 </LinearLayout>
 
-                                <!-- Spinner Deportes -->
+                                <!-- Spinner Género -->
                                 <LinearLayout
                                     android:orientation="vertical"
                                     android:layout_width="match_parent"
@@ -491,7 +418,7 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="Deportes"
+                                        android:text="Género"
                                         android:textColor="#9CA3AF"
                                         android:textSize="11sp"
                                         android:textStyle="bold"
@@ -499,12 +426,13 @@
                                         android:layout_marginBottom="4dp"/>
 
                                     <Spinner
-                                        android:id="@+id/spinnerDeportes"
+                                        android:id="@+id/spinnerGenero"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:minHeight="32dp"
                                         android:background="@null"/>
                                 </LinearLayout>
+
                             </LinearLayout>
 
                             <!-- Columna derecha -->
@@ -595,32 +523,6 @@
 
                                     <Spinner
                                         android:id="@+id/spinnerEdad"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:minHeight="32dp"
-                                        android:background="@null"/>
-                                </LinearLayout>
-
-                                <!-- Spinner Género -->
-                                <LinearLayout
-                                    android:orientation="vertical"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/fondo_campos_perfil"
-                                    android:padding="12dp">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Género"
-                                        android:textColor="#9CA3AF"
-                                        android:textSize="11sp"
-                                        android:textStyle="bold"
-                                        android:letterSpacing="0.05"
-                                        android:layout_marginBottom="4dp"/>
-
-                                    <Spinner
-                                        android:id="@+id/spinnerGenero"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:minHeight="32dp"

@@ -75,7 +75,6 @@ public class SolicitudEntrenadorServiceImpl implements SolicitudEntrenadorServic
 
         String nombreDeporte = (String) infoData.get("nombreDeporte");
 
-        // ✅ CONVERSIÓN CORRECTA DE LONG A BOOLEAN
         Boolean tieneNivel = false;
         Object tieneNivelObj = infoData.get("tieneNivelRegistrado");
 
@@ -102,4 +101,5 @@ public class SolicitudEntrenadorServiceImpl implements SolicitudEntrenadorServic
 
         return info;
     }
+
 }

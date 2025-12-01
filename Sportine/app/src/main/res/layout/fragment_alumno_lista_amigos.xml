@@ -13,9 +13,10 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/white"
         app:elevation="1dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_flechaatras"
         app:navigationIconTint="?attr/colorPrimary"
         app:title="Mis Amigos" />

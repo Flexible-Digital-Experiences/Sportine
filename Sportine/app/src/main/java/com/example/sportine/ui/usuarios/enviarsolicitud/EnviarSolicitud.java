@@ -25,12 +25,15 @@ import com.example.sportine.data.RetrofitClient;
 import com.example.sportine.models.FormularioSolicitudDTO;
 import com.example.sportine.models.InfoDeporteAlumnoDTO;
 import com.example.sportine.models.PerfilEntrenadorDTO;
+import com.example.sportine.models.SolicitudResponseDTO;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.example.sportine.models.DeporteDisponibleDTO;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import com.example.sportine.models.SolicitudRequestDTO;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -338,7 +341,7 @@ public class EnviarSolicitud extends Fragment {
         }
 
         // Crear objeto de solicitud
-        SolicitudRequest request = new SolicitudRequest(
+        SolicitudRequestDTO request = new SolicitudRequestDTO(
                 usuarioEntrenador,
                 deporteSeleccionado.getIdDeporte(),
                 nivel,
@@ -349,52 +352,54 @@ public class EnviarSolicitud extends Fragment {
         enviarSolicitudAlBackend(request);
     }
 
-    private void enviarSolicitudAlBackend(SolicitudRequest request) {
+    private void enviarSolicitudAlBackend(SolicitudRequestDTO request) {
         if (!isAdded()) return;
 
-        // TODO: Implementar cuando tengas el endpoint de envío
-        Toast.makeText(getContext(),
-                "Enviando solicitud para " + deporteSeleccionado.getNombreDeporte() +
-                        " (Nivel: " + request.getNivel() + ")",
-                Toast.LENGTH_LONG).show();
-    }
+        btnEnviarSolicitud.setEnabled(false);
 
-    // ===== CLASES AUXILIARES =====
+        apiService.enviarSolicitud(request).enqueue(new Callback<SolicitudResponseDTO>() {
+            @Override
+            public void onResponse(Call<SolicitudResponseDTO> call,
+                                   Response<SolicitudResponseDTO> response) {
+                if (!isAdded()) return;
 
-    public static class SolicitudRequest {
-        private String usuarioEntrenador;
-        private Integer idDeporte;
-        private String nivel;
-        private String motivo;
+                btnEnviarSolicitud.setEnabled(true);
 
-        public SolicitudRequest(String usuarioEntrenador, Integer idDeporte, String nivel, String motivo) {
-            this.usuarioEntrenador = usuarioEntrenador;
-            this.idDeporte = idDeporte;
-            this.nivel = nivel;
-            this.motivo = motivo;
-        }
+                if (response.isSuccessful() && response.body() != null) {
+                    SolicitudResponseDTO resultado = response.body();
 
-        public String getUsuarioEntrenador() { return usuarioEntrenador; }
-        public Integer getIdDeporte() { return idDeporte; }
-        public String getNivel() { return nivel; }
-        public String getMotivo() { return motivo; }
-    }
+                    Toast.makeText(getContext(),
+                            resultado.getMensaje(),
+                            Toast.LENGTH_LONG).show();
 
-    public static class DeporteDisponibleDTO {
-        private Integer idDeporte;
-        private String nombreDeporte;
+                    // Volver al perfil del entrenador o a la lista
+                    NavHostFragment.findNavController(EnviarSolicitud.this)
+                            .navigateUp();
 
-        public DeporteDisponibleDTO() {}
+                } else {
+                    try {
+                        String errorBody = response.errorBody() != null ?
+                                response.errorBody().string() : "Error desconocido";
+                        Toast.makeText(getContext(),
+                                "Error: " + errorBody,
+                                Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(),
+                                "Error al enviar solicitud",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
 
-        public DeporteDisponibleDTO(Integer idDeporte, String nombreDeporte) {
-            this.idDeporte = idDeporte;
-            this.nombreDeporte = nombreDeporte;
-        }
+            @Override
+            public void onFailure(Call<SolicitudResponseDTO> call, Throwable t) {
+                if (!isAdded()) return;
 
-        public Integer getIdDeporte() { return idDeporte; }
-        public void setIdDeporte(Integer idDeporte) { this.idDeporte = idDeporte; }
-
-        public String getNombreDeporte() { return nombreDeporte; }
-        public void setNombreDeporte(String nombreDeporte) { this.nombreDeporte = nombreDeporte; }
+                btnEnviarSolicitud.setEnabled(true);
+                Toast.makeText(getContext(),
+                        "Error de conexión: " + t.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

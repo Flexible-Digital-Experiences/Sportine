@@ -23,14 +23,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
     private static Retrofit retrofit = null;
 
-    // IP PARA MI CELULAR --EMMANUEL--
+    // IP PARA MI CELULAR --EMMANUEL
     //public static final String BASE_URL = "http://192.168.100.5:8080/";
+
+    //IP PARA ESCUELA --EMMANUEL--
+    //private static final String BASE_URL = "https://noncommodious-ingrid-geomorphologic.ngrok-free.dev/";
 
     // IP PARA CELULAR --JP--
     public static final String BASE_URL = "http://192.168.1.75:8080/";
 
+    //IP para Escuela Alonso
+    //public static final String BASE_URL = "https://jason-waterworn-kaysen.ngrok-free.dev/";
     // IP para grok (escuela)
-    //public static  final String BASE_URL = "https://chasmal-plastometric-isabell.ngrok-free.dev/";
+    // public static  final String BASE_URL = "https://chasmal-plastometric-isabell.ngrok-free.dev/";
 
     // IP PARA EMULADOR
     //private static final String BASE_URL = "http://10.0.2.2:8080/";

@@ -65,4 +65,19 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
             String usuarioEntrenador,
             String statusRelacion
     );
+
+    /**
+     * Cuenta cuántos entrenadores ACTIVOS tiene contratados un alumno
+     */
+    @Query("SELECT COUNT(ea) FROM EntrenadorAlumno ea " +
+            "WHERE ea.usuarioAlumno = :usuario " +
+            "AND ea.statusRelacion = 'activo'")
+    Integer contarEntrenadoresActivos(@Param("usuario") String usuario);
+
+    /**
+     * Cuenta TODOS los entrenadores (sin importar status)
+     */
+    @Query("SELECT COUNT(ea) FROM EntrenadorAlumno ea " +
+            "WHERE ea.usuarioAlumno = :usuario")
+    Integer contarTodosEntrenadores(@Param("usuario") String usuario);
 }

@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:paddingStart="16dp"
+            android:layout_marginTop="15dp"
             android:paddingEnd="16dp">
 
             <!-- Título centrado -->
@@ -36,8 +37,8 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <!-- Campanita de notificaciones -->
-            <ImageView
-                android:id="@+id/iv_notifications_btn"
+            <ImageButton
+                android:id="@+id/solis"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"

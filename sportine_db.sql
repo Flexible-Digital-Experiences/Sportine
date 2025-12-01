@@ -1,5 +1,9 @@
-create database sportine_db;
-use sportine_db;
+CREATE DATABASE sportine_db;
+USE sportine_db;
+
+-- ============================================
+-- 1. TABLAS BASE
+-- ============================================
 
 CREATE TABLE Estado(
     id_estado INT PRIMARY KEY AUTO_INCREMENT,
@@ -31,42 +35,30 @@ CREATE TABLE Usuario_rol (
     UNIQUE KEY unique_usuario_rol (usuario, id_rol) 
 );
 
--- TABLA DE DEPORTES
 CREATE TABLE Deporte (
     id_deporte INT PRIMARY KEY AUTO_INCREMENT,
     nombre_deporte VARCHAR(100) UNIQUE NOT NULL
 );
 
--- CATÁLOGO DE NIVELES
 CREATE TABLE Nivel (
     id_nivel INT PRIMARY KEY AUTO_INCREMENT,
     nombre_nivel VARCHAR(50) UNIQUE NOT NULL
 );
+
+-- ============================================
+-- 2. TABLAS DE INFORMACIÓN (AJUSTADAS A TU JAVA)
+-- ============================================
 
 CREATE TABLE Informacion_Alumno (
     usuario VARCHAR(255),
     estatura FLOAT,
     peso FLOAT,
     lesiones VARCHAR(255),
-    id_nivel INT,
+    nivel VARCHAR(50), -- CAMBIO: String para coincidir con tu Java actual
     padecimientos VARCHAR(255),
     foto_perfil TEXT,
     fecha_nacimiento DATE,
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
-    FOREIGN KEY (id_nivel) REFERENCES Nivel(id_nivel)
-);
-
--- TABLA INTERMEDIA ALUMNO-DEPORTE
-CREATE TABLE Alumno_Deporte (
-    id_alumno_deporte INT PRIMARY KEY AUTO_INCREMENT,
-    usuario VARCHAR(255),
-    id_deporte INT,
-    fecha_inicio DATE,
-    id_nivel INT,
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
-    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
-    FOREIGN KEY (id_nivel) REFERENCES Nivel(id_nivel),
-    UNIQUE KEY unique_alumno_deporte (usuario, id_deporte)
+    FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
 CREATE TABLE Informacion_Entrenador (
@@ -76,18 +68,6 @@ CREATE TABLE Informacion_Entrenador (
     descripcion_perfil VARCHAR(255),
     foto_perfil TEXT,
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
-);
-
--- TABLA INTERMEDIA ENTRENADOR-DEPORTE
-CREATE TABLE Entrenador_Deporte (
-    id_entrenador_deporte INT PRIMARY KEY AUTO_INCREMENT,
-    usuario VARCHAR(255),
-    id_deporte INT,
-    años_experiencia INT,
-    certificaciones VARCHAR(255),
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
-    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
-    UNIQUE KEY unique_entrenador_deporte (usuario, id_deporte)
 );
 
 CREATE TABLE Tarjeta (
@@ -104,21 +84,58 @@ CREATE TABLE Tarjeta (
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
--- TABLA ENTRENADOR-ALUMNO CON RESTRICCIÓN DE UN ENTRENADOR POR DEPORTE
--- ==========================================================
--- CORREGIDO: Agregada columna fecha_inicio para coincidir con backend
--- ==========================================================
+-- ============================================
+-- 3. RELACIONES Y CONTRATOS
+-- ============================================
+
+CREATE TABLE Alumno_Deporte (
+    id_alumno_deporte INT PRIMARY KEY AUTO_INCREMENT,
+    usuario VARCHAR(255),
+    id_deporte INT,
+    fecha_inicio DATE,
+    id_nivel INT,
+    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
+    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
+    FOREIGN KEY (id_nivel) REFERENCES Nivel(id_nivel),
+    UNIQUE KEY unique_alumno_deporte (usuario, id_deporte)
+);
+
+CREATE TABLE Entrenador_Deporte (
+    id_entrenador_deporte INT PRIMARY KEY AUTO_INCREMENT,
+    usuario VARCHAR(255),
+    id_deporte INT,
+    años_experiencia INT,
+    certificaciones VARCHAR(255),
+    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
+    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
+    UNIQUE KEY unique_entrenador_deporte (usuario, id_deporte)
+);
+
+-- ✅ CORREGIDO: Agregada fecha_inicio para que Java no falle
 CREATE TABLE Entrenador_Alumno (
     id_relacion INT PRIMARY KEY AUTO_INCREMENT,
     usuario_entrenador VARCHAR(255),
     usuario_alumno VARCHAR(255),
     id_deporte INT,
-    fecha_inicio DATE DEFAULT (CURRENT_DATE), -- COLUMNA AGREGADA
-    status_relacion ENUM('activo', 'pendiente', 'finalizado'),
+    fecha_inicio DATE DEFAULT (CURRENT_DATE), 
+    status_relacion VARCHAR(50), 
     FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
     FOREIGN KEY (usuario_alumno) REFERENCES Usuario(usuario),
     FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
     UNIQUE KEY unique_alumno_deporte_activo (usuario_alumno, id_deporte, status_relacion)
+);
+
+CREATE TABLE Contrato (
+    id_contrato INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_alumno VARCHAR(255),
+    usuario_entrenador VARCHAR(255),
+    id_deporte INT,
+    fecha_inicio DATE,
+    fecha_fin DATE,
+    estado_contrato VARCHAR(50),
+    FOREIGN KEY (usuario_alumno) REFERENCES Usuario(usuario),
+    FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
+    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte)
 );
 
 CREATE TABLE Solicitudes_Entrenamiento (
@@ -128,13 +145,16 @@ CREATE TABLE Solicitudes_Entrenamiento (
     id_deporte INT,
     descripcion_solicitud VARCHAR(255),
     fecha_solicitud DATE,
-    status_solicitud ENUM('Aprobada', 'Rechazada', 'En revisión'),
+    status_solicitud VARCHAR(50),
     FOREIGN KEY (usuario_alumno) REFERENCES Usuario(usuario),
     FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
     FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte)
 );
 
--- TABLA ENTRENAMIENTO (CON LAS 3 COLUMNAS NUEVAS INCLUIDAS)
+-- ============================================
+-- 4. MÓDULO DE ENTRENAMIENTO
+-- ============================================
+
 CREATE TABLE Entrenamiento (
     id_entrenamiento INT PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(255),
@@ -153,29 +173,19 @@ CREATE TABLE Entrenamiento (
     FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte)
 );
 
-CREATE TABLE Catalogo_Ejercicios (
-    id_catalogo INT PRIMARY KEY AUTO_INCREMENT,
-    id_deporte INT,
-    nombre_ejercicio VARCHAR(255),
-    descripcion VARCHAR(255),
-    tipo_medida VARCHAR(50),
-    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte)
-);
-
--- ==========================================================
--- MODIFICADO: Tabla simplificada (Sin catálogo, con nombre manual)
--- ==========================================================
+-- ✅ CORREGIDO: nombre_ejercicio (manual) para coincidir con tu DTO
 CREATE TABLE Ejercicios_Asignados (
     id_asignado INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT,
     id_catalogo INT,               -- Puede ser NULL si se usa nombre personalizado
     nombre_personalizado VARCHAR(255), -- NUEVA COLUMNA PARA NOMBRE MANUAL
     usuario VARCHAR(255),
-    repeticiones INT,
+    nombre_ejercicio VARCHAR(255) NOT NULL,
     series INT,
+    repeticiones INT,
+    peso FLOAT,
     duracion INT,
     distancia FLOAT,
-    peso FLOAT,
     status_ejercicio ENUM('pendiente', 'completado', 'omitido') DEFAULT 'pendiente',
     FOREIGN KEY (id_entrenamiento) REFERENCES Entrenamiento(id_entrenamiento),
     FOREIGN KEY (id_catalogo) REFERENCES Catalogo_Ejercicios(id_catalogo),
@@ -206,19 +216,18 @@ CREATE TABLE Feedback_Entrenamiento (
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
+-- ============================================
+-- 5. MÓDULO SOCIAL Y OTROS
+-- ============================================
 CREATE TABLE Calificaciones (
     id_calificacion INT PRIMARY KEY AUTO_INCREMENT,
-    usuario VARCHAR(255),                    
-    usuario_calificado VARCHAR(255),         
+    usuario VARCHAR(255),
+    usuario_calificado VARCHAR(255),
     calificacion INT,
     comentarios VARCHAR(255),
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
     FOREIGN KEY (usuario_calificado) REFERENCES Usuario(usuario)
 );
-
--- ============================================
--- MÓDULO SOCIAL
--- ============================================
 
 CREATE TABLE Publicacion (
     id_publicacion INT PRIMARY KEY AUTO_INCREMENT,
@@ -267,16 +276,13 @@ CREATE TABLE Notificacion (
     mensaje VARCHAR(255),         
     leido BOOLEAN DEFAULT FALSE,
     fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-    
     FOREIGN KEY (usuario_destino) REFERENCES Usuario(usuario),
     FOREIGN KEY (usuario_actor) REFERENCES Usuario(usuario)
 );
 
 -- ============================================
--- TABLAS DE ESTADÍSTICAS POR DEPORTE
+-- 6. TABLAS ESTADÍSTICAS
 -- ============================================
-
--- ESTADÍSTICAS DE FÚTBOL
 CREATE TABLE Estadisticas_Futbol (
     id_estadistica INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT,
@@ -297,7 +303,6 @@ CREATE TABLE Estadisticas_Futbol (
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
--- ESTADÍSTICAS DE BASKETBALL
 CREATE TABLE Estadisticas_Basketball (
     id_estadistica INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT,
@@ -322,14 +327,13 @@ CREATE TABLE Estadisticas_Basketball (
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
--- ESTADÍSTICAS DE NATACIÓN
 CREATE TABLE Estadisticas_Natacion (
     id_estadistica INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT,
     usuario VARCHAR(255),
     distancia_total_metros FLOAT,
     tiempo_total_minutos FLOAT,
-    estilo_natacion VARCHAR(50), -- libre, espalda, pecho, mariposa
+    estilo_natacion VARCHAR(50),
     numero_vueltas INT,
     tiempo_mejor_vuelta FLOAT,
     tiempo_promedio_vuelta FLOAT,
@@ -342,14 +346,13 @@ CREATE TABLE Estadisticas_Natacion (
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
--- ESTADÍSTICAS DE RUNNING
 CREATE TABLE Estadisticas_Running (
     id_estadistica INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT,
     usuario VARCHAR(255),
     distancia_km FLOAT,
     tiempo_minutos FLOAT,
-    ritmo_promedio_min_km FLOAT, -- minutos por kilómetro
+    ritmo_promedio_min_km FLOAT, 
     velocidad_promedio_kmh FLOAT,
     velocidad_maxima_kmh FLOAT,
     calorias_quemadas INT,
@@ -357,14 +360,13 @@ CREATE TABLE Estadisticas_Running (
     elevacion_perdida_metros FLOAT,
     frecuencia_cardiaca_promedio INT,
     frecuencia_cardiaca_maxima INT,
-    cadencia_promedio INT, -- pasos por minuto
+    cadencia_promedio INT, 
     temperatura_celsius FLOAT,
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_entrenamiento) REFERENCES Entrenamiento(id_entrenamiento),
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
--- ESTADÍSTICAS DE BOXEO
 CREATE TABLE Estadisticas_Boxeo (
     id_estadistica INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT,
@@ -386,7 +388,6 @@ CREATE TABLE Estadisticas_Boxeo (
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
--- ESTADÍSTICAS DE TENIS
 CREATE TABLE Estadisticas_Tenis (
     id_estadistica INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT,
@@ -411,7 +412,6 @@ CREATE TABLE Estadisticas_Tenis (
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
--- ESTADÍSTICAS DE GIMNASIO
 CREATE TABLE Estadisticas_Gimnasio (
     id_estadistica INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT,
@@ -426,13 +426,12 @@ CREATE TABLE Estadisticas_Gimnasio (
     calorias_quemadas INT,
     frecuencia_cardiaca_promedio INT,
     frecuencia_cardiaca_maxima INT,
-    zona_muscular_trabajada VARCHAR(100), -- pecho, espalda, piernas, etc.
+    zona_muscular_trabajada VARCHAR(100), 
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_entrenamiento) REFERENCES Entrenamiento(id_entrenamiento),
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
--- ESTADÍSTICAS DE CICLISMO
 CREATE TABLE Estadisticas_Ciclismo (
     id_estadistica INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT,
@@ -443,7 +442,7 @@ CREATE TABLE Estadisticas_Ciclismo (
     velocidad_maxima_kmh FLOAT,
     elevacion_ganada_metros FLOAT,
     elevacion_perdida_metros FLOAT,
-    cadencia_promedio INT, -- RPM
+    cadencia_promedio INT, 
     cadencia_maxima INT,
     potencia_promedio_watts INT,
     potencia_maxima_watts INT,
@@ -456,7 +455,6 @@ CREATE TABLE Estadisticas_Ciclismo (
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
--- ESTADÍSTICAS DE BÉISBOL
 CREATE TABLE Estadisticas_Beisbol (
     id_estadistica INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT,
@@ -487,58 +485,20 @@ CREATE TABLE Estadisticas_Beisbol (
 );
 
 -- ============================================
--- INSERTS DE DATOS INICIALES
+-- INSERTS DE DATOS (CATÁLOGOS)
 -- ============================================
 
 INSERT INTO Estado (estado) VALUES
-    ('Ciudad de México'),
-    ('Aguascalientes'),
-    ('Baja California'),
-    ('Baja California Sur'),
-    ('Campeche'),
-    ('Chiapas'),
-    ('Chihuahua'),
-    ('Coahuila'),
-    ('Colima'),
-    ('Durango'),
-    ('Guanajuato'),
-    ('Guerrero'),
-    ('Hidalgo'),
-    ('Jalisco'),
-    ('México'),
-    ('Michoacán'),
-    ('Morelos'),
-    ('Nayarit'),
-    ('Nuevo León'),
-    ('Oaxaca'),
-    ('Puebla'),
-    ('Querétaro'),
-    ('Quintana Roo'),
-    ('San Luis Potosí'),
-    ('Sinaloa'),
-    ('Sonora'),
-    ('Tabasco'),
-    ('Tamaulipas'),
-    ('Tlaxcala'),
-    ('Veracruz'),
-    ('Yucatán'),
-    ('Zacatecas');
+    ('Ciudad de México'), ('Aguascalientes'), ('Baja California'), ('Baja California Sur'), ('Campeche'),
+    ('Chiapas'), ('Chihuahua'), ('Coahuila'), ('Colima'), ('Durango'), ('Guanajuato'), ('Guerrero'),
+    ('Hidalgo'), ('Jalisco'), ('México'), ('Michoacán'), ('Morelos'), ('Nayarit'), ('Nuevo León'),
+    ('Oaxaca'), ('Puebla'), ('Querétaro'), ('Quintana Roo'), ('San Luis Potosí'), ('Sinaloa'),
+    ('Sonora'), ('Tabasco'), ('Tamaulipas'), ('Tlaxcala'), ('Veracruz'), ('Yucatán'), ('Zacatecas');
 
-INSERT INTO Rol (rol) VALUES ('alumno');
-INSERT INTO Rol (rol) VALUES ('entrenador');
+INSERT INTO Rol (rol) VALUES ('alumno'), ('entrenador');
 
 INSERT INTO Deporte (nombre_deporte) VALUES 
-    ('Fútbol'),
-    ('Basketball'),
-    ('Natación'),
-    ('Running'),
-    ('Boxeo'),
-    ('Tenis'),
-    ('Gimnasio'),
-    ('Ciclismo'),
-    ('Béisbol');
+    ('Fútbol'), ('Basketball'), ('Natación'), ('Running'), ('Boxeo'),
+    ('Tenis'), ('Gimnasio'), ('Ciclismo'), ('Béisbol');
 
-INSERT INTO Nivel (nombre_nivel) VALUES
-    ('Principiante'),
-    ('Intermedio'),
-    ('Avanzado');
+INSERT INTO Nivel (nombre_nivel) VALUES ('Principiante'), ('Intermedio'), ('Avanzado');

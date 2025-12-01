@@ -2,10 +2,16 @@ package com.example.sportine.ui.usuarios.perfil;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +20,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.sportine.R;
 import com.example.sportine.data.ApiService;
 import com.example.sportine.data.RetrofitClient;
@@ -22,26 +30,36 @@ import com.example.sportine.ui.usuarios.dto.PerfilAlumnoResponseDTO;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PerfilFragment extends Fragment {
 
+    private static final String TAG = "PerfilFragment";
+
     // ==========================================
-    // COMPONENTES DE LA UI (IDs corregidos)
+    // COMPONENTES DE LA UI
     // ==========================================
-    private TextView txtSaludo;           // ID: txtSaludo
-    private TextView tvNombre;            // ID: tvNombre
-    private TextView tvApellido;          // ID: tvApellido
-    private TextView tvUsername;          // ID: tvUsername
-    private TextView tvSexo;              // ID: tvSexo
-    private TextView tvEstado;            // ID: tvEstado
-    private TextView tvCiudad;            // ID: tvCiudad
+    private ImageView ivAvatarPerfil;     // Foto de perfil
+    private TextView txtSaludo;
+    private TextView tvNombre;
+    private TextView tvApellido;
+    private TextView tvUsername;
+    private TextView tvSexo;
+    private TextView tvEstado;
+    private TextView tvCiudad;
+    private TextView tvTotalAmigos;
+    private TextView tvTotalEntrenadores;
+
+    // Contenedor de deportes
+    private LinearLayout deportesContainer;
 
     // Botones
-    private MaterialCardView btnSettings; // ID: btnSettings
-    private MaterialButton btnCompletar;  // ID: btnCompletar
+    private MaterialCardView btnSettings;
+    private MaterialButton btnCompletar;
 
     // API Service
     private ApiService apiService;
@@ -79,21 +97,29 @@ public class PerfilFragment extends Fragment {
     }
 
     /**
-     * Inicializa todas las vistas del layout con los IDs CORRECTOS
+     * Inicializa todas las vistas del layout
      */
     private void inicializarComponentes(View view) {
-        // TextViews con los IDs correctos de tu XML
-        txtSaludo = view.findViewById(R.id.txtSaludo);      // ← Correcto
-        tvNombre = view.findViewById(R.id.tvNombre);        // ← Correcto
-        tvApellido = view.findViewById(R.id.tvApellido);    // ← Correcto
-        tvUsername = view.findViewById(R.id.tvUsername);    // ← Correcto
-        tvSexo = view.findViewById(R.id.tvSexo);            // ← Correcto
-        tvEstado = view.findViewById(R.id.tvEstado);        // ← Correcto
-        tvCiudad = view.findViewById(R.id.tvCiudad);        // ← Correcto
+        // Foto de perfil
+        ivAvatarPerfil = view.findViewById(R.id.iv_avatar_perfil);
+
+        // TextViews
+        txtSaludo = view.findViewById(R.id.txtSaludo);
+        tvNombre = view.findViewById(R.id.tvNombre);
+        tvApellido = view.findViewById(R.id.tvApellido);
+        tvUsername = view.findViewById(R.id.tvUsername);
+        tvSexo = view.findViewById(R.id.tvSexo);
+        tvEstado = view.findViewById(R.id.tvEstado);
+        tvCiudad = view.findViewById(R.id.tvCiudad);
+        tvTotalAmigos = view.findViewById(R.id.tvTotalAmigos);
+        tvTotalEntrenadores = view.findViewById(R.id.tvTotalEntrenadores);
+
+        // Contenedor de deportes (el LinearLayout horizontal que contiene las cards)
+        deportesContainer = view.findViewById(R.id.deportesContainer);
 
         // Botones
-        btnSettings = view.findViewById(R.id.btnSettings);  // ← Correcto
-        btnCompletar = view.findViewById(R.id.btnCompletar);// ← Correcto
+        btnSettings = view.findViewById(R.id.btnSettings);
+        btnCompletar = view.findViewById(R.id.btnCompletar);
     }
 
     /**
@@ -106,25 +132,19 @@ public class PerfilFragment extends Fragment {
         username = prefs.getString("USER_USERNAME", null);
         rol = prefs.getString("USER_ROL", null);
 
-        // Validar que se haya obtenido el username
-        if (username == null || username.isEmpty()) {
-            Toast.makeText(requireContext(),
-                    "Error: No se encontró el usuario logueado",
-                    Toast.LENGTH_SHORT).show();
-        }
+        Log.d(TAG, "Usuario logueado: " + username + ", Rol: " + rol);
+
     }
 
     /**
      * Configura los listeners de los botones
      */
     private void configurarBotones(View view) {
-        // Botón de configuración (el ícono de engrane)
         btnSettings.setOnClickListener(v ->
                 Navigation.findNavController(view)
                         .navigate(R.id.action_perfil_to_configuracion)
         );
 
-        // Botón "Completar mis datos"
         btnCompletar.setOnClickListener(v ->
                 Navigation.findNavController(view)
                         .navigate(R.id.action_perfil_to_completar_datos)
@@ -136,7 +156,7 @@ public class PerfilFragment extends Fragment {
      */
     private void cargarDatosPerfil() {
         if (username == null) {
-            return; // No hacer nada si no hay username
+            return;
         }
 
         // Primero obtener datos básicos del usuario
@@ -151,10 +171,11 @@ public class PerfilFragment extends Fragment {
                     mostrarDatosBasicos(usuario);
 
                     // Si es alumno, intentar cargar perfil completo
-                    if ("Alumno".equals(rol)) {
+                    if ("alumno".equalsIgnoreCase(rol)) {
                         cargarPerfilCompleto();
                     }
                 } else {
+                    Log.e(TAG, "Error al cargar datos: " + response.code());
                     Toast.makeText(requireContext(),
                             "Error al cargar datos: " + response.code(),
                             Toast.LENGTH_SHORT).show();
@@ -163,6 +184,7 @@ public class PerfilFragment extends Fragment {
 
             @Override
             public void onFailure(Call<UsuarioDetalleDTO> call, Throwable t) {
+                Log.e(TAG, "Error de conexión: " + t.getMessage(), t);
                 Toast.makeText(requireContext(),
                         "Error de conexión: " + t.getMessage(),
                         Toast.LENGTH_LONG).show();
@@ -174,10 +196,7 @@ public class PerfilFragment extends Fragment {
      * Muestra los datos básicos del usuario en la UI
      */
     private void mostrarDatosBasicos(UsuarioDetalleDTO usuario) {
-        // Mensaje de saludo
         txtSaludo.setText("Hola " + usuario.getNombre());
-
-        // Datos básicos
         tvNombre.setText(usuario.getNombre());
         tvApellido.setText(usuario.getApellidos());
         tvUsername.setText("@" + usuario.getUsuario());
@@ -187,51 +206,347 @@ public class PerfilFragment extends Fragment {
     }
 
     /**
-     * Carga el perfil completo del alumno (con estatura, peso, deportes, etc.)
+     * Carga el perfil completo del alumno
+     * VERSIÓN CON DEBUG COMPLETO
      */
     private void cargarPerfilCompleto() {
+        Log.d(TAG, "→ Cargando perfil completo para usuario: " + username);
+
         Call<PerfilAlumnoResponseDTO> call = apiService.obtenerPerfilAlumno(username);
 
         call.enqueue(new Callback<PerfilAlumnoResponseDTO>() {
             @Override
             public void onResponse(Call<PerfilAlumnoResponseDTO> call,
                                    Response<PerfilAlumnoResponseDTO> response) {
+
+                Log.d(TAG, "Response code: " + response.code());
+
                 if (response.isSuccessful() && response.body() != null) {
                     PerfilAlumnoResponseDTO perfil = response.body();
+                    Log.d(TAG, "✓ Perfil recibido exitosamente");
+                    Log.d(TAG, "  - Usuario: " + perfil.getUsuario());
+                    Log.d(TAG, "  - Nombre: " + perfil.getNombre());
+                    Log.d(TAG, "  - Foto: " + perfil.getFotoPerfil());
+                    Log.d(TAG, "  - Deportes: " + perfil.getDeportes());
+
                     mostrarDatosCompletosPerfil(perfil);
+
                 } else if (response.code() == 404) {
-                    // El alumno aún no ha completado su perfil
+                    Log.w(TAG, "⚠ Perfil no completado (404)");
                     Toast.makeText(requireContext(),
                             "Completa tu perfil para ver más información",
                             Toast.LENGTH_SHORT).show();
+
+                } else if (response.code() == 403) {
+                    Log.e(TAG, "❌ Error 403 Forbidden - Problema con el token");
+                    Toast.makeText(requireContext(),
+                            "Error de autenticación (403)",
+                            Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Log.e(TAG, "❌ Error al cargar perfil: " + response.code());
+                    try {
+                        Log.e(TAG, "Error body: " + response.errorBody().string());
+                    } catch (Exception e) {
+                        Log.e(TAG, "No se pudo leer el error body", e);
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<PerfilAlumnoResponseDTO> call, Throwable t) {
-                // No mostramos error aquí porque es opcional
+                Log.e(TAG, "❌ Error de conexión al cargar perfil: " + t.getMessage(), t);
+                Toast.makeText(requireContext(),
+                        "Error de conexión: " + t.getMessage(),
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
 
     /**
      * Muestra los datos completos del perfil del alumno
-     * Aquí puedes agregar más TextViews en tu layout para mostrar:
-     * - Estatura, peso, edad
-     * - Deportes que practica
-     * - Nivel, lesiones, padecimientos
+     * VERSIÓN CON DEBUG COMPLETO
      */
     private void mostrarDatosCompletosPerfil(PerfilAlumnoResponseDTO perfil) {
-        // Por ahora solo mostramos un mensaje
-        // Puedes agregar más TextViews en tu XML para mostrar estos datos:
+        Log.d(TAG, "===== MOSTRANDO DATOS COMPLETOS DEL PERFIL =====");
+        Log.d(TAG, "Foto perfil URL: " + perfil.getFotoPerfil());
+        Log.d(TAG, "Deportes: " + perfil.getDeportes());
+        Log.d(TAG, "Cantidad deportes: " + (perfil.getDeportes() != null ? perfil.getDeportes().size() : "NULL"));
+        Log.d(TAG, "Total amigos: " + perfil.getTotalAmigos());
+        Log.d(TAG, "Total entrenadores: " + perfil.getTotalEntrenadores());
 
-        // Ejemplo (si agregas más TextViews):
-        // tvEstatura.setText(String.format("%.2f m", perfil.getEstatura()));
-        // tvPeso.setText(String.format("%.1f kg", perfil.getPeso()));
-        // tvEdad.setText(perfil.getEdad() + " años");
+        // 1. Cargar foto de perfil
+        cargarFotoPerfil(perfil.getFotoPerfil());
 
-        Toast.makeText(requireContext(),
-                "Perfil completo cargado exitosamente",
-                Toast.LENGTH_SHORT).show();
+        // 2. Mostrar deportes dinámicamente
+        mostrarDeportes(perfil.getDeportes());
+
+        // 3. Mostrar contadores
+        mostrarContadores(perfil);
+
+        Log.d(TAG, "===== FIN DATOS COMPLETOS =====");
+    }
+
+    /**
+     * Carga la foto de perfil desde Cloudinary usando Glide
+     */
+    private void cargarFotoPerfil(String urlFotoPerfil) {
+        if (urlFotoPerfil != null && !urlFotoPerfil.isEmpty()) {
+            Log.d(TAG, "Cargando foto de perfil: " + urlFotoPerfil);
+
+            Glide.with(this)
+                    .load(urlFotoPerfil)
+                    .placeholder(R.drawable.ic_avatar_default)  // Imagen mientras carga
+                    .error(R.drawable.ic_avatar_default)         // Imagen si falla
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)    // Cachear la imagen
+                    .circleCrop()                                // Hacer circular
+                    .into(ivAvatarPerfil);
+        } else {
+            Log.w(TAG, "URL de foto de perfil vacía, usando imagen por defecto");
+            ivAvatarPerfil.setImageResource(R.drawable.ic_avatar_default);
+        }
+    }
+
+    /**
+     * Muestra los deportes que practica el usuario CON su nivel
+     */
+    private void mostrarDeportes(List<PerfilAlumnoResponseDTO.DeporteConNivel> deportes) {
+        Log.d(TAG, "===== MOSTRANDO DEPORTES CON NIVEL =====");
+        Log.d(TAG, "Deportes recibidos: " + deportes);
+
+        // Limpiar el contenedor primero
+        deportesContainer.removeAllViews();
+
+        if (deportes == null || deportes.isEmpty()) {
+            Log.w(TAG, "⚠ El usuario no tiene deportes registrados");
+            return;
+        }
+
+        Log.d(TAG, "✓ Se van a mostrar " + deportes.size() + " deportes");
+
+        // Crear una card por cada deporte
+        for (int i = 0; i < deportes.size(); i++) {
+            PerfilAlumnoResponseDTO.DeporteConNivel deporteConNivel = deportes.get(i);
+            String nombreDeporte = deporteConNivel.getDeporte();
+            String nivelDeporte = deporteConNivel.getNivel();
+
+            Log.d(TAG, "Procesando deporte [" + i + "]: '" + nombreDeporte + "' - Nivel: " + nivelDeporte);
+
+            agregarCardDeporte(nombreDeporte, nivelDeporte);
+        }
+
+        Log.d(TAG, "✓ Deportes agregados al contenedor: " + deportesContainer.getChildCount());
+    }
+
+    /**
+     * Agrega una card de deporte al contenedor CON su nivel
+     */
+    private void agregarCardDeporte(String deporte, String nivel) {
+        // Crear la card programáticamente
+        MaterialCardView card = new MaterialCardView(requireContext());
+
+        // Configurar dimensiones y márgenes
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                0,  // width = 0 para usar weight
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.weight = 1;
+        params.setMarginEnd(dpToPx(8));
+        card.setLayoutParams(params);
+
+        // Configurar estilo de la card
+        card.setRadius(dpToPx(12));
+        card.setCardElevation(dpToPx(2));
+        card.setCardBackgroundColor(obtenerColorDeporte(deporte));
+
+        // Crear un LinearLayout vertical para contener imagen y texto
+        LinearLayout container = new LinearLayout(requireContext());
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setGravity(Gravity.CENTER);
+        container.setPadding(dpToPx(10), dpToPx(10), dpToPx(10), dpToPx(10));
+
+        // Crear el ImageView
+        ImageView imageView = new ImageView(requireContext());
+        LinearLayout.LayoutParams imgParams = new LinearLayout.LayoutParams(
+                dpToPx(50),
+                dpToPx(50)
+        );
+        imageView.setLayoutParams(imgParams);
+        imageView.setImageResource(obtenerImagenDeporte(deporte));
+        imageView.setContentDescription(deporte);
+        container.addView(imageView);
+
+        // Crear TextView para el nivel
+        TextView tvNivel = new TextView(requireContext());
+        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        textParams.topMargin = dpToPx(4);
+        tvNivel.setLayoutParams(textParams);
+        tvNivel.setText(nivel);
+        tvNivel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
+        tvNivel.setTypeface(null, Typeface.BOLD);
+        tvNivel.setTextColor(0xFF666666);  // Gris oscuro
+        container.addView(tvNivel);
+
+        // Agregar container a la card
+        card.addView(container);
+
+        // Agregar card al contenedor
+        deportesContainer.addView(card);
+    }
+
+    /**
+     * Mapea el nombre del deporte a su imagen correspondiente
+     * ACTUALIZADO: Maneja correctamente nombres con tildes y mayúsculas
+     */
+    private int obtenerImagenDeporte(String deporte) {
+        if (deporte == null || deporte.isEmpty()) {
+            Log.w(TAG, "Deporte null o vacío");
+            return R.drawable.ic_deporte_default;
+        }
+
+        // Normalizar: quitar tildes y convertir a minúsculas
+        String deporteNormalizado = deporte.toLowerCase()
+                .trim()
+                .replace("á", "a")
+                .replace("é", "e")
+                .replace("í", "i")
+                .replace("ó", "o")
+                .replace("ú", "u");
+
+        Log.d(TAG, "Buscando imagen para deporte: '" + deporte + "' (normalizado: '" + deporteNormalizado + "')");
+
+        switch (deporteNormalizado) {
+            case "futbol":
+            case "football":
+            case "soccer":
+                Log.d(TAG, "✓ Usando balon_futbol");
+                return R.drawable.balon_futbol;
+
+            case "basketball":
+            case "basquet":
+            case "baloncesto":
+                Log.d(TAG, "✓ Usando balon_basket");
+                return R.drawable.balon_basket;
+
+            case "tenis":
+            case "tennis":
+                Log.d(TAG, "✓ Usando pelota_tenis");
+                return R.drawable.pelota_tenis;
+
+            case "gimnasio":
+            case "gym":
+                return R.drawable.ic_gimnasio;  // Si tienes esta imagen
+
+            case "natacion":
+            case "swimming":
+                return R.drawable.ic_natacion;  // Si tienes esta imagen
+
+            case "running":
+            case "correr":
+                return R.drawable.ic_running;
+
+            case "boxeo":
+            case "boxing":
+                return R.drawable.ic_boxeo;
+
+            case "ciclismo":
+            case "cycling":
+                return R.drawable.ic_ciclismo;
+
+            case "beisbol":
+            case "baseball":
+                return R.drawable.ic_beisbol;
+
+            default:
+                Log.w(TAG, "⚠ Deporte NO reconocido: '" + deporte + "', usando imagen por defecto");
+                return R.drawable.ic_deporte_default;
+        }
+    }
+
+    /**
+     * Obtiene el color de fondo según el deporte
+     * ACTUALIZADO: Maneja correctamente nombres con tildes y mayúsculas
+     */
+    private int obtenerColorDeporte(String deporte) {
+        if (deporte == null || deporte.isEmpty()) {
+            return 0xFFF5F5F5;  // Gris claro por defecto
+        }
+
+        // Normalizar: quitar tildes y convertir a minúsculas
+        String deporteNormalizado = deporte.toLowerCase()
+                .trim()
+                .replace("á", "a")
+                .replace("é", "e")
+                .replace("í", "i")
+                .replace("ó", "o")
+                .replace("ú", "u");
+
+        switch (deporteNormalizado) {
+            case "futbol":
+            case "football":
+            case "soccer":
+                return 0xFFFFF3E0;  // Naranja claro
+
+            case "basketball":
+            case "basquet":
+            case "baloncesto":
+                return 0xFFFFE0E0;  // Rojo claro
+
+            case "tenis":
+            case "tennis":
+                return 0xFFE0F2F1;  // Verde claro
+
+            case "gimnasio":
+            case "gym":
+                return 0xFFE3F2FD;  // Azul claro
+
+            case "natacion":
+            case "swimming":
+                return 0xFFE1F5FE;  // Azul agua
+
+            case "running":
+            case "correr":
+                return 0xFFFFFAEE;  // Amarillo pálido
+
+            case "boxeo":
+            case "boxing":
+                return 0xFFF0FFF0;  // Verde menta pálido
+
+            case "ciclismo":
+            case "cycling":
+                return 0xFFE6E6FA;  // Lavanda pálido
+
+            case "beisbol":
+            case "baseball":
+                return 0xFFFAE0E6;  // Rosa pálido
+
+            default:
+                return 0xFFF5F5F5;  // Gris claro
+        }
+    }
+
+    /**
+     * Convierte dp a pixeles
+     */
+    private int dpToPx(int dp) {
+        float density = getResources().getDisplayMetrics().density;
+        return Math.round(dp * density);
+    }
+
+    /**
+     * Muestra los contadores de amigos y entrenadores
+     */
+    private void mostrarContadores(PerfilAlumnoResponseDTO perfil) {
+        int amigos = perfil.getTotalAmigos();
+        int entrenadores = perfil.getTotalEntrenadores();
+
+        Log.d(TAG, "Total amigos: " + amigos);
+        Log.d(TAG, "Total entrenadores: " + entrenadores);
+
+        tvTotalAmigos.setText(String.valueOf(amigos));
+        tvTotalEntrenadores.setText(String.valueOf(entrenadores));
     }
 }

@@ -114,4 +114,9 @@
         tools:layout="@layout/fragment_entrenador_solicitudes">
     </fragment>
 
+    <fragment
+        android:id="@+id/feedbackFragment"
+        android:name="com.example.sportine.ui.entrenadores.feedback.FeedbackFragment"
+        android:label="Comentarios Recientes"
+        tools:layout="@layout/fragment_entrenador_feedback_list" />
 </navigation>

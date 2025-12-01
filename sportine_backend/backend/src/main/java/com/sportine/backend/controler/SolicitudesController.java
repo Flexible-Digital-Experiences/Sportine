@@ -1,7 +1,7 @@
 package com.sportine.backend.controler;
 
-import com.sportine.backend.dto.FormularioSolicitudDTO;
-import com.sportine.backend.dto.InfoDeporteAlumnoDTO;
+import com.sportine.backend.dto.*;
+import com.sportine.backend.service.EnviarSolicitudEntrenadorService;
 import com.sportine.backend.service.SolicitudEntrenadorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,19 +9,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/Solicitudes")
 @Slf4j
 @RequiredArgsConstructor
 public class SolicitudesController {
 
-    private final SolicitudEntrenadorService solicitudService;
-
-    /**
-     * Obtiene el formulario inicial con los deportes disponibles.
-     *
-     * GET /api/Solicitudes/formulario/{usuarioEntrenador}
-     */
+    private final EnviarSolicitudEntrenadorService solicitudService;
     @GetMapping("/formulario/{usuarioEntrenador}")
     public ResponseEntity<FormularioSolicitudDTO> obtenerFormulario(
             @PathVariable String usuarioEntrenador,
@@ -42,7 +38,7 @@ public class SolicitudesController {
     /**
      * Obtiene información específica de un deporte para el alumno.
      * Se llama cuando el alumno selecciona un deporte del spinner.
-     *
+     * <p>
      * GET /api/Solicitudes/deporte/{idDeporte}
      */
     @GetMapping("/deporte/{idDeporte}")
@@ -58,40 +54,81 @@ public class SolicitudesController {
         return ResponseEntity.ok(info);
     }
 
-    /**
-     * Envía una solicitud de entrenamiento.
-     * (Por implementar)
-     */
     @PostMapping("/enviar")
-    public ResponseEntity<?> enviarSolicitud(
-            @RequestBody SolicitudRequest solicitudRequest,
+    public ResponseEntity<SolicitudResponseDTO> enviarSolicitud(
+            @RequestBody SolicitudRequestDTO solicitudRequest,
             Authentication authentication) {
 
         String usuarioAlumno = authentication.getName();
-        log.info("Alumno {} enviando solicitud a entrenador {}",
-                usuarioAlumno, solicitudRequest.getUsuarioEntrenador());
+        log.info("Alumno {} enviando solicitud a entrenador {} para deporte {}",
+                usuarioAlumno,
+                solicitudRequest.getUsuarioEntrenador(),
+                solicitudRequest.getIdDeporte());
 
-        // TODO: Implementar lógica de envío
+        try {
+            SolicitudResponseDTO response = solicitudService.enviarSolicitud(
+                    solicitudRequest,
+                    usuarioAlumno
+            );
 
-        return ResponseEntity.ok().build();
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException e) {
+            log.error("Error al enviar solicitud: {}", e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(new SolicitudResponseDTO(
+                            null,
+                            e.getMessage(),
+                            "error",
+                            null
+                    ));
+        }
     }
 
-    public static class SolicitudRequest {
-        private String usuarioEntrenador;
-        private Integer idDeporte;
-        private String nivel;
-        private String motivo;
+    @GetMapping("/pendiente/{usuarioEntrenador}")
+    public ResponseEntity<SolicitudPendienteDTO> verificarSolicitudPendiente(
+            @PathVariable String usuarioEntrenador,
+            Authentication authentication) {
 
-        public String getUsuarioEntrenador() { return usuarioEntrenador; }
-        public void setUsuarioEntrenador(String usuarioEntrenador) { this.usuarioEntrenador = usuarioEntrenador; }
+        String usuarioAlumno = authentication.getName();
+        log.info("Verificando solicitud pendiente entre {} y {}",
+                usuarioAlumno, usuarioEntrenador);
 
-        public Integer getIdDeporte() { return idDeporte; }
-        public void setIdDeporte(Integer idDeporte) { this.idDeporte = idDeporte; }
+        SolicitudPendienteDTO solicitudPendiente = solicitudService.verificarSolicitudPendiente(
+                usuarioEntrenador,
+                usuarioAlumno
+        );
 
-        public String getNivel() { return nivel; }
-        public void setNivel(String nivel) { this.nivel = nivel; }
-
-        public String getMotivo() { return motivo; }
-        public void setMotivo(String motivo) { this.motivo = motivo; }
+        return ResponseEntity.ok(solicitudPendiente);
     }
+
+    @GetMapping("/enviadas")
+    public ResponseEntity<List<SolicitudEnviadaDTO>> obtenerSolicitudesEnviadas(
+            Authentication authentication) {
+
+        String usuarioAlumno = authentication.getName();
+        log.info("Obteniendo solicitudes enviadas por alumno {}", usuarioAlumno);
+
+        List<SolicitudEnviadaDTO> solicitudes = solicitudService.obtenerSolicitudesEnviadas(usuarioAlumno);
+
+        return ResponseEntity.ok(solicitudes);
+    }
+
+    @DeleteMapping("/{idSolicitud}")
+    public ResponseEntity<Void> eliminarSolicitud(
+            @PathVariable Integer idSolicitud,
+            Authentication authentication) {
+
+        String usuarioAlumno = authentication.getName();
+        log.info("Alumno {} eliminando solicitud {}", usuarioAlumno, idSolicitud);
+
+        try {
+            solicitudService.eliminarSolicitud(idSolicitud, usuarioAlumno);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            log.error("Error al eliminar solicitud: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }

@@ -148,6 +148,9 @@
         <action
             android:id="@+id/action_buscar_to_detallesEntrenador"
             app:destination="@id/navigation_detallesEntrenador" />
+        <action
+            android:id="@+id/action_navigation_buscar_to_solicitudesEnviadas"
+            app:destination="@id/solicitudesEnviadas" />
     </fragment>
 
     <fragment
@@ -158,6 +161,9 @@
         <action
             android:id="@+id/action_navigation_detallesEntrenador_to_enviarSolicitud"
             app:destination="@id/enviarSolicitud" />
+        <action
+            android:id="@+id/action_navigation_detallesEntrenador_to_calificarEntrenador"
+            app:destination="@id/calificarEntrenador" />
     </fragment>
 
     <fragment
@@ -169,5 +175,19 @@
         android:id="@+id/enviarSolicitud"
         android:name="com.example.sportine.ui.usuarios.enviarsolicitud.EnviarSolicitud"
         android:label="EnviarSolicitud" />
+    <fragment
+        android:id="@+id/solicitudesEnviadas"
+        android:name="com.example.sportine.ui.usuarios.solicitudesenviadas.SolicitudesEnviadas"
+        android:label="fragment_solicitudes_enviadas"
+        tools:layout="@layout/fragment_solicitudes_enviadas" >
+        <action
+            android:id="@+id/action_solicitudesEnviadas_to_navigation_detallesEntrenador"
+            app:destination="@id/navigation_detallesEntrenador" />
+    </fragment>
+    <fragment
+        android:id="@+id/calificarEntrenador"
+        android:name="com.example.sportine.ui.usuarios.calificarentre.CalificarEntrenador"
+        android:label="fragment_calificar_entrenador"
+        tools:layout="@layout/fragment_calificar_entrenador" />
 
 </navigation>
