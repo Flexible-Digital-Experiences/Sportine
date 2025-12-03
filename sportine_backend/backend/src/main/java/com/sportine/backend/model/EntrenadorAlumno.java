@@ -31,8 +31,8 @@ public class EntrenadorAlumno {
     @Column(name = "id_deporte")
     private Integer idDeporte;
 
-    @Column(name = "fecha_inicio")
-    private LocalDate fechaInicio;
+    @Column(name = "fin_mensualidad")
+    private LocalDate finMensualidad;
 
     @Column(name = "status_relacion")
     private String statusRelacion; // "activo", "inactivo", "pendiente"

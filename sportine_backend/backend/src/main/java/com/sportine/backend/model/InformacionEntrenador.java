@@ -23,6 +23,10 @@ public class InformacionEntrenador {
     @Column(name = "costo_mensualidad")
     private Integer costoMensualidad;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_cuenta")
+    private TipoCuenta tipoCuenta;
+
     @Column(name = "limite_alumnos")
     private Integer limiteAlumnos;
 
@@ -36,4 +40,12 @@ public class InformacionEntrenador {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario", insertable = false, updatable = false)
     private Usuario usuarioEntrenador;
+
+    /**
+     * Enum para el tipo de cuenta del entrenador
+     */
+    public enum TipoCuenta {
+        premium,
+        gratis
+    }
 }

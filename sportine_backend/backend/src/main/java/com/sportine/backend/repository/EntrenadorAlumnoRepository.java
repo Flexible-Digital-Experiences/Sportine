@@ -2,9 +2,12 @@ package com.sportine.backend.repository;
 
 import com.sportine.backend.model.EntrenadorAlumno;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +17,8 @@ import java.util.Optional;
  */
 @Repository
 public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlumno, Integer> {
+
+    // ========== MÉTODOS EXISTENTES ==========
 
     /**
      * Obtener todos los alumnos de un entrenador
@@ -80,4 +85,43 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
     @Query("SELECT COUNT(ea) FROM EntrenadorAlumno ea " +
             "WHERE ea.usuarioAlumno = :usuario")
     Integer contarTodosEntrenadores(@Param("usuario") String usuario);
+
+    // ========== NUEVOS MÉTODOS PARA MENSUALIDADES ==========
+
+    /**
+     * Encontrar relaciones activas con mensualidad vencida
+     * @param statusRelacion Estado de la relación ("activo")
+     * @param fecha Fecha límite (hoy)
+     * @return Lista de relaciones vencidas
+     */
+    List<EntrenadorAlumno> findByStatusRelacionAndFinMensualidadBefore(
+            String statusRelacion,
+            LocalDate fecha
+    );
+
+    /**
+     * Query nativa más eficiente para actualizar en lote
+     * Actualiza todas las relaciones activas con mensualidad vencida
+     * @param fecha Fecha límite (hoy)
+     * @return Número de registros actualizados
+     */
+    @Modifying
+    @Query(value = "UPDATE Entrenador_Alumno SET status_relacion = 'pendiente' " +
+            "WHERE status_relacion = 'activo' AND fin_mensualidad < :fecha",
+            nativeQuery = true)
+    int actualizarMensualidadesVencidasEnLote(@Param("fecha") LocalDate fecha);
+
+    /**
+     * Obtener relaciones que vencen entre dos fechas (útil para alertas)
+     * @param fechaInicio Fecha de inicio del rango
+     * @param fechaFin Fecha de fin del rango
+     * @return Lista de relaciones que vencen en ese rango
+     */
+    @Query("SELECT ea FROM EntrenadorAlumno ea " +
+            "WHERE ea.statusRelacion = 'activo' " +
+            "AND ea.finMensualidad BETWEEN :fechaInicio AND :fechaFin")
+    List<EntrenadorAlumno> encontrarMensualidadesPorVencer(
+            @Param("fechaInicio") LocalDate fechaInicio,
+            @Param("fechaFin") LocalDate fechaFin
+    );
 }
