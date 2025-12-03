@@ -11,7 +11,12 @@ public interface UsuarioService {
 
     LoginResponseDTO login(LoginRequestDTO loginRequestDTO);
 
-    UsuarioDetalleDTO actualizarDatosBasicos(String usuario, ActualizarUsuarioDTO dto);
-
     UsuarioResponseDTO cambiarPassword(String usuario, CambiarPasswordDTO dto);
+
+    /**
+     * Actualiza datos del usuario de forma PARCIAL
+     * Solo actualiza los campos que vienen en el DTO
+     * ❌ NO actualiza el username (PRIMARY KEY)
+     */
+    void actualizarDatosUsuario(String username, ActualizarUsuarioDTO dto);
 }

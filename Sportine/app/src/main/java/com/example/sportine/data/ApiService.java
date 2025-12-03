@@ -21,6 +21,7 @@ import com.example.sportine.models.Usuario;
 import com.example.sportine.models.PublicacionFeedDTO;
 import com.example.sportine.models.UsuarioDetalle;
 import com.example.sportine.ui.usuarios.dto.ActualizarDatosAlumnoDTO;
+import com.example.sportine.ui.usuarios.dto.ActualizarUsuarioDTO;
 import com.example.sportine.ui.usuarios.dto.LoginRequest;
 import com.example.sportine.ui.usuarios.dto.LoginResponse;
 import com.example.sportine.ui.usuarios.dto.ComentarioRequest;
@@ -104,11 +105,6 @@ public interface ApiService {
     @GET("/api/social/amigos")
     Call<List<UsuarioDetalle>> verMisAmigos();
 
-    @PUT("api/alumnos/{usuario}/actualizar-datos")
-    Call<Void> actualizarDatosAlumno(
-            @Path("usuario") String usuario,
-            @Body ActualizarDatosAlumnoDTO datos
-    );
     @PUT("/api/social/post/{id}")
     Call<Void> editarPost(@Path("id") Integer id, @Body com.example.sportine.models.Publicacion publicacionActualizada);
 
@@ -156,6 +152,25 @@ public interface ApiService {
     Call<HomeAlumnoDTO> obtenerHomeAlumno(@Path("usuario") String usuario);
     // --- DETALLES ENTRENAMIENTO ALUMNO ---
 
+    //Perfil
+    @PUT("api/alumnos/{usuario}/actualizar-datos")
+    Call<Void> actualizarDatosAlumno(
+            @Path("usuario") String usuario,
+            @Body ActualizarDatosAlumnoDTO datos
+    );
+
+    @PUT("api/usuarios/{usuario}/actualizar")
+    Call<Void> actualizarDatosUsuario(
+            @Path("usuario") String usuario,
+            @Body ActualizarUsuarioDTO datos
+    );
+
+    @Multipart
+    @POST("/api/alumnos/{usuario}/actualizar-foto")
+    Call<Map<String, String>> actualizarFotoPerfil(
+            @Path("usuario") String usuario,
+            @Part MultipartBody.Part foto
+    );
     @GET("/api/alumno/entrenamientos/{id}") // Antes era /entrenamiento/{id}
     Call<DetalleEntrenamientoDTO> obtenerDetalleEntrenamiento(@Path("id") Integer idEntrenamiento);
 

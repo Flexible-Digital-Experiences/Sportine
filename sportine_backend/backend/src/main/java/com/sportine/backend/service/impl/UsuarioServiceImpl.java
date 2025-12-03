@@ -180,41 +180,82 @@ public class UsuarioServiceImpl implements UsuarioService {
         );
     }
 
+    /**
+     * Actualiza datos del usuario de forma PARCIAL
+     * Solo actualiza los campos que vienen en el DTO (no nulos)
+     * ❌ NO actualiza el username (PRIMARY KEY)
+     */
     @Override
     @Transactional
-    public UsuarioDetalleDTO actualizarDatosBasicos(String username, ActualizarUsuarioDTO dto) {
+    public void actualizarDatosUsuario(String username, ActualizarUsuarioDTO dto) {
 
-        // Usar método helper
+        System.out.println("=== ACTUALIZANDO DATOS DE USUARIO (PARCIAL) ===");
+        System.out.println("Username (NO MODIFICABLE): " + username);
+        System.out.println("Datos recibidos: " + dto);
+
+        // 1. Buscar usuario
         Usuario usuario = obtenerUsuarioOError(username);
 
-        usuario.setNombre(dto.getNombre());
-        usuario.setApellidos(dto.getApellidos());
-        usuario.setSexo(dto.getSexo());
-        usuario.setIdEstado(dto.getIdEstado());
-        usuario.setCiudad(dto.getCiudad());
+        System.out.println("✓ Usuario encontrado: " + usuario.getNombre());
 
-        usuarioRepository.save(usuario);
+        boolean huboActualizacion = false;
 
-        UsuarioRol usuarioRol = obtenerUsuarioRolOError(username);
-        Rol rol = rolRepository.findById(usuarioRol.getIdRol())
-                .orElseThrow(() -> new RecursoNoEncontradoException("Rol con ID",
-                        usuarioRol.getIdRol().toString()));
+        // 2. Actualizar solo los campos que no sean null
+        if (dto.getNombre() != null && !dto.getNombre().trim().isEmpty()) {
+            System.out.println("✓ Actualizando nombre: " + dto.getNombre());
+            usuario.setNombre(dto.getNombre());
+            huboActualizacion = true;
+        }
 
-        Estado estado = estadoRepository.findById(usuario.getIdEstado())
-                .orElse(null);
-        String nombreEstado = estado != null ? estado.getEstado() : "";
+        if (dto.getApellidos() != null && !dto.getApellidos().trim().isEmpty()) {
+            System.out.println("✓ Actualizando apellidos: " + dto.getApellidos());
+            usuario.setApellidos(dto.getApellidos());
+            huboActualizacion = true;
+        }
 
-        return new UsuarioDetalleDTO(
-                usuario.getUsuario(),
-                usuario.getNombre(),
-                usuario.getApellidos(),
-                usuario.getSexo(),
-                nombreEstado,
-                usuario.getCiudad(),
-                rol.getRol(),
-                false
-        );
+        if (dto.getSexo() != null && !dto.getSexo().trim().isEmpty()) {
+            System.out.println("✓ Actualizando sexo: " + dto.getSexo());
+            usuario.setSexo(dto.getSexo());
+            huboActualizacion = true;
+        }
+
+        if (dto.getEstado() != null && !dto.getEstado().trim().isEmpty()) {
+            // Buscar el ID del estado por nombre
+            Estado estado = estadoRepository.findByEstado(dto.getEstado())
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Estado", dto.getEstado()));
+            System.out.println("✓ Actualizando estado: " + dto.getEstado() + " (ID: " + estado.getIdEstado() + ")");
+            usuario.setIdEstado(estado.getIdEstado());
+            huboActualizacion = true;
+        }
+
+        if (dto.getCiudad() != null && !dto.getCiudad().trim().isEmpty()) {
+            System.out.println("✓ Actualizando ciudad: " + dto.getCiudad());
+            usuario.setCiudad(dto.getCiudad());
+            huboActualizacion = true;
+        }
+
+        if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
+            System.out.println("✓ Actualizando contraseña");
+            // TODO: Encriptar contraseña
+            // usuario.setContrasena(passwordEncoder.encode(dto.getPassword()));
+            usuario.setContrasena(dto.getPassword()); // Por ahora sin encriptar
+            huboActualizacion = true;
+        }
+
+        // 3. Guardar si hubo cambios
+        if (huboActualizacion) {
+            usuarioRepository.save(usuario);
+            System.out.println("✓✓✓ Usuario actualizado correctamente");
+            System.out.println("    (El username NO fue modificado - PRIMARY KEY)");
+        } else {
+            System.out.println("⚠ No se enviaron campos para actualizar");
+            throw new DatosInvalidosException("No se proporcionaron datos para actualizar");
+        }
+
+        System.out.println("=== FIN ACTUALIZACIÓN ===");
     }
+
+
 
     @Override
     @Transactional

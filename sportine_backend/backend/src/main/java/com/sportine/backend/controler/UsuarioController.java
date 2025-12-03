@@ -2,6 +2,8 @@ package com.sportine.backend.controler;
 
 
 import com.sportine.backend.dto.*;
+import com.sportine.backend.exception.DatosInvalidosException;
+import com.sportine.backend.exception.RecursoNoEncontradoException;
 import com.sportine.backend.model.Estado;
 import com.sportine.backend.repository.EstadoRepository;
 import com.sportine.backend.service.UsuarioService;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -57,21 +60,6 @@ public class UsuarioController {
     }
 
 
-
-    @PutMapping("/{usuario}")
-    public ResponseEntity<UsuarioDetalleDTO> actualizarDatosBasicos(
-            @PathVariable String usuario,
-            @RequestBody ActualizarUsuarioDTO actualizarUsuarioDTO) {
-
-        try {
-            UsuarioDetalleDTO response = usuarioService.actualizarDatosBasicos(usuario, actualizarUsuarioDTO);
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-    }
-
-
     @PutMapping("/{usuario}/password")
     public ResponseEntity<UsuarioResponseDTO> cambiarPassword(
             @PathVariable String usuario,
@@ -84,6 +72,40 @@ public class UsuarioController {
             UsuarioResponseDTO errorResponse = new UsuarioResponseDTO();
             errorResponse.setMensaje(e.getMessage());
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/{usuario}/actualizar")
+    public ResponseEntity<?> actualizarDatosUsuario(
+            @PathVariable String usuario,
+            @RequestBody ActualizarUsuarioDTO datosDTO) {
+
+        try {
+            usuarioService.actualizarDatosUsuario(usuario, datosDTO);
+            return ResponseEntity.ok()
+                    .body(Map.of(
+                            "mensaje", "Datos actualizados correctamente",
+                            "usuario", usuario,
+                            "nota", "El username NO fue modificado (PRIMARY KEY)"
+                    ));
+        } catch (DatosInvalidosException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of(
+                            "mensaje", e.getMessage(),
+                            "error", true
+                    ));
+        } catch (RecursoNoEncontradoException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of(
+                            "mensaje", e.getMessage(),
+                            "error", true
+                    ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                            "mensaje", "Error interno del servidor",
+                            "error", true
+                    ));
         }
     }
 }
