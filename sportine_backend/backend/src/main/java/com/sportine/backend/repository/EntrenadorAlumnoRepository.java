@@ -15,6 +15,10 @@ import java.util.Optional;
 @Repository
 public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlumno, Integer> {
 
+    // ==========================================
+    // MÉTODOS ORIGINALES (ya existían)
+    // ==========================================
+
     /**
      * Obtener todos los alumnos de un entrenador
      * @param usuarioEntrenador Username del entrenador
@@ -47,6 +51,7 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
      * Verificar si existe una relación activa entre entrenador y alumno
      * @param usuarioEntrenador Username del entrenador
      * @param usuarioAlumno Username del alumno
+     * @param statusRelacion Estado de la relación
      * @return true si existe relación activa
      */
     boolean existsByUsuarioEntrenadorAndUsuarioAlumnoAndStatusRelacion(
@@ -80,4 +85,47 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
     @Query("SELECT COUNT(ea) FROM EntrenadorAlumno ea " +
             "WHERE ea.usuarioAlumno = :usuario")
     Integer contarTodosEntrenadores(@Param("usuario") String usuario);
+
+    // ==========================================
+    // MÉTODOS NUEVOS PARA ESTADÍSTICAS
+    // ==========================================
+
+    /**
+     * Obtener todos los alumnos activos de un entrenador (mismo comportamiento que el método anterior
+     * pero con nombre más explícito para estadísticas)
+     * @param usuarioEntrenador Username del entrenador
+     * @return Lista de relaciones activas
+     */
+    @Query("SELECT ea FROM EntrenadorAlumno ea " +
+            "WHERE ea.usuarioEntrenador = :usuarioEntrenador " +
+            "AND ea.statusRelacion = 'activo'")
+    List<EntrenadorAlumno> findAlumnosActivosByEntrenador(@Param("usuarioEntrenador") String usuarioEntrenador);
+
+    /**
+     * Encontrar relación específica entre entrenador y alumno (sin importar status)
+     * @param usuarioEntrenador Username del entrenador
+     * @param usuarioAlumno Username del alumno
+     * @return Optional con la relación si existe
+     */
+    Optional<EntrenadorAlumno> findByUsuarioEntrenadorAndUsuarioAlumno(
+            String usuarioEntrenador,
+            String usuarioAlumno
+    );
+
+    /**
+     * Contar alumnos activos de un entrenador (alternativo usando Query)
+     * @param usuarioEntrenador Username del entrenador
+     * @return Número de alumnos activos
+     */
+    @Query("SELECT COUNT(ea) FROM EntrenadorAlumno ea " +
+            "WHERE ea.usuarioEntrenador = :usuarioEntrenador " +
+            "AND ea.statusRelacion = 'activo'")
+    Integer countAlumnosActivosQuery(@Param("usuarioEntrenador") String usuarioEntrenador);
+
+    /**
+     * Obtener todos los entrenadores de un alumno (sin importar estado)
+     * @param usuarioAlumno Username del alumno
+     * @return Lista de relaciones
+     */
+    List<EntrenadorAlumno> findByUsuarioAlumno(String usuarioAlumno);
 }

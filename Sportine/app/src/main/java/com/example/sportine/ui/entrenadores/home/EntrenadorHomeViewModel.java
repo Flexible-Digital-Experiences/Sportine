@@ -42,7 +42,7 @@ public class EntrenadorHomeViewModel extends AndroidViewModel {
         if (usuario == null) return;
 
         isLoading.setValue(true);
-        apiService.obtenerHomeEntrenador(usuario).enqueue(new Callback<HomeEntrenadorDTO>() {
+        apiService.obtenerHomeEntrenador().enqueue(new Callback<HomeEntrenadorDTO>() {
             @Override
             public void onResponse(Call<HomeEntrenadorDTO> call, Response<HomeEntrenadorDTO> response) {
                 isLoading.setValue(false);
