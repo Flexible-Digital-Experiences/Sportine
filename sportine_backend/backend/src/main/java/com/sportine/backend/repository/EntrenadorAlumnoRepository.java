@@ -2,9 +2,12 @@ package com.sportine.backend.repository;
 
 import com.sportine.backend.model.EntrenadorAlumno;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,9 +18,7 @@ import java.util.Optional;
 @Repository
 public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlumno, Integer> {
 
-    // ==========================================
-    // MÉTODOS ORIGINALES (ya existían)
-    // ==========================================
+    // ========== MÉTODOS EXISTENTES ==========
 
     /**
      * Obtener todos los alumnos de un entrenador
@@ -86,46 +87,42 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
             "WHERE ea.usuarioAlumno = :usuario")
     Integer contarTodosEntrenadores(@Param("usuario") String usuario);
 
-    // ==========================================
-    // MÉTODOS NUEVOS PARA ESTADÍSTICAS
-    // ==========================================
+    // ========== NUEVOS MÉTODOS PARA MENSUALIDADES ==========
 
     /**
-     * Obtener todos los alumnos activos de un entrenador (mismo comportamiento que el método anterior
-     * pero con nombre más explícito para estadísticas)
-     * @param usuarioEntrenador Username del entrenador
-     * @return Lista de relaciones activas
+     * Encontrar relaciones activas con mensualidad vencida
+     * @param statusRelacion Estado de la relación ("activo")
+     * @param fecha Fecha límite (hoy)
+     * @return Lista de relaciones vencidas
      */
-    @Query("SELECT ea FROM EntrenadorAlumno ea " +
-            "WHERE ea.usuarioEntrenador = :usuarioEntrenador " +
-            "AND ea.statusRelacion = 'activo'")
-    List<EntrenadorAlumno> findAlumnosActivosByEntrenador(@Param("usuarioEntrenador") String usuarioEntrenador);
-
-    /**
-     * Encontrar relación específica entre entrenador y alumno (sin importar status)
-     * @param usuarioEntrenador Username del entrenador
-     * @param usuarioAlumno Username del alumno
-     * @return Optional con la relación si existe
-     */
-    Optional<EntrenadorAlumno> findByUsuarioEntrenadorAndUsuarioAlumno(
-            String usuarioEntrenador,
-            String usuarioAlumno
+    List<EntrenadorAlumno> findByStatusRelacionAndFinMensualidadBefore(
+            String statusRelacion,
+            LocalDate fecha
     );
 
     /**
-     * Contar alumnos activos de un entrenador (alternativo usando Query)
-     * @param usuarioEntrenador Username del entrenador
-     * @return Número de alumnos activos
+     * Query nativa más eficiente para actualizar en lote
+     * Actualiza todas las relaciones activas con mensualidad vencida
+     * @param fecha Fecha límite (hoy)
+     * @return Número de registros actualizados
      */
-    @Query("SELECT COUNT(ea) FROM EntrenadorAlumno ea " +
-            "WHERE ea.usuarioEntrenador = :usuarioEntrenador " +
-            "AND ea.statusRelacion = 'activo'")
-    Integer countAlumnosActivosQuery(@Param("usuarioEntrenador") String usuarioEntrenador);
+    @Modifying
+    @Query(value = "UPDATE Entrenador_Alumno SET status_relacion = 'pendiente' " +
+            "WHERE status_relacion = 'activo' AND fin_mensualidad < :fecha",
+            nativeQuery = true)
+    int actualizarMensualidadesVencidasEnLote(@Param("fecha") LocalDate fecha);
 
     /**
-     * Obtener todos los entrenadores de un alumno (sin importar estado)
-     * @param usuarioAlumno Username del alumno
-     * @return Lista de relaciones
+     * Obtener relaciones que vencen entre dos fechas (útil para alertas)
+     * @param fechaInicio Fecha de inicio del rango
+     * @param fechaFin Fecha de fin del rango
+     * @return Lista de relaciones que vencen en ese rango
      */
-    List<EntrenadorAlumno> findByUsuarioAlumno(String usuarioAlumno);
+    @Query("SELECT ea FROM EntrenadorAlumno ea " +
+            "WHERE ea.statusRelacion = 'activo' " +
+            "AND ea.finMensualidad BETWEEN :fechaInicio AND :fechaFin")
+    List<EntrenadorAlumno> encontrarMensualidadesPorVencer(
+            @Param("fechaInicio") LocalDate fechaInicio,
+            @Param("fechaFin") LocalDate fechaFin
+    );
 }

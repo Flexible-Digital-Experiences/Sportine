@@ -64,7 +64,8 @@ CREATE TABLE Informacion_Alumno (
 CREATE TABLE Informacion_Entrenador (
     usuario VARCHAR(255),
     costo_mensualidad INT,
-    limite_alumnos INT,
+    tipo_cuenta ENUM('premium','gratis'),
+    limite_alumnos INT DEFAULT 3,
     descripcion_perfil VARCHAR(255),
     foto_perfil TEXT,
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
@@ -117,8 +118,8 @@ CREATE TABLE Entrenador_Alumno (
     usuario_entrenador VARCHAR(255),
     usuario_alumno VARCHAR(255),
     id_deporte INT,
-    fecha_inicio DATE DEFAULT (CURRENT_DATE), 
-    status_relacion VARCHAR(50), 
+    fin_mensualidad DATE,
+    status_relacion ENUM('activo', 'pendiente', 'finalizado'),
     FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
     FOREIGN KEY (usuario_alumno) REFERENCES Usuario(usuario),
     FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),

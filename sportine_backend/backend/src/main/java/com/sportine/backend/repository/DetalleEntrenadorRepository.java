@@ -81,13 +81,12 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
             ea.id_relacion as idRelacion,
             ea.status_relacion as statusRelacion,
             ea.id_deporte as idDeporte,
-            d.nombre_deporte as nombreDeporte,
-            ea.fecha_inicio as fechaInicio
+            d.nombre_deporte as nombreDeporte
         FROM Entrenador_Alumno ea
         INNER JOIN Deporte d ON ea.id_deporte = d.id_deporte
         WHERE ea.usuario_entrenador = :usuarioEntrenador
           AND ea.usuario_alumno = :usuarioAlumno
-        ORDER BY ea.fecha_inicio DESC
+        ORDER BY ea.id_relacion DESC
         LIMIT 1
         """, nativeQuery = true)
     Optional<Map<String, Object>> obtenerEstadoRelacion(
