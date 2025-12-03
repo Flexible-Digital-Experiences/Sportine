@@ -88,12 +88,13 @@ public class HomeEntrenadorServiceImpl implements HomeEntrenadorService {
 
         // Calcular entrenamientos completados en la última semana
         LocalDateTime hace7Dias = LocalDateTime.now().minusDays(7);
-        int completadosSemana = progresoEntrenamientoRepository
+        Long completadosSemanaLong = progresoEntrenamientoRepository
                 .contarEntrenamientosCompletadosEnRango(
                         usuarioAlumno,
                         hace7Dias,
                         LocalDateTime.now()
                 );
+        int completadosSemana = completadosSemanaLong.intValue();
 
         // Contar entrenamientos pendientes
         List<Entrenamiento> entrenamientos = entrenamientoRepository

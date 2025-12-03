@@ -177,8 +177,8 @@ CREATE TABLE Entrenamiento (
 CREATE TABLE Ejercicios_Asignados (
     id_asignado INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT,
-    id_catalogo INT,               -- Puede ser NULL si se usa nombre personalizado
-    nombre_personalizado VARCHAR(255), -- NUEVA COLUMNA PARA NOMBRE MANUAL
+    id_catalogo INT,               -- Puede ser NULL
+    nombre_personalizado VARCHAR(255),
     usuario VARCHAR(255),
     nombre_ejercicio VARCHAR(255) NOT NULL,
     series INT,
@@ -188,7 +188,7 @@ CREATE TABLE Ejercicios_Asignados (
     distancia FLOAT,
     status_ejercicio ENUM('pendiente', 'completado', 'omitido') DEFAULT 'pendiente',
     FOREIGN KEY (id_entrenamiento) REFERENCES Entrenamiento(id_entrenamiento),
-    FOREIGN KEY (id_catalogo) REFERENCES Catalogo_Ejercicios(id_catalogo),
+    -- FOREIGN KEY (id_catalogo) REFERENCES Catalogo_Ejercicios(id_catalogo), -- ❌ COMENTADA
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
