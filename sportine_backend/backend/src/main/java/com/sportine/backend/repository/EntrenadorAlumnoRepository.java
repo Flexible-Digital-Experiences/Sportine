@@ -52,6 +52,7 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
      * Verificar si existe una relación activa entre entrenador y alumno
      * @param usuarioEntrenador Username del entrenador
      * @param usuarioAlumno Username del alumno
+     * @param statusRelacion Estado de la relación
      * @return true si existe relación activa
      */
     boolean existsByUsuarioEntrenadorAndUsuarioAlumnoAndStatusRelacion(

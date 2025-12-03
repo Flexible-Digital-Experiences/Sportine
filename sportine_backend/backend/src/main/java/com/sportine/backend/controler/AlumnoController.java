@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -164,6 +165,54 @@ public class AlumnoController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("mensaje", e.getMessage()));
+        }
+    }
+
+    /**
+     * ✅ NUEVO MÉTODO - Agregar DESPUÉS de actualizarDatosAlumno
+     * Endpoint para actualizar solo la foto de perfil del alumno
+     * Recibe una imagen y la sube a Cloudinary
+     */
+    @PostMapping("/{usuario}/actualizar-foto")
+    public ResponseEntity<?> actualizarFotoPerfil(
+            @PathVariable String usuario,
+            @RequestParam("foto") MultipartFile foto) {
+
+        try {
+            // Validar que se haya enviado una imagen
+            if (foto.isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("mensaje", "No se ha enviado ninguna imagen"));
+            }
+
+            // Validar tipo de archivo
+            String contentType = foto.getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("mensaje", "El archivo debe ser una imagen"));
+            }
+
+            // Validar tamaño (máximo 5MB)
+            if (foto.getSize() > 5 * 1024 * 1024) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("mensaje", "La imagen no debe superar los 5MB"));
+            }
+
+            // Actualizar foto de perfil
+            String nuevaUrl = alumnoPerfilService.actualizarFotoPerfil(usuario, foto);
+
+            return ResponseEntity.ok()
+                    .body(Map.of(
+                            "mensaje", "Foto actualizada correctamente",
+                            "fotoPerfil", nuevaUrl
+                    ));
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("mensaje", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("mensaje", "Error al procesar la imagen: " + e.getMessage()));
         }
     }
 }

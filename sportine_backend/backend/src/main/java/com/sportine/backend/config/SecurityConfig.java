@@ -3,6 +3,7 @@ package com.sportine.backend.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -29,6 +30,9 @@ public class SecurityConfig {
 
                 // Rutas PÚBLICAS (Login y Registro)
                 .requestMatchers("/api/usuarios/login", "/api/usuarios/registrar").permitAll()
+
+                // ✅ NUEVO: Permitir actualización de foto de perfil (con autenticación)
+                .requestMatchers(HttpMethod.POST, "/api/alumnos/*/actualizar-foto").authenticated()
 
                 // ¡TODAS LAS DEMÁS (incluyendo tu /api/social/**)
                 // requieren que el usuario esté autenticado!

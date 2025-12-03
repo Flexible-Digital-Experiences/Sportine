@@ -1,17 +1,27 @@
+
 package com.sportine.backend.dto;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class ActualizarUsuarioDTO {
+
+    @JsonProperty("nombre")
     private String nombre;
+
+    @JsonProperty("apellidos")
     private String apellidos;
+
+    @JsonProperty("sexo")
     private String sexo;
-    private Integer idEstado;
+
+    @JsonProperty("estado")
+    private String estado; // Nombre del estado, no ID
+
+    @JsonProperty("ciudad")
     private String ciudad;
+
+    @JsonProperty("password")
+    private String password;
 }

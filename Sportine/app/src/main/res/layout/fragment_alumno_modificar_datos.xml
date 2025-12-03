@@ -14,6 +14,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="100dp"
         android:fillViewport="true">
 
         <LinearLayout
@@ -22,6 +23,7 @@
             android:orientation="vertical"
             android:paddingBottom="30dp">
 
+            <!-- Header -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -79,6 +81,7 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <!-- Contenido -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -86,6 +89,7 @@
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp">
 
+                <!-- Card Datos Actuales -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -110,6 +114,7 @@
                             android:layout_gravity="center_horizontal"
                             android:layout_marginBottom="16dp"/>
 
+                        <!-- Fila 1: Nombre y Sexo -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -138,6 +143,7 @@
                                     android:id="@+id/tvNombreActual"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:text="-"
                                     android:textColor="#1A1A1A"
                                     android:textSize="15sp"
                                     android:layout_marginTop="4dp" />
@@ -165,12 +171,14 @@
                                     android:id="@+id/tvSexoActual"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:text="-"
                                     android:textColor="#1A1A1A"
                                     android:textSize="15sp"
                                     android:layout_marginTop="4dp" />
                             </LinearLayout>
                         </LinearLayout>
 
+                        <!-- Fila 2: Apellido y Estado -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -199,6 +207,7 @@
                                     android:id="@+id/tvApellidoActual"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:text="-"
                                     android:textColor="#1A1A1A"
                                     android:textSize="15sp"
                                     android:layout_marginTop="4dp" />
@@ -226,12 +235,14 @@
                                     android:id="@+id/tvEstadoActual"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:text="-"
                                     android:textColor="#1A1A1A"
                                     android:textSize="15sp"
                                     android:layout_marginTop="4dp" />
                             </LinearLayout>
                         </LinearLayout>
 
+                        <!-- Fila 3: Username (NO EDITABLE) y Ciudad -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -250,7 +261,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Nombre de Usuario"
+                                    android:text="Usuario (No modificable)"
                                     android:textColor="#9CA3AF"
                                     android:textSize="11sp"
                                     android:textStyle="bold"
@@ -260,8 +271,10 @@
                                     android:id="@+id/tvUsernameActual"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textColor="#1A1A1A"
+                                    android:text="-"
+                                    android:textColor="#6B7280"
                                     android:textSize="15sp"
+                                    android:textStyle="italic"
                                     android:layout_marginTop="4dp" />
                             </LinearLayout>
 
@@ -287,12 +300,14 @@
                                     android:id="@+id/tvCiudadActual"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:text="-"
                                     android:textColor="#1A1A1A"
                                     android:textSize="15sp"
                                     android:layout_marginTop="4dp" />
                             </LinearLayout>
                         </LinearLayout>
 
+                        <!-- Fila 4: Contraseña -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -325,6 +340,7 @@
                                         android:id="@+id/tvPasswordActual"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
+                                        android:text="********"
                                         android:textColor="#1A1A1A"
                                         android:textSize="15sp"
                                         android:layout_toStartOf="@id/btnTogglePasswordActual"
@@ -349,6 +365,7 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Título Nuevos Datos -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -368,6 +385,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="24dp"/>
 
+                <!-- Fila 1: Nombre y Sexo -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -411,6 +429,7 @@
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
+                <!-- Fila 2: Apellido y Estado -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -454,49 +473,7 @@
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp">
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="Nombre de Usuario nuevo"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                        app:boxStrokeColor="#00A896"
-                        android:layout_marginEnd="8dp">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etUsernameNuevo"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="text"
-                            android:textColor="#1A1A1A"
-                            android:textSize="14sp"/>
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="Ciudad"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                        app:boxStrokeColor="#00A896"
-                        android:layout_marginStart="8dp">
-
-                        <AutoCompleteTextView
-                            android:id="@+id/actvCiudadNuevo"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="none"
-                            android:textColor="#1A1A1A"
-                            android:textSize="14sp"/>
-                    </com.google.android.material.textfield.TextInputLayout>
-                </LinearLayout>
-
+                <!-- Fila 3: Ciudad y Contraseña -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -507,11 +484,29 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:hint="Ciudad"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                        app:boxStrokeColor="#00A896"
+                        android:layout_marginEnd="8dp">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/actvCiudadNuevo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:textColor="#1A1A1A"
+                            android:textSize="14sp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:hint="Contraseña nueva"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         app:endIconMode="password_toggle"
                         app:boxStrokeColor="#00A896"
-                        android:layout_marginEnd="8dp">
+                        android:layout_marginStart="8dp">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etPasswordNuevo"
@@ -521,10 +516,9 @@
                             android:textColor="#1A1A1A"
                             android:textSize="14sp"/>
                     </com.google.android.material.textfield.TextInputLayout>
-
-                    <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_marginStart="8dp"/>
                 </LinearLayout>
 
+                <!-- Botón Actualizar -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnActualizar"
                     android:layout_width="match_parent"

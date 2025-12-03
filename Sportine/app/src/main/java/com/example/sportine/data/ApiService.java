@@ -1,13 +1,17 @@
 package com.example.sportine.data;
 
+import com.example.sportine.models.AlumnoCardStatsDTO;
 import com.example.sportine.models.CalificacionRequestDTO;
 import com.example.sportine.models.CalificacionResponseDTO;
 import com.example.sportine.models.Comentario;
 import com.example.sportine.models.CompletarEntrenamientoRequestDTO;
 import com.example.sportine.models.DetalleEntrenamientoDTO;
+import com.example.sportine.models.DetalleEstadisticasAlumnoDTO;
 import com.example.sportine.models.EntrenadorCardDTO;
+import com.example.sportine.models.FeedbackPromedioDTO;
 import com.example.sportine.models.FormularioSolicitudDTO;
 import com.example.sportine.models.HomeAlumnoDTO;
+import com.example.sportine.models.HomeEntrenadorDTO;
 import com.example.sportine.models.InfoDeporteAlumnoDTO;
 import com.example.sportine.models.PerfilEntrenadorDTO;
 import com.example.sportine.models.Publicacion;
@@ -16,10 +20,15 @@ import com.example.sportine.models.SolicitudEnviadaDTO;
 import com.example.sportine.models.SolicitudPendienteDTO;
 import com.example.sportine.models.SolicitudRequestDTO;
 import com.example.sportine.models.SolicitudResponseDTO;
+import com.example.sportine.models.SportsDistributionDTO;
+import com.example.sportine.models.StatisticsOverviewDTO;
+import com.example.sportine.models.StreakInfoDTO;
+import com.example.sportine.models.TrainingFrequencyDTO;
 import com.example.sportine.models.Usuario;
 import com.example.sportine.models.PublicacionFeedDTO;
 import com.example.sportine.models.UsuarioDetalle;
 import com.example.sportine.ui.usuarios.dto.ActualizarDatosAlumnoDTO;
+import com.example.sportine.ui.usuarios.dto.ActualizarUsuarioDTO;
 import com.example.sportine.ui.usuarios.dto.LoginRequest;
 import com.example.sportine.ui.usuarios.dto.LoginResponse;
 import com.example.sportine.ui.usuarios.dto.ComentarioRequest;
@@ -103,11 +112,6 @@ public interface ApiService {
     @GET("/api/social/amigos")
     Call<List<UsuarioDetalle>> verMisAmigos();
 
-    @PUT("api/alumnos/{usuario}/actualizar-datos")
-    Call<Void> actualizarDatosAlumno(
-            @Path("usuario") String usuario,
-            @Body ActualizarDatosAlumnoDTO datos
-    );
     @PUT("/api/social/post/{id}")
     Call<Void> editarPost(@Path("id") Integer id, @Body com.example.sportine.models.Publicacion publicacionActualizada);
 
@@ -155,6 +159,25 @@ public interface ApiService {
     Call<HomeAlumnoDTO> obtenerHomeAlumno(@Path("usuario") String usuario);
     // --- DETALLES ENTRENAMIENTO ALUMNO ---
 
+    //Perfil
+    @PUT("api/alumnos/{usuario}/actualizar-datos")
+    Call<Void> actualizarDatosAlumno(
+            @Path("usuario") String usuario,
+            @Body ActualizarDatosAlumnoDTO datos
+    );
+
+    @PUT("api/usuarios/{usuario}/actualizar")
+    Call<Void> actualizarDatosUsuario(
+            @Path("usuario") String usuario,
+            @Body ActualizarUsuarioDTO datos
+    );
+
+    @Multipart
+    @POST("/api/alumnos/{usuario}/actualizar-foto")
+    Call<Map<String, String>> actualizarFotoPerfil(
+            @Path("usuario") String usuario,
+            @Part MultipartBody.Part foto
+    );
     @GET("/api/alumno/entrenamientos/{id}") // Antes era /entrenamiento/{id}
     Call<DetalleEntrenamientoDTO> obtenerDetalleEntrenamiento(@Path("id") Integer idEntrenamiento);
 
@@ -168,5 +191,108 @@ public interface ApiService {
     // Endpoint para completar el entrenamiento y mandar feedback
     @POST("/api/alumno/entrenamientos/completar")
     Call<Void> completarEntrenamiento(@Body CompletarEntrenamientoRequestDTO request);
+
+    // --- ENTRENADORES ---
+
+    @GET("/api/entrenador/home")
+    Call<HomeEntrenadorDTO> obtenerHomeEntrenador();
+
+    @POST("/api/entrenador/entrenamientos")
+    Call<Void> crearEntrenamiento(@Body com.example.sportine.models.CrearEntrenamientoRequestDTO request);
+
+    // ... otros endpoints
+    @GET("/api/entrenador/feedback")
+    Call<List<com.example.sportine.models.FeedbackResumenDTO>> obtenerFeedbackEntrenador();
+    // ================================================================================
+    // ENDPOINTS DE ESTADÍSTICAS
+    // ================================================================================
+
+    // ==========================================
+    // ESTADÍSTICAS - ALUMNO
+    // ==========================================
+
+    /**
+     * Obtiene el resumen general de estadísticas del alumno
+     * GET /api/alumno/estadisticas/overview
+     */
+    @GET("/api/alumno/estadisticas/overview")
+    Call<StatisticsOverviewDTO> obtenerResumenEstadisticas();
+
+    /**
+     * Obtiene la frecuencia de entrenamientos del alumno
+     * GET /api/alumno/estadisticas/frequency?period=WEEK|MONTH|YEAR
+     */
+    @GET("/api/alumno/estadisticas/frequency")
+    Call<TrainingFrequencyDTO> obtenerFrecuenciaEntrenamientos(@Query("period") String period);
+
+    /**
+     * Obtiene la distribución de deportes del alumno
+     * GET /api/alumno/estadisticas/sports-distribution
+     */
+    @GET("/api/alumno/estadisticas/sports-distribution")
+    Call<SportsDistributionDTO> obtenerDistribucionDeportes();
+
+    /**
+     * Obtiene información de la racha del alumno
+     * GET /api/alumno/estadisticas/streak
+     */
+    @GET("/api/alumno/estadisticas/streak")
+    Call<StreakInfoDTO> obtenerInformacionRacha();
+
+    /**
+     * Obtiene el feedback promedio del alumno
+     * GET /api/alumno/estadisticas/feedback
+     */
+    @GET("/api/alumno/estadisticas/feedback")
+    Call<FeedbackPromedioDTO> obtenerFeedbackPromedio();
+
+    // ==========================================
+    // ESTADÍSTICAS - ENTRENADOR
+    // ==========================================
+
+    /**
+     * Obtiene lista resumida de todos los alumnos del entrenador con métricas
+     * GET /api/entrenador/estadisticas/alumnos
+     */
+    @GET("/api/entrenador/estadisticas/alumnos")
+    Call<List<AlumnoCardStatsDTO>> obtenerResumenAlumnos();
+
+    /**
+     * Obtiene las estadísticas detalladas de un alumno específico
+     * GET /api/entrenador/estadisticas/alumno/{usuarioAlumno}
+     */
+    @GET("/api/entrenador/estadisticas/alumno/{usuarioAlumno}")
+    Call<DetalleEstadisticasAlumnoDTO> obtenerDetalleEstadisticasAlumno(
+            @Path("usuarioAlumno") String usuarioAlumno
+    );
+
+    /**
+     * Obtiene la frecuencia de entrenamientos de un alumno específico
+     * GET /api/entrenador/estadisticas/alumno/{usuarioAlumno}/frequency?period=WEEK|MONTH|YEAR
+     */
+    @GET("/api/entrenador/estadisticas/alumno/{usuarioAlumno}/frequency")
+    Call<TrainingFrequencyDTO> obtenerFrecuenciaAlumno(
+            @Path("usuarioAlumno") String usuarioAlumno,
+            @Query("period") String period
+    );
+
+    /**
+     * Obtiene la distribución de deportes de un alumno específico
+     * GET /api/entrenador/estadisticas/alumno/{usuarioAlumno}/sports
+     */
+    @GET("/api/entrenador/estadisticas/alumno/{usuarioAlumno}/sports")
+    Call<SportsDistributionDTO> obtenerDistribucionDeportesAlumno(
+            @Path("usuarioAlumno") String usuarioAlumno
+    );
+
+    /**
+     * Obtiene el feedback promedio de un alumno específico
+     * GET /api/entrenador/estadisticas/alumno/{usuarioAlumno}/feedback
+     */
+    @GET("/api/entrenador/estadisticas/alumno/{usuarioAlumno}/feedback")
+    Call<FeedbackPromedioDTO> obtenerFeedbackAlumno(
+            @Path("usuarioAlumno") String usuarioAlumno
+    );
+
 
 }
