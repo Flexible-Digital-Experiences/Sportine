@@ -1,4 +1,4 @@
-package com.sportine.backend.controller;
+package com.sportine.backend.controler;
 
 import com.sportine.backend.dto.CrearEntrenamientoRequestDTO;
 import com.sportine.backend.dto.HomeEntrenadorDTO;

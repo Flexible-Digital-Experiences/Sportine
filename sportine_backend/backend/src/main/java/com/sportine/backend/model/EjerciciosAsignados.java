@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 /**
- * Entity que representa los ejercicios asignados a un entrenamiento específico.
- * Contiene las métricas (repeticiones, series, peso, etc.) de cada ejercicio.
+ * Entity que representa los ejercicios asignados.
+ * Actualizado para soportar nombre manual y cardio (distancia/tiempo).
  */
 @Entity
 @Table(name = "Ejercicios_Asignados")
@@ -24,53 +24,43 @@ public class EjerciciosAsignados {
     @Column(name = "id_entrenamiento")
     private Integer idEntrenamiento;
 
-    @Column(name = "id_catalogo")
-    private Integer idCatalogo;
-
     @Column(name = "usuario")
-    private String usuario; // Alumno al que se asigna
+    private String usuario;
 
-    @Column(name = "orden_ejercicio")
-    private Integer ordenEjercicio; // Orden en que debe realizarse (1, 2, 3...)
+    // ✅ NUEVO: Nombre manual del ejercicio (Reemplaza al catálogo)
+    @Column(name = "nombre_ejercicio", nullable = false)
+    private String nombreEjercicio;
 
+    // Métricas de Fuerza
     @Column(name = "repeticiones")
     private Integer repeticiones;
 
     @Column(name = "series")
     private Integer series;
 
+    @Column(name = "peso")
+    private Float peso; // kg
+
+    // Métricas de Cardio (Nuevas)
     @Column(name = "duracion")
-    private Integer duracion; // En minutos
+    private Integer duracion; // minutos
 
     @Column(name = "distancia")
-    private Float distancia; // En kilómetros
-
-    @Column(name = "peso")
-    private Float peso; // En kilogramos
-
-    @Column(name = "notas")
-    private String notas; // Instrucciones adicionales del entrenador
+    private Float distancia; // km
 
     @Column(name = "status_ejercicio")
     @Enumerated(EnumType.STRING)
     private StatusEjercicio statusEjercicio;
 
-    // Relaciones con otras entidades
+    // Relaciones
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_entrenamiento", insertable = false, updatable = false)
     private Entrenamiento entrenamiento;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_catalogo", insertable = false, updatable = false)
-    private CatalogoEjercicios catalogoEjercicio;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario", insertable = false, updatable = false)
-    private Usuario alumno;
+    private Usuario usuarioEntity;
 
-    /**
-     * Enum para el estado del ejercicio
-     */
     public enum StatusEjercicio {
         pendiente,
         completado,

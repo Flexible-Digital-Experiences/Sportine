@@ -14,7 +14,8 @@ public class SportineBackendApplication {
 
     @PostConstruct
     public void init() {
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        // Configurar la zona horaria a Ciudad de México
+        TimeZone.setDefault(TimeZone.getTimeZone("America/Mexico_City"));
     }
 
 }

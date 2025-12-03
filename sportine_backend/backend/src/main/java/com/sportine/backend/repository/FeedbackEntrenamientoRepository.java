@@ -74,4 +74,11 @@ public interface FeedbackEntrenamientoRepository extends JpaRepository<FeedbackE
      */
     @Query("SELECT AVG(f.dificultadPercibida) FROM FeedbackEntrenamiento f WHERE f.usuario = :usuario")
     Double calcularPromedioDificultadPercibida(@Param("usuario") String usuario);
+
+    // Magia JPQL: Une Feedback -> Entrenamiento -> Filtra por tu usuarioEntrenador
+    @Query("SELECT f FROM FeedbackEntrenamiento f " +
+            "JOIN f.entrenamiento e " +
+            "WHERE e.usuarioEntrenador = :usuarioEntrenador " +
+            "ORDER BY f.fechaFeedback DESC")
+    List<FeedbackEntrenamiento> findFeedbackPorEntrenador(@Param("usuarioEntrenador") String usuarioEntrenador);
 }

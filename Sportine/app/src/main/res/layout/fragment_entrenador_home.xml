@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPageBackground"
     android:fillViewport="true"
-    tools:context=".ui.entrenadores.home.HomeFragment">
+    tools:context="com.example.sportine.ui.entrenadores.home.HomeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,7 +17,6 @@
         android:paddingTop="@dimen/spacing_large"
         android:paddingBottom="@dimen/spacing_xxlarge">
 
-        <!-- Tarjeta de bienvenida -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_bienvenida"
             android:layout_width="0dp"
@@ -51,10 +50,39 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:src="@drawable/logo_sportine"
-                        android:contentDescription="@string/descripcion_logo"
                         android:padding="@dimen/icon_padding"
                         android:scaleType="fitCenter" />
                 </com.google.android.material.card.MaterialCardView>
+
+                <FrameLayout
+                    android:id="@+id/btn_notificaciones"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_notifications_black_24dp"
+                        app:tint="@color/colorAccent"/>
+
+                    <View
+                        android:id="@+id/badge_notificacion"
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:layout_gravity="top|end"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/shape_circle_indicator"
+                        android:backgroundTint="#FF5252"
+                        android:visibility="visible"/>
+                </FrameLayout>
 
                 <LinearLayout
                     android:id="@+id/layout_texto_bienvenida"
@@ -62,34 +90,36 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_marginStart="@dimen/spacing_large"
+                    android:layout_marginEnd="@dimen/spacing_small"
                     app:layout_constraintStart_toEndOf="@id/card_logo"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/btn_notificaciones"
                     app:layout_constraintTop_toTopOf="@id/card_logo"
                     app:layout_constraintBottom_toBottomOf="@id/card_logo">
 
-                    <!-- Saludo dinámico desde backend: "Hola de nuevo, [nombre]!" -->
                     <TextView
                         android:id="@+id/text_saludo"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/font_size_headline"
                         android:textStyle="bold"
                         android:textColor="@color/colorTextPrimary"
-                        android:fontFamily="sans-serif-medium" />
-
-                    <!-- Mensaje dinámico desde backend -->
+                        android:fontFamily="sans-serif-medium"
+                        android:maxLines="3"
+                        android:ellipsize="none" />
                     <TextView
                         android:id="@+id/text_mensaje"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_xsmall"
                         android:textSize="@dimen/font_size_date"
-                        android:textColor="@color/colorTextSecondary" />
+                        android:textColor="@color/colorTextSecondary"
+                        android:maxLines="2"
+                        android:ellipsize="end"/>
                 </LinearLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Fecha actual -->
         <LinearLayout
             android:id="@+id/layout_fecha"
             android:layout_width="wrap_content"
@@ -106,7 +136,6 @@
                 android:background="@color/colorAccent"
                 android:layout_marginEnd="@dimen/spacing_small" />
 
-            <!-- Fecha formateada desde backend -->
             <TextView
                 android:id="@+id/text_fecha"
                 android:layout_width="wrap_content"
@@ -116,7 +145,6 @@
                 android:fontFamily="sans-serif-medium" />
         </LinearLayout>
 
-        <!-- Título de sección -->
         <TextView
             android:id="@+id/text_alumnos_title"
             android:layout_width="wrap_content"
@@ -130,7 +158,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layout_fecha" />
 
-        <!-- RecyclerView: Se poblará dinámicamente desde backend -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_alumnos"
             android:layout_width="0dp"

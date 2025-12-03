@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -187,24 +188,28 @@ public class HomeFragment extends Fragment {
         */
     }
 
+    // En HomeFragment.java
+
     private void navegarADetalle(EntrenamientoDelDiaDTO entrenamiento) {
-        // Navegar a la pantalla de detalle del entrenamiento
-        // Implementa la navegación según tu arquitectura
+        // 1. Crear el paquete de datos (Bundle)
+        Bundle args = new Bundle();
+        // Pasamos el ID con la clave exacta que espera el otro fragmento
+        args.putInt("idEntrenamiento", entrenamiento.getIdEntrenamiento());
 
-        // Ejemplo con Intent:
-        // Intent intent = new Intent(requireContext(), DetalleEntrenamientoActivity.class);
-        // intent.putExtra("ID_ENTRENAMIENTO", entrenamiento.getIdEntrenamiento());
-        // startActivity(intent);
+        // Opcional: Pasar título para mostrarlo mientras carga
+        args.putString("titulo", entrenamiento.getTitulo());
 
-        // Ejemplo con NavController (Navigation Component):
-        // Bundle bundle = new Bundle();
-        // bundle.putInt("idEntrenamiento", entrenamiento.getIdEntrenamiento());
-        // NavHostFragment.findNavController(this)
-        //     .navigate(R.id.action_homeFragment_to_detalleFragment, bundle);
-
-        Toast.makeText(requireContext(),
-                "Navegar a: " + entrenamiento.getTitulo(),
-                Toast.LENGTH_SHORT).show();
+        // 2. Ejecutar la navegación real
+        try {
+            Navigation.findNavController(requireView()).navigate(
+                    R.id.detallesEntrenamientoFragment, // El ID de tu fragmento destino en mobile_navigation.xml
+                    args
+            );
+        } catch (Exception e) {
+            // Por si el ID del fragmento no coincide en tu navigation graph
+            e.printStackTrace();
+            Toast.makeText(requireContext(), "Error al navegar: Verifica tu mobile_navigation.xml", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void mostrarMensajeVacio() {
@@ -221,7 +226,10 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Refrescar datos cuando el usuario vuelve a esta pantalla
-        // viewModel.refrescarDatos();
+        // Esto hace que al volver (con el botón atrás), se recarguen los datos
+        // y la tarjeta cambie de "Pendiente" a "Completado" o desaparezca.
+        if (viewModel != null) {
+            viewModel.cargarHomeAlumno(); // O refrescarDatos()
+        }
     }
 }

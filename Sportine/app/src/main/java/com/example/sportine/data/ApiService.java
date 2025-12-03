@@ -3,9 +3,12 @@ package com.example.sportine.data;
 import com.example.sportine.models.CalificacionRequestDTO;
 import com.example.sportine.models.CalificacionResponseDTO;
 import com.example.sportine.models.Comentario;
+import com.example.sportine.models.CompletarEntrenamientoRequestDTO;
+import com.example.sportine.models.DetalleEntrenamientoDTO;
 import com.example.sportine.models.EntrenadorCardDTO;
 import com.example.sportine.models.FormularioSolicitudDTO;
 import com.example.sportine.models.HomeAlumnoDTO;
+import com.example.sportine.models.HomeEntrenadorDTO;
 import com.example.sportine.models.InfoDeporteAlumnoDTO;
 import com.example.sportine.models.PerfilEntrenadorDTO;
 import com.example.sportine.models.Publicacion;
@@ -147,6 +150,7 @@ public interface ApiService {
     // Inicio
     @GET("/api/alumnos/home/{usuario}")
     Call<HomeAlumnoDTO> obtenerHomeAlumno(@Path("usuario") String usuario);
+    // --- DETALLES ENTRENAMIENTO ALUMNO ---
 
     //Perfil
     @PUT("api/alumnos/{usuario}/actualizar-datos")
@@ -167,4 +171,29 @@ public interface ApiService {
             @Path("usuario") String usuario,
             @Part MultipartBody.Part foto
     );
+    @GET("/api/alumno/entrenamientos/{id}") // Antes era /entrenamiento/{id}
+    Call<DetalleEntrenamientoDTO> obtenerDetalleEntrenamiento(@Path("id") Integer idEntrenamiento);
+
+    // Marcar CheckBox (Ruta Actualizada)
+    @PUT("/api/alumno/entrenamientos/ejercicio/{idAsignado}/estado")
+    Call<Void> cambiarEstadoEjercicio(
+            @Path("idAsignado") Integer idAsignado,
+            @Query("completado") boolean completado
+    );
+
+    // Endpoint para completar el entrenamiento y mandar feedback
+    @POST("/api/alumno/entrenamientos/completar")
+    Call<Void> completarEntrenamiento(@Body CompletarEntrenamientoRequestDTO request);
+
+    // --- ENTRENADORES ---
+
+    @GET("/api/entrenador/home")
+    Call<HomeEntrenadorDTO> obtenerHomeEntrenador();
+
+    @POST("/api/entrenador/entrenamientos")
+    Call<Void> crearEntrenamiento(@Body com.example.sportine.models.CrearEntrenamientoRequestDTO request);
+
+    // ... otros endpoints
+    @GET("/api/entrenador/feedback")
+    Call<List<com.example.sportine.models.FeedbackResumenDTO>> obtenerFeedbackEntrenador();
 }

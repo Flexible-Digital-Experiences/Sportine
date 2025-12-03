@@ -31,6 +31,7 @@ public interface EntrenamientoRepository extends JpaRepository<Entrenamiento, In
     @Query(value = "SELECT * FROM entrenamiento " +
             "WHERE usuario = :usuario " +
             "AND fecha_entrenamiento = :fecha " +
+            "AND estado_entrenamiento != 'finalizado' " + // <--- ¡ESTA ES LA LÍNEA MÁGICA!
             "ORDER BY hora_entrenamiento ASC",
             nativeQuery = true)
     List<Entrenamiento> findEntrenamientosDelDia(
