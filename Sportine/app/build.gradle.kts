@@ -64,4 +64,7 @@ dependencies {
     implementation("org.ocpsoft.prettytime:prettytime:5.0.7.Final")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("com.airbnb.android:lottie:6.1.0")
+
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+    implementation("com.squareup.picasso:picasso:2.8")
 }

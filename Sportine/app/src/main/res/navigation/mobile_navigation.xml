@@ -189,5 +189,10 @@
         android:name="com.example.sportine.ui.usuarios.calificarentre.CalificarEntrenador"
         android:label="fragment_calificar_entrenador"
         tools:layout="@layout/fragment_calificar_entrenador" />
+    <fragment
+        android:id="@+id/navigation_stats_entrenador"
+        android:name="com.example.sportine.ui.entrenadores.estadisticas.EstadisticasEntrenadorFragment"
+        android:label="Estadísticas"
+        tools:layout="@layout/fragment_entrenador_estadisticas" />
 
 </navigation>
