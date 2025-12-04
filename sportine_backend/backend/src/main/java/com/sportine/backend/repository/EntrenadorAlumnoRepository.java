@@ -132,4 +132,7 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
 
     // ✅ AGREGAR ESTE MÉTODO
     Optional<EntrenadorAlumno> findByUsuarioEntrenadorAndUsuarioAlumno(String usuarioEntrenador, String usuarioAlumno);
+
+    @Query("SELECT COUNT(ea) FROM EntrenadorAlumno ea WHERE ea.usuarioEntrenador = :usuario AND ea.statusRelacion = 'activo'")
+    Integer contarAlumnosActivos(@Param("usuario") String usuario);
 }

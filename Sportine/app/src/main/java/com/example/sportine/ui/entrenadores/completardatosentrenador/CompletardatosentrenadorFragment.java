@@ -1,9 +1,14 @@
 package com.example.sportine.ui.entrenadores.completardatosentrenador;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,34 +16,59 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
+import com.bumptech.glide.Glide;
 import com.example.sportine.R;
+import com.example.sportine.data.ApiService;
+import com.example.sportine.data.RetrofitClient;
+import com.example.sportine.ui.entrenadores.dto.ActualizarPerfilEntrenadorDTO;
+import com.example.sportine.ui.entrenadores.dto.PerfilEntrenadorResponseDTO;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CompletardatosentrenadorFragment extends Fragment {
 
-    // Componentes de la UI
+    private static final String TAG = "CompletarDatosFragment";
+
+    // ==========================================
+    // COMPONENTES DE LA UI
+    // ==========================================
     private View btnBack;
     private ImageView ivAvatarCompletar;
 
     // Datos Actuales (Solo Lectura)
     private TextView tvCostoActual;
+    private TextView tvTipoCuentaActual;
     private TextView tvDeportesActual;
+    private TextView tvLimiteAlumnosActual;
     private TextView tvDescripcionActual;
 
     // Datos Nuevos (Editables)
     private TextInputEditText etCostoNuevo;
-    private TextInputEditText etDeportesNuevo;
+    private TextInputLayout layoutLimiteAlumnos;
+    private AutoCompleteTextView spinnerLimiteAlumnos;
     private TextInputEditText etDescripcionNuevo;
 
     private MaterialButton btnActualizar;
 
+    // API Service
+    private ApiService apiService;
+
+    // Datos del usuario
+    private String username;
+    private PerfilEntrenadorResponseDTO perfilActual;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Asegúrate de que este R.layout corresponde al XML que modernizamos
         return inflater.inflate(R.layout.fragment_entrenador_completar_datos, container, false);
     }
 
@@ -46,103 +76,266 @@ public class CompletardatosentrenadorFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 1. Inicializar Componentes
+        // 1. Inicializar componentes
         inicializarComponentes(view);
 
-        // 2. Cargar Datos Actuales
-        cargarDatosActuales();
+        // 2. Inicializar Retrofit
+        apiService = RetrofitClient.getClient(requireContext()).create(ApiService.class);
 
-        // 3. Configurar Listeners
-        configurarListeners(view);
+        // 3. Obtener username
+        obtenerDatosUsuarioLogueado();
+
+        // 4. Configurar listeners
+        configurarListeners();
+
+        // 5. Cargar datos actuales
+        cargarDatosActuales();
     }
 
-    // --- Métodos de Ayuda ---
-
     private void inicializarComponentes(@NonNull View view) {
-        // Encabezado y Avatar
+        Log.d(TAG, "Inicializando componentes...");
+
+        // Header
         btnBack = view.findViewById(R.id.btnBack);
         ivAvatarCompletar = view.findViewById(R.id.iv_avatar_completar);
 
         // Datos Actuales
         tvCostoActual = view.findViewById(R.id.tvCostoActual);
+        tvTipoCuentaActual = view.findViewById(R.id.tvTipoCuentaActual);
         tvDeportesActual = view.findViewById(R.id.tvDeportesActual);
+        tvLimiteAlumnosActual = view.findViewById(R.id.tvLimiteAlumnosActual);
         tvDescripcionActual = view.findViewById(R.id.tvDescripcionActual);
 
-        // Datos Nuevos (Editables)
+        // Datos Nuevos
         etCostoNuevo = view.findViewById(R.id.etCostoNuevo);
-        etDeportesNuevo = view.findViewById(R.id.etDeportesNuevo);
+        layoutLimiteAlumnos = view.findViewById(R.id.layoutLimiteAlumnos);
+        spinnerLimiteAlumnos = view.findViewById(R.id.spinnerLimiteAlumnos);
         etDescripcionNuevo = view.findViewById(R.id.etDescripcionNuevo);
 
         // Botón
         btnActualizar = view.findViewById(R.id.btnActualizar);
+
+        Log.d(TAG, "✓ Componentes inicializados");
     }
 
-    private void configurarListeners(@NonNull View view) {
-        // Botón Volver Atrás
+    private void obtenerDatosUsuarioLogueado() {
+        SharedPreferences prefs = requireContext()
+                .getSharedPreferences("SportinePrefs", Context.MODE_PRIVATE);
+        username = prefs.getString("USER_USERNAME", null);
+        Log.d(TAG, "Usuario logueado: " + username);
+    }
+
+    private void configurarListeners() {
+        // Botón volver
         btnBack.setOnClickListener(v -> requireActivity().onBackPressed());
 
-        // Botón Actualizar
+        // Botón actualizar
         btnActualizar.setOnClickListener(v -> actualizarDatos());
+    }
 
-        // Listener para la foto de perfil (para abrir la galería/cámara)
-        ivAvatarCompletar.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Abriendo selector de imágenes...", Toast.LENGTH_SHORT).show();
-            // ** Lógica real para abrir la galería/cámara aquí **
+    /**
+     * Carga los datos actuales del entrenador desde el backend
+     */
+    private void cargarDatosActuales() {
+        if (username == null) {
+            Toast.makeText(requireContext(),
+                    "Error: no se pudo obtener el usuario",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Log.d(TAG, "Cargando datos del entrenador: " + username);
+
+        Call<PerfilEntrenadorResponseDTO> call = apiService.obtenerMiPerfilEntrenador(username);
+
+        call.enqueue(new Callback<PerfilEntrenadorResponseDTO>() {
+            @Override
+            public void onResponse(Call<PerfilEntrenadorResponseDTO> call,
+                                   Response<PerfilEntrenadorResponseDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    perfilActual = response.body();
+                    Log.d(TAG, "✓ Datos cargados exitosamente");
+                    mostrarDatosActuales(perfilActual);
+                } else {
+                    Log.e(TAG, "❌ Error al cargar datos: " + response.code());
+                    Toast.makeText(requireContext(),
+                            "Error al cargar datos: " + response.code(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PerfilEntrenadorResponseDTO> call, Throwable t) {
+                Log.e(TAG, "❌ Error de conexión: " + t.getMessage(), t);
+                Toast.makeText(requireContext(),
+                        "Error de conexión: " + t.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
         });
     }
 
     /**
-     * Simula la carga de datos del perfil actual del entrenador.
-     * Estos datos se muestran como referencia para el usuario.
+     * Muestra los datos actuales en la UI
      */
-    private void cargarDatosActuales() {
-        // ** Reemplazar con la lógica real de obtención de datos (BD/API) **
+    private void mostrarDatosActuales(PerfilEntrenadorResponseDTO perfil) {
+        Log.d(TAG, "===== MOSTRANDO DATOS ACTUALES =====");
 
-        // Datos simulados
-        double costoActual = 800.00;
-        String deportesActuales = "Basketball, Fútbol, Atletismo";
-        String descripcionActual = "Instructor con 15 años de experiencia, especializado en entrenamiento funcional y deportes de equipo.";
+        // Costo
+        tvCostoActual.setText(perfil.getCostoMensualidad() != null
+                ? "$" + perfil.getCostoMensualidad()
+                : "-");
 
-        // Poblar TextViews de datos actuales
-        tvCostoActual.setText(String.format("$ %,.2f", costoActual));
-        tvDeportesActual.setText(deportesActuales);
-        tvDescripcionActual.setText(descripcionActual);
+        // Tipo de cuenta
+        String tipoCuenta = perfil.getTipoCuenta() != null
+                ? perfil.getTipoCuenta().toUpperCase()
+                : "GRATIS";
+        tvTipoCuentaActual.setText(tipoCuenta);
 
-        // Aquí también podrías cargar la foto de perfil (ivAvatarCompletar) si tuvieras la URL.
+        // Deportes
+        String deportes = perfil.getDeportes() != null && !perfil.getDeportes().isEmpty()
+                ? String.join(", ", perfil.getDeportes())
+                : "-";
+        tvDeportesActual.setText(deportes);
+
+        // Límite de alumnos
+        tvLimiteAlumnosActual.setText(perfil.getLimiteAlumnos() != null
+                ? String.valueOf(perfil.getLimiteAlumnos())
+                : "-");
+
+        // Descripción
+        tvDescripcionActual.setText(perfil.getDescripcionPerfil() != null
+                ? perfil.getDescripcionPerfil()
+                : "-");
+
+        // Foto
+        cargarFotoPerfil(perfil.getFotoPerfil());
+
+        // ✅ Configurar spinner de límite SOLO si es Premium
+        configurarSpinnerLimite(tipoCuenta);
+
+        Log.d(TAG, "===== FIN MOSTRAR DATOS =====");
     }
 
     /**
-     * Recoge los datos de los campos editables y simula el proceso de actualización.
+     * ✅ Configura el spinner de límite de alumnos SOLO si es Premium
+     */
+    private void configurarSpinnerLimite(String tipoCuenta) {
+        if ("PREMIUM".equalsIgnoreCase(tipoCuenta)) {
+            // Mostrar spinner
+            layoutLimiteAlumnos.setVisibility(View.VISIBLE);
+
+            // Opciones del spinner (5 a 50 alumnos)
+            List<String> opciones = new ArrayList<>();
+            for (int i = 5; i <= 50; i += 5) {
+                opciones.add(String.valueOf(i));
+            }
+
+            // Configurar adapter
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    requireContext(),
+                    android.R.layout.simple_dropdown_item_1line,
+                    opciones
+            );
+            spinnerLimiteAlumnos.setAdapter(adapter);
+
+            Log.d(TAG, "✓ Spinner de límite habilitado (Premium)");
+        } else {
+            // Ocultar spinner
+            layoutLimiteAlumnos.setVisibility(View.GONE);
+            Log.d(TAG, "✓ Spinner de límite oculto (Cuenta gratuita)");
+        }
+    }
+
+    /**
+     * Carga la foto de perfil
+     */
+    private void cargarFotoPerfil(String urlFoto) {
+        if (urlFoto != null && !urlFoto.isEmpty()) {
+            Glide.with(this)
+                    .load(urlFoto)
+                    .placeholder(R.drawable.ic_avatar_default)
+                    .error(R.drawable.ic_avatar_default)
+                    .circleCrop()
+                    .into(ivAvatarCompletar);
+        } else {
+            ivAvatarCompletar.setImageResource(R.drawable.ic_avatar_default);
+        }
+    }
+
+    /**
+     * Actualiza los datos del entrenador
      */
     private void actualizarDatos() {
-        String costoNuevo = etCostoNuevo.getText().toString().trim();
-        String deportesNuevo = etDeportesNuevo.getText().toString().trim();
-        String descripcionNueva = etDescripcionNuevo.getText().toString().trim();
+        Log.d(TAG, "Iniciando actualización de datos...");
 
-        // 1. Validaciones básicas (se pueden expandir)
-        if (costoNuevo.isEmpty() && deportesNuevo.isEmpty() && descripcionNueva.isEmpty()) {
-            Toast.makeText(getContext(), "Ingresa al menos un campo para actualizar", Toast.LENGTH_LONG).show();
+        // 1. Recoger datos
+        String costoStr = etCostoNuevo.getText().toString().trim();
+        String limiteStr = spinnerLimiteAlumnos.getText().toString().trim();
+        String descripcion = etDescripcionNuevo.getText().toString().trim();
+
+        // 2. Validar que al menos un campo esté lleno
+        if (costoStr.isEmpty() && limiteStr.isEmpty() && descripcion.isEmpty()) {
+            Toast.makeText(requireContext(),
+                    "Ingresa al menos un campo para actualizar",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // 2. Simulación de actualización
-        StringBuilder mensaje = new StringBuilder("Datos a actualizar:\n");
+        // 3. Crear DTO
+        ActualizarPerfilEntrenadorDTO dto = new ActualizarPerfilEntrenadorDTO();
 
-        if (!costoNuevo.isEmpty()) {
-            mensaje.append("Costo: $").append(costoNuevo).append("\n");
-        }
-        if (!deportesNuevo.isEmpty()) {
-            mensaje.append("Deportes: ").append(deportesNuevo).append("\n");
-        }
-        if (!descripcionNueva.isEmpty()) {
-            mensaje.append("Descripción: ").append(descripcionNueva).append("\n");
+        if (!costoStr.isEmpty()) {
+            dto.setCostoMensualidad(Integer.parseInt(costoStr));
         }
 
-        Toast.makeText(getContext(), "Actualizando datos...\n" + mensaje.toString(), Toast.LENGTH_LONG).show();
+        if (!limiteStr.isEmpty()) {
+            dto.setLimiteAlumnos(Integer.parseInt(limiteStr));
+        }
 
-        // ** Lógica real de guardado en la BD/API aquí **
+        if (!descripcion.isEmpty()) {
+            dto.setDescripcionPerfil(descripcion);
+        }
 
-        // 3. (Opcional) Navegar de vuelta a la configuración o recargar datos
-        // Navigation.findNavController(requireView()).popBackStack();
+        // 4. Enviar al backend
+        Log.d(TAG, "Enviando datos al backend...");
+
+        Call<PerfilEntrenadorResponseDTO> call = apiService
+                .actualizarPerfilEntrenador(username, dto);
+
+        call.enqueue(new Callback<PerfilEntrenadorResponseDTO>() {
+            @Override
+            public void onResponse(Call<PerfilEntrenadorResponseDTO> call,
+                                   Response<PerfilEntrenadorResponseDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d(TAG, "✓ Perfil actualizado exitosamente");
+                    Toast.makeText(requireContext(),
+                            "Perfil actualizado correctamente",
+                            Toast.LENGTH_SHORT).show();
+
+                    // Recargar datos
+                    perfilActual = response.body();
+                    mostrarDatosActuales(perfilActual);
+
+                    // Limpiar campos
+                    etCostoNuevo.setText("");
+                    spinnerLimiteAlumnos.setText("");
+                    etDescripcionNuevo.setText("");
+
+                } else {
+                    Log.e(TAG, "❌ Error al actualizar: " + response.code());
+                    Toast.makeText(requireContext(),
+                            "Error al actualizar: " + response.code(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PerfilEntrenadorResponseDTO> call, Throwable t) {
+                Log.e(TAG, "❌ Error de conexión: " + t.getMessage(), t);
+                Toast.makeText(requireContext(),
+                        "Error de conexión: " + t.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

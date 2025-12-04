@@ -84,10 +84,6 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
         tvAlumnosInscritos = view.findViewById(R.id.tvAlumnosInscritos);
         tvDineroGanado = view.findViewById(R.id.tvDineroGanado);
 
-        // Tema
-        checkClaro = view.findViewById(R.id.checkClaro);
-        checkObscuro = view.findViewById(R.id.checkObscuro);
-
         // Controles de Navegación/Acción
         btnBack = view.findViewById(R.id.btnBack);
         btnModificar = view.findViewById(R.id.btnModificarentrena);

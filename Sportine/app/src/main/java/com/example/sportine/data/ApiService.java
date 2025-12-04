@@ -27,6 +27,7 @@ import com.example.sportine.models.TrainingFrequencyDTO;
 import com.example.sportine.models.Usuario;
 import com.example.sportine.models.PublicacionFeedDTO;
 import com.example.sportine.models.UsuarioDetalle;
+import com.example.sportine.ui.entrenadores.dto.PerfilEntrenadorResponseDTO;
 import com.example.sportine.ui.usuarios.dto.ActualizarDatosAlumnoDTO;
 import com.example.sportine.ui.usuarios.dto.ActualizarUsuarioDTO;
 import com.example.sportine.ui.usuarios.dto.LoginRequest;
@@ -36,6 +37,7 @@ import com.example.sportine.ui.usuarios.dto.ComentarioRequest;
 import com.example.sportine.ui.usuarios.dto.UsuarioDetalleDTO;
 import com.example.sportine.ui.usuarios.dto.PerfilAlumnoResponseDTO;
 import com.example.sportine.ui.usuarios.enviarsolicitud.EnviarSolicitud;
+import com.example.sportine.ui.entrenadores.dto.ActualizarPerfilEntrenadorDTO;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -294,5 +296,18 @@ public interface ApiService {
             @Path("usuarioAlumno") String usuarioAlumno
     );
 
+
+    // Método para obtener perfil del entrenador
+    @GET("/api/entrenadores/perfil/{usuario}")
+    Call<PerfilEntrenadorResponseDTO> obtenerMiPerfilEntrenador(
+            @Path("usuario") String usuario
+    );
+
+    // Actualizar perfil del entrenador
+    @PUT("/api/entrenadores/perfil/{usuario}")
+    Call<PerfilEntrenadorResponseDTO> actualizarPerfilEntrenador(
+            @Path("usuario") String usuario,
+            @Body ActualizarPerfilEntrenadorDTO datos
+    );
 
 }
