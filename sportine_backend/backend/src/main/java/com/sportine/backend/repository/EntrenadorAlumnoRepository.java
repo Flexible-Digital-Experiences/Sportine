@@ -125,4 +125,11 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
             @Param("fechaInicio") LocalDate fechaInicio,
             @Param("fechaFin") LocalDate fechaFin
     );
+
+    // ✅ AGREGAR ESTE MÉTODO
+    @Query("SELECT ea FROM EntrenadorAlumno ea WHERE ea.usuarioEntrenador = :usuarioEntrenador AND ea.statusRelacion = 'activo'")
+    List<EntrenadorAlumno> findAlumnosActivosByEntrenador(@Param("usuarioEntrenador") String usuarioEntrenador);
+
+    // ✅ AGREGAR ESTE MÉTODO
+    Optional<EntrenadorAlumno> findByUsuarioEntrenadorAndUsuarioAlumno(String usuarioEntrenador, String usuarioAlumno);
 }

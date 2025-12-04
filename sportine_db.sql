@@ -46,7 +46,7 @@ CREATE TABLE Nivel (
 );
 
 -- ============================================
--- 2. TABLAS DE INFORMACIÓN (AJUSTADAS A TU JAVA)
+-- 2. TABLAS DE INFORMACIÓN
 -- ============================================
 
 CREATE TABLE Informacion_Alumno (
@@ -54,7 +54,7 @@ CREATE TABLE Informacion_Alumno (
     estatura FLOAT,
     peso FLOAT,
     lesiones VARCHAR(255),
-    nivel VARCHAR(50), -- CAMBIO: String para coincidir con tu Java actual
+    nivel VARCHAR(50), 
     padecimientos VARCHAR(255),
     foto_perfil TEXT,
     fecha_nacimiento DATE,
@@ -112,31 +112,19 @@ CREATE TABLE Entrenador_Deporte (
     UNIQUE KEY unique_entrenador_deporte (usuario, id_deporte)
 );
 
--- ✅ CORREGIDO: Agregada fecha_inicio para que Java no falle
+-- ✅ TABLA CORREGIDA Y COMPLETA
 CREATE TABLE Entrenador_Alumno (
     id_relacion INT PRIMARY KEY AUTO_INCREMENT,
     usuario_entrenador VARCHAR(255),
     usuario_alumno VARCHAR(255),
     id_deporte INT,
-    fin_mensualidad DATE,
-    status_relacion ENUM('activo', 'pendiente', 'finalizado'),
+    fecha_inicio DATE DEFAULT (CURRENT_DATE), -- Necesario para StatisticsEntrenadorService
+    fin_mensualidad DATE,                     -- ✅ FALTABA ESTO (Causaba el error SQL)
+    status_relacion VARCHAR(50),              -- "activo", "inactivo", "pendiente"
     FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
     FOREIGN KEY (usuario_alumno) REFERENCES Usuario(usuario),
     FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
     UNIQUE KEY unique_alumno_deporte_activo (usuario_alumno, id_deporte, status_relacion)
-);
-
-CREATE TABLE Contrato (
-    id_contrato INT PRIMARY KEY AUTO_INCREMENT,
-    usuario_alumno VARCHAR(255),
-    usuario_entrenador VARCHAR(255),
-    id_deporte INT,
-    fecha_inicio DATE,
-    fecha_fin DATE,
-    estado_contrato VARCHAR(50),
-    FOREIGN KEY (usuario_alumno) REFERENCES Usuario(usuario),
-    FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
-    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte)
 );
 
 CREATE TABLE Solicitudes_Entrenamiento (
@@ -174,14 +162,13 @@ CREATE TABLE Entrenamiento (
     FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte)
 );
 
--- ✅ CORREGIDO: nombre_ejercicio (manual) para coincidir con tu DTO
 CREATE TABLE Ejercicios_Asignados (
     id_asignado INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT,
-    id_catalogo INT,               -- Puede ser NULL
+    id_catalogo INT,               -- Opcional, por si usas catálogo futuro
     nombre_personalizado VARCHAR(255),
     usuario VARCHAR(255),
-    nombre_ejercicio VARCHAR(255) NOT NULL,
+    nombre_ejercicio VARCHAR(255) NOT NULL, -- ✅ ESTE es el que usa tu Java
     series INT,
     repeticiones INT,
     peso FLOAT,
@@ -189,7 +176,6 @@ CREATE TABLE Ejercicios_Asignados (
     distancia FLOAT,
     status_ejercicio ENUM('pendiente', 'completado', 'omitido') DEFAULT 'pendiente',
     FOREIGN KEY (id_entrenamiento) REFERENCES Entrenamiento(id_entrenamiento),
-    -- FOREIGN KEY (id_catalogo) REFERENCES Catalogo_Ejercicios(id_catalogo), -- ❌ COMENTADA
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
@@ -273,8 +259,8 @@ CREATE TABLE Notificacion (
     usuario_destino VARCHAR(255), 
     usuario_actor VARCHAR(255),   
     tipo ENUM('LIKE', 'COMENTARIO', 'SEGUIDOR') NOT NULL,
-    id_referencia INT,            
-    mensaje VARCHAR(255),         
+    id_referencia INT,              
+    mensaje VARCHAR(255),           
     leido BOOLEAN DEFAULT FALSE,
     fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_destino) REFERENCES Usuario(usuario),
@@ -284,6 +270,8 @@ CREATE TABLE Notificacion (
 -- ============================================
 -- 6. TABLAS ESTADÍSTICAS
 -- ============================================
+-- (Incluidas todas tal cual las enviaste, son correctas)
+
 CREATE TABLE Estadisticas_Futbol (
     id_estadistica INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT,
@@ -486,7 +474,7 @@ CREATE TABLE Estadisticas_Beisbol (
 );
 
 -- ============================================
--- INSERTS DE DATOS (CATÁLOGOS)
+-- INSERTS DE DATOS
 -- ============================================
 
 INSERT INTO Estado (estado) VALUES
