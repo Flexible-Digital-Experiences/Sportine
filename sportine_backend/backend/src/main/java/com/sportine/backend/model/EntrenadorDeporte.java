@@ -21,9 +21,10 @@ public class EntrenadorDeporte {
     @Column(name = "usuario")
     private String usuario;
 
-    @Column(name = "deporte")
-    private String deporte;
+    @Column(name = "id_deporte")
+    private Integer idDeporte;
 
+    // Relación LAZY con Usuario (opcional)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario", insertable = false, updatable = false)
     private Usuario usuarioEntity;

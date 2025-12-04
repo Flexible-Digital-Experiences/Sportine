@@ -1,3 +1,4 @@
+drop database if exists sportine_db;
 CREATE DATABASE sportine_db;
 USE sportine_db;
 
@@ -105,8 +106,6 @@ CREATE TABLE Entrenador_Deporte (
     id_entrenador_deporte INT PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(255),
     id_deporte INT,
-    años_experiencia INT,
-    certificaciones VARCHAR(255),
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
     FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
     UNIQUE KEY unique_entrenador_deporte (usuario, id_deporte)

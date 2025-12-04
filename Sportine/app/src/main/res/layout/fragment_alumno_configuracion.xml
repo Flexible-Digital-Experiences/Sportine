@@ -431,6 +431,24 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- ✅ NUEVO: Botón Cerrar Sesión -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCerrarSesion"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Cerrar Sesión"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="16dp"
+                    app:backgroundTint="#EF5350"
+                    android:textColor="@color/white"
+                    app:elevation="4dp"
+                    app:iconGravity="start"
+                    app:iconTint="@color/white"
+                    android:textAllCaps="false"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="20dp"/>
+
                 <!-- ====================================================== -->
                 <!-- SECCIÓN DE FORMAS DE PAGO (OCULTA TEMPORALMENTE) -->
                 <!-- Se activará cuando implementes PayPal -->

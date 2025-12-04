@@ -1,5 +1,6 @@
 package com.example.sportine.ui.usuarios.configuracion;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -63,7 +64,7 @@ public class ConfiguracionFragment extends Fragment {
     private TextView tvCiudad;
     private TextView tvPassword;
     private ImageView btnTogglePassword;
-    private MaterialButton btnModificar;
+    private MaterialButton btnModificar, btnCerrarSesion;
     private MaterialCardView btnBack;
 
     // API Service
@@ -133,6 +134,7 @@ public class ConfiguracionFragment extends Fragment {
         btnTogglePassword = view.findViewById(R.id.btnTogglePassword);
         btnModificar = view.findViewById(R.id.btnModificar);
         btnBack = view.findViewById(R.id.btnBack);
+        btnCerrarSesion = view.findViewById(R.id.btnCerrarSesion);
 
         Log.d(TAG, "✓ Componentes inicializados");
     }
@@ -197,6 +199,14 @@ public class ConfiguracionFragment extends Fragment {
             btnEditarFoto.setOnClickListener(v -> abrirSelectorImagen());
         } else {
             Log.w(TAG, "⚠️ btnEditarFoto no encontrado en el layout");
+        }
+
+        // ✅ Botón cerrar sesión
+        if (btnCerrarSesion != null) {
+            btnCerrarSesion.setOnClickListener(v -> mostrarDialogoCerrarSesion());
+            Log.d(TAG, "✓ Botón cerrar sesión configurado");
+        } else {
+            Log.e(TAG, "❌ btnCerrarSesion no encontrado");
         }
     }
 
@@ -454,5 +464,46 @@ public class ConfiguracionFragment extends Fragment {
         } else {
             ivAvatarConfig.setImageResource(R.drawable.ic_avatar_default);
         }
+    }
+    /**
+     * ✅ NUEVO: Muestra un diálogo de confirmación antes de cerrar sesión
+     */
+    private void mostrarDialogoCerrarSesion() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Cerrar Sesión")
+                .setMessage("¿Estás seguro de que deseas cerrar sesión?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton("Sí, cerrar sesión", (dialog, which) -> cerrarSesion())
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    /**
+     * ✅ NUEVO: Cierra la sesión del usuario
+     */
+    private void cerrarSesion() {
+        Log.d(TAG, "Cerrando sesión del usuario: " + username);
+
+        // 1. Limpiar SharedPreferences
+        SharedPreferences prefs = requireContext()
+                .getSharedPreferences("SportinePrefs", Context.MODE_PRIVATE);
+        prefs.edit().clear().apply();
+
+        Log.d(TAG, "✓ SharedPreferences limpiadas");
+
+        // 2. Mostrar mensaje
+        Toast.makeText(requireContext(),
+                "Sesión cerrada correctamente",
+                Toast.LENGTH_SHORT).show();
+
+        // 3. Redirigir a LoginActivity
+        Intent intent = new Intent(requireContext(), com.example.sportine.ui.usuarios.login.LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+
+        // 4. Cerrar la actividad actual
+        requireActivity().finish();
+
+        Log.d(TAG, "✓ Redirigido a LoginActivity");
     }
 }

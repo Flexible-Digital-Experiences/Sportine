@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F8F9FA">
 
     <ScrollView
-        android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="100dp"
         android:fillViewport="true">
 
         <LinearLayout
@@ -22,6 +22,7 @@
             android:orientation="vertical"
             android:paddingBottom="24dp">
 
+            <!-- HEADER -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -71,8 +72,8 @@
                 android:paddingEnd="24dp"
                 android:gravity="center_horizontal">
 
+                <!-- AVATAR -->
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_avatar_completar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
@@ -86,11 +87,13 @@
                         android:layout_width="120dp"
                         android:layout_height="120dp"
                         android:scaleType="centerCrop"
-
+                        android:src="@drawable/ic_avatar_default"
                         android:contentDescription="Foto de perfil"/>
                 </com.google.android.material.card.MaterialCardView>
 
-
+                <!-- ========================================
+                     DATOS ACTUALES (CON TIPO CUENTA Y LÍMITE)
+                     ======================================== -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -114,6 +117,7 @@
                             android:textStyle="bold"
                             android:layout_marginBottom="16dp"/>
 
+                        <!-- ✅ FILA 1: Costo y Tipo Cuenta -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -135,8 +139,7 @@
                                     android:text="Costo Mensualidad"
                                     android:textColor="#9CA3AF"
                                     android:textSize="11sp"
-                                    android:textStyle="bold"
-                                    android:letterSpacing="0.05"/>
+                                    android:textStyle="bold"/>
 
                                 <TextView
                                     android:id="@+id/tvCostoActual"
@@ -159,11 +162,44 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:text="Tipo de Cuenta"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"/>
+
+                                <TextView
+                                    android:id="@+id/tvTipoCuentaActual"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- ✅ FILA 2: Deportes y Límite Alumnos -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="12dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp"
+                                android:layout_marginEnd="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
                                     android:text="Deportes"
                                     android:textColor="#9CA3AF"
                                     android:textSize="11sp"
-                                    android:textStyle="bold"
-                                    android:letterSpacing="0.05"/>
+                                    android:textStyle="bold"/>
 
                                 <TextView
                                     android:id="@+id/tvDeportesActual"
@@ -173,8 +209,35 @@
                                     android:textSize="15sp"
                                     android:layout_marginTop="4dp" />
                             </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp"
+                                android:layout_marginStart="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Límite Alumnos"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"/>
+
+                                <TextView
+                                    android:id="@+id/tvLimiteAlumnosActual"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
                         </LinearLayout>
 
+                        <!-- FILA 3: Descripción -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -188,8 +251,7 @@
                                 android:text="Descripción del Perfil"
                                 android:textColor="#9CA3AF"
                                 android:textSize="11sp"
-                                android:textStyle="bold"
-                                android:letterSpacing="0.05"/>
+                                android:textStyle="bold"/>
 
                             <TextView
                                 android:id="@+id/tvDescripcionActual"
@@ -202,6 +264,7 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- TÍTULO MODIFICAR -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -221,56 +284,58 @@
                     android:gravity="center"
                     android:layout_marginBottom="24dp"/>
 
-                <LinearLayout
+                <!-- ========================================
+                     CAMPOS EDITABLES
+                     ======================================== -->
+
+                <!-- COSTO -->
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:hint="Costo de mensualidad"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    app:prefixText="$"
+                    app:boxStrokeColor="#00A896"
                     android:layout_marginBottom="16dp">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="0dp"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etCostoNuevo"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="Costo de mensualidad"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                        app:prefixText="$"
-                        app:boxStrokeColor="#00A896"
-                        android:layout_marginEnd="8dp">
+                        android:inputType="number"
+                        android:textColor="#1A1A1A"
+                        android:textSize="14sp"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etCostoNuevo"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="numberDecimal"
-                            android:textColor="#1A1A1A"
-                            android:textSize="14sp"/>
-                    </com.google.android.material.textfield.TextInputLayout>
+                <!-- ✅ SPINNER DE LÍMITE (SOLO SI ES PREMIUM) -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutLimiteAlumnos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Límite de Alumnos"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                    app:boxStrokeColor="#00A896"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="gone">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="0dp"
+                    <AutoCompleteTextView
+                        android:id="@+id/spinnerLimiteAlumnos"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="Deportes (ej: Fútbol, Natación)"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                        app:boxStrokeColor="#00A896"
-                        android:layout_marginStart="8dp">
+                        android:inputType="none"
+                        android:textColor="#1A1A1A"
+                        android:textSize="14sp"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etDeportesNuevo"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="text"
-                            android:textColor="#1A1A1A"
-                            android:textSize="14sp"/>
-                    </com.google.android.material.textfield.TextInputLayout>
-                </LinearLayout>
-
+                <!-- DESCRIPCIÓN -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Descripción del perfil (máx. 250 caracteres)"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     app:boxStrokeColor="#00A896"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="250"
                     android:layout_marginBottom="30dp">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -279,12 +344,13 @@
                         android:layout_height="wrap_content"
                         android:gravity="top"
                         android:lines="4"
+                        android:maxLength="250"
                         android:inputType="textMultiLine"
                         android:textColor="#1A1A1A"
                         android:textSize="14sp"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
-
+                <!-- BOTÓN ACTUALIZAR -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnActualizar"
                     android:layout_width="match_parent"
