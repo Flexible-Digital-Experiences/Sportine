@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Date; // Import necesario para Publicacion
 
 /**
  * Implementación del servicio para marcar entrenamientos como completados.
@@ -26,6 +27,8 @@ public class CompletarEntrenamientoServiceImpl implements CompletarEntrenamiento
     private final EntrenamientoRepository entrenamientoRepository;
     private final ProgresoEntrenamientoRepository progresoEntrenamientoRepository;
     private final FeedbackEntrenamientoRepository feedbackEntrenamientoRepository;
+    // Repositorio inyectado para la funcionalidad social
+    private final PublicacionRepository publicacionRepository;
 
     @Override
     @Transactional
@@ -57,6 +60,9 @@ public class CompletarEntrenamientoServiceImpl implements CompletarEntrenamiento
         if (request.getComentarios() != null || request.getNivelCansancio() != null) {
             guardarFeedback(request, username);
         }
+
+        // Generación automática de la publicación de logro
+        generarPublicacionAutomatica(entrenamiento, username);
 
         log.info("Entrenamiento {} completado exitosamente por {}", request.getIdEntrenamiento(), username);
         return "Entrenamiento completado exitosamente";
@@ -105,5 +111,35 @@ public class CompletarEntrenamientoServiceImpl implements CompletarEntrenamiento
 
         feedbackEntrenamientoRepository.save(feedback);
         log.info("Feedback guardado para entrenamiento {}", request.getIdEntrenamiento());
+    }
+
+    /**
+     * Genera una publicación automática basada en la dificultad del entrenamiento
+     */
+    private void generarPublicacionAutomatica(Entrenamiento entrenamiento, String username) {
+        String dificultad = entrenamiento.getDificultad();
+        String titulo = entrenamiento.getTituloEntrenamiento();
+        String objetivo = entrenamiento.getObjetivo();
+
+        int tipoPublicacion = 1; // 1: Normal, 2: Logro
+        String mensaje;
+
+        // Determina si es un logro basado en la dificultad
+        if (dificultad != null && (dificultad.equalsIgnoreCase("Dificil") || dificultad.equalsIgnoreCase("Avanzado"))) {
+            tipoPublicacion = 2;
+            mensaje = "¡Nivel Experto Desbloqueado! 🔥\nCompletó '" + titulo + "' en modo DIFÍCIL.\n🎯 Objetivo cumplido: " + objetivo;
+        } else {
+            tipoPublicacion = 1;
+            mensaje = "Entrenamiento '" + titulo + "' finalizado.\nEnfoque: " + objetivo;
+        }
+
+        Publicacion post = new Publicacion();
+        post.setUsuario(username);
+        post.setDescripcion(mensaje);
+        post.setFechaPublicacion(new Date());
+        post.setTipo(tipoPublicacion);
+        post.setImagen(null);
+
+        publicacionRepository.save(post);
     }
 }

@@ -1,6 +1,6 @@
 package com.sportine.backend.model;
 
-import jakarta.persistence.*; // O javax.persistence.*
+import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -11,28 +11,29 @@ public class Publicacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_publicacion;
 
-    // Si 'usuario' es una relación @ManyToOne con la tabla Usuario,
-    // esto se puede cambiar, pero por ahora un String funciona bien)
     @Column(name = "usuario")
     private String usuario;
 
     @Column(name = "descripcion")
     private String descripcion;
 
+    // CORREGIDO: Usamos camelCase para que coincida con Java
     @Column(name = "fecha_publicacion")
-    @Temporal(TemporalType.TIMESTAMP) // <-- ¡ESTA ES LA CORRECCIÓN!
-    private Date fecha_publicacion;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaPublicacion;
 
     @Column(name = "imagen")
     private String imagen;
 
-    // --- Constructores, Getters y Setters (Spring los necesita) ---
+    // NUEVO: Agregamos el tipo para los logros (1=Normal, 2=Logro)
+    @Column(name = "tipo")
+    private Integer tipo;
 
-    public Publicacion() {
-        // Constructor vacío
-    }
+    // --- Constructores ---
+    public Publicacion() { }
 
-    // Getters y Setters
+    // --- Getters y Setters ---
+
     public Integer getId_publicacion() {
         return id_publicacion;
     }
@@ -57,12 +58,13 @@ public class Publicacion {
         this.descripcion = descripcion;
     }
 
-    public Date getFecha_publicacion() {
-        return fecha_publicacion;
+    // Setter corregido (ahora sí lo encontrará tu servicio)
+    public Date getFechaPublicacion() {
+        return fechaPublicacion;
     }
 
-    public void setFecha_publicacion(Date fecha_publicacion) {
-        this.fecha_publicacion = fecha_publicacion;
+    public void setFechaPublicacion(Date fechaPublicacion) {
+        this.fechaPublicacion = fechaPublicacion;
     }
 
     public String getImagen() {
@@ -71,5 +73,14 @@ public class Publicacion {
 
     public void setImagen(String imagen) {
         this.imagen = imagen;
+    }
+
+    // Getters y Setters para TIPO
+    public Integer getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(Integer tipo) {
+        this.tipo = tipo;
     }
 }

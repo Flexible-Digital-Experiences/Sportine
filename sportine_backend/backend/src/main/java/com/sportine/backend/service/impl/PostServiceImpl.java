@@ -55,13 +55,19 @@ public class PostServiceImpl implements PostService {
             dto.setIdPublicacion(publicacion.getId_publicacion());
             dto.setDescripcion(publicacion.getDescripcion());
             dto.setImagen(publicacion.getImagen());
-            dto.setFechaPublicacion(publicacion.getFecha_publicacion());
+
+            // CORREGIDO: Getter camelCase
+            dto.setFechaPublicacion(publicacion.getFechaPublicacion());
+
             dto.setAutorUsername(autorUsername);
             dto.setAutorNombreCompleto(nombreCompleto);
             dto.setAutorFotoPerfil(fotoPerfilUrl);
             dto.setTotalLikes(totalLikes);
             dto.setLikedByMe(isLikedByMe);
             dto.setMine(isMine);
+
+            // NUEVO: Mapeamos el tipo para saber si es logro o normal
+            dto.setTipo(publicacion.getTipo());
 
             return dto;
         }).collect(Collectors.toList());
@@ -81,7 +87,12 @@ public class PostServiceImpl implements PostService {
         nuevaPublicacion.setUsuario(autor.getUsuario());
         nuevaPublicacion.setDescripcion(dto.getDescripcion());
         nuevaPublicacion.setImagen(dto.getImagen());
-        nuevaPublicacion.setFecha_publicacion(new Date());
+
+        // CORREGIDO: Setter camelCase
+        nuevaPublicacion.setFechaPublicacion(new Date());
+
+        // NUEVO: Asignamos tipo 1 (Normal) por defecto
+        nuevaPublicacion.setTipo(1);
 
         return publicacionRepository.save(nuevaPublicacion);
     }
