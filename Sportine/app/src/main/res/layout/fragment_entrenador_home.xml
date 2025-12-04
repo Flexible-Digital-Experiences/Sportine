@@ -15,7 +15,7 @@
         android:paddingStart="@dimen/spacing_xlarge"
         android:paddingEnd="@dimen/spacing_xlarge"
         android:paddingTop="@dimen/spacing_large"
-        android:paddingBottom="@dimen/spacing_xxlarge">
+        android:paddingBottom="120dp">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_bienvenida"

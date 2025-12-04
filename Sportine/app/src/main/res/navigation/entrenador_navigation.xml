@@ -31,7 +31,7 @@
     <!-- ESTADÍSTICAS ENTRENADOR -->
     <fragment
         android:id="@+id/navigation_stats_entrenador"
-        android:name="com.example.sportine.ui.entrenadores.estadisticas.EstadisticasFragment"
+        android:name="com.example.sportine.ui.entrenadores.estadisticas.EstadisticasEntrenadorFragment"
         android:label="Estadísticas"
         tools:layout="@layout/fragment_entrenador_estadisticas" />
 

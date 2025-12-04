@@ -1,115 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAFAFA"
-    android:fillViewport="true"
-    tools:context=".ui.entrenadores.estadisticas.EstadisticasFragment">
+    android:background="#FAFAFA">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="24dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <!-- Título de la página -->
-        <TextView
-            android:id="@+id/text_titulo_estadisticas"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Estadísticas"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            android:textColor="#1A1A1A"
-            android:fontFamily="sans-serif-medium"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:paddingBottom="120dp">
 
-        <!-- Separador visual -->
-        <View
-            android:id="@+id/divider_titulo"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="#E5E7EB"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/text_titulo_estadisticas"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <!-- ==================== HEADER ==================== -->
 
-        <!-- Sección: Tus deportes -->
-        <LinearLayout
-            android:id="@+id/layout_tus_alumnos_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="24dp"
-            app:layout_constraintTop_toBottomOf="@id/divider_titulo"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <View
-                android:layout_width="3dp"
-                android:layout_height="20dp"
-                android:background="#3B82F6"
-                android:layout_marginEnd="10dp" />
-
+            <!-- Título -->
             <TextView
-                android:id="@+id/text_tus_alumnos"
+                android:id="@+id/text_titulo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tus alumnos"
-                android:textColor="#1A1A1A"
-                android:textSize="18sp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:text="Estadísticas"
+                android:textSize="28sp"
                 android:textStyle="bold"
-                android:fontFamily="sans-serif-medium" />
-        </LinearLayout>
+                android:textColor="#1A1A1A"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        <!-- RecyclerView horizontal para iconos de alumnos (DINÁMICO) -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_alumnos"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:clipToPadding="false"
-            android:paddingEnd="8dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/layout_tus_alumnos_header"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:listitem="@layout/item_entrenador_selector_alumno_card"
-            tools:itemCount="3" />
+            <!-- Subtítulo con contador de alumnos -->
+            <TextView
+                android:id="@+id/text_total_alumnos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="0 alumnos"
+                android:textSize="14sp"
+                android:textColor="#6B7280"
+                app:layout_constraintTop_toBottomOf="@id/text_titulo"
+                app:layout_constraintStart_toStartOf="@id/text_titulo" />
 
-        <!-- Separador antes de las gráficas -->
-        <View
-            android:id="@+id/divider_alumnos"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="#E5E7EB"
-            android:layout_marginTop="24dp"
-            app:layout_constraintTop_toBottomOf="@id/recycler_alumnos"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <!-- Divider -->
+            <View
+                android:id="@+id/divider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="#E5E7EB"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintTop_toBottomOf="@id/text_total_alumnos"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- RecyclerView para las gráficas (DINÁMICO desde backend) -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_graficas"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:orientation="vertical"
-            android:nestedScrollingEnabled="false"
-            app:layout_constraintTop_toBottomOf="@id/divider_alumnos"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:listitem="@layout/item_entrenador_estadistica_card"
-            tools:itemCount="3" />
+            <!-- ==================== LISTA DE ALUMNOS ==================== -->
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_alumnos"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:clipToPadding="false"
+                android:paddingBottom="16dp"
+                app:layout_constraintTop_toBottomOf="@id/divider"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:listitem="@layout/item_alumno_stats_card"
+                tools:itemCount="3" />
+
+            <!-- ==================== LOADING STATE ==================== -->
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:visibility="visible" />
+
+            <!-- ==================== EMPTY STATE ==================== -->
+
+            <LinearLayout
+                android:id="@+id/layout_empty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="32dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="👥"
+                    android:textSize="64sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="No tienes alumnos aún"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1A1A"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Los alumnos que te agreguen aparecerán aquí"
+                    android:textSize="14sp"
+                    android:textColor="#6B7280"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <!-- ==================== ERROR STATE ==================== -->
+
+            <LinearLayout
+                android:id="@+id/layout_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="32dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="❌"
+                    android:textSize="64sp" />
+
+                <TextView
+                    android:id="@+id/text_error"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Error al cargar datos"
+                    android:textSize="16sp"
+                    android:textColor="#6B7280"
+                    android:gravity="center" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
