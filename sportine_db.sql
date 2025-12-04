@@ -222,6 +222,7 @@ CREATE TABLE Publicacion (
     descripcion VARCHAR(255),
     fecha_publicacion DATETIME,
     imagen TEXT,
+    tipo INT DEFAULT 1, -- 1=Normal (Blanco), 2=Logro (Verde)
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
