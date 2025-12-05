@@ -19,19 +19,21 @@ public class UsuarioDetalle {
     @SerializedName("fotoPerfil")
     private String fotoPerfil;
 
-    @SerializedName("isAmigo")
-
-    private boolean isAmigo;
+    // ✅ CORRECCIÓN: Mapeamos al campo 'siguiendo' del backend
+    @SerializedName("siguiendo")
+    private boolean siguiendo;
 
     // Getters y Setters
-    public boolean isAmigo() { return isAmigo; }
-    public void setAmigo(boolean amigo) { isAmigo = amigo; }
+    public boolean isSiguiendo() { return siguiendo; }
+    public void setSiguiendo(boolean siguiendo) { this.siguiendo = siguiendo; }
+
+    // Métodos de compatibilidad para que no rompa tu código viejo
+    public boolean isAmigo() { return siguiendo; }
+    public void setAmigo(boolean amigo) { this.siguiendo = amigo; }
 
     public String getUsuario() { return usuario; }
     public String getNombre() { return nombre; }
     public String getApellidos() { return apellidos; }
-
     public String getCiudad() { return ciudad; }
-
     public String getFotoPerfil() { return fotoPerfil; }
 }

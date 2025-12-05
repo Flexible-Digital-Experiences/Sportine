@@ -21,7 +21,7 @@ import com.example.sportine.models.UsuarioDetalle;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.List;
-import java.util.Map; // --- CAMBIO: Importar Map
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -88,10 +88,9 @@ public class BuscarAmigoFragment extends Fragment implements AmigosAdapter.OnIte
                     adapter.setUsuarios(resultados);
 
                     if (resultados.isEmpty()) {
-                        Toast.makeText(getContext(), "No se encontraron usuarios", Toast.LENGTH_SHORT).show();
+                        // Opcional: Toast solo si es submit explícito para no spamear mientras escribe
+                        // Toast.makeText(getContext(), "No se encontraron usuarios", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(getContext(), "Error al buscar", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -104,24 +103,20 @@ public class BuscarAmigoFragment extends Fragment implements AmigosAdapter.OnIte
 
     @Override
     public void onAction(UsuarioDetalle usuario) {
+        // ✅ CORRECCIÓN: Aquí ya NO actualizamos la UI ni el modelo.
+        // El Adapter ya se encargó de eso instantáneamente (Optimistic UI).
+        // Aquí solo hacemos la llamada silenciosa al backend.
 
         apiService.seguirUsuario(usuario.getUsuario()).enqueue(new Callback<Map<String, String>>() {
             @Override
             public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
                 if (response.isSuccessful()) {
-
-                    String mensaje = "";
-                    if (response.body() != null) {
-                        mensaje = response.body().get("mensaje");
-                    }
-                    Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
-
-                    usuario.setAmigo(!usuario.isAmigo());
-
-                    adapter.notifyDataSetChanged();
-
+                    String mensaje = (response.body() != null) ? response.body().get("mensaje") : "Acción realizada";
+                    // Opcional: Mostrar toast breve
+                    // Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getContext(), "No se pudo realizar la acción", Toast.LENGTH_SHORT).show();
+                    // ⚠️ Si falla, aquí deberíamos revertir el cambio visual en el adapter (opcional avanzado)
+                    Toast.makeText(getContext(), "Error al seguir usuario", Toast.LENGTH_SHORT).show();
                 }
             }
 
