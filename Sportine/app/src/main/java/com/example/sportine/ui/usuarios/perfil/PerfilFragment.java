@@ -60,6 +60,7 @@ public class PerfilFragment extends Fragment {
     // Botones
     private MaterialCardView btnSettings;
     private MaterialButton btnCompletar;
+    private MaterialButton btnLogout; // <--- NUEVO: Botón cerrar sesión
 
     // API Service
     private ApiService apiService;
@@ -120,6 +121,9 @@ public class PerfilFragment extends Fragment {
         // Botones
         btnSettings = view.findViewById(R.id.btnSettings);
         btnCompletar = view.findViewById(R.id.btnCompletar);
+
+        // <--- NUEVO: Inicializar botón logout
+        btnLogout = view.findViewById(R.id.btnLogout);
     }
 
     /**
@@ -149,6 +153,23 @@ public class PerfilFragment extends Fragment {
                 Navigation.findNavController(view)
                         .navigate(R.id.action_perfil_to_completar_datos)
         );
+
+        // <--- NUEVO: Lógica de Cerrar Sesión
+        btnLogout.setOnClickListener(v -> {
+            // 1. Borrar datos de SharedPreferences
+            SharedPreferences prefs = requireContext()
+                    .getSharedPreferences("SportinePrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.clear(); // Borra todo (token, usuario, rol)
+            editor.apply();
+
+            // 2. Ir al Login y limpiar el historial de navegación (Back Stack)
+            // Esto evita que si le dan "Atrás" vuelvan a entrar sin loguearse
+            android.content.Intent intent = new android.content.Intent(requireContext(), com.example.sportine.ui.usuarios.login.LoginActivity.class);
+            intent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            requireActivity().finish();
+        });
     }
 
     /**

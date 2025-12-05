@@ -10,18 +10,20 @@ import com.sportine.backend.service.AlumnoPerfilService;
 import com.sportine.backend.service.NotificacionService;
 import com.sportine.backend.service.PostService;
 import com.sportine.backend.service.SubidaImagenService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
+
+    private static final Logger logger = LoggerFactory.getLogger(PostServiceImpl.class);
 
     @Autowired private PublicacionRepository publicacionRepository;
     @Autowired private LikesRepository likesRepository;
@@ -36,15 +38,30 @@ public class PostServiceImpl implements PostService {
     public List<PublicacionFeedDTO> getFeed(String username) {
         List<Publicacion> publicaciones = publicacionRepository.obtenerFeedPersonalizado(username);
 
+        // OPTIMIZACIÓN: Cache local para no consultar el mismo perfil múltiples veces en un request
+        Map<String, PerfilAlumnoResponseDTO> perfilCache = new HashMap<>();
+
         return publicaciones.stream().map(publicacion -> {
             String autorUsername = publicacion.getUsuario();
-            String nombreCompleto = autorUsername;
+            String nombreCompleto = autorUsername; // Fallback por defecto
             String fotoPerfilUrl = null;
-            try {
-                PerfilAlumnoResponseDTO perfil = alumnoPerfilService.obtenerPerfilAlumno(autorUsername);
-                nombreCompleto = perfil.getNombre() + " " + perfil.getApellidos();
-                fotoPerfilUrl = perfil.getFotoPerfil();
-            } catch (RuntimeException e) { }
+
+            // Lógica de cacheo: Si ya buscamos a este usuario en esta iteración, no lo buscamos de nuevo
+            if (!perfilCache.containsKey(autorUsername)) {
+                try {
+                    PerfilAlumnoResponseDTO perfil = alumnoPerfilService.obtenerPerfilAlumno(autorUsername);
+                    perfilCache.put(autorUsername, perfil);
+                } catch (Exception e) {
+                    logger.error("Error al obtener perfil para el post feed: " + autorUsername, e);
+                    perfilCache.put(autorUsername, null); // Marcamos como null para no reintentar fallidos
+                }
+            }
+
+            PerfilAlumnoResponseDTO perfilCached = perfilCache.get(autorUsername);
+            if (perfilCached != null) {
+                nombreCompleto = perfilCached.getNombre() + " " + perfilCached.getApellidos();
+                fotoPerfilUrl = perfilCached.getFotoPerfil();
+            }
 
             int totalLikes = likesRepository.countByIdPublicacion(publicacion.getId_publicacion());
             boolean isLikedByMe = likesRepository.existsByIdPublicacionAndUsuarioLike(
@@ -55,18 +72,13 @@ public class PostServiceImpl implements PostService {
             dto.setIdPublicacion(publicacion.getId_publicacion());
             dto.setDescripcion(publicacion.getDescripcion());
             dto.setImagen(publicacion.getImagen());
-
-            // CORREGIDO: Getter camelCase
             dto.setFechaPublicacion(publicacion.getFechaPublicacion());
-
             dto.setAutorUsername(autorUsername);
             dto.setAutorNombreCompleto(nombreCompleto);
             dto.setAutorFotoPerfil(fotoPerfilUrl);
             dto.setTotalLikes(totalLikes);
             dto.setLikedByMe(isLikedByMe);
             dto.setMine(isMine);
-
-            // NUEVO: Mapeamos el tipo para saber si es logro o normal
             dto.setTipo(publicacion.getTipo());
 
             return dto;
@@ -87,12 +99,8 @@ public class PostServiceImpl implements PostService {
         nuevaPublicacion.setUsuario(autor.getUsuario());
         nuevaPublicacion.setDescripcion(dto.getDescripcion());
         nuevaPublicacion.setImagen(dto.getImagen());
-
-        // CORREGIDO: Setter camelCase
         nuevaPublicacion.setFechaPublicacion(new Date());
-
-        // NUEVO: Asignamos tipo 1 (Normal) por defecto
-        nuevaPublicacion.setTipo(1);
+        nuevaPublicacion.setTipo(1); // 1 = Normal
 
         return publicacionRepository.save(nuevaPublicacion);
     }
@@ -100,8 +108,12 @@ public class PostServiceImpl implements PostService {
     @Override
     public Optional<Publicacion> actualizarPublicacion(Integer id, Publicacion publicacionActualizada) {
         return publicacionRepository.findById(id).map(postExistente -> {
-            postExistente.setDescripcion(publicacionActualizada.getDescripcion());
-            postExistente.setImagen(publicacionActualizada.getImagen());
+            // Solo actualizamos si viene información
+            if(publicacionActualizada.getDescripcion() != null)
+                postExistente.setDescripcion(publicacionActualizada.getDescripcion());
+            if(publicacionActualizada.getImagen() != null)
+                postExistente.setImagen(publicacionActualizada.getImagen());
+
             return publicacionRepository.save(postExistente);
         });
     }
@@ -113,18 +125,19 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new RuntimeException("Post no encontrado"));
 
         if (!post.getUsuario().equals(usernameQuePide)) {
+            // Aquí podrías agregar lógica para que un ADMIN también pueda borrar
             throw new RuntimeException("No tienes permiso para borrar este post");
         }
 
         likesRepository.deleteByIdPublicacion(id);
         comentarioRepository.deleteByIdPublicacion(id);
         notificacionRepository.deleteByIdReferencia(id);
-
         publicacionRepository.deleteById(id);
     }
 
     @Override
     public void darLike(Integer idPublicacion, String username) {
+        // Verificamos primero para evitar duplicados si el usuario spamea el botón
         if(likesRepository.findLikeByPostAndUser(idPublicacion, username).isEmpty()) {
             Likes newLike = new Likes();
             newLike.setIdPublicacion(idPublicacion);
@@ -132,12 +145,15 @@ public class PostServiceImpl implements PostService {
             likesRepository.save(newLike);
 
             publicacionRepository.findById(idPublicacion).ifPresent(post -> {
-                notificacionService.crearNotificacion(
-                        post.getUsuario(),
-                        username,
-                        Notificacion.TipoNotificacion.LIKE,
-                        idPublicacion
-                );
+                // No notificarse a uno mismo
+                if(!post.getUsuario().equals(username)){
+                    notificacionService.crearNotificacion(
+                            post.getUsuario(),
+                            username,
+                            Notificacion.TipoNotificacion.LIKE,
+                            idPublicacion
+                    );
+                }
             });
         }
     }
@@ -161,17 +177,22 @@ public class PostServiceImpl implements PostService {
         comentario.setFecha(new Date());
         comentarioRepository.save(comentario);
 
-        notificacionService.crearNotificacion(
-                post.getUsuario(),
-                username,
-                Notificacion.TipoNotificacion.COMENTARIO,
-                idPublicacion
-        );
+        if(!post.getUsuario().equals(username)) {
+            notificacionService.crearNotificacion(
+                    post.getUsuario(),
+                    username,
+                    Notificacion.TipoNotificacion.COMENTARIO,
+                    idPublicacion
+            );
+        }
     }
 
     @Override
     public List<ComentarioResponseDTO> obtenerComentarios(Integer idPublicacion, String usernameQueMira) {
         List<Comentario> comentarios = comentarioRepository.findByIdPublicacionOrderByFechaAsc(idPublicacion);
+
+        // Aquí también podríamos aplicar la caché de perfiles si hay muchos comentarios,
+        // pero por ahora lo dejamos así para no complicar el método.
         return comentarios.stream().map(c -> {
             ComentarioResponseDTO dto = new ComentarioResponseDTO();
             dto.setIdComentario(c.getIdComentario());
@@ -184,6 +205,7 @@ public class PostServiceImpl implements PostService {
                 dto.setAutorNombre(perfil.getNombre() + " " + perfil.getApellidos());
                 dto.setAutorFoto(perfil.getFotoPerfil());
             } catch (Exception e) {
+                // Fallback silencioso pero controlado
                 dto.setAutorNombre(c.getUsuario());
                 dto.setAutorFoto(null);
             }

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Fondo blanco -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF"/>
+        </shape>
+    </item>
+
+    <!-- Onda superior cyan claro - línea delgada -->
+    <item
+        android:top="0dp"
+        android:height="80dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#B3E5FC"/>
+        </shape>
+    </item>
+
+    <!-- Onda superior verde claro - línea delgada -->
+    <item
+        android:top="20dp"
+        android:height="100dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#C8E6C9"/>
+        </shape>
+    </item>
+
+    <!-- Degradado para suavizar las ondas superiores -->
+    <item
+        android:top="0dp"
+        android:height="150dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="270"
+                android:startColor="#40B3E5FC"
+                android:centerColor="#20C8E6C9"
+                android:endColor="#00FFFFFF"
+                android:type="linear"/>
+        </shape>
+    </item>
+
+    <!-- Onda inferior cyan - línea delgada -->
+    <item
+        android:bottom="0dp"
+        android:height="80dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#B3E5FC"/>
+        </shape>
+    </item>
+
+    <!-- Onda inferior verde claro - línea delgada -->
+    <item
+        android:bottom="20dp"
+        android:height="100dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#C8E6C9"/>
+        </shape>
+    </item>
+
+    <!-- Degradado para suavizar las ondas inferiores -->
+    <item
+        android:bottom="0dp"
+        android:height="150dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="90"
+                android:startColor="#40B3E5FC"
+                android:centerColor="#20C8E6C9"
+                android:endColor="#00FFFFFF"
+                android:type="linear"/>
+        </shape>
+    </item>
+</layer-list>

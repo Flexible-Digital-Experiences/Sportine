@@ -22,7 +22,6 @@
             android:layout_height="wrap_content"
             android:paddingBottom="24dp">
 
-            <!-- Header -->
             <LinearLayout
                 android:id="@+id/headerLayout"
                 android:layout_width="match_parent"
@@ -62,7 +61,6 @@
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-            <!-- Contenedor Principal -->
             <LinearLayout
                 android:id="@+id/mainContainer"
                 android:orientation="vertical"
@@ -73,7 +71,6 @@
                 android:paddingEnd="24dp"
                 android:gravity="center_horizontal">
 
-                <!-- Card de Foto de Perfil -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -97,7 +94,6 @@
                     </FrameLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Saludo -->
                 <TextView
                     android:id="@+id/txtSaludo"
                     android:layout_width="wrap_content"
@@ -117,7 +113,6 @@
                     android:textSize="14sp"
                     android:layout_marginBottom="24dp"/>
 
-                <!-- Card de Deportes -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -141,19 +136,16 @@
                             android:textStyle="bold"
                             android:layout_marginBottom="16dp"/>
 
-                        <!-- ⭐ CONTENEDOR DINÁMICO DE DEPORTES -->
                         <LinearLayout
                             android:id="@+id/deportesContainer"
                             android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center">
-                            <!-- Los deportes se agregan dinámicamente aquí -->
                         </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Card de Información Personal -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -177,7 +169,6 @@
                             android:textStyle="bold"
                             android:layout_marginBottom="16dp"/>
 
-                        <!-- Campos con background -->
                         <LinearLayout
                             android:orientation="vertical"
                             android:layout_width="match_parent"
@@ -349,7 +340,6 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Botón Moderno -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCompletar"
                     android:layout_width="match_parent"
@@ -367,9 +357,28 @@
                     app:iconTint="@color/white"
                     app:iconSize="20dp"
                     android:textAllCaps="false"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLogout"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="16dp"
+                    android:text="Cerrar sesión"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.02"
+                    app:cornerRadius="16dp"
+                    app:backgroundTint="#D32F2F"
+                    android:textColor="@color/white"
+                    app:elevation="4dp"
+                    app:icon="@android:drawable/ic_lock_power_off"
+                    app:iconGravity="start"
+                    app:iconTint="@color/white"
+                    app:iconSize="20dp"
+                    android:textAllCaps="false"/>
+
             </LinearLayout>
 
-            <!-- Badges Modernos -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/badgeAmigos"
                 android:layout_width="wrap_content"
