@@ -9,6 +9,9 @@ public class UsuarioDetalleDTO {
     private String ciudad;
     private String rol;
 
+    // NUEVO: Campo para saber si ya lo sigo
+    private boolean siguiendo;
+
     public UsuarioDetalleDTO() {}
 
     // Getters
@@ -20,6 +23,9 @@ public class UsuarioDetalleDTO {
     public String getCiudad() { return ciudad; }
     public String getRol() { return rol; }
 
+    // NUEVO: Getter para siguiendo
+    public boolean isSiguiendo() { return siguiendo; }
+
     // Setters
     public void setUsuario(String usuario) { this.usuario = usuario; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -28,4 +34,7 @@ public class UsuarioDetalleDTO {
     public void setEstado(String estado) { this.estado = estado; }
     public void setCiudad(String ciudad) { this.ciudad = ciudad; }
     public void setRol(String rol) { this.rol = rol; }
+
+    // NUEVO: Setter para siguiendo
+    public void setSiguiendo(boolean siguiendo) { this.siguiendo = siguiendo; }
 }
