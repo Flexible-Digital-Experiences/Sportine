@@ -7,10 +7,16 @@ import com.sportine.backend.repository.*;
 import com.sportine.backend.service.EntrenadorPerfilService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +29,8 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
     private final EstadoRepository estadoRepository;
     private final SeguidoresRepository seguidoresRepository;
     private final EntrenadorAlumnoRepository entrenadorAlumnoRepository;
+    @Autowired
+    private Cloudinary cloudinary;
 
     @Override
     public PerfilEntrenadorResponseDTO obtenerPerfilEntrenador(String usuario) {
@@ -127,5 +135,50 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
 
         // 6. Retornar perfil actualizado
         return obtenerPerfilEntrenador(usuario);
+    }
+
+    @Override
+    @Transactional
+    public PerfilEntrenadorResponseDTO actualizarFotoPerfil(String usuario, MultipartFile file) {
+
+        // 1. Validar que se haya enviado un archivo
+        if (file == null || file.isEmpty()) {
+            throw new RuntimeException("No se proporcionó ninguna imagen");
+        }
+
+        // 2. Validar tipo de archivo
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new RuntimeException("El archivo debe ser una imagen");
+        }
+
+        // 3. Obtener información del entrenador
+        InformacionEntrenador infoEntrenador = informacionEntrenadorRepository
+                .findByUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Perfil de entrenador no encontrado"));
+
+        try {
+            // 4. Subir imagen a Cloudinary
+            Map uploadResult = cloudinary.uploader().upload(
+                    file.getBytes(),
+                    ObjectUtils.asMap(
+                            "folder", "sportine/entrenadores",
+                            "resource_type", "image"
+                    )
+            );
+
+            // 5. Obtener URL de la imagen subida
+            String imageUrl = (String) uploadResult.get("secure_url");
+
+            // 6. Actualizar foto en la base de datos
+            infoEntrenador.setFotoPerfil(imageUrl);
+            informacionEntrenadorRepository.save(infoEntrenador);
+
+            // 7. Retornar perfil actualizado
+            return obtenerPerfilEntrenador(usuario);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error al subir la imagen: " + e.getMessage());
+        }
     }
 }
