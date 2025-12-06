@@ -49,7 +49,6 @@ public class AmigosAdapter extends RecyclerView.Adapter<AmigosAdapter.AmigoViewH
     public void onBindViewHolder(@NonNull AmigoViewHolder holder, int position) {
         UsuarioDetalle usuario = listaUsuarios.get(position);
 
-        // 1. Datos de texto
         String nombre = usuario.getNombre();
         String apellidos = usuario.getApellidos();
         if (nombre == null) nombre = usuario.getUsuario();
@@ -67,38 +66,46 @@ public class AmigosAdapter extends RecyclerView.Adapter<AmigosAdapter.AmigoViewH
                 .circleCrop()
                 .into(holder.ivAvatar);
 
+        // Lógica Visual del Botón
         if (esModoBusqueda) {
-
-
-            if (usuario.isAmigo()) {
-
-                holder.btnAccion.setText("Siguiendo");
-                holder.btnAccion.setBackgroundTintList(ColorStateList.valueOf(Color.GRAY));
-                holder.btnAccion.setTextColor(Color.WHITE);
-
-                holder.btnAccion.setEnabled(true);
-            } else {
-
-                holder.btnAccion.setText("Seguir");
-                holder.btnAccion.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#2196F3"))); // Azul
-                holder.btnAccion.setTextColor(Color.WHITE);
-                holder.btnAccion.setEnabled(true);
-            }
+            // ✅ Usamos isSiguiendo() que ahora sí trae el dato real del servidor
+            actualizarEstiloBoton(holder.btnAccion, usuario.isSiguiendo());
+            holder.btnAccion.setEnabled(true);
         } else {
-
             holder.btnAccion.setText("Eliminar");
             holder.btnAccion.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
             holder.btnAccion.setTextColor(Color.WHITE);
             holder.btnAccion.setEnabled(true);
         }
 
-        // 4. Clic Listener
+        // Clic Listener
         holder.btnAccion.setOnClickListener(v -> {
             if (listener != null) {
+                // 1. Notificamos al fragmento para llamar a la API
                 listener.onAction(usuario);
 
+                // 2. ✅ ACTUALIZACIÓN VISUAL INMEDIATA (Optimistic UI)
+                // Cambiamos el botón y el modelo aquí mismo para evitar el "parpadeo"
+                if (esModoBusqueda) {
+                    boolean nuevoEstado = !usuario.isSiguiendo();
+                    usuario.setSiguiendo(nuevoEstado); // Guardamos en memoria
+                    actualizarEstiloBoton(holder.btnAccion, nuevoEstado); // Pintamos
+                }
             }
         });
+    }
+
+    // Helper para pintar el botón
+    private void actualizarEstiloBoton(Button btn, boolean siguiendo) {
+        if (siguiendo) {
+            btn.setText("Siguiendo");
+            btn.setBackgroundTintList(ColorStateList.valueOf(Color.GRAY));
+            btn.setTextColor(Color.WHITE);
+        } else {
+            btn.setText("Seguir");
+            btn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1ea1db"))); // Azul
+            btn.setTextColor(Color.WHITE);
+        }
     }
 
     @Override

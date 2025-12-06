@@ -112,6 +112,9 @@
         android:name="com.example.sportine.ui.entrenadores.solicitudes.SolicitudesFragment"
         android:label="Solicitudes"
         tools:layout="@layout/fragment_entrenador_solicitudes">
+        <action
+            android:id="@+id/action_navigation_solicitudes_entrenador_to_misAlumnos"
+            app:destination="@id/misAlumnos" />
     </fragment>
 
     <fragment
@@ -119,4 +122,17 @@
         android:name="com.example.sportine.ui.entrenadores.feedback.FeedbackFragment"
         android:label="Comentarios Recientes"
         tools:layout="@layout/fragment_entrenador_feedback_list" />
+    <fragment
+        android:id="@+id/misAlumnos"
+        android:name="com.example.sportine.ui.entrenadores.misAlumnos.MisAlumnos"
+        android:label="MisAlumnos" >
+        <action
+            android:id="@+id/action_misAlumnos_to_infoAlumno"
+            app:destination="@id/infoAlumno" />
+    </fragment>
+    <fragment
+        android:id="@+id/infoAlumno"
+        android:name="com.example.sportine.ui.entrenadores.alumno.InfoAlumno"
+        android:label="fragment_info_alumno"
+        tools:layout="@layout/fragment_info_alumno" />
 </navigation>

@@ -1,6 +1,8 @@
 package com.example.sportine.data;
 
 import com.example.sportine.models.AlumnoCardStatsDTO;
+import com.example.sportine.models.AlumnoDetalleEntrenadorDTO;
+import com.example.sportine.models.AlumnoEntrenadorDTO;
 import com.example.sportine.models.CalificacionRequestDTO;
 import com.example.sportine.models.CalificacionResponseDTO;
 import com.example.sportine.models.Comentario;
@@ -13,9 +15,13 @@ import com.example.sportine.models.FormularioSolicitudDTO;
 import com.example.sportine.models.HomeAlumnoDTO;
 import com.example.sportine.models.HomeEntrenadorDTO;
 import com.example.sportine.models.InfoDeporteAlumnoDTO;
+import com.example.sportine.models.MisAlumnosResponseDTO;
 import com.example.sportine.models.PerfilEntrenadorDTO;
 import com.example.sportine.models.Publicacion;
 import com.example.sportine.models.RespuestaRegistro;
+import com.example.sportine.models.RespuestaSolicitudRequestDTO;
+import com.example.sportine.models.RespuestaSolicitudResponseDTO;
+import com.example.sportine.models.SolicitudEntrenadorDTO;
 import com.example.sportine.models.SolicitudEnviadaDTO;
 import com.example.sportine.models.SolicitudPendienteDTO;
 import com.example.sportine.models.SolicitudRequestDTO;
@@ -146,6 +152,52 @@ public interface ApiService {
 
     @DELETE("api/Solicitudes/{idSolicitud}")
     Call<Void> eliminarSolicitud(@Path("idSolicitud") Integer idSolicitud);
+
+    // Solicitudes Entrenador
+    @GET("api/entrenador/solicitudes/en-revision/{usuarioEntrenador}")
+    Call<List<SolicitudEntrenadorDTO>> obtenerSolicitudesEnRevision(@Path("usuarioEntrenador") String usuarioEntrenador);
+
+    @GET("api/entrenador/solicitudes/aceptadas/{usuarioEntrenador}")
+    Call<List<SolicitudEntrenadorDTO>> obtenerSolicitudesAceptadas(@Path("usuarioEntrenador") String usuarioEntrenador);
+
+    @POST("api/entrenador/solicitudes/responder/{usuarioEntrenador}")
+    Call<RespuestaSolicitudResponseDTO> responderSolicitud(
+            @Path("usuarioEntrenador") String usuarioEntrenador,
+            @Body RespuestaSolicitudRequestDTO request
+    );
+
+    @GET("api/entrenador/alumnos/{usuarioEntrenador}")
+    Call<List<AlumnoEntrenadorDTO>> obtenerMisAlumnos(@Path("usuarioEntrenador") String usuarioEntrenador);
+
+    @GET("api/entrenador/alumnos/pendientes/{usuarioEntrenador}")
+    Call<List<AlumnoEntrenadorDTO>> obtenerAlumnosPendientes(@Path("usuarioEntrenador") String usuarioEntrenador);
+
+
+    // Mis alumnos
+
+    // Cambiar esto:
+    @GET("api/entrenador/alumno/detalle/{usuarioEntrenador}/{usuarioAlumno}")
+    Call<AlumnoDetalleEntrenadorDTO> obtenerDetalleAlumno(
+            @Path("usuarioEntrenador") String usuarioEntrenador,
+            @Path("usuarioAlumno") String usuarioAlumno
+    );
+
+    @PUT("api/entrenador/alumno/actualizar-nivel/{usuarioEntrenador}/{usuarioAlumno}")
+    Call<MisAlumnosResponseDTO<String>> actualizarNivelAlumno(
+            @Path("usuarioEntrenador") String usuarioEntrenador,
+            @Path("usuarioAlumno") String usuarioAlumno,
+            @Query("idDeporte") Integer idDeporte,
+            @Query("nuevoNivel") Integer nuevoNivel
+    );
+
+    @PUT("api/entrenador/alumno/actualizar-estado/{usuarioEntrenador}/{usuarioAlumno}")
+    Call<MisAlumnosResponseDTO<String>> actualizarEstadoRelacion(
+            @Path("usuarioEntrenador") String usuarioEntrenador,
+            @Path("usuarioAlumno") String usuarioAlumno,
+            @Query("idDeporte") Integer idDeporte,
+            @Query("nuevoEstado") String nuevoEstado
+    );
+
 
     // Enviar calificación
     @POST("api/calificaciones/enviar")

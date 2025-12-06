@@ -137,7 +137,7 @@ public class EnviarSolicitudEntrenadorServiceImpl implements EnviarSolicitudEntr
                 .findByUsuarioAlumnoAndUsuarioEntrenadorAndStatusSolicitud(
                         usuarioAlumno,
                         usuarioEntrenador,
-                        SolicitudEntrenamiento.StatusSolicitud.En_revisión
+                        SolicitudEntrenamiento.StatusSolicitud.En_revisión  // ✅ Quitar .name()
                 );
 
         if (solicitudesPendientes.isEmpty()) {
@@ -223,13 +223,15 @@ public class EnviarSolicitudEntrenadorServiceImpl implements EnviarSolicitudEntr
         log.info("Procesando solicitud de {} para entrenador {} en deporte {}",
                 usuarioAlumno, request.getUsuarioEntrenador(), request.getIdDeporte());
 
-        // 1. Verificar que no exista una solicitud pendiente o aprobada
-        boolean existeSolicitud = solicitudEntrenamientoRepository
-                .existeSolicitudActivaOPendiente(
-                        usuarioAlumno,
-                        request.getUsuarioEntrenador(),
-                        request.getIdDeporte()
-                );
+        // ✅ 1. Verificar que no exista una solicitud pendiente o aprobada
+        Integer resultado = solicitudEntrenamientoRepository.existeSolicitudActivaNative(
+                usuarioAlumno,
+                request.getUsuarioEntrenador(),
+                request.getIdDeporte()
+        );
+
+        // ✅ Convertir Integer a boolean
+        boolean existeSolicitud = resultado != null && resultado > 0;
 
         if (existeSolicitud) {
             log.warn("Ya existe una solicitud activa entre {} y {} para deporte {}",

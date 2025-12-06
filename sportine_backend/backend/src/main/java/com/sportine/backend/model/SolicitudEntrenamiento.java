@@ -38,11 +38,11 @@ public class SolicitudEntrenamiento {
     @Column(name = "status_solicitud", nullable = false)
     private StatusSolicitud statusSolicitud;
 
+    // ✅ ENUM SIN @Column - eso no funciona en enums
     public enum StatusSolicitud {
+        En_revisión,  // Se guarda exactamente como "En_revisión" en la BD
         Aprobada,
-        Rechazada,
-        @Column(name = "En revisión")
-        En_revisión
+        Rechazada
     }
 
     @PrePersist

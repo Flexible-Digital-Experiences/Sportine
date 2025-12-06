@@ -6,9 +6,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -126,13 +128,67 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
             @Param("fechaFin") LocalDate fechaFin
     );
 
-    // ✅ AGREGAR ESTE MÉTODO
     @Query("SELECT ea FROM EntrenadorAlumno ea WHERE ea.usuarioEntrenador = :usuarioEntrenador AND ea.statusRelacion = 'activo'")
     List<EntrenadorAlumno> findAlumnosActivosByEntrenador(@Param("usuarioEntrenador") String usuarioEntrenador);
 
-    // ✅ AGREGAR ESTE MÉTODO
     Optional<EntrenadorAlumno> findByUsuarioEntrenadorAndUsuarioAlumno(String usuarioEntrenador, String usuarioAlumno);
 
     @Query("SELECT COUNT(ea) FROM EntrenadorAlumno ea WHERE ea.usuarioEntrenador = :usuario AND ea.statusRelacion = 'activo'")
     Integer contarAlumnosActivos(@Param("usuario") String usuario);
+
+    @Query(value = """
+    SELECT 
+        ea.usuario_alumno as usuarioAlumno,
+        CONCAT(u.nombre, ' ', u.apellidos) as nombreCompleto,
+        ia.foto_perfil as fotoPerfil,
+        TIMESTAMPDIFF(YEAR, ia.fecha_nacimiento, CURDATE()) as edad,
+        GROUP_CONCAT(DISTINCT d.nombre_deporte ORDER BY d.nombre_deporte SEPARATOR ', ') as deportes,
+        MIN(ea.fecha_inicio) as fechaInicio,
+        ea.status_relacion as statusRelacion
+    FROM Entrenador_Alumno ea
+    INNER JOIN Usuario u ON ea.usuario_alumno = u.usuario
+    LEFT JOIN Informacion_Alumno ia ON u.usuario = ia.usuario
+    INNER JOIN Deporte d ON ea.id_deporte = d.id_deporte
+    WHERE ea.usuario_entrenador = :usuarioEntrenador
+    GROUP BY ea.usuario_alumno, u.nombre, u.apellidos, ia.foto_perfil, ia.fecha_nacimiento, ea.status_relacion
+    ORDER BY MIN(ea.fecha_inicio) DESC
+    """, nativeQuery = true)
+    List<Map<String, Object>> obtenerAlumnosPorEntrenador(@Param("usuarioEntrenador") String usuarioEntrenador);
+
+    /**
+     * Verificar si existe relación entre entrenador, alumno y deporte específico
+     */
+    @Query("SELECT CASE WHEN COUNT(ea) > 0 THEN true ELSE false END " +
+            "FROM EntrenadorAlumno ea " +
+            "WHERE ea.usuarioEntrenador = :usuarioEntrenador " +
+            "AND ea.usuarioAlumno = :usuarioAlumno " +
+            "AND ea.idDeporte = :idDeporte")
+    boolean existsByUsuarioEntrenadorAndUsuarioAlumnoAndIdDeporte(
+            @Param("usuarioEntrenador") String usuarioEntrenador,
+            @Param("usuarioAlumno") String usuarioAlumno,
+            @Param("idDeporte") Integer idDeporte
+    );
+
+    /**
+     * Actualizar estado de relación para un deporte específico
+     */
+    @Modifying
+    @Transactional
+    @Query(value = """
+    UPDATE Entrenador_Alumno 
+    SET status_relacion = :nuevoEstado,
+        fin_mensualidad = CASE 
+            WHEN :nuevoEstado = 'activo' THEN DATE_ADD(CURDATE(), INTERVAL 1 MONTH)
+            ELSE fin_mensualidad 
+        END
+    WHERE usuario_entrenador = :usuarioEntrenador 
+      AND usuario_alumno = :usuarioAlumno 
+      AND id_deporte = :idDeporte
+    """, nativeQuery = true)
+    void actualizarEstadoRelacion(
+            @Param("usuarioEntrenador") String usuarioEntrenador,
+            @Param("usuarioAlumno") String usuarioAlumno,
+            @Param("idDeporte") Integer idDeporte,
+            @Param("nuevoEstado") String nuevoEstado
+    );
 }

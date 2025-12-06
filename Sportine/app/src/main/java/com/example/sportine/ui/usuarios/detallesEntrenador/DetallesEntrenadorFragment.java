@@ -1,6 +1,9 @@
 package com.example.sportine.ui.usuarios.detallesEntrenador;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +49,10 @@ public class DetallesEntrenadorFragment extends Fragment {
     private boolean mostrandoTodas = false;
     private boolean hayDeportesDisponibles = true;
 
+    // TODO: Cuando implementes la obtención de datos de contacto, guárdalos aquí
+    private String correoEntrenador = ""; // Se obtendrá del backend
+    private String telefonoEntrenador = ""; // Se obtendrá del backend
+
     // Views principales
     private ImageButton btnBack;
     private ImageView imagePerfil;
@@ -59,6 +66,8 @@ public class DetallesEntrenadorFragment extends Fragment {
     private TextView btnVerTodas;
     private TextView textSinResenas;
     private TextView textCosto;
+    private MaterialButton btnSolicitarMasDeportesPendiente;
+    private MaterialButton btnSolicitarMasDeportesActivo;
 
     // RecyclerViews
     private RecyclerView recyclerDeportes;
@@ -80,8 +89,8 @@ public class DetallesEntrenadorFragment extends Fragment {
 
     // Botones por estado
     private MaterialButton btnEnviarSolicitud;
-    private MaterialButton btnIrAPagar;
-    private MaterialButton btnCancelarMensualidad;
+    private MaterialButton btnEnviarCorreo;
+    private MaterialButton btnEnviarWhatsapp;
     private MaterialButton btnCalificarActivo;
     private MaterialButton btnSolicitarNuevamente;
     private MaterialButton btnCalificarFinalizado;
@@ -107,9 +116,7 @@ public class DetallesEntrenadorFragment extends Fragment {
         initViews(view);
         setupRecyclerViews();
         setupListeners();
-
         verificarDeportesDisponibles();
-        cargarPerfilEntrenador();
 
         return view;
     }
@@ -129,6 +136,8 @@ public class DetallesEntrenadorFragment extends Fragment {
         textSinResenas = view.findViewById(R.id.text_sin_resenas);
         recyclerDeportes = view.findViewById(R.id.recycler_deportes);
         recyclerResenas = view.findViewById(R.id.recycler_resenas);
+        btnSolicitarMasDeportesPendiente = view.findViewById(R.id.btn_solicitar_mas_deportes_pendiente);
+        btnSolicitarMasDeportesActivo = view.findViewById(R.id.btn_solicitar_mas_deportes_activo);
 
         cardNoDisponible = view.findViewById(R.id.card_no_disponible);
 
@@ -136,10 +145,9 @@ public class DetallesEntrenadorFragment extends Fragment {
         layoutPendiente = view.findViewById(R.id.layout_pendiente);
         layoutActivo = view.findViewById(R.id.layout_activo);
         layoutFinalizado = view.findViewById(R.id.layout_finalizado);
-
         btnEnviarSolicitud = view.findViewById(R.id.btn_enviar_solicitud);
-        btnIrAPagar = view.findViewById(R.id.btn_ir_a_pagar);
-        btnCancelarMensualidad = view.findViewById(R.id.btn_cancelar_mensualidad);
+        btnEnviarCorreo = view.findViewById(R.id.btn_enviar_correo);
+        btnEnviarWhatsapp = view.findViewById(R.id.btn_enviar_whatsapp);
         btnCalificarActivo = view.findViewById(R.id.btn_calificar_activo);
         btnSolicitarNuevamente = view.findViewById(R.id.btn_solicitar_nuevamente);
         btnCalificarFinalizado = view.findViewById(R.id.btn_calificar_finalizado);
@@ -167,13 +175,14 @@ public class DetallesEntrenadorFragment extends Fragment {
     private void setupListeners() {
         btnBack.setOnClickListener(v -> NavHostFragment.findNavController(this).navigateUp());
         btnVerTodas.setOnClickListener(v -> toggleResenas());
-
         btnEnviarSolicitud.setOnClickListener(v -> enviarSolicitud());
-        btnIrAPagar.setOnClickListener(v -> irAPagar());
-        btnCancelarMensualidad.setOnClickListener(v -> cancelarMensualidad());
+        btnEnviarCorreo.setOnClickListener(v -> enviarCorreo());
+        btnEnviarWhatsapp.setOnClickListener(v -> enviarWhatsapp());
         btnCalificarActivo.setOnClickListener(v -> abrirDialogCalificacion());
         btnSolicitarNuevamente.setOnClickListener(v -> enviarSolicitud());
         btnCalificarFinalizado.setOnClickListener(v -> abrirDialogCalificacion());
+        btnSolicitarMasDeportesPendiente.setOnClickListener(v -> enviarSolicitud());
+        btnSolicitarMasDeportesActivo.setOnClickListener(v -> enviarSolicitud());
     }
 
     private void verificarDeportesDisponibles() {
@@ -226,57 +235,47 @@ public class DetallesEntrenadorFragment extends Fragment {
 
                         // Decidir qué más mostrar según si hay deportes disponibles
                         if (noHayDeportesDisponibles) {
-                            // ❌ NO hay deportes disponibles - solo mostrar solicitudes
+                            // ⚠️ NO hay más deportes disponibles
+                            // Puede ser porque: (1) ya los tiene todos, o (2) el entrenador no entrena otros
+                            // La diferencia la sabremos cuando veamos el EstadoRelacionDTO
                             hayDeportesDisponibles = false;
-                            cardNoDisponible.setVisibility(View.GONE);
                             textPrecio.setVisibility(View.GONE);
                             textCosto.setVisibility(View.GONE);
-
-                            layoutSinRelacion.setVisibility(View.GONE);
-                            layoutPendiente.setVisibility(View.GONE);
-                            layoutActivo.setVisibility(View.GONE);
-                            layoutFinalizado.setVisibility(View.GONE);
                         } else {
                             // ✅ SÍ hay deportes disponibles - mostrar solicitudes Y permitir enviar más
                             hayDeportesDisponibles = true;
-                            cardNoDisponible.setVisibility(View.GONE);
                             textPrecio.setVisibility(View.VISIBLE);
                             textCosto.setVisibility(View.VISIBLE);
-
-                            // Los layouts de relación se mostrarán después en mostrarUISegunEstadoRelacion
                         }
                     } else {
-                        // No hay solicitudes pendientes
+                        // No hay solicitudes pendientes EN REVISIÓN
                         layoutEsperandoRespuesta.setVisibility(View.GONE);
 
                         if (noHayDeportesDisponibles) {
-                            // ❌ No hay deportes ni solicitudes - mostrar "no disponible"
+                            // ⚠️ No hay deportes disponibles
+                            // Verificaremos en mostrarUISegunEstadoRelacion si es porque tiene relación
                             hayDeportesDisponibles = false;
-                            cardNoDisponible.setVisibility(View.VISIBLE);
                             textPrecio.setVisibility(View.GONE);
                             textCosto.setVisibility(View.GONE);
-
-                            layoutSinRelacion.setVisibility(View.GONE);
-                            layoutPendiente.setVisibility(View.GONE);
-                            layoutActivo.setVisibility(View.GONE);
-                            layoutFinalizado.setVisibility(View.GONE);
                         } else {
                             // ✅ Hay deportes disponibles
                             hayDeportesDisponibles = true;
-                            cardNoDisponible.setVisibility(View.GONE);
                         }
                     }
                 }
+
+                // ✅ CARGAR PERFIL AL FINAL (después de saber si hay deportes disponibles)
+                cargarPerfilEntrenador();
             }
 
             @Override
             public void onFailure(Call<SolicitudPendienteDTO> call, Throwable t) {
                 if (isAdded()) {
                     layoutEsperandoRespuesta.setVisibility(View.GONE);
+                    hayDeportesDisponibles = !noHayDeportesDisponibles;
 
-                    if (noHayDeportesDisponibles) {
-                        cardNoDisponible.setVisibility(View.VISIBLE);
-                    }
+                    // ✅ CARGAR PERFIL incluso si falla
+                    cargarPerfilEntrenador();
                 }
             }
         });
@@ -337,37 +336,139 @@ public class DetallesEntrenadorFragment extends Fragment {
         deportesAdapter.setDeportes(perfil.getEspecialidades());
         mostrarResenas(perfil.getResenas());
 
-        if (hayDeportesDisponibles) {
-            mostrarUISegunEstadoRelacion(perfil.getEstadoRelacion());
-        }
+        // TODO: Cuando implementes la obtención de datos de contacto del backend
+        // correoEntrenador = perfil.getCorreo();
+        // telefonoEntrenador = perfil.getTelefono();
+
+        mostrarUISegunEstadoRelacion(perfil.getEstadoRelacion());
     }
 
     private void mostrarUISegunEstadoRelacion(EstadoRelacionDTO estado) {
+        Log.d("DetallesEntrenador", "============================================");
+        Log.d("DetallesEntrenador", "=== DEBUG mostrarUISegunEstadoRelacion ===");
+        Log.d("DetallesEntrenador", "hayDeportesDisponibles: " + hayDeportesDisponibles);
+
+        if (estado != null) {
+            Log.d("DetallesEntrenador", "estado != null: TRUE");
+            Log.d("DetallesEntrenador", "tieneRelacion: " + estado.getTieneRelacion());
+            Log.d("DetallesEntrenador", "estadoRelacion: '" + estado.getEstadoRelacion() + "'");
+            Log.d("DetallesEntrenador", "idDeporte: " + estado.getIdDeporte());
+            Log.d("DetallesEntrenador", "nombreDeporte: " + estado.getNombreDeporte());
+        } else {
+            Log.d("DetallesEntrenador", "estado es NULL");
+        }
+        Log.d("DetallesEntrenador", "============================================");
+
         layoutSinRelacion.setVisibility(View.GONE);
         layoutPendiente.setVisibility(View.GONE);
         layoutActivo.setVisibility(View.GONE);
         layoutFinalizado.setVisibility(View.GONE);
-        // ✅ NO ocultar layoutEsperandoRespuesta aquí - se maneja por separado
+        cardNoDisponible.setVisibility(View.GONE);
 
-        if (estado == null || !estado.getTieneRelacion()) {
+        // Ocultar botones de "solicitar más deportes" por defecto
+        btnSolicitarMasDeportesPendiente.setVisibility(View.GONE);
+        btnSolicitarMasDeportesActivo.setVisibility(View.GONE);
+        btnSolicitarNuevamente.setVisibility(View.GONE);
+
+        // ✅ PRIMERO: Verificar si TIENE relación (pendiente/activo/finalizado)
+        boolean tieneRelacion = (estado != null && estado.getTieneRelacion());
+        Log.d("DetallesEntrenador", "tieneRelacion calculado: " + tieneRelacion);
+
+        // ❌ Si NO hay deportes disponibles
+        if (!hayDeportesDisponibles) {
+            Log.d("DetallesEntrenador", "Entrando a bloque: NO hay deportes disponibles");
+
+            if (tieneRelacion) {
+                String estadoRelacion = estado.getEstadoRelacion();
+                Log.d("DetallesEntrenador", "Tiene relación con estado: '" + estadoRelacion + "'");
+
+                if ("pendiente".equals(estadoRelacion)) {
+                    Log.d("DetallesEntrenador", "CASO 5: Pendiente sin más deportes");
+                    // Caso 5: Solicitud aceptada (pendiente) sin MÁS deportes disponibles
+                    layoutPendiente.setVisibility(View.VISIBLE);
+                    textPrecio.setVisibility(View.GONE);
+                    textCosto.setVisibility(View.GONE);
+                    btnSolicitarMasDeportesPendiente.setVisibility(View.GONE);
+
+                } else if ("activo".equals(estadoRelacion)) {
+                    Log.d("DetallesEntrenador", "CASO 7: Activo sin más deportes");
+                    // Caso 7: Relación activa sin más deportes disponibles
+                    layoutActivo.setVisibility(View.VISIBLE);
+                    if (estado.getYaCalificado() != null && estado.getYaCalificado()) {
+                        btnCalificarActivo.setVisibility(View.GONE);
+                    }
+                    textPrecio.setVisibility(View.GONE);
+                    textCosto.setVisibility(View.GONE);
+                    btnSolicitarMasDeportesActivo.setVisibility(View.GONE);
+
+                } else if ("finalizado".equals(estadoRelacion)) {
+                    Log.d("DetallesEntrenador", "CASO 9: Finalizado sin más deportes");
+                    // Caso 9: Relación finalizada sin más deportes disponibles
+                    layoutFinalizado.setVisibility(View.VISIBLE);
+                    if (estado.getYaCalificado() != null && estado.getYaCalificado()) {
+                        btnCalificarFinalizado.setVisibility(View.GONE);
+                    }
+                    textPrecio.setVisibility(View.GONE);
+                    textCosto.setVisibility(View.GONE);
+                    btnSolicitarNuevamente.setVisibility(View.GONE);
+                }
+            } else {
+                Log.d("DetallesEntrenador", "CASO 1-2: No hay deportes Y no hay relación");
+                // Caso 1 y 2: NO hay deportes Y NO hay relación
+                if (layoutEsperandoRespuesta.getVisibility() != View.VISIBLE) {
+                    cardNoDisponible.setVisibility(View.VISIBLE);
+                }
+            }
+            return;
+        }
+
+        // ✅ SÍ hay deportes disponibles - Casos 3, 4, 6, 8, 10
+        Log.d("DetallesEntrenador", "Entrando a bloque: SÍ hay deportes disponibles");
+
+        if (!tieneRelacion) {
+            Log.d("DetallesEntrenador", "CASO 3-4: Sin relación con deportes disponibles");
+            // Caso 3 y 4: Sin relación con deportes disponibles
             layoutSinRelacion.setVisibility(View.VISIBLE);
+            textPrecio.setVisibility(View.VISIBLE);
+            textCosto.setVisibility(View.VISIBLE);
+
         } else {
             String estadoRelacion = estado.getEstadoRelacion();
+            Log.d("DetallesEntrenador", "Tiene relación con estado: '" + estadoRelacion + "' y SÍ hay deportes disponibles");
 
             if ("pendiente".equals(estadoRelacion)) {
+                Log.d("DetallesEntrenador", "CASO 6: Pendiente CON más deportes disponibles");
+                // Caso 6a y 6b: Pendiente con MÁS deportes disponibles
                 layoutPendiente.setVisibility(View.VISIBLE);
+                btnSolicitarMasDeportesPendiente.setVisibility(View.VISIBLE);
+                textPrecio.setVisibility(View.VISIBLE);
+                textCosto.setVisibility(View.VISIBLE);
+
             } else if ("activo".equals(estadoRelacion)) {
+                Log.d("DetallesEntrenador", "CASO 8: Activo CON más deportes disponibles");
+                // Caso 8a y 8b: Activo con MÁS deportes disponibles
                 layoutActivo.setVisibility(View.VISIBLE);
                 if (estado.getYaCalificado() != null && estado.getYaCalificado()) {
                     btnCalificarActivo.setVisibility(View.GONE);
                 }
-             } else if ("finalizado".equals(estadoRelacion)) {
+                btnSolicitarMasDeportesActivo.setVisibility(View.VISIBLE);
+                textPrecio.setVisibility(View.VISIBLE);
+                textCosto.setVisibility(View.VISIBLE);
+
+            } else if ("finalizado".equals(estadoRelacion)) {
+                Log.d("DetallesEntrenador", "CASO 10: Finalizado CON deportes disponibles");
+                // Caso 10: Finalizado con deportes disponibles
                 layoutFinalizado.setVisibility(View.VISIBLE);
                 if (estado.getYaCalificado() != null && estado.getYaCalificado()) {
                     btnCalificarFinalizado.setVisibility(View.GONE);
                 }
+                btnSolicitarNuevamente.setVisibility(View.VISIBLE);
+                textPrecio.setVisibility(View.VISIBLE);
+                textCosto.setVisibility(View.VISIBLE);
             }
         }
+
+        Log.d("DetallesEntrenador", "=== FIN DEBUG ===");
     }
 
     private void enviarSolicitud() {
@@ -377,12 +478,62 @@ public class DetallesEntrenadorFragment extends Fragment {
                 .navigate(R.id.action_navigation_detallesEntrenador_to_enviarSolicitud, bundle);
     }
 
-    private void irAPagar() {
-        Toast.makeText(getContext(), "Funcionalidad de pago próximamente", Toast.LENGTH_SHORT).show();
+    /**
+     * Abre la aplicación de correo para enviar un mensaje al entrenador
+     */
+    private void enviarCorreo() {
+        // TODO: Cuando implementes la obtención del correo, usa: correoEntrenador
+        if (correoEntrenador == null || correoEntrenador.isEmpty()) {
+            Toast.makeText(getContext(),
+                    "Correo del entrenador no disponible",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:" + correoEntrenador));
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Consulta sobre entrenamiento");
+
+        try {
+            startActivity(Intent.createChooser(intent, "Enviar correo"));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getContext(),
+                    "No hay aplicaciones de correo instaladas",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void cancelarMensualidad() {
-        Toast.makeText(getContext(), "Funcionalidad de cancelar mensualidad próximamente", Toast.LENGTH_SHORT).show();
+    /**
+     * Abre WhatsApp para enviar un mensaje al entrenador
+     */
+    private void enviarWhatsapp() {
+        // TODO: Cuando implementes la obtención del teléfono, usa: telefonoEntrenador
+        if (telefonoEntrenador == null || telefonoEntrenador.isEmpty()) {
+            Toast.makeText(getContext(),
+                    "Número de WhatsApp del entrenador no disponible",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Formato: 52 + 10 dígitos (ejemplo: 5215512345678)
+        String numeroFormateado = telefonoEntrenador.replaceAll("[^0-9]", "");
+        if (!numeroFormateado.startsWith("52")) {
+            numeroFormateado = "52" + numeroFormateado;
+        }
+
+        String mensaje = "Hola, me interesa tu entrenamiento";
+        String url = "https://wa.me/" + numeroFormateado + "?text=" + Uri.encode(mensaje);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+
+        try {
+            startActivity(intent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getContext(),
+                    "WhatsApp no está instalado",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void abrirDialogCalificacion() {

@@ -165,6 +165,9 @@ public class PerfilFragment extends Fragment {
             @Override
             public void onResponse(Call<UsuarioDetalleDTO> call,
                                    Response<UsuarioDetalleDTO> response) {
+                // CORRECCIÓN: Si el fragmento ya no existe (cerraste sesión), no hacemos nada
+                if (!isAdded()) return;
+
                 if (response.isSuccessful() && response.body() != null) {
                     UsuarioDetalleDTO usuario = response.body();
                     mostrarDatosBasicos(usuario);
@@ -183,6 +186,9 @@ public class PerfilFragment extends Fragment {
 
             @Override
             public void onFailure(Call<UsuarioDetalleDTO> call, Throwable t) {
+                // CORRECCIÓN: Si el fragmento ya no existe, no hacemos nada
+                if (!isAdded()) return;
+
                 Log.e(TAG, "Error de conexión: " + t.getMessage(), t);
                 Toast.makeText(requireContext(),
                         "Error de conexión: " + t.getMessage(),
@@ -216,6 +222,8 @@ public class PerfilFragment extends Fragment {
             @Override
             public void onResponse(Call<PerfilAlumnoResponseDTO> call,
                                    Response<PerfilAlumnoResponseDTO> response) {
+                // CORRECCIÓN: Si el fragmento ya no existe, abortamos
+                if (!isAdded()) return;
 
                 Log.d(TAG, "Response code: " + response.code());
 
@@ -253,6 +261,9 @@ public class PerfilFragment extends Fragment {
 
             @Override
             public void onFailure(Call<PerfilAlumnoResponseDTO> call, Throwable t) {
+                // CORRECCIÓN: Si el fragmento ya no existe, abortamos
+                if (!isAdded()) return;
+
                 Log.e(TAG, "❌ Error de conexión al cargar perfil: " + t.getMessage(), t);
                 Toast.makeText(requireContext(),
                         "Error de conexión: " + t.getMessage(),
@@ -288,6 +299,9 @@ public class PerfilFragment extends Fragment {
      * Carga la foto de perfil desde Cloudinary usando Glide
      */
     private void cargarFotoPerfil(String urlFotoPerfil) {
+        // Validación extra de seguridad
+        if (!isAdded()) return;
+
         if (urlFotoPerfil != null && !urlFotoPerfil.isEmpty()) {
             Log.d(TAG, "Cargando foto de perfil: " + urlFotoPerfil);
 
@@ -339,6 +353,9 @@ public class PerfilFragment extends Fragment {
      * Agrega una card de deporte al contenedor CON su nivel
      */
     private void agregarCardDeporte(String deporte, String nivel) {
+        // Validación extra de seguridad
+        if (!isAdded()) return;
+
         // Crear la card programáticamente
         MaterialCardView card = new MaterialCardView(requireContext());
 
@@ -525,6 +542,9 @@ public class PerfilFragment extends Fragment {
      * Convierte dp a pixeles
      */
     private int dpToPx(int dp) {
+        // Validación extra de seguridad
+        if (!isAdded()) return 0;
+
         float density = getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
     }
@@ -533,6 +553,9 @@ public class PerfilFragment extends Fragment {
      * Muestra los contadores de amigos y entrenadores
      */
     private void mostrarContadores(PerfilAlumnoResponseDTO perfil) {
+        // Validación extra de seguridad
+        if (!isAdded()) return;
+
         int amigos = perfil.getTotalAmigos();
         int entrenadores = perfil.getTotalEntrenadores();
 
