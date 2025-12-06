@@ -44,4 +44,19 @@ public interface AlumnoDeporteRepository extends JpaRepository<AlumnoDeporte, In
             @Param("nombreNivel") String nombreNivel,
             @Param("fechaInicio") LocalDate fechaInicio
     );
+
+    /**
+     * Actualizar el nivel del alumno en un deporte específico
+     */
+    @Modifying
+    @Transactional
+    @Query("UPDATE AlumnoDeporte ad " +
+            "SET ad.idNivel = :nuevoNivel " +
+            "WHERE ad.usuario = :usuario " +
+            "AND ad.idDeporte = :idDeporte")
+    void actualizarNivel(
+            @Param("usuario") String usuario,
+            @Param("idDeporte") Integer idDeporte,
+            @Param("nuevoNivel") Integer nuevoNivel
+    );
 }
