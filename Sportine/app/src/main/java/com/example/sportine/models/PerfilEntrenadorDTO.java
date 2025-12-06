@@ -11,15 +11,20 @@ public class PerfilEntrenadorDTO {
     private Integer limiteAlumnos;
     private Integer alumnosActuales;
     private Integer costoMensual;
+
+    // ✅ NUEVOS CAMPOS
+    private String correo;
+    private String telefono;
+
     private CalificacionDTO calificacion;
     private List<String> especialidades;
     private List<ResenaDTO> resenas;
-    private EstadoRelacionDTO estadoRelacion; // NUEVO
+    private EstadoRelacionDTO estadoRelacion;
 
     // Constructor vacío
     public PerfilEntrenadorDTO() {}
 
-    // Getters y Setters
+    // Getters y Setters existentes
     public String getUsuario() { return usuario; }
     public void setUsuario(String usuario) { this.usuario = usuario; }
 
@@ -43,6 +48,13 @@ public class PerfilEntrenadorDTO {
 
     public Integer getCostoMensual() { return costoMensual; }
     public void setCostoMensual(Integer costoMensual) { this.costoMensual = costoMensual; }
+
+    // ✅ NUEVOS GETTERS Y SETTERS
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
+
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
 
     public CalificacionDTO getCalificacion() { return calificacion; }
     public void setCalificacion(CalificacionDTO calificacion) { this.calificacion = calificacion; }
