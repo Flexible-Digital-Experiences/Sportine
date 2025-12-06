@@ -15,9 +15,11 @@ public class PerfilEntrenadorDTO {
     private String nombreCompleto;
     private String ubicacion;
     private String acercaDeMi;
+    private Integer costoMensual;
     private Integer limiteAlumnos;
     private Integer alumnosActuales;
-    private Integer costoMensual;
+    private String correo;
+    private String telefono;
     private CalificacionDTO calificacion;
     private List<String> especialidades;
     private List<ResenaDTO> resenas;

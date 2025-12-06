@@ -43,7 +43,7 @@ public class DetalleEntrenadorServiceImpl implements DetalleEntrenadorService {
         // 4. Obtener reseñas
         List<ResenaDTO> resenas = obtenerResenasDTO(usuarioEntrenador);
 
-        // 5. NUEVO: Obtener estado de relación con el alumno
+        // 5. Obtener estado de relación con el alumno
         EstadoRelacionDTO estadoRelacion = obtenerEstadoRelacionDTO(usuarioEntrenador, usuarioAlumno);
 
         // 6. Construir DTO principal
@@ -100,6 +100,10 @@ public class DetalleEntrenadorServiceImpl implements DetalleEntrenadorService {
             }
         }
         perfil.setAlumnosActuales(actuales);
+
+        // ✅ NUEVOS CAMPOS: Correo y Teléfono
+        perfil.setCorreo((String) datosEntrenador.get("correo"));
+        perfil.setTelefono((String) datosEntrenador.get("telefono"));
 
         perfil.setCalificacion(calificacion);
         perfil.setEspecialidades(especialidades != null ? especialidades : new ArrayList<>());
@@ -176,7 +180,7 @@ public class DetalleEntrenadorServiceImpl implements DetalleEntrenadorService {
     }
 
     /**
-     * NUEVO: Método auxiliar para obtener el estado de relación entre alumno y entrenador.
+     * Método auxiliar para obtener el estado de relación entre alumno y entrenador.
      */
     private EstadoRelacionDTO obtenerEstadoRelacionDTO(String usuarioEntrenador, String usuarioAlumno) {
         // Buscar si existe alguna relación
@@ -228,4 +232,3 @@ public class DetalleEntrenadorServiceImpl implements DetalleEntrenadorService {
         return new EstadoRelacionDTO(true, statusRelacion, idDeporte, nombreDeporte, yaCalificado);
     }
 }
-

@@ -24,6 +24,8 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
             ie.descripcion_perfil as descripcionPerfil,
             ie.costo_mensualidad as costoMensualidad,
             ie.limite_alumnos AS limiteAlumnos,
+            ie.correo as correo,
+            ie.telefono as telefono,
             COUNT(DISTINCT ea.usuario_alumno) AS alumnosActuales
         FROM Usuario u
         LEFT JOIN Estado e ON u.id_estado = e.id_estado
@@ -32,7 +34,8 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
             AND ea.status_relacion = 'activo'
         WHERE u.usuario = :usuario
         GROUP BY u.usuario, u.nombre, u.apellidos, u.ciudad, e.estado, 
-                 ie.foto_perfil, ie.descripcion_perfil, ie.costo_mensualidad, ie.limite_alumnos
+                 ie.foto_perfil, ie.descripcion_perfil, ie.costo_mensualidad, 
+                 ie.limite_alumnos, ie.correo, ie.telefono
         """, nativeQuery = true)
     Optional<Map<String, Object>> obtenerDatosEntrenador(@Param("usuario") String usuario);
 
@@ -67,10 +70,6 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
         ORDER BY c.id_calificacion DESC
         """, nativeQuery = true)
     List<Map<String, Object>> obtenerResenas(@Param("usuario") String usuario);
-
-    // ============================================
-    // NUEVAS QUERIES PARA ESTADO DE RELACIÓN
-    // ============================================
 
     /**
      * Obtiene el estado de la relación entre un alumno y un entrenador.

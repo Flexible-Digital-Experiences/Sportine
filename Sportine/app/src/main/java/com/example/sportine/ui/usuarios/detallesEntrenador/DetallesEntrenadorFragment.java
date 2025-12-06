@@ -336,9 +336,9 @@ public class DetallesEntrenadorFragment extends Fragment {
         deportesAdapter.setDeportes(perfil.getEspecialidades());
         mostrarResenas(perfil.getResenas());
 
-        // TODO: Cuando implementes la obtención de datos de contacto del backend
-        // correoEntrenador = perfil.getCorreo();
-        // telefonoEntrenador = perfil.getTelefono();
+        // ✅ GUARDAR DATOS DE CONTACTO DEL BACKEND
+        correoEntrenador = perfil.getCorreo();
+        telefonoEntrenador = perfil.getTelefono();
 
         mostrarUISegunEstadoRelacion(perfil.getEstadoRelacion());
     }
@@ -482,7 +482,6 @@ public class DetallesEntrenadorFragment extends Fragment {
      * Abre la aplicación de correo para enviar un mensaje al entrenador
      */
     private void enviarCorreo() {
-        // TODO: Cuando implementes la obtención del correo, usa: correoEntrenador
         if (correoEntrenador == null || correoEntrenador.isEmpty()) {
             Toast.makeText(getContext(),
                     "Correo del entrenador no disponible",
@@ -507,7 +506,6 @@ public class DetallesEntrenadorFragment extends Fragment {
      * Abre WhatsApp para enviar un mensaje al entrenador
      */
     private void enviarWhatsapp() {
-        // TODO: Cuando implementes la obtención del teléfono, usa: telefonoEntrenador
         if (telefonoEntrenador == null || telefonoEntrenador.isEmpty()) {
             Toast.makeText(getContext(),
                     "Número de WhatsApp del entrenador no disponible",
