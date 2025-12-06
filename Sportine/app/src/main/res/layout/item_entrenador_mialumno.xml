@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="1dp"
+    android:id="@+id/item_alumno_card"
+    app:strokeColor="#E5E7EB"
+    android:backgroundTint="#FFFFFF">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Foto del alumno -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/image_alumno"
+            android:layout_width="85dp"
+            android:layout_height="82dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/CircularImageView"
+            app:strokeColor="#E0E0E0"
+            app:strokeWidth="2dp"
+            tools:src="@tools:sample/avatars" />
+
+        <LinearLayout
+            android:id="@+id/layout_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/indicador_estado"
+            app:layout_constraintStart_toEndOf="@id/image_alumno"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- Nombre del alumno -->
+            <TextView
+                android:id="@+id/text_nombre_alumno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="#111827"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="Juan Pérez" />
+
+            <!-- Edad -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:contentDescription="Edad"
+                    android:src="@drawable/ic_perfil"
+                    app:tint="#6B7280" />
+
+                <TextView
+                    android:id="@+id/text_edad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:textColor="#6B7280"
+                    android:textSize="13sp"
+                    tools:text="25 años" />
+            </LinearLayout>
+
+            <!-- Deportes que entrena -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:contentDescription="Deportes"
+                    android:src="@drawable/ic_ensena"
+                    app:tint="#6B7280" />
+
+                <TextView
+                    android:id="@+id/text_deportes"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="#2563EB"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="Fútbol, Basketball, Natación" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Indicador de estado (verde = activo, amarillo = pendiente, rojo = vencido) -->
+        <View
+            android:id="@+id/indicador_estado"
+            android:layout_width="4dp"
+            android:layout_height="0dp"
+            android:background="#10B981"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

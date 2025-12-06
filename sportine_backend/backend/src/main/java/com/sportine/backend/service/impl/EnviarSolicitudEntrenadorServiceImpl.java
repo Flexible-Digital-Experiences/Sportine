@@ -137,7 +137,7 @@ public class EnviarSolicitudEntrenadorServiceImpl implements EnviarSolicitudEntr
                 .findByUsuarioAlumnoAndUsuarioEntrenadorAndStatusSolicitud(
                         usuarioAlumno,
                         usuarioEntrenador,
-                        SolicitudEntrenamiento.StatusSolicitud.En_revisión.name()
+                        SolicitudEntrenamiento.StatusSolicitud.En_revisión  // ✅ Quitar .name()
                 );
 
         if (solicitudesPendientes.isEmpty()) {

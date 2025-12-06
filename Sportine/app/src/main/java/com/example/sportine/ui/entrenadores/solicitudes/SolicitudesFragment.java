@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,7 +62,6 @@ public class SolicitudesFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_entrenador_solicitudes, container, false);
 
-        // ✅ CORRECCIÓN: Usar el mismo SharedPreferences que en PerfilEntrenaFragment
         SharedPreferences prefs = requireContext().getSharedPreferences("SportinePrefs", Context.MODE_PRIVATE);
         usuarioEntrenador = prefs.getString("USER_USERNAME", "");
 
@@ -79,7 +79,6 @@ public class SolicitudesFragment extends Fragment {
         setupRecyclerView();
         setupListeners();
 
-        // Cargar solicitudes
         cargarSolicitudesEnRevision();
 
         return view;
@@ -101,11 +100,9 @@ public class SolicitudesFragment extends Fragment {
         rvSolicitudes.setLayoutManager(new LinearLayoutManager(getContext()));
         rvSolicitudes.setAdapter(adapter);
 
-        // Mostrar checkbox para selección múltiple
         adapter.setMostrarCheckbox(true);
 
         adapter.setListener(solicitud -> {
-            // Click en una solicitud
             Toast.makeText(getContext(),
                     "Solicitud de: " + solicitud.getNombreAlumno(),
                     Toast.LENGTH_SHORT).show();
@@ -113,12 +110,10 @@ public class SolicitudesFragment extends Fragment {
     }
 
     private void setupListeners() {
-        // Botón Ver Mis Alumnos
+        // ✅ Botón Ver Mis Alumnos - NAVEGACIÓN IMPLEMENTADA
         btnVerMisAlumnos.setOnClickListener(v -> {
-            // TODO: Navegar a fragment de "Mis Alumnos"
-            Toast.makeText(getContext(),
-                    "Navegando a Mis Alumnos (próximamente)",
-                    Toast.LENGTH_SHORT).show();
+            NavHostFragment.findNavController(this)
+                    .navigate(R.id.action_navigation_solicitudes_entrenador_to_misAlumnos);
         });
 
         // Botón Aceptar
@@ -153,7 +148,6 @@ public class SolicitudesFragment extends Fragment {
                                 ocultarEstadoVacio();
                                 adapter.setSolicitudes(solicitudes);
 
-                                // Log de la primera solicitud para debug
                                 if (!solicitudes.isEmpty()) {
                                     SolicitudEntrenadorDTO primera = solicitudes.get(0);
                                     Log.d(TAG, "Primera solicitud - ID: " + primera.getIdSolicitud()
@@ -250,7 +244,6 @@ public class SolicitudesFragment extends Fragment {
                         Log.e(TAG, "Error al procesar solicitud " + idSolicitud + ": " + response.code());
                     }
 
-                    // Cuando todas están procesadas
                     if (procesadas[0] == totalSolicitudes) {
                         String mensaje;
                         if (fallidas[0] == 0) {
@@ -263,7 +256,7 @@ public class SolicitudesFragment extends Fragment {
 
                         Toast.makeText(getContext(), mensaje, Toast.LENGTH_LONG).show();
                         adapter.clearSelections();
-                        cargarSolicitudesEnRevision(); // Recargar lista
+                        cargarSolicitudesEnRevision();
                     }
                 }
 

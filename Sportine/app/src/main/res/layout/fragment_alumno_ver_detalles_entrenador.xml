@@ -397,8 +397,8 @@
             </LinearLayout>
 
             <!-- ============================================
-     LAYOUT PENDIENTE (Solicitud aceptada)
-     ============================================ -->
+                 LAYOUT PENDIENTE (Solicitud aceptada CON deportes disponibles)
+                 ============================================ -->
             <LinearLayout
                 android:id="@+id/layout_pendiente"
                 android:layout_width="match_parent"
@@ -463,6 +463,19 @@
                         android:backgroundTint="#25D366" />
 
                 </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_solicitar_mas_deportes_pendiente"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="12dp"
+                    android:text="Solicitar otro deporte"
+                    android:textSize="15sp"
+                    app:backgroundTint="#2563EB"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_add"
+                    app:iconGravity="textStart"
+                    app:iconTint="#FFFFFF"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -490,20 +503,26 @@
                     android:layout_marginBottom="16dp" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_cancelar_mensualidad"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:text="Cancelar mensualidad"
-                    app:cornerRadius="12dp"
-                    android:backgroundTint="#CC0505"
-                    android:layout_marginBottom="12dp" />
-
-                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_calificar_activo"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:text="⭐ Calificar entrenador"
                     app:cornerRadius="12dp" />
+
+                <!-- Después del botón "Calificar entrenador", ANTES de cerrar el LinearLayout -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_solicitar_mas_deportes_activo"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="12dp"
+                    android:text="Solicitar otro deporte"
+                    android:textSize="15sp"
+                    app:backgroundTint="#2563EB"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_add"
+                    app:iconGravity="textStart"
+                    app:iconTint="#FFFFFF"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -548,8 +567,8 @@
             </LinearLayout>
 
             <!-- ============================================
-            LAYOUT ESPERANDO RESPUESTA (Solicitudes pendientes)
-            ============================================ -->
+                 LAYOUT ESPERANDO RESPUESTA (Solicitudes pendientes)
+                 ============================================ -->
             <LinearLayout
                 android:id="@+id/layout_esperando_respuesta"
                 android:layout_width="match_parent"

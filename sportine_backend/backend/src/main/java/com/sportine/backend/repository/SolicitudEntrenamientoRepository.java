@@ -83,4 +83,6 @@ public interface SolicitudEntrenamientoRepository extends JpaRepository<Solicitu
             @Param("usuarioEntrenador") String usuarioEntrenador,
             @Param("idDeporte") Integer idDeporte
     );
+
+    List<SolicitudEntrenamiento> findByUsuarioAlumnoAndUsuarioEntrenadorAndStatusSolicitud(String usuarioAlumno, String usuarioEntrenador, SolicitudEntrenamiento.StatusSolicitud statusSolicitud);
 }
