@@ -64,6 +64,8 @@ CREATE TABLE Informacion_Alumno (
 
 CREATE TABLE Informacion_Entrenador (
     usuario VARCHAR(255),
+    correo VARCHAR(255),
+    telefono VARCHAR(10),
     costo_mensualidad INT,
     tipo_cuenta ENUM('premium','gratis'),
     limite_alumnos INT DEFAULT 3,
