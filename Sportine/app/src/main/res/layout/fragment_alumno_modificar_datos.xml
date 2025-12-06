@@ -331,33 +331,14 @@
                                     android:textStyle="bold"
                                     android:letterSpacing="0.05"/>
 
-                                <RelativeLayout
+                                <TextView
+                                    android:id="@+id/tvPasswordActual"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp">
-
-                                    <TextView
-                                        android:id="@+id/tvPasswordActual"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:text="********"
-                                        android:textColor="#1A1A1A"
-                                        android:textSize="15sp"
-                                        android:layout_toStartOf="@id/btnTogglePasswordActual"
-                                        android:layout_centerVertical="true" />
-
-                                    <ImageView
-                                        android:id="@+id/btnTogglePasswordActual"
-                                        android:layout_width="24dp"
-                                        android:layout_height="24dp"
-                                        android:layout_alignParentEnd="true"
-                                        android:layout_centerVertical="true"
-                                        android:src="@drawable/ic_ojover"
-                                        app:tint="#6B7280"
-                                        android:clickable="true"
-                                        android:focusable="true"
-                                        android:contentDescription="Mostrar/Ocultar contraseña"/>
-                                </RelativeLayout>
+                                    android:text="••••••••"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp" />
                             </LinearLayout>
 
                             <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_marginStart="8dp"/>
@@ -385,7 +366,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="24dp"/>
 
-                <!-- Fila 1: Nombre y Sexo -->
+                <!-- ✅ MODIFICADO: Fila 1: Nombre y Sexo (AHORA CON EditText) -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -415,21 +396,21 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:hint="Sexo"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         app:boxStrokeColor="#00A896"
                         android:layout_marginStart="8dp">
 
-                        <AutoCompleteTextView
-                            android:id="@+id/actvSexoNuevo"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etSexoNuevo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="none"
+                            android:inputType="text"
                             android:textColor="#1A1A1A"
                             android:textSize="14sp"/>
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
-                <!-- Fila 2: Apellido y Estado -->
+                <!-- ✅ MODIFICADO: Fila 2: Apellido y Estado (AHORA CON EditText) -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -459,21 +440,21 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:hint="Estado"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         app:boxStrokeColor="#00A896"
                         android:layout_marginStart="8dp">
 
-                        <AutoCompleteTextView
-                            android:id="@+id/actvEstadoNuevo"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etEstadoNuevo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="none"
+                            android:inputType="text"
                             android:textColor="#1A1A1A"
                             android:textSize="14sp"/>
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
-                <!-- Fila 3: Ciudad y Contraseña -->
+                <!-- ✅ MODIFICADO: Fila 3: Ciudad y Contraseña (AHORA CON EditText) -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -485,15 +466,15 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:hint="Ciudad"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         app:boxStrokeColor="#00A896"
                         android:layout_marginEnd="8dp">
 
-                        <AutoCompleteTextView
-                            android:id="@+id/actvCiudadNuevo"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etCiudadNuevo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="none"
+                            android:inputType="text"
                             android:textColor="#1A1A1A"
                             android:textSize="14sp"/>
                     </com.google.android.material.textfield.TextInputLayout>

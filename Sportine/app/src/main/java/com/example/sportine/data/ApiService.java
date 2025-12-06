@@ -61,7 +61,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-
+import okhttp3.MultipartBody;
 
 public interface ApiService {
 
@@ -362,4 +362,11 @@ public interface ApiService {
             @Body ActualizarPerfilEntrenadorDTO datos
     );
 
+    // Actualizar foto de perfil del entrenador
+    @Multipart
+    @POST("/api/entrenadores/perfil/{usuario}/foto")
+    Call<PerfilEntrenadorResponseDTO> actualizarFotoPerfilEntrenador(
+            @Path("usuario") String usuario,
+            @Part MultipartBody.Part file
+    );
 }

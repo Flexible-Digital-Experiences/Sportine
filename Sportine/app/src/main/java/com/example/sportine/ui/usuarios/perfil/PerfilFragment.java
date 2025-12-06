@@ -60,7 +60,6 @@ public class PerfilFragment extends Fragment {
     // Botones
     private MaterialCardView btnSettings;
     private MaterialButton btnCompletar;
-    private MaterialButton btnLogout; // <--- NUEVO: Botón cerrar sesión
 
     // API Service
     private ApiService apiService;
@@ -115,15 +114,12 @@ public class PerfilFragment extends Fragment {
         tvTotalAmigos = view.findViewById(R.id.tvTotalAmigos);
         tvTotalEntrenadores = view.findViewById(R.id.tvTotalEntrenadores);
 
-        // Contenedor de deportes (el LinearLayout horizontal que contiene las cards)
+        // Contenedor de deportes
         deportesContainer = view.findViewById(R.id.deportesContainer);
 
         // Botones
         btnSettings = view.findViewById(R.id.btnSettings);
         btnCompletar = view.findViewById(R.id.btnCompletar);
-
-        // <--- NUEVO: Inicializar botón logout
-        btnLogout = view.findViewById(R.id.btnLogout);
     }
 
     /**
@@ -137,7 +133,6 @@ public class PerfilFragment extends Fragment {
         rol = prefs.getString("USER_ROL", null);
 
         Log.d(TAG, "Usuario logueado: " + username + ", Rol: " + rol);
-
     }
 
     /**
@@ -153,23 +148,6 @@ public class PerfilFragment extends Fragment {
                 Navigation.findNavController(view)
                         .navigate(R.id.action_perfil_to_completar_datos)
         );
-
-        // <--- NUEVO: Lógica de Cerrar Sesión
-        btnLogout.setOnClickListener(v -> {
-            // 1. Borrar datos de SharedPreferences
-            SharedPreferences prefs = requireContext()
-                    .getSharedPreferences("SportinePrefs", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.clear(); // Borra todo (token, usuario, rol)
-            editor.apply();
-
-            // 2. Ir al Login y limpiar el historial de navegación (Back Stack)
-            // Esto evita que si le dan "Atrás" vuelvan a entrar sin loguearse
-            android.content.Intent intent = new android.content.Intent(requireContext(), com.example.sportine.ui.usuarios.login.LoginActivity.class);
-            intent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            requireActivity().finish();
-        });
     }
 
     /**
@@ -234,7 +212,6 @@ public class PerfilFragment extends Fragment {
 
     /**
      * Carga el perfil completo del alumno
-     * VERSIÓN CON DEBUG COMPLETO
      */
     private void cargarPerfilCompleto() {
         Log.d(TAG, "→ Cargando perfil completo para usuario: " + username);
@@ -297,7 +274,6 @@ public class PerfilFragment extends Fragment {
 
     /**
      * Muestra los datos completos del perfil del alumno
-     * VERSIÓN CON DEBUG COMPLETO
      */
     private void mostrarDatosCompletosPerfil(PerfilAlumnoResponseDTO perfil) {
         Log.d(TAG, "===== MOSTRANDO DATOS COMPLETOS DEL PERFIL =====");
@@ -331,10 +307,10 @@ public class PerfilFragment extends Fragment {
 
             Glide.with(this)
                     .load(urlFotoPerfil)
-                    .placeholder(R.drawable.ic_avatar_default)  // Imagen mientras carga
-                    .error(R.drawable.ic_avatar_default)         // Imagen si falla
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)    // Cachear la imagen
-                    .circleCrop()                                // Hacer circular
+                    .placeholder(R.drawable.ic_avatar_default)
+                    .error(R.drawable.ic_avatar_default)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .circleCrop()
                     .into(ivAvatarPerfil);
         } else {
             Log.w(TAG, "URL de foto de perfil vacía, usando imagen por defecto");
@@ -385,7 +361,7 @@ public class PerfilFragment extends Fragment {
 
         // Configurar dimensiones y márgenes
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                0,  // width = 0 para usar weight
+                0,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
         params.weight = 1;
@@ -425,7 +401,7 @@ public class PerfilFragment extends Fragment {
         tvNivel.setText(nivel);
         tvNivel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
         tvNivel.setTypeface(null, Typeface.BOLD);
-        tvNivel.setTextColor(0xFF666666);  // Gris oscuro
+        tvNivel.setTextColor(0xFF666666);
         container.addView(tvNivel);
 
         // Agregar container a la card
@@ -437,7 +413,6 @@ public class PerfilFragment extends Fragment {
 
     /**
      * Mapea el nombre del deporte a su imagen correspondiente
-     * ACTUALIZADO: Maneja correctamente nombres con tildes y mayúsculas
      */
     private int obtenerImagenDeporte(String deporte) {
         if (deporte == null || deporte.isEmpty()) {
@@ -445,7 +420,6 @@ public class PerfilFragment extends Fragment {
             return R.drawable.ic_deporte_default;
         }
 
-        // Normalizar: quitar tildes y convertir a minúsculas
         String deporteNormalizado = deporte.toLowerCase()
                 .trim()
                 .replace("á", "a")
@@ -476,11 +450,11 @@ public class PerfilFragment extends Fragment {
 
             case "gimnasio":
             case "gym":
-                return R.drawable.ic_gimnasio;  // Si tienes esta imagen
+                return R.drawable.ic_gimnasio;
 
             case "natacion":
             case "swimming":
-                return R.drawable.ic_natacion;  // Si tienes esta imagen
+                return R.drawable.ic_natacion;
 
             case "running":
             case "correr":
@@ -506,14 +480,12 @@ public class PerfilFragment extends Fragment {
 
     /**
      * Obtiene el color de fondo según el deporte
-     * ACTUALIZADO: Maneja correctamente nombres con tildes y mayúsculas
      */
     private int obtenerColorDeporte(String deporte) {
         if (deporte == null || deporte.isEmpty()) {
-            return 0xFFF5F5F5;  // Gris claro por defecto
+            return 0xFFF5F5F5;
         }
 
-        // Normalizar: quitar tildes y convertir a minúsculas
         String deporteNormalizado = deporte.toLowerCase()
                 .trim()
                 .replace("á", "a")
@@ -526,43 +498,43 @@ public class PerfilFragment extends Fragment {
             case "futbol":
             case "football":
             case "soccer":
-                return 0xFFFFF3E0;  // Naranja claro
+                return 0xFFFFF3E0;
 
             case "basketball":
             case "basquet":
             case "baloncesto":
-                return 0xFFFFE0E0;  // Rojo claro
+                return 0xFFFFE0E0;
 
             case "tenis":
             case "tennis":
-                return 0xFFE0F2F1;  // Verde claro
+                return 0xFFE0F2F1;
 
             case "gimnasio":
             case "gym":
-                return 0xFFE3F2FD;  // Azul claro
+                return 0xFFE3F2FD;
 
             case "natacion":
             case "swimming":
-                return 0xFFE1F5FE;  // Azul agua
+                return 0xFFE1F5FE;
 
             case "running":
             case "correr":
-                return 0xFFFFFAEE;  // Amarillo pálido
+                return 0xFFFFFAEE;
 
             case "boxeo":
             case "boxing":
-                return 0xFFF0FFF0;  // Verde menta pálido
+                return 0xFFF0FFF0;
 
             case "ciclismo":
             case "cycling":
-                return 0xFFE6E6FA;  // Lavanda pálido
+                return 0xFFE6E6FA;
 
             case "beisbol":
             case "baseball":
-                return 0xFFFAE0E6;  // Rosa pálido
+                return 0xFFFAE0E6;
 
             default:
-                return 0xFFF5F5F5;  // Gris claro
+                return 0xFFF5F5F5;
         }
     }
 

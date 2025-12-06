@@ -8,9 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +30,7 @@ import retrofit2.Response;
 
 public class ModificarDatosAlumnoFragment extends Fragment {
 
-    private static final String TAG = "ModificarDatosFragment";
+    private static final String TAG = "ModificarDatosAlumno";
 
     // ==========================================
     // COMPONENTES - DATOS ACTUALES
@@ -45,16 +42,15 @@ public class ModificarDatosAlumnoFragment extends Fragment {
     private TextView tvEstadoActual;
     private TextView tvCiudadActual;
     private TextView tvPasswordActual;
-    private ImageView btnTogglePasswordActual;
 
     // ==========================================
-    // COMPONENTES - NUEVOS DATOS
+    // ✅ COMPONENTES - NUEVOS DATOS (TODOS EDITTEXTS)
     // ==========================================
     private TextInputEditText etNombreNuevo;
     private TextInputEditText etApellidoNuevo;
-    private AutoCompleteTextView actvSexoNuevo;
-    private AutoCompleteTextView actvEstadoNuevo;
-    private AutoCompleteTextView actvCiudadNuevo;
+    private TextInputEditText etSexoNuevo;
+    private TextInputEditText etEstadoNuevo;
+    private TextInputEditText etCiudadNuevo;
     private TextInputEditText etPasswordNuevo;
 
     // Botones
@@ -89,8 +85,7 @@ public class ModificarDatosAlumnoFragment extends Fragment {
         // 3. Obtener username
         obtenerDatosUsuarioLogueado();
 
-        // 4. Configurar dropdowns
-        configurarDropdowns();
+        // 4. ✅ ELIMINADO: Ya no se configuran dropdowns
 
         // 5. Configurar botones
         configurarBotones();
@@ -113,14 +108,13 @@ public class ModificarDatosAlumnoFragment extends Fragment {
         tvEstadoActual = view.findViewById(R.id.tvEstadoActual);
         tvCiudadActual = view.findViewById(R.id.tvCiudadActual);
         tvPasswordActual = view.findViewById(R.id.tvPasswordActual);
-        btnTogglePasswordActual = view.findViewById(R.id.btnTogglePasswordActual);
 
-        // Campos editables (SIN username)
+        // ✅ Campos editables (TODOS EditTexts ahora)
         etNombreNuevo = view.findViewById(R.id.etNombreNuevo);
         etApellidoNuevo = view.findViewById(R.id.etApellidoNuevo);
-        actvSexoNuevo = view.findViewById(R.id.actvSexoNuevo);
-        actvEstadoNuevo = view.findViewById(R.id.actvEstadoNuevo);
-        actvCiudadNuevo = view.findViewById(R.id.actvCiudadNuevo);
+        etSexoNuevo = view.findViewById(R.id.etSexoNuevo);
+        etEstadoNuevo = view.findViewById(R.id.etEstadoNuevo);
+        etCiudadNuevo = view.findViewById(R.id.etCiudadNuevo);
         etPasswordNuevo = view.findViewById(R.id.etPasswordNuevo);
 
         // Botones
@@ -141,64 +135,11 @@ public class ModificarDatosAlumnoFragment extends Fragment {
     }
 
     /**
-     * Configura los AutoCompleteTextView (dropdowns)
-     */
-    private void configurarDropdowns() {
-        // Dropdown de Sexo
-        String[] generos = {
-                "Masculino", "Femenino", "No Binario", "Género fluido",
-                "Agénero", "Bigénero", "Demigénero", "Transgenero",
-                "Cisgenero", "Prefiero no decir"
-        };
-        ArrayAdapter<String> adapterSexo = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_dropdown_item_1line,
-                generos
-        );
-        actvSexoNuevo.setAdapter(adapterSexo);
-
-        // Dropdown de Estados (México)
-        String[] estados = {
-                "Aguascalientes", "Baja California", "Baja California Sur",
-                "Campeche", "Chiapas", "Chihuahua", "Ciudad de México",
-                "Coahuila", "Colima", "Durango", "Guanajuato", "Guerrero",
-                "Hidalgo", "Jalisco", "México", "Michoacán", "Morelos",
-                "Nayarit", "Nuevo León", "Oaxaca", "Puebla", "Querétaro",
-                "Quintana Roo", "San Luis Potosí", "Sinaloa", "Sonora",
-                "Tabasco", "Tamaulipas", "Tlaxcala", "Veracruz", "Yucatán",
-                "Zacatecas"
-        };
-        ArrayAdapter<String> adapterEstado = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_dropdown_item_1line,
-                estados
-        );
-        actvEstadoNuevo.setAdapter(adapterEstado);
-
-        // Dropdown de Ciudad (Placeholder - se llena según el estado)
-        String[] ciudadesPlaceholder = {
-                "Selecciona primero un estado"
-        };
-        ArrayAdapter<String> adapterCiudad = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_dropdown_item_1line,
-                ciudadesPlaceholder
-        );
-        actvCiudadNuevo.setAdapter(adapterCiudad);
-    }
-
-    /**
      * Configura los listeners de los botones
      */
     private void configurarBotones() {
         btnBack.setOnClickListener(v -> requireActivity().onBackPressed());
-
         btnActualizar.setOnClickListener(v -> actualizarDatos());
-
-        // ✅ ELIMINADO: Toggle de contraseña - Ocultar el botón
-        if (btnTogglePasswordActual != null) {
-            btnTogglePasswordActual.setVisibility(View.GONE);
-        }
     }
 
     /**
@@ -254,8 +195,6 @@ public class ModificarDatosAlumnoFragment extends Fragment {
         tvSexoActual.setText(usuario.getSexo() != null ? usuario.getSexo() : "-");
         tvEstadoActual.setText(usuario.getEstado() != null ? usuario.getEstado() : "-");
         tvCiudadActual.setText(usuario.getCiudad() != null ? usuario.getCiudad() : "-");
-
-        // ✅ MODIFICADO: Mostrar mensaje de seguridad en lugar de contraseña
         tvPasswordActual.setText("••••••••");
 
         Log.d(TAG, "===== FIN MOSTRAR DATOS =====");
@@ -267,12 +206,12 @@ public class ModificarDatosAlumnoFragment extends Fragment {
     private void actualizarDatos() {
         Log.d(TAG, "Iniciando actualización de datos...");
 
-        // Obtener valores de los campos (SIN username)
+        // ✅ Obtener valores de los campos (TODOS EditTexts ahora)
         String nuevoNombre = etNombreNuevo.getText().toString().trim();
         String nuevoApellido = etApellidoNuevo.getText().toString().trim();
-        String nuevoSexo = actvSexoNuevo.getText().toString().trim();
-        String nuevoEstado = actvEstadoNuevo.getText().toString().trim();
-        String nuevaCiudad = actvCiudadNuevo.getText().toString().trim();
+        String nuevoSexo = etSexoNuevo.getText().toString().trim();
+        String nuevoEstado = etEstadoNuevo.getText().toString().trim();
+        String nuevaCiudad = etCiudadNuevo.getText().toString().trim();
         String nuevaPassword = etPasswordNuevo.getText().toString().trim();
 
         // Validar que al menos un campo tenga datos
@@ -289,7 +228,7 @@ public class ModificarDatosAlumnoFragment extends Fragment {
             return;
         }
 
-        // Crear DTO con los datos a actualizar (SIN usuario)
+        // Crear DTO con los datos a actualizar
         ActualizarUsuarioDTO dto = new ActualizarUsuarioDTO();
 
         if (!TextUtils.isEmpty(nuevoNombre)) {
@@ -372,9 +311,9 @@ public class ModificarDatosAlumnoFragment extends Fragment {
     private void limpiarCampos() {
         etNombreNuevo.setText("");
         etApellidoNuevo.setText("");
-        actvSexoNuevo.setText("");
-        actvEstadoNuevo.setText("");
-        actvCiudadNuevo.setText("");
+        etSexoNuevo.setText("");
+        etEstadoNuevo.setText("");
+        etCiudadNuevo.setText("");
         etPasswordNuevo.setText("");
     }
 }

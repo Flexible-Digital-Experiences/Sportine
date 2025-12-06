@@ -6,6 +6,7 @@ import com.sportine.backend.service.EntrenadorPerfilService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/entrenadores")
@@ -37,6 +38,21 @@ public class EntrenadorPerfilController {
 
         PerfilEntrenadorResponseDTO perfil = entrenadorPerfilService
                 .actualizarPerfilEntrenador(usuario, datos);
+
+        return ResponseEntity.ok(perfil);
+    }
+
+    /**
+     * Actualiza la foto de perfil del entrenador
+     * POST /api/entrenadores/perfil/{usuario}/foto
+     */
+    @PostMapping("/perfil/{usuario}/foto")
+    public ResponseEntity<PerfilEntrenadorResponseDTO> actualizarFotoPerfil(
+            @PathVariable String usuario,
+            @RequestParam("file") MultipartFile file) {
+
+        PerfilEntrenadorResponseDTO perfil = entrenadorPerfilService
+                .actualizarFotoPerfil(usuario, file);
 
         return ResponseEntity.ok(perfil);
     }
