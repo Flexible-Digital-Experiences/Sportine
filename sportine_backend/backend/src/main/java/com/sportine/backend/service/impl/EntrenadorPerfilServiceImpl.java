@@ -78,6 +78,8 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
                 infoEntrenador.getLimiteAlumnos(),
                 infoEntrenador.getDescripcionPerfil(),
                 infoEntrenador.getFotoPerfil(),
+                infoEntrenador.getCorreo(),              // ✅ AGREGAR AQUÍ
+                infoEntrenador.getTelefono(),            // ✅ AGREGAR AQUÍ
                 deportes,
                 totalAlumnos,
                 totalAmigos,
@@ -105,6 +107,16 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
             infoEntrenador.setDescripcionPerfil(datos.getDescripcionPerfil());
         }
 
+        // ✅ AGREGAR ACTUALIZACIÓN DE CORREO
+        if (datos.getCorreo() != null && !datos.getCorreo().trim().isEmpty()) {
+            infoEntrenador.setCorreo(datos.getCorreo());
+        }
+
+        // ✅ AGREGAR ACTUALIZACIÓN DE TELÉFONO
+        if (datos.getTelefono() != null && !datos.getTelefono().trim().isEmpty()) {
+            infoEntrenador.setTelefono(datos.getTelefono());
+        }
+
         // 3. Actualizar límite de alumnos SOLO si es premium
         if (datos.getLimiteAlumnos() != null) {
             if (infoEntrenador.getTipoCuenta() == InformacionEntrenador.TipoCuenta.premium) {
@@ -119,12 +131,10 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
 
         // 5. Actualizar deportes si se proporcionaron
         if (datos.getDeportes() != null && !datos.getDeportes().isEmpty()) {
-            // Eliminar deportes actuales
             entrenadorDeporteRepository.deleteAll(
                     entrenadorDeporteRepository.findByUsuario(usuario)
             );
 
-            // Agregar nuevos deportes
             for (Integer idDeporte : datos.getDeportes()) {
                 EntrenadorDeporte entrenadorDeporte = new EntrenadorDeporte();
                 entrenadorDeporte.setUsuario(usuario);

@@ -17,6 +17,12 @@ public class ActualizarPerfilEntrenadorDTO {
     @SerializedName("deportes")
     private List<Integer> deportes;
 
+    @SerializedName("correo")
+    private String correo;
+
+    @SerializedName("telefono")
+    private String telefono;
+
     // Constructor vacío
     public ActualizarPerfilEntrenadorDTO() {}
 
@@ -40,4 +46,10 @@ public class ActualizarPerfilEntrenadorDTO {
     public void setDeportes(List<Integer> deportes) {
         this.deportes = deportes;
     }
+
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
+
+    public String getTelefono() { return telefono; }
+    public void setTelefono(String telefono) { this.telefono = telefono; }
 }

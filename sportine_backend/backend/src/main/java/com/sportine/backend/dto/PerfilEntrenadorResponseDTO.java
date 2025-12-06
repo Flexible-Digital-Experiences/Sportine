@@ -26,6 +26,10 @@ public class PerfilEntrenadorResponseDTO {
     private String descripcionPerfil;
     private String fotoPerfil;
 
+    // ✅ NUEVOS CAMPOS (agregados al constructor)
+    private String correo;
+    private String telefono;
+
     // Deportes que imparte (SOLO NOMBRES, sin experiencia)
     private List<String> deportes;
 

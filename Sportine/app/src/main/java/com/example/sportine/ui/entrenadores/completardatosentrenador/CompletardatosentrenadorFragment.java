@@ -50,12 +50,16 @@ public class CompletardatosentrenadorFragment extends Fragment {
     private TextView tvDeportesActual;
     private TextView tvLimiteAlumnosActual;
     private TextView tvDescripcionActual;
+    private TextView tvCorreoActual;
+    private TextView tvTelefonoActual;
 
     // Datos Nuevos (Editables)
     private TextInputEditText etCostoNuevo;
     private TextInputLayout layoutLimiteAlumnos;
     private AutoCompleteTextView spinnerLimiteAlumnos;
     private TextInputEditText etDescripcionNuevo;
+    private TextInputEditText etCorreoNuevo;
+    private TextInputEditText etTelefonoNuevo;
 
     private MaterialButton btnActualizar;
 
@@ -102,12 +106,16 @@ public class CompletardatosentrenadorFragment extends Fragment {
         // Datos Actuales
         tvCostoActual = view.findViewById(R.id.tvCostoActual);
         tvTipoCuentaActual = view.findViewById(R.id.tvTipoCuentaActual);
+        tvCorreoActual = view.findViewById(R.id.tvCorreoActual);           // ✅ NUEVO
+        tvTelefonoActual = view.findViewById(R.id.tvTelefonoActual);       // ✅ NUEVO
         tvDeportesActual = view.findViewById(R.id.tvDeportesActual);
         tvLimiteAlumnosActual = view.findViewById(R.id.tvLimiteAlumnosActual);
         tvDescripcionActual = view.findViewById(R.id.tvDescripcionActual);
 
         // Datos Nuevos
         etCostoNuevo = view.findViewById(R.id.etCostoNuevo);
+        etCorreoNuevo = view.findViewById(R.id.etCorreoNuevo);             // ✅ NUEVO
+        etTelefonoNuevo = view.findViewById(R.id.etTelefonoNuevo);         // ✅ NUEVO
         layoutLimiteAlumnos = view.findViewById(R.id.layoutLimiteAlumnos);
         spinnerLimiteAlumnos = view.findViewById(R.id.spinnerLimiteAlumnos);
         etDescripcionNuevo = view.findViewById(R.id.etDescripcionNuevo);
@@ -191,6 +199,16 @@ public class CompletardatosentrenadorFragment extends Fragment {
                 : "GRATIS";
         tvTipoCuentaActual.setText(tipoCuenta);
 
+        // ✅ Correo
+        tvCorreoActual.setText(perfil.getCorreo() != null && !perfil.getCorreo().isEmpty()
+                ? perfil.getCorreo()
+                : "-");
+
+        // ✅ Teléfono
+        tvTelefonoActual.setText(perfil.getTelefono() != null && !perfil.getTelefono().isEmpty()
+                ? perfil.getTelefono()
+                : "-");
+
         // Deportes
         String deportes = perfil.getDeportes() != null && !perfil.getDeportes().isEmpty()
                 ? String.join(", ", perfil.getDeportes())
@@ -210,7 +228,7 @@ public class CompletardatosentrenadorFragment extends Fragment {
         // Foto
         cargarFotoPerfil(perfil.getFotoPerfil());
 
-        // ✅ Configurar spinner de límite SOLO si es Premium
+        // Configurar spinner de límite SOLO si es Premium
         configurarSpinnerLimite(tipoCuenta);
 
         Log.d(TAG, "===== FIN MOSTRAR DATOS =====");
@@ -270,13 +288,32 @@ public class CompletardatosentrenadorFragment extends Fragment {
 
         // 1. Recoger datos
         String costoStr = etCostoNuevo.getText().toString().trim();
+        String correo = etCorreoNuevo.getText().toString().trim();          // ✅ NUEVO
+        String telefono = etTelefonoNuevo.getText().toString().trim();      // ✅ NUEVO
         String limiteStr = spinnerLimiteAlumnos.getText().toString().trim();
         String descripcion = etDescripcionNuevo.getText().toString().trim();
 
         // 2. Validar que al menos un campo esté lleno
-        if (costoStr.isEmpty() && limiteStr.isEmpty() && descripcion.isEmpty()) {
+        if (costoStr.isEmpty() && correo.isEmpty() && telefono.isEmpty() &&
+                limiteStr.isEmpty() && descripcion.isEmpty()) {
             Toast.makeText(requireContext(),
                     "Ingresa al menos un campo para actualizar",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // ✅ 2.5. Validar correo
+        if (!correo.isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(correo).matches()) {
+            Toast.makeText(requireContext(),
+                    "Ingresa un correo válido",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // ✅ 2.6. Validar teléfono
+        if (!telefono.isEmpty() && telefono.length() != 10) {
+            Toast.makeText(requireContext(),
+                    "El teléfono debe tener 10 dígitos",
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -286,6 +323,15 @@ public class CompletardatosentrenadorFragment extends Fragment {
 
         if (!costoStr.isEmpty()) {
             dto.setCostoMensualidad(Integer.parseInt(costoStr));
+        }
+
+        // ✅ AGREGAR correo y teléfono
+        if (!correo.isEmpty()) {
+            dto.setCorreo(correo);
+        }
+
+        if (!telefono.isEmpty()) {
+            dto.setTelefono(telefono);
         }
 
         if (!limiteStr.isEmpty()) {
@@ -318,6 +364,8 @@ public class CompletardatosentrenadorFragment extends Fragment {
 
                     // Limpiar campos
                     etCostoNuevo.setText("");
+                    etCorreoNuevo.setText("");                 // ✅ NUEVO
+                    etTelefonoNuevo.setText("");               // ✅ NUEVO
                     spinnerLimiteAlumnos.setText("");
                     etDescripcionNuevo.setText("");
 

@@ -92,8 +92,8 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <!-- ========================================
-                     DATOS ACTUALES (CON TIPO CUENTA Y LÍMITE)
-                     ======================================== -->
+     DATOS ACTUALES (CON CORREO Y TELÉFONO)
+     ======================================== -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -117,7 +117,7 @@
                             android:textStyle="bold"
                             android:layout_marginBottom="16dp"/>
 
-                        <!-- ✅ FILA 1: Costo y Tipo Cuenta -->
+                        <!-- FILA 1: Costo y Tipo Cuenta -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -177,7 +177,67 @@
                             </LinearLayout>
                         </LinearLayout>
 
-                        <!-- ✅ FILA 2: Deportes y Límite Alumnos -->
+                        <!-- ✅ FILA 2: Correo y Teléfono -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="12dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp"
+                                android:layout_marginEnd="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Correo"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"/>
+
+                                <TextView
+                                    android:id="@+id/tvCorreoActual"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp"
+                                android:layout_marginStart="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Teléfono"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"/>
+
+                                <TextView
+                                    android:id="@+id/tvTelefonoActual"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- FILA 3: Deportes y Límite Alumnos -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -237,7 +297,7 @@
                             </LinearLayout>
                         </LinearLayout>
 
-                        <!-- FILA 3: Descripción -->
+                        <!-- FILA 4: Descripción -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -263,7 +323,6 @@
                         </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
-
                 <!-- TÍTULO MODIFICAR -->
                 <TextView
                     android:layout_width="match_parent"
@@ -346,6 +405,43 @@
                         android:lines="4"
                         android:maxLength="250"
                         android:inputType="textMultiLine"
+                        android:textColor="#1A1A1A"
+                        android:textSize="14sp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- ✅ CORREO -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Correo electrónico"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    app:boxStrokeColor="#00A896"
+                    android:layout_marginBottom="16dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etCorreoNuevo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress"
+                        android:textColor="#1A1A1A"
+                        android:textSize="14sp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- ✅ TELÉFONO -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Teléfono (10 dígitos)"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    app:boxStrokeColor="#00A896"
+                    android:layout_marginBottom="16dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etTelefonoNuevo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="phone"
+                        android:maxLength="10"
                         android:textColor="#1A1A1A"
                         android:textSize="14sp"/>
                 </com.google.android.material.textfield.TextInputLayout>

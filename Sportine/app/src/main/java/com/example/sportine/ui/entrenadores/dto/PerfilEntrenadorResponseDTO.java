@@ -40,6 +40,12 @@ public class PerfilEntrenadorResponseDTO {
     @SerializedName("totalAmigos")
     private Integer totalAmigos;
 
+    @SerializedName("correo")
+    private String correo;
+
+    @SerializedName("telefono")
+    private String telefono;
+
     // Mensaje
     private String mensaje;
 
@@ -61,6 +67,8 @@ public class PerfilEntrenadorResponseDTO {
     public String getDescripcionPerfil() { return descripcionPerfil; }
     public String getFotoPerfil() { return fotoPerfil; }
     public String getMensaje() { return mensaje; }
+    public String getCorreo() { return correo; }
+    public String getTelefono() { return telefono; }
 
     public List<String> getDeportes() {
         return deportes != null ? deportes : new ArrayList<>();

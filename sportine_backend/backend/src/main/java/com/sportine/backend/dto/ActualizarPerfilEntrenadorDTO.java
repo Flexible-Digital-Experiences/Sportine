@@ -13,6 +13,10 @@ public class ActualizarPerfilEntrenadorDTO {
     private String descripcionPerfil;    // Puede ser null si no se actualiza
     private Integer limiteAlumnos;       // Solo si es premium
 
+    // ✅ NUEVOS CAMPOS
+    private String correo;               // Puede ser null si no se actualiza
+    private String telefono;             // Puede ser null si no se actualiza
+
     // Lista de IDs de deportes (ej: [1, 2, 7])
     private java.util.List<Integer> deportes;  // Puede ser null si no se actualiza
 }
