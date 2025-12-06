@@ -340,6 +340,7 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- ✅ SOLO BOTÓN COMPLETAR DATOS -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCompletar"
                     android:layout_width="match_parent"
@@ -353,25 +354,6 @@
                     android:textColor="@color/white"
                     app:elevation="4dp"
                     app:icon="@android:drawable/ic_menu_edit"
-                    app:iconGravity="start"
-                    app:iconTint="@color/white"
-                    app:iconSize="20dp"
-                    android:textAllCaps="false"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnLogout"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_marginTop="16dp"
-                    android:text="Cerrar sesión"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.02"
-                    app:cornerRadius="16dp"
-                    app:backgroundTint="#D32F2F"
-                    android:textColor="@color/white"
-                    app:elevation="4dp"
-                    app:icon="@android:drawable/ic_lock_power_off"
                     app:iconGravity="start"
                     app:iconTint="@color/white"
                     app:iconSize="20dp"
