@@ -20,6 +20,12 @@ public class InformacionEntrenador {
     @Column(name = "usuario")
     private String usuario;
 
+    @Column(name = "correo")
+    private String correo;
+
+    @Column(name = "telefono", length = 10)
+    private String telefono;
+
     @Column(name = "costo_mensualidad")
     private Integer costoMensualidad;
 
@@ -35,6 +41,7 @@ public class InformacionEntrenador {
 
     @Column(name = "foto_perfil", columnDefinition = "TEXT")
     private String fotoPerfil;
+
 
     // Relación con Usuario (opcional)
     @OneToOne(fetch = FetchType.LAZY)
