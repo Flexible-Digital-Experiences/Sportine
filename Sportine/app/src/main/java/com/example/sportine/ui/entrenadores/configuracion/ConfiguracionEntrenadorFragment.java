@@ -1,8 +1,15 @@
 package com.example.sportine.ui.entrenadores.configuracion;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +18,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -23,24 +33,16 @@ import com.example.sportine.data.RetrofitClient;
 import com.example.sportine.ui.entrenadores.dto.PerfilEntrenadorResponseDTO;
 import com.google.android.material.button.MaterialButton;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import android.Manifest;
-import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.provider.MediaStore;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.content.ContextCompat;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ConfiguracionEntrenadorFragment extends Fragment {
 
@@ -69,6 +71,7 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
 
     // Botones
     private MaterialButton btnModificar;
+    private MaterialButton btnCerrarSesion; // ✅ NUEVO
 
     // API Service
     private ApiService apiService;
@@ -168,6 +171,7 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
         // Botones
         btnModificar = view.findViewById(R.id.btnModificarentrena);
         btnEditarFoto = view.findViewById(R.id.btnEditarFoto);
+        btnCerrarSesion = view.findViewById(R.id.btnCerrarSesion); // ✅ NUEVO
 
         Log.d(TAG, "✓ Componentes inicializados");
     }
@@ -189,8 +193,16 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
                     .navigate(R.id.action_configuracionentre_to_modificar);
         });
 
-        // ✅ NUEVO: Botón editar foto
+        // Botón editar foto
         btnEditarFoto.setOnClickListener(v -> verificarPermisoYAbrirGaleria());
+
+        // ✅ NUEVO: Botón cerrar sesión
+        if (btnCerrarSesion != null) {
+            btnCerrarSesion.setOnClickListener(v -> mostrarDialogoCerrarSesion());
+            Log.d(TAG, "✓ Botón cerrar sesión configurado");
+        } else {
+            Log.e(TAG, "❌ btnCerrarSesion no encontrado");
+        }
     }
 
     /**
@@ -248,7 +260,7 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
         tvEstado.setText(perfil.getEstado() != null ? perfil.getEstado() : "-");
         tvCiudad.setText(perfil.getCiudad() != null ? perfil.getCiudad() : "-");
 
-        // ✅ Tipo de Cuenta (con formato)
+        // Tipo de Cuenta (con formato)
         String tipoCuenta = perfil.getTipoCuenta() != null
                 ? perfil.getTipoCuenta().toUpperCase()
                 : "GRATIS";
@@ -272,7 +284,7 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
         int alumnos = perfil.getTotalAlumnos();
         tvAlumnosInscritos.setText(String.valueOf(alumnos));
 
-        // ✅ Calcular dinero ganado (costo × alumnos)
+        // Calcular dinero ganado (costo × alumnos)
         if (perfil.getCostoMensualidad() != null && alumnos > 0) {
             int dineroGanado = perfil.getCostoMensualidad() * alumnos;
             tvDineroGanado.setText("$" + String.format("%,d", dineroGanado));
@@ -412,5 +424,47 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
         inputStream.close();
 
         return file;
+    }
+
+    /**
+     * ✅ NUEVO: Muestra un diálogo de confirmación antes de cerrar sesión
+     */
+    private void mostrarDialogoCerrarSesion() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Cerrar Sesión")
+                .setMessage("¿Estás seguro de que deseas cerrar sesión?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton("Sí, cerrar sesión", (dialog, which) -> cerrarSesion())
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+
+    /**
+     * ✅ NUEVO: Cierra la sesión del usuario
+     */
+    private void cerrarSesion() {
+        Log.d(TAG, "Cerrando sesión del entrenador: " + username);
+
+        // 1. Limpiar SharedPreferences
+        SharedPreferences prefs = requireContext()
+                .getSharedPreferences("SportinePrefs", Context.MODE_PRIVATE);
+        prefs.edit().clear().apply();
+
+        Log.d(TAG, "✓ SharedPreferences limpiadas");
+
+        // 2. Mostrar mensaje
+        Toast.makeText(requireContext(),
+                "Sesión cerrada correctamente",
+                Toast.LENGTH_SHORT).show();
+
+        // 3. Redirigir a LoginActivity
+        Intent intent = new Intent(requireContext(), com.example.sportine.ui.usuarios.login.LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+
+        // 4. Cerrar la actividad actual
+        requireActivity().finish();
+
+        Log.d(TAG, "✓ Redirigido a LoginActivity");
     }
 }

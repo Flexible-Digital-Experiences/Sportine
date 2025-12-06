@@ -119,9 +119,7 @@
                     </com.google.android.material.card.MaterialCardView>
                 </FrameLayout>
 
-                <!-- ========================================
-                     DATOS ACTUALES (CON TIPO DE CUENTA)
-                     ======================================== -->
+                <!-- Card Datos Actuales -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -326,7 +324,7 @@
                             </LinearLayout>
                         </LinearLayout>
 
-                        <!-- ✅ FILA 4: Tipo de Cuenta y Contraseña -->
+                        <!-- FILA 4: Tipo de Cuenta y Contraseña -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -402,7 +400,8 @@
                     android:textColor="@android:color/white"
                     app:elevation="4dp"
                     android:textAllCaps="false"
-                    android:layout_marginBottom="30dp"/>
+                    android:layout_marginBottom="16dp"/>
+
 
                 <!-- DETALLES DE CLASES -->
                 <com.google.android.material.card.MaterialCardView
@@ -514,6 +513,22 @@
                         </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+                <!-- ✅ BOTÓN CERRAR SESIÓN -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCerrarSesion"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Cerrar Sesión"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="16dp"
+                    app:backgroundTint="#EF5350"
+                    android:textColor="@color/white"
+                    app:elevation="4dp"
+                    app:iconGravity="start"
+                    app:iconTint="@color/white"
+                    android:textAllCaps="false"
+                    android:layout_marginBottom="30dp"/>
 
             </LinearLayout>
         </LinearLayout>
