@@ -117,9 +117,9 @@ CREATE TABLE Entrenador_Alumno (
     usuario_entrenador VARCHAR(255),
     usuario_alumno VARCHAR(255),
     id_deporte INT,
-    fecha_inicio DATE DEFAULT (CURRENT_DATE), -- Necesario para StatisticsEntrenadorService
-    fin_mensualidad DATE,                     -- ✅ FALTABA ESTO (Causaba el error SQL)
-    status_solicitud ENUM ('activo','finalizado', 'pendiente'),              -- "activo", "inactivo", "pendiente"
+    fecha_inicio DATE DEFAULT (CURRENT_DATE),
+    fin_mensualidad DATE,
+    status_relacion VARCHAR(50),
     FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
     FOREIGN KEY (usuario_alumno) REFERENCES Usuario(usuario),
     FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
