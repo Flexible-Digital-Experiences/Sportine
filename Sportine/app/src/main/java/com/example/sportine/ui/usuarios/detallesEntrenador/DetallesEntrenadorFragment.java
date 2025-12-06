@@ -1,5 +1,7 @@
 package com.example.sportine.ui.usuarios.detallesEntrenador;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +48,10 @@ public class DetallesEntrenadorFragment extends Fragment {
     private boolean mostrandoTodas = false;
     private boolean hayDeportesDisponibles = true;
 
+    // TODO: Cuando implementes la obtención de datos de contacto, guárdalos aquí
+    private String correoEntrenador = ""; // Se obtendrá del backend
+    private String telefonoEntrenador = ""; // Se obtendrá del backend
+
     // Views principales
     private ImageButton btnBack;
     private ImageView imagePerfil;
@@ -80,7 +86,8 @@ public class DetallesEntrenadorFragment extends Fragment {
 
     // Botones por estado
     private MaterialButton btnEnviarSolicitud;
-    private MaterialButton btnIrAPagar;
+    private MaterialButton btnEnviarCorreo;
+    private MaterialButton btnEnviarWhatsapp;
     private MaterialButton btnCancelarMensualidad;
     private MaterialButton btnCalificarActivo;
     private MaterialButton btnSolicitarNuevamente;
@@ -138,7 +145,8 @@ public class DetallesEntrenadorFragment extends Fragment {
         layoutFinalizado = view.findViewById(R.id.layout_finalizado);
 
         btnEnviarSolicitud = view.findViewById(R.id.btn_enviar_solicitud);
-        btnIrAPagar = view.findViewById(R.id.btn_ir_a_pagar);
+        btnEnviarCorreo = view.findViewById(R.id.btn_enviar_correo);
+        btnEnviarWhatsapp = view.findViewById(R.id.btn_enviar_whatsapp);
         btnCancelarMensualidad = view.findViewById(R.id.btn_cancelar_mensualidad);
         btnCalificarActivo = view.findViewById(R.id.btn_calificar_activo);
         btnSolicitarNuevamente = view.findViewById(R.id.btn_solicitar_nuevamente);
@@ -169,7 +177,8 @@ public class DetallesEntrenadorFragment extends Fragment {
         btnVerTodas.setOnClickListener(v -> toggleResenas());
 
         btnEnviarSolicitud.setOnClickListener(v -> enviarSolicitud());
-        btnIrAPagar.setOnClickListener(v -> irAPagar());
+        btnEnviarCorreo.setOnClickListener(v -> enviarCorreo());
+        btnEnviarWhatsapp.setOnClickListener(v -> enviarWhatsapp());
         btnCancelarMensualidad.setOnClickListener(v -> cancelarMensualidad());
         btnCalificarActivo.setOnClickListener(v -> abrirDialogCalificacion());
         btnSolicitarNuevamente.setOnClickListener(v -> enviarSolicitud());
@@ -337,6 +346,10 @@ public class DetallesEntrenadorFragment extends Fragment {
         deportesAdapter.setDeportes(perfil.getEspecialidades());
         mostrarResenas(perfil.getResenas());
 
+        // TODO: Cuando implementes la obtención de datos de contacto del backend
+        // correoEntrenador = perfil.getCorreo();
+        // telefonoEntrenador = perfil.getTelefono();
+
         if (hayDeportesDisponibles) {
             mostrarUISegunEstadoRelacion(perfil.getEstadoRelacion());
         }
@@ -361,7 +374,7 @@ public class DetallesEntrenadorFragment extends Fragment {
                 if (estado.getYaCalificado() != null && estado.getYaCalificado()) {
                     btnCalificarActivo.setVisibility(View.GONE);
                 }
-             } else if ("finalizado".equals(estadoRelacion)) {
+            } else if ("finalizado".equals(estadoRelacion)) {
                 layoutFinalizado.setVisibility(View.VISIBLE);
                 if (estado.getYaCalificado() != null && estado.getYaCalificado()) {
                     btnCalificarFinalizado.setVisibility(View.GONE);
@@ -377,8 +390,62 @@ public class DetallesEntrenadorFragment extends Fragment {
                 .navigate(R.id.action_navigation_detallesEntrenador_to_enviarSolicitud, bundle);
     }
 
-    private void irAPagar() {
-        Toast.makeText(getContext(), "Funcionalidad de pago próximamente", Toast.LENGTH_SHORT).show();
+    /**
+     * Abre la aplicación de correo para enviar un mensaje al entrenador
+     */
+    private void enviarCorreo() {
+        // TODO: Cuando implementes la obtención del correo, usa: correoEntrenador
+        if (correoEntrenador == null || correoEntrenador.isEmpty()) {
+            Toast.makeText(getContext(),
+                    "Correo del entrenador no disponible",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:" + correoEntrenador));
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Consulta sobre entrenamiento");
+
+        try {
+            startActivity(Intent.createChooser(intent, "Enviar correo"));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getContext(),
+                    "No hay aplicaciones de correo instaladas",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Abre WhatsApp para enviar un mensaje al entrenador
+     */
+    private void enviarWhatsapp() {
+        // TODO: Cuando implementes la obtención del teléfono, usa: telefonoEntrenador
+        if (telefonoEntrenador == null || telefonoEntrenador.isEmpty()) {
+            Toast.makeText(getContext(),
+                    "Número de WhatsApp del entrenador no disponible",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Formato: 52 + 10 dígitos (ejemplo: 5215512345678)
+        String numeroFormateado = telefonoEntrenador.replaceAll("[^0-9]", "");
+        if (!numeroFormateado.startsWith("52")) {
+            numeroFormateado = "52" + numeroFormateado;
+        }
+
+        String mensaje = "Hola, me interesa tu entrenamiento";
+        String url = "https://wa.me/" + numeroFormateado + "?text=" + Uri.encode(mensaje);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+
+        try {
+            startActivity(intent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getContext(),
+                    "WhatsApp no está instalado",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void cancelarMensualidad() {

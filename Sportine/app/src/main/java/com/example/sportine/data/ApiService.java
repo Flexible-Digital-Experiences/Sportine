@@ -16,6 +16,9 @@ import com.example.sportine.models.InfoDeporteAlumnoDTO;
 import com.example.sportine.models.PerfilEntrenadorDTO;
 import com.example.sportine.models.Publicacion;
 import com.example.sportine.models.RespuestaRegistro;
+import com.example.sportine.models.RespuestaSolicitudRequestDTO;
+import com.example.sportine.models.RespuestaSolicitudResponseDTO;
+import com.example.sportine.models.SolicitudEntrenadorDTO;
 import com.example.sportine.models.SolicitudEnviadaDTO;
 import com.example.sportine.models.SolicitudPendienteDTO;
 import com.example.sportine.models.SolicitudRequestDTO;
@@ -146,6 +149,19 @@ public interface ApiService {
 
     @DELETE("api/Solicitudes/{idSolicitud}")
     Call<Void> eliminarSolicitud(@Path("idSolicitud") Integer idSolicitud);
+
+    // Solicitudes Entrenador
+    @GET("api/entrenador/solicitudes/en-revision/{usuarioEntrenador}")
+    Call<List<SolicitudEntrenadorDTO>> obtenerSolicitudesEnRevision(@Path("usuarioEntrenador") String usuarioEntrenador);
+
+    @GET("api/entrenador/solicitudes/aceptadas/{usuarioEntrenador}")
+    Call<List<SolicitudEntrenadorDTO>> obtenerSolicitudesAceptadas(@Path("usuarioEntrenador") String usuarioEntrenador);
+
+    @POST("api/entrenador/solicitudes/responder/{usuarioEntrenador}")
+    Call<RespuestaSolicitudResponseDTO> responderSolicitud(
+            @Path("usuarioEntrenador") String usuarioEntrenador,
+            @Body RespuestaSolicitudRequestDTO request
+    );
 
     // Enviar calificación
     @POST("api/calificaciones/enviar")

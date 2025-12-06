@@ -119,7 +119,7 @@ CREATE TABLE Entrenador_Alumno (
     id_deporte INT,
     fecha_inicio DATE DEFAULT (CURRENT_DATE), -- Necesario para StatisticsEntrenadorService
     fin_mensualidad DATE,                     -- ✅ FALTABA ESTO (Causaba el error SQL)
-    status_relacion VARCHAR(50),              -- "activo", "inactivo", "pendiente"
+    status_solicitud ENUM ('activo','finalizado', 'pendiente'),              -- "activo", "inactivo", "pendiente"
     FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
     FOREIGN KEY (usuario_alumno) REFERENCES Usuario(usuario),
     FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
@@ -133,7 +133,7 @@ CREATE TABLE Solicitudes_Entrenamiento (
     id_deporte INT,
     descripcion_solicitud VARCHAR(255),
     fecha_solicitud DATE,
-    status_solicitud VARCHAR(50),
+    status_solicitud ENUM ('En_revisión','Aprobada', 'Rechazada'),
     FOREIGN KEY (usuario_alumno) REFERENCES Usuario(usuario),
     FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
     FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte)

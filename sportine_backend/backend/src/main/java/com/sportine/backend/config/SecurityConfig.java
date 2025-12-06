@@ -35,6 +35,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/alumnos/*/actualizar-foto").authenticated()
 
                 // ¡TODAS LAS DEMÁS (incluyendo tu /api/social/**)
+                .requestMatchers("/api/entrenador/**").permitAll()
                 // requieren que el usuario esté autenticado!
                 .anyRequest().authenticated()
         );
