@@ -27,7 +27,7 @@ public class PayPalSuscripcionService {
     @Value("${paypal.mode}")
     private String mode;
 
-    @Value("${paypal.plan-premium-id}")
+    @Value("${paypal.plan.id}")
     private String planPremiumId;
 
     private final RestTemplate restTemplate = new RestTemplate();
