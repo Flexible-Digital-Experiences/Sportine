@@ -452,12 +452,21 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
     public String actualizarFotoPerfil(String usuario, MultipartFile foto) {
         log.info("📸 Actualizando foto de perfil para: {}", usuario);
 
-        // 1. Verificar que el alumno existe
+        // 1. Verificar que el usuario existe
+        Usuario usuarioEntity = usuarioRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + usuario));
+
+        // 2. Obtener o crear información del alumno
         InformacionAlumno infoAlumno = informacionAlumnoRepository.findById(usuario)
-                .orElseThrow(() -> new RuntimeException("No se encontró perfil para el usuario: " + usuario));
+                .orElseGet(() -> {
+                    log.warn("⚠ No existe información del alumno, creando nueva entrada...");
+                    InformacionAlumno nuevo = new InformacionAlumno();
+                    nuevo.setUsuario(usuario);
+                    return informacionAlumnoRepository.save(nuevo);
+                });
 
         try {
-            // 2. Eliminar la foto anterior de Cloudinary (si existe)
+            // 3. Eliminar la foto anterior de Cloudinary (si existe)
             if (infoAlumno.getFotoPerfil() != null && !infoAlumno.getFotoPerfil().isEmpty()) {
                 try {
                     String publicId = cloudinaryService.extraerPublicId(infoAlumno.getFotoPerfil());
@@ -471,11 +480,11 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 }
             }
 
-            // 3. Subir nueva foto a Cloudinary
+            // 4. Subir nueva foto a Cloudinary
             String nuevaUrl = cloudinaryService.subirImagen(foto, "sportine/perfiles");
             log.info("✅ Nueva foto subida a Cloudinary: {}", nuevaUrl);
 
-            // 4. Actualizar URL en la base de datos
+            // 5. Actualizar URL en la base de datos
             infoAlumno.setFotoPerfil(nuevaUrl);
             informacionAlumnoRepository.save(infoAlumno);
             log.info("✅ URL de foto actualizada en la base de datos");
