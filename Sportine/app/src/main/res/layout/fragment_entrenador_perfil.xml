@@ -429,6 +429,7 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Botón Completar Datos -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCompletarentrena"
                     android:layout_width="match_parent"
@@ -440,7 +441,26 @@
                     app:backgroundTint="@color/teal_700"
                     android:textColor="@android:color/white"
                     app:elevation="4dp"
-                    android:textAllCaps="false"/>
+                    android:textAllCaps="false"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- ✅ NUEVO: Botón Gestionar Deportes -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnGestionarDeportes"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Gestionar deportes"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="16dp"
+                    app:backgroundTint="#056D22"
+                    android:textColor="@android:color/white"
+                    app:elevation="4dp"
+                    android:textAllCaps="false"
+                    app:icon="@android:drawable/ic_menu_edit"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"/>
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
