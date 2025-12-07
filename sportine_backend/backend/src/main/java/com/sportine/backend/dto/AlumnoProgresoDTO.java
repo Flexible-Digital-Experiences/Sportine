@@ -29,4 +29,6 @@ public class AlumnoProgresoDTO {
 
     // Indicador visual
     private Boolean activo; // true si ha tenido actividad en los últimos 3 días
+
+    private String deporte;
 }

@@ -10,6 +10,7 @@ public class AlumnoProgresoDTO {
     private String ultimaActividad; // Spring lo manda como fecha, pero aquí podemos recibirlo como String o tratarlo después
     private String descripcionActividad;
     private Boolean activo;
+    private String deporte;
 
     // Getters
     public String getUsuario() { return usuario; }
@@ -21,4 +22,5 @@ public class AlumnoProgresoDTO {
     public String getUltimaActividad() { return ultimaActividad; }
     public String getDescripcionActividad() { return descripcionActividad; }
     public Boolean getActivo() { return activo; }
+    public String getDeporte() { return deporte; }
 }

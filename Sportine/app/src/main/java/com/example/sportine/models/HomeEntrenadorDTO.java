@@ -10,6 +10,7 @@ public class HomeEntrenadorDTO {
     private Integer totalAlumnos;
     private Integer alumnosActivos;
 
+
     // Getters
     public String getSaludo() { return saludo; }
     public String getFecha() { return fecha; }

@@ -2,76 +2,98 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_alumno"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/spacing_medium"
-    android:layout_marginStart="@dimen/spacing_xsmall"
-    android:layout_marginEnd="@dimen/spacing_xsmall"
-    app:cardCornerRadius="@dimen/corner_radius_card"
-    app:cardElevation="2dp"
-    app:cardBackgroundColor="@color/colorCardBackground"
-    app:strokeWidth="0dp">
+    android:layout_marginBottom="12dp"
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginTop="0dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp"
+    app:strokeWidth="0dp"
+    android:backgroundTint="@color/colorCardBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_large">
+        android:padding="16dp">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/img_alumno_avatar"
-            android:layout_width="@dimen/avatar_size"
-            android:layout_height="@dimen/avatar_size"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:scaleType="centerCrop"
+            android:src="@drawable/ic_avatar_default"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.App.CircleImageView" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
-        <ImageView
-            android:id="@+id/icon_alumno_deporte"
-            android:layout_width="@dimen/icon_size_large"
-            android:layout_height="@dimen/icon_size_large"
-            android:importantForAccessibility="no"
+        <LinearLayout
+            android:id="@+id/layout_sport_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/colorAccent" />
+            app:layout_constraintTop_toTopOf="@id/img_alumno_avatar"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/text_deporte"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Fútbol"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorTextSecondary"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="sans-serif-medium"/>
+
+            <ImageView
+                android:id="@+id/icon_deporte"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                tools:src="@drawable/balon_futbol"
+                android:contentDescription="Icono del deporte" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/text_alumno_nombre"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_large"
-            android:layout_marginEnd="@dimen/spacing_medium"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@color/colorTextPrimary"
-            android:textSize="@dimen/font_size_name"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            tools:text="Juan Pérez"
+            android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@id/icon_alumno_deporte"
+            android:textColor="@color/colorTextPrimary"
+            android:ellipsize="end"
+            android:maxLines="1"
             app:layout_constraintStart_toEndOf="@id/img_alumno_avatar"
+            app:layout_constraintEnd_toStartOf="@id/layout_sport_info"
             app:layout_constraintTop_toTopOf="@id/img_alumno_avatar" />
 
         <TextView
             android:id="@+id/text_alumno_descripcion"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_xsmall"
-            android:layout_marginEnd="@dimen/spacing_medium"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            tools:text="Descripción o Detalles"
+            android:textSize="14sp"
             android:textColor="@color/colorTextSecondary"
-            android:textSize="@dimen/font_size_specialty"
-            app:layout_constraintEnd_toStartOf="@id/icon_alumno_deporte"
-            app:layout_constraintStart_toStartOf="@id/text_alumno_nombre"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintStart_toEndOf="@id/img_alumno_avatar"
+            app:layout_constraintEnd_toStartOf="@id/layout_sport_info"
             app:layout_constraintTop_toBottomOf="@id/text_alumno_nombre" />
-
-        <TextView
-            android:id="@+id/text_alumno_deporte"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:layout_marginEnd="@dimen/spacing_medium"
-            android:textColor="@color/colorTextSecondary"
-            android:textSize="@dimen/font_size_specialty"
-            app:layout_constraintEnd_toStartOf="@id/icon_alumno_deporte"
-            app:layout_constraintStart_toStartOf="@id/text_alumno_descripcion"
-            app:layout_constraintTop_toBottomOf="@id/text_alumno_descripcion" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

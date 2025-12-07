@@ -16,11 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sportine.R;
-import com.example.sportine.data.ApiService; // Asegúrate de importar esto
-import com.example.sportine.data.RetrofitClient; // Asegúrate de importar esto
+import com.example.sportine.data.ApiService;
+import com.example.sportine.data.RetrofitClient;
 import com.example.sportine.models.HomeEntrenadorDTO;
 import com.example.sportine.ui.entrenadores.asignarentrenamiento.AsignarEntrenamientoFragment;
-import com.example.sportine.ui.entrenadores.feedback.FeedbackFragment;
 
 import java.util.ArrayList;
 
@@ -32,7 +31,6 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView alumnosRecyclerView;
     private AlumnosAdapter alumnosAdapter;
-    private EntrenadorHomeViewModel viewModel;
 
     // UI Elements para el header
     private TextView textSaludo, textMensaje, textFecha;
@@ -56,14 +54,11 @@ public class HomeFragment extends Fragment {
         setupRecyclerView();
         cargarDatosHome();
 
-        // Dentro de onViewCreated o inicializarVistas:
         View btnNotificaciones = view.findViewById(R.id.btn_notificaciones);
         btnNotificaciones.setOnClickListener(v -> {
-            // Usamos el ID que acabamos de poner en entrenador_navigation.xml
             try {
                 Navigation.findNavController(v).navigate(R.id.feedbackFragment);
             } catch (Exception e) {
-                // Fallback por si acaso
                 e.printStackTrace();
                 Toast.makeText(getContext(), "Error de navegación", Toast.LENGTH_SHORT).show();
             }
@@ -75,28 +70,28 @@ public class HomeFragment extends Fragment {
         alumnosAdapter = new AlumnosAdapter();
         alumnosRecyclerView.setAdapter(alumnosAdapter);
 
-        // CONFIGURACIÓN DE NAVEGACIÓN REAL
+        // CONFIGURACIÓN DE NAVEGACIÓN
         alumnosAdapter.setOnAlumnoClickListener(alumno -> {
-            // 1. Crear el fragmento destino
+            // AHORA PASAMOS 5 ARGUMENTOS (usuario, nombre, foto, deporte, actividad)
             Fragment fragment = AsignarEntrenamientoFragment.newInstance(
                     alumno.getUsuario(),
-                    alumno.getNombre() + " " + alumno.getApellidos(),
-                    alumno.getFotoPerfil()
+                    alumno.getNombre() + " " + (alumno.getApellidos() != null ? alumno.getApellidos() : ""),
+                    alumno.getFotoPerfil(),
+                    alumno.getDeporte(), // Deporte para el icono
+                    alumno.getDescripcionActividad() // Actividad para el texto de detalle
             );
 
-            // 2. Realizar la transacción para cambiar de pantalla
             if (getActivity() != null) {
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.nav_host_fragment_activity_main, fragment) // Asegúrate que este ID sea el de tu contenedor principal
-                        .addToBackStack(null) // Para que el botón "Atrás" funcione
+                        .replace(R.id.nav_host_fragment_activity_main, fragment)
+                        .addToBackStack(null)
                         .commit();
             }
         });
     }
 
     private void cargarDatosHome() {
-        // CORRECCIÓN: Usamos getClient(getContext()) y creamos la instancia de ApiService
         ApiService apiService = RetrofitClient.getClient(getContext()).create(ApiService.class);
 
         apiService.obtenerHomeEntrenador().enqueue(new Callback<HomeEntrenadorDTO>() {
@@ -121,15 +116,12 @@ public class HomeFragment extends Fragment {
     }
 
     private void actualizarUI(HomeEntrenadorDTO data) {
-        // Verificar que el fragmento siga adjunto antes de actualizar UI
         if (getContext() == null) return;
 
-        // 1. Header
         textSaludo.setText(data.getSaludo());
         textFecha.setText(data.getFecha());
         textMensaje.setText(data.getMensajeDinamico());
 
-        // 2. Lista de alumnos
         if (data.getAlumnos() != null && !data.getAlumnos().isEmpty()) {
             alumnosAdapter.setAlumnos(data.getAlumnos());
         } else {

@@ -45,13 +45,42 @@
             app:layout_constraintEnd_toEndOf="@id/img_alumno_avatar" />
 
         <LinearLayout
+            android:id="@+id/layout_sport_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/img_alumno_avatar"
+            app:layout_constraintBottom_toBottomOf="@id/img_alumno_avatar">
+
+            <TextView
+                android:id="@+id/text_deporte"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Fútbol"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorTextSecondary"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="sans-serif-medium"/>
+
+            <ImageView
+                android:id="@+id/icon_deporte"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="Icono del deporte" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/layout_info_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
             android:orientation="vertical"
             app:layout_constraintStart_toEndOf="@id/img_alumno_avatar"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/layout_sport_info"
             app:layout_constraintTop_toTopOf="@id/img_alumno_avatar"
             app:layout_constraintBottom_toBottomOf="@id/img_alumno_avatar">
 
@@ -59,7 +88,7 @@
                 android:id="@+id/text_alumno_nombre"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Juan Pérez"
+                tools:text="Juan Pérez"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/colorTextPrimary"

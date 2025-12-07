@@ -19,10 +19,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-/**
- * Implementación del servicio para el home del entrenador.
- * Muestra lista de alumnos con su progreso semanal.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -34,30 +30,52 @@ public class HomeEntrenadorServiceImpl implements HomeEntrenadorService {
     private final InformacionAlumnoRepository informacionAlumnoRepository;
     private final ProgresoEntrenamientoRepository progresoEntrenamientoRepository;
 
+    // --- NUEVO: Inyectamos el repositorio para buscar nombres de deportes ---
+    private final DeporteRepository deporteRepository;
+
     @Override
     @Transactional(readOnly = true)
     public HomeEntrenadorDTO obtenerHomeEntrenador(String username) {
         log.info("Obteniendo home del entrenador {}", username);
 
-        // 1. Obtener datos del entrenador
         Usuario entrenador = usuarioRepository.findByUsuario(username)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Entrenador no encontrado: " + username));
 
-        // 2. Obtener alumnos activos del entrenador
+        // 1. Obtenemos las relaciones. GRACIAS a tu corrección en la BD,
+        // ahora cada relación ya trae el id_deporte específico.
         List<EntrenadorAlumno> relaciones = entrenadorAlumnoRepository
                 .findByUsuarioEntrenadorAndStatusRelacion(username, "activo");
 
-        // 3. Mapear alumnos a DTOs con progreso
+        // 2. Mapeamos a DTO
         List<AlumnoProgresoDTO> alumnosDTO = relaciones.stream()
-                .map(relacion -> obtenerProgresoAlumno(relacion.getUsuarioAlumno()))
+                .map(relacion -> {
+                    // Generamos el DTO base con la info del alumno
+                    AlumnoProgresoDTO dto = obtenerProgresoAlumno(relacion.getUsuarioAlumno());
+
+                    if (dto != null) {
+                        // --- LÓGICA DE TRADUCCIÓN ID -> NOMBRE ---
+                        // Usamos el ID que está en la tabla Entrenador_Alumno
+                        Integer idDeporte = relacion.getIdDeporte();
+                        String nombreDeporte = "Sin asignar";
+
+                        if (idDeporte != null) {
+                            nombreDeporte = deporteRepository.findById(idDeporte)
+                                    .map(Deporte::getNombreDeporte) // Obtenemos el nombre de la entidad Deporte
+                                    .orElse("Desconocido");
+                        }
+
+                        // Metemos el nombre en el DTO para que Android lo lea fácil
+                        dto.setDeporte(nombreDeporte);
+                    }
+                    return dto;
+                })
                 .collect(Collectors.toList());
 
-        // 4. Calcular estadísticas
+        // 3. Estadísticas
         long alumnosActivos = alumnosDTO.stream()
-                .filter(AlumnoProgresoDTO::getActivo)
+                .filter(dto -> dto != null && dto.getActivo())
                 .count();
 
-        // 5. Construir DTO de respuesta
         HomeEntrenadorDTO dto = new HomeEntrenadorDTO();
         dto.setSaludo("Hola de nuevo, " + entrenador.getNombre());
         dto.setFecha(formatearFecha(LocalDate.now()));
@@ -66,59 +84,38 @@ public class HomeEntrenadorServiceImpl implements HomeEntrenadorService {
         dto.setTotalAlumnos(relaciones.size());
         dto.setAlumnosActivos((int) alumnosActivos);
 
-        log.info("Home del entrenador {} obtenido exitosamente con {} alumnos", username, relaciones.size());
         return dto;
     }
 
-    /**
-     * Obtiene el progreso de un alumno específico
-     */
     private AlumnoProgresoDTO obtenerProgresoAlumno(String usuarioAlumno) {
-        // Obtener datos del alumno
-        Usuario alumno = usuarioRepository.findByUsuario(usuarioAlumno)
-                .orElse(null);
-
-        if (alumno == null) {
-            return null;
-        }
+        // ... (Esta parte se mantiene igual, obteniendo info personal y estadísticas) ...
+        Usuario alumno = usuarioRepository.findByUsuario(usuarioAlumno).orElse(null);
+        if (alumno == null) return null;
 
         InformacionAlumno infoAlumno = informacionAlumnoRepository
                 .findByUsuario(usuarioAlumno)
                 .orElse(null);
 
-        // Calcular entrenamientos completados en la última semana
         LocalDateTime hace7Dias = LocalDateTime.now().minusDays(7);
         Long completadosSemanaLong = progresoEntrenamientoRepository
-                .contarEntrenamientosCompletadosEnRango(
-                        usuarioAlumno,
-                        hace7Dias,
-                        LocalDateTime.now()
-                );
+                .contarEntrenamientosCompletadosEnRango(usuarioAlumno, hace7Dias, LocalDateTime.now());
         int completadosSemana = completadosSemanaLong.intValue();
 
-        // Contar entrenamientos pendientes
-        List<Entrenamiento> entrenamientos = entrenamientoRepository
-                .findByUsuario(usuarioAlumno);
+        List<Entrenamiento> entrenamientos = entrenamientoRepository.findByUsuario(usuarioAlumno);
 
         long pendientes = entrenamientos.stream()
                 .filter(e -> e.getEstadoEntrenamiento() == Entrenamiento.EstadoEntrenamiento.pendiente)
                 .count();
 
-        // Obtener última actividad
         LocalDate ultimaActividad = entrenamientos.stream()
                 .filter(e -> e.getEstadoEntrenamiento() == Entrenamiento.EstadoEntrenamiento.finalizado)
                 .map(Entrenamiento::getFechaEntrenamiento)
                 .max(LocalDate::compareTo)
                 .orElse(null);
 
-        // Determinar si está activo (actividad en los últimos 3 días)
-        boolean activo = ultimaActividad != null &&
-                ultimaActividad.isAfter(LocalDate.now().minusDays(3));
-
-        // Generar descripción de actividad
+        boolean activo = ultimaActividad != null && ultimaActividad.isAfter(LocalDate.now().minusDays(3));
         String descripcionActividad = generarDescripcionActividad(ultimaActividad, completadosSemana);
 
-        // Construir DTO
         AlumnoProgresoDTO dto = new AlumnoProgresoDTO();
         dto.setUsuario(usuarioAlumno);
         dto.setNombre(alumno.getNombre());
@@ -130,54 +127,34 @@ public class HomeEntrenadorServiceImpl implements HomeEntrenadorService {
         dto.setDescripcionActividad(descripcionActividad);
         dto.setActivo(activo);
 
+        // Nota: No seteamos el deporte aquí dentro porque el deporte depende
+        // de la relación con el entrenador, lo cual manejamos en el loop principal arriba.
+
         return dto;
     }
 
-    /**
-     * Genera la descripción de la última actividad del alumno
-     */
+    // ... (Métodos auxiliares formatearFecha, generarMensajeDinamico, etc. iguales) ...
     private String generarDescripcionActividad(LocalDate ultimaActividad, int completados) {
-        if (ultimaActividad == null) {
-            return "Sin actividad reciente";
-        }
-
+        if (ultimaActividad == null) return "Sin actividad reciente";
         LocalDate hoy = LocalDate.now();
-        if (ultimaActividad.equals(hoy)) {
-            return "Completó entrenamiento hoy";
-        } else if (ultimaActividad.equals(hoy.minusDays(1))) {
-            return "Completó entrenamiento ayer";
-        } else {
+        if (ultimaActividad.equals(hoy)) return "Completó entrenamiento hoy";
+        else if (ultimaActividad.equals(hoy.minusDays(1))) return "Completó entrenamiento ayer";
+        else {
             long diasAtras = hoy.toEpochDay() - ultimaActividad.toEpochDay();
             return "Última actividad hace " + diasAtras + " días";
         }
     }
 
-    /**
-     * Formatea la fecha para mostrarla bonita
-     */
     private String formatearFecha(LocalDate fecha) {
-        String diaSemana = fecha.getDayOfWeek()
-                .getDisplayName(TextStyle.FULL, new Locale("es", "ES"));
-
-        String diaCapitalizado = diaSemana.substring(0, 1).toUpperCase() +
-                diaSemana.substring(1);
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy",
-                new Locale("es", "ES"));
+        String diaSemana = fecha.getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("es", "ES"));
+        String diaCapitalizado = diaSemana.substring(0, 1).toUpperCase() + diaSemana.substring(1);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
         return diaCapitalizado + ", " + fecha.format(formatter);
     }
 
-    /**
-     * Genera mensaje dinámico según cantidad de alumnos
-     */
     private String generarMensajeDinamico(int totalAlumnos, int alumnosActivos) {
-        if (totalAlumnos == 0) {
-            return "Aún no tienes alumnos asignados";
-        } else if (totalAlumnos == 1) {
-            return "Tienes 1 alumno";
-        } else {
-            return String.format("Tienes %d alumnos, %d activos esta semana",
-                    totalAlumnos, alumnosActivos);
-        }
+        if (totalAlumnos == 0) return "Aún no tienes alumnos asignados";
+        else if (totalAlumnos == 1) return "Tienes 1 alumno";
+        else return String.format("Tienes %d alumnos, %d activos esta semana", totalAlumnos, alumnosActivos);
     }
 }
