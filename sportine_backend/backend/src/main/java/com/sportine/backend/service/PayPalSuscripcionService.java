@@ -2,6 +2,8 @@ package com.sportine.backend.service;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.sportine.backend.repository.InformacionEntrenadorRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -16,7 +18,11 @@ import java.util.Map;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor  // ✅ Para inyectar el repository
 public class PayPalSuscripcionService {
+
+    // ✅ Inyectar el repository
+    private final InformacionEntrenadorRepository entrenadorRepository;
 
     @Value("${paypal.client-id}")
     private String clientId;
@@ -48,11 +54,10 @@ public class PayPalSuscripcionService {
             log.info("Base URL: {}", getBaseUrl());
 
             String auth = clientId + ":" + clientSecret;
-            // ✅ CAMBIO: Usar UTF-8 explícitamente
             String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8));
 
             log.info("Auth Base64 generado (primeros 40 chars): {}", encodedAuth.substring(0, Math.min(40, encodedAuth.length())) + "...");
-            log.info("🔍 BASE64 COMPLETO: {}", encodedAuth);
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             headers.set("Authorization", "Basic " + encodedAuth);
@@ -92,6 +97,22 @@ public class PayPalSuscripcionService {
 
     public Map<String, String> crearSuscripcion(String usuarioEntrenador) {
         try {
+            log.info("✅ Creando suscripción para usuario: {}", usuarioEntrenador);
+
+            // ✅ OBTENER EL CORREO DESDE LA BASE DE DATOS
+            var entrenador = entrenadorRepository.findByUsuario(usuarioEntrenador)
+                    .orElseThrow(() -> new RuntimeException("Entrenador no encontrado: " + usuarioEntrenador));
+
+            String correo = entrenador.getCorreo();
+
+            // Validar que el entrenador tenga correo
+            if (correo == null || correo.trim().isEmpty()) {
+                log.error("❌ El entrenador {} no tiene correo registrado", usuarioEntrenador);
+                throw new RuntimeException("El entrenador no tiene un correo registrado");
+            }
+
+            log.info("📧 Usando correo del entrenador: {}", correo);
+
             String accessToken = getAccessToken();
 
             // Crear el objeto principal de la petición usando Gson
@@ -105,15 +126,15 @@ public class PayPalSuscripcionService {
             applicationContext.addProperty("shipping_preference", "NO_SHIPPING");
             applicationContext.addProperty("user_action", "SUBSCRIBE_NOW");
 
-            // ✅ URLs de Deep Link para Android
+            // URLs de Deep Link para Android
             applicationContext.addProperty("return_url", "sportine://payment/success");
             applicationContext.addProperty("cancel_url", "sportine://payment/cancel");
 
             requestBody.add("application_context", applicationContext);
 
-            // Agregar subscriber
+            // ✅ Agregar subscriber con el CORREO REAL de la BD
             JsonObject subscriber = new JsonObject();
-            subscriber.addProperty("email_address", usuarioEntrenador);
+            subscriber.addProperty("email_address", correo);  // ✅ Correo real
             requestBody.add("subscriber", subscriber);
 
             HttpHeaders headers = new HttpHeaders();
@@ -123,9 +144,10 @@ public class PayPalSuscripcionService {
             // Convertir JsonObject a String para enviar
             HttpEntity<String> request = new HttpEntity<>(gson.toJson(requestBody), headers);
 
-            log.info("Creando suscripción con Deep Links:");
-            log.info("Return URL: sportine://payment/success");
-            log.info("Cancel URL: sportine://payment/cancel");
+            log.info("📤 Creando suscripción en PayPal...");
+            log.info("📧 Email del subscriber: {}", correo);
+            log.info("🔗 Return URL: sportine://payment/success");
+            log.info("🔗 Cancel URL: sportine://payment/cancel");
 
             ResponseEntity<String> response = restTemplate.postForEntity(
                     getBaseUrl() + "/v1/billing/subscriptions",
@@ -133,7 +155,7 @@ public class PayPalSuscripcionService {
                     String.class
             );
 
-            log.info("Suscripción creada en PayPal: {}", response.getBody());
+            log.info("✅ Suscripción creada exitosamente");
 
             JsonObject jsonResponse = gson.fromJson(response.getBody(), JsonObject.class);
             String subscriptionId = jsonResponse.get("id").getAsString();
@@ -157,8 +179,12 @@ public class PayPalSuscripcionService {
 
             return result;
 
+        } catch (HttpClientErrorException e) {
+            log.error("❌ Error HTTP de PayPal: status={}", e.getStatusCode());
+            log.error("❌ Response body: {}", e.getResponseBodyAsString());
+            throw new RuntimeException("Error creando suscripción en PayPal: " + e.getMessage(), e);
         } catch (Exception e) {
-            log.error("Error creando suscripción en PayPal: {}", e.getMessage());
+            log.error("❌ Error creando suscripción: {}", e.getMessage());
             throw new RuntimeException("Error creando suscripción", e);
         }
     }
