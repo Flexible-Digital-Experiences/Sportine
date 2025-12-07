@@ -40,9 +40,17 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
         Usuario usuarioEntity = usuarioRepository.findByUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // 2. Obtener información del entrenador
+        // 2. Obtener o crear información del entrenador
         InformacionEntrenador infoEntrenador = informacionEntrenadorRepository.findByUsuario(usuario)
-                .orElseThrow(() -> new RuntimeException("Perfil de entrenador no encontrado"));
+                .orElseGet(() -> {
+                    System.out.println("⚠ No existe información del entrenador, creando nueva entrada...");
+                    InformacionEntrenador nuevo = new InformacionEntrenador();
+                    nuevo.setUsuario(usuario);
+                    nuevo.setTipoCuenta(InformacionEntrenador.TipoCuenta.gratis);
+                    nuevo.setLimiteAlumnos(3);
+                    nuevo.setCostoMensualidad(0);
+                    return informacionEntrenadorRepository.save(nuevo);
+                });
 
         // 3. Obtener deportes que imparte (SOLO IDs)
         List<EntrenadorDeporte> deportesEntity = entrenadorDeporteRepository.findByUsuario(usuario);
@@ -79,8 +87,8 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
                 infoEntrenador.getLimiteAlumnos(),
                 infoEntrenador.getDescripcionPerfil(),
                 infoEntrenador.getFotoPerfil(),
-                infoEntrenador.getCorreo(),              // ✅ AGREGAR AQUÍ
-                infoEntrenador.getTelefono(),            // ✅ AGREGAR AQUÍ
+                infoEntrenador.getCorreo(),
+                infoEntrenador.getTelefono(),
                 deportes,
                 totalAlumnos,
                 totalAmigos,
@@ -94,43 +102,66 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
             String usuario,
             ActualizarPerfilEntrenadorDTO datos) {
 
-        // 1. Obtener información del entrenador
+        System.out.println("=== INICIANDO ACTUALIZACIÓN DE PERFIL ENTRENADOR ===");
+        System.out.println("Usuario: " + usuario);
+        System.out.println("Datos recibidos: " + datos);
+
+        // 1. Validar que el usuario existe
+        Usuario usuarioEntity = usuarioRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        System.out.println("✓ Usuario encontrado: " + usuarioEntity.getNombre());
+
+        // 2. Obtener o crear información del entrenador
         InformacionEntrenador infoEntrenador = informacionEntrenadorRepository
                 .findByUsuario(usuario)
-                .orElseThrow(() -> new RuntimeException("Perfil de entrenador no encontrado"));
+                .orElseGet(() -> {
+                    System.out.println("⚠ No existe información del entrenador, creando nueva entrada...");
+                    InformacionEntrenador nuevo = new InformacionEntrenador();
+                    nuevo.setUsuario(usuario);
+                    nuevo.setTipoCuenta(InformacionEntrenador.TipoCuenta.gratis);
+                    nuevo.setLimiteAlumnos(3);
+                    nuevo.setCostoMensualidad(0);
+                    return nuevo; // No guardamos aún, se guardará después de actualizar
+                });
 
-        // 2. Actualizar campos si no son null
+        // 3. Actualizar campos si no son null
         if (datos.getCostoMensualidad() != null) {
+            System.out.println("✓ Actualizando costo mensualidad: " + datos.getCostoMensualidad());
             infoEntrenador.setCostoMensualidad(datos.getCostoMensualidad());
         }
 
         if (datos.getDescripcionPerfil() != null && !datos.getDescripcionPerfil().trim().isEmpty()) {
+            System.out.println("✓ Actualizando descripción: " + datos.getDescripcionPerfil());
             infoEntrenador.setDescripcionPerfil(datos.getDescripcionPerfil());
         }
 
-        // ✅ AGREGAR ACTUALIZACIÓN DE CORREO
         if (datos.getCorreo() != null && !datos.getCorreo().trim().isEmpty()) {
+            System.out.println("✓ Actualizando correo: " + datos.getCorreo());
             infoEntrenador.setCorreo(datos.getCorreo());
         }
 
-        // ✅ AGREGAR ACTUALIZACIÓN DE TELÉFONO
         if (datos.getTelefono() != null && !datos.getTelefono().trim().isEmpty()) {
+            System.out.println("✓ Actualizando teléfono: " + datos.getTelefono());
             infoEntrenador.setTelefono(datos.getTelefono());
         }
 
-        // 3. Actualizar límite de alumnos SOLO si es premium
+        // 4. Actualizar límite de alumnos SOLO si es premium
         if (datos.getLimiteAlumnos() != null) {
             if (infoEntrenador.getTipoCuenta() == InformacionEntrenador.TipoCuenta.premium) {
+                System.out.println("✓ Actualizando límite de alumnos: " + datos.getLimiteAlumnos());
                 infoEntrenador.setLimiteAlumnos(datos.getLimiteAlumnos());
             } else {
                 throw new RuntimeException("Solo cuentas premium pueden cambiar el límite de alumnos");
             }
         }
 
-        // 4. Guardar cambios
+        // 5. Guardar cambios
         informacionEntrenadorRepository.save(infoEntrenador);
+        System.out.println("✓✓✓ Datos del entrenador actualizados correctamente");
+        System.out.println("=== FIN ACTUALIZACIÓN ===");
 
-        // 5. Actualizar deportes si se proporcionaron
+        // 6. Actualizar deportes si se proporcionaron
         if (datos.getDeportes() != null && !datos.getDeportes().isEmpty()) {
             entrenadorDeporteRepository.deleteAll(
                     entrenadorDeporteRepository.findByUsuario(usuario)
@@ -144,7 +175,7 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
             }
         }
 
-        // 6. Retornar perfil actualizado
+        // 7. Retornar perfil actualizado
         return obtenerPerfilEntrenador(usuario);
     }
 
