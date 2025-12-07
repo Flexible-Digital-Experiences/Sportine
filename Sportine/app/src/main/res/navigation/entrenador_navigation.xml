@@ -47,6 +47,13 @@
         <action
             android:id="@+id/action_perfilentre_to_configuracion"
             app:destination="@id/configuracionEntrenadorFragment" />
+
+        <!-- ✅ NUEVA ACCIÓN: Navegar a Gestionar Deportes -->
+        <action
+            android:id="@+id/action_perfilentre_to_gestionar_deportes"
+            app:destination="@id/gestionarDeportesFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
     </fragment>
 
     <!-- COMPLETAR DATOS ENTRENADOR -->
@@ -55,6 +62,13 @@
         android:name="com.example.sportine.ui.entrenadores.completardatosentrenador.CompletardatosentrenadorFragment"
         android:label="Completar Datos"
         tools:layout="@layout/fragment_entrenador_completar_datos" />
+
+    <!-- Gestionar Deportes -->
+    <fragment
+        android:id="@+id/gestionarDeportesFragment"
+        android:name="com.example.sportine.ui.entrenadores.gestionardeportes.GestionarDeportesFragment"
+        android:label="Gestionar Deportes"
+        tools:layout="@layout/fragment_entrenador_gestionar_deportes" />
 
     <!-- CONFIGURACIÓN ENTRENADOR -->
     <fragment

@@ -33,6 +33,7 @@ import com.example.sportine.models.TrainingFrequencyDTO;
 import com.example.sportine.models.Usuario;
 import com.example.sportine.models.PublicacionFeedDTO;
 import com.example.sportine.models.UsuarioDetalle;
+import com.example.sportine.ui.entrenadores.dto.DeporteRequestDTO;
 import com.example.sportine.ui.entrenadores.dto.PerfilEntrenadorResponseDTO;
 import com.example.sportine.ui.usuarios.dto.ActualizarDatosAlumnoDTO;
 import com.example.sportine.ui.usuarios.dto.ActualizarUsuarioDTO;
@@ -368,5 +369,38 @@ public interface ApiService {
     Call<PerfilEntrenadorResponseDTO> actualizarFotoPerfilEntrenador(
             @Path("usuario") String usuario,
             @Part MultipartBody.Part file
+    );
+
+
+    /**
+     * Obtiene el catálogo completo de deportes disponibles
+     * GET /api/deportes/catalogo
+     */
+    @GET("/api/deportes/catalogo")
+    Call<List<String>> obtenerCatalogoDeportes();
+
+    /**
+     * Agrega un deporte al perfil del entrenador
+     * POST /api/entrenadores/perfil/{username}/deportes
+     *
+     * @param username Usuario del entrenador
+     */
+    @POST("/api/entrenadores/perfil/{username}/deportes")
+    Call<Void> agregarDeporteEntrenador(
+            @Path("username") String username,
+            @Body DeporteRequestDTO request  // ✅ Cambiar a DTO
+    );
+
+    /**
+     * Elimina un deporte del perfil del entrenador
+     * DELETE /api/entrenadores/perfil/{username}/deportes/{nombreDeporte}
+     *
+     * @param username Usuario del entrenador
+     * @param nombreDeporte Nombre del deporte a eliminar
+     */
+    @DELETE("/api/entrenadores/perfil/{username}/deportes/{nombreDeporte}")  // ✅ Agregado /api/
+    Call<Void> eliminarDeporteEntrenador(
+            @Path("username") String username,
+            @Path("nombreDeporte") String nombreDeporte
     );
 }

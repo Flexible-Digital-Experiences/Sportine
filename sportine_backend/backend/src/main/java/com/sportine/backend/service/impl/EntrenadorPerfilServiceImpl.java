@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -190,5 +191,67 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
         } catch (IOException e) {
             throw new RuntimeException("Error al subir la imagen: " + e.getMessage());
         }
+    }
+
+    // ============================================
+    // ✅ NUEVOS MÉTODOS: GESTIÓN DE DEPORTES
+    // ============================================
+
+    @Override
+    public List<String> obtenerCatalogoDeportes() {
+        // Obtener todos los deportes de la tabla Deporte
+        List<Deporte> deportes = deporteRepository.findAll();
+
+        // Convertir a lista de nombres
+        return deportes.stream()
+                .map(Deporte::getNombreDeporte)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void agregarDeporte(String usuario, String nombreDeporte) {
+        // 1. Validar que el usuario existe
+        usuarioRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // 2. Buscar el deporte (sin limpiar comillas, ya viene limpio del DTO)
+        Deporte deporte = deporteRepository.findByNombreDeporte(nombreDeporte)
+                .orElseThrow(() -> new RuntimeException("Deporte no encontrado: " + nombreDeporte));
+
+        // 3. Verificar que NO exista ya
+        Optional<EntrenadorDeporte> deporteExistente =
+                entrenadorDeporteRepository.findByUsuarioAndIdDeporte(usuario, deporte.getIdDeporte());
+
+        if (deporteExistente.isPresent()) {
+            throw new RuntimeException("Ya tienes este deporte en tu perfil");
+        }
+
+        // 4. Crear y guardar nueva relación
+        EntrenadorDeporte nuevoDeporte = new EntrenadorDeporte();
+        nuevoDeporte.setUsuario(usuario);
+        nuevoDeporte.setIdDeporte(deporte.getIdDeporte());
+
+        entrenadorDeporteRepository.save(nuevoDeporte);
+    }
+
+    @Override
+    @Transactional
+    public void eliminarDeporte(String usuario, String nombreDeporte) {
+        // 1. Validar que el usuario existe
+        usuarioRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // 2. Buscar el deporte en el catálogo usando el NUEVO método
+        Deporte deporte = deporteRepository.findByNombreDeporte(nombreDeporte)
+                .orElseThrow(() -> new RuntimeException("Deporte no encontrado en el catálogo: " + nombreDeporte));
+
+        // 3. Buscar la relación Entrenador-Deporte usando el NUEVO método
+        EntrenadorDeporte entrenadorDeporte =
+                entrenadorDeporteRepository.findByUsuarioAndIdDeporte(usuario, deporte.getIdDeporte())
+                        .orElseThrow(() -> new RuntimeException("No tienes este deporte en tu perfil"));
+
+        // 4. Eliminar la relación
+        entrenadorDeporteRepository.delete(entrenadorDeporte);
     }
 }

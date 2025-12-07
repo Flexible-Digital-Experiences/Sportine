@@ -24,6 +24,7 @@ import com.example.sportine.data.RetrofitClient;
 import com.example.sportine.ui.entrenadores.dto.ActualizarPerfilEntrenadorDTO;
 import com.example.sportine.ui.entrenadores.dto.PerfilEntrenadorResponseDTO;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -43,6 +44,9 @@ public class CompletardatosentrenadorFragment extends Fragment {
     // ==========================================
     private View btnBack;
     private ImageView ivAvatarCompletar;
+    // Componentes Premium
+    private MaterialCardView cardHaztePremium;
+    private MaterialButton btnHaztePremium;
 
     // Datos Actuales (Solo Lectura)
     private TextView tvCostoActual;
@@ -123,6 +127,10 @@ public class CompletardatosentrenadorFragment extends Fragment {
         // Botón
         btnActualizar = view.findViewById(R.id.btnActualizar);
 
+        // ✅ NUEVOS: Componentes Premium
+        cardHaztePremium = view.findViewById(R.id.cardHaztePremium);
+        btnHaztePremium = view.findViewById(R.id.btnHaztePremium);
+
         Log.d(TAG, "✓ Componentes inicializados");
     }
 
@@ -139,6 +147,9 @@ public class CompletardatosentrenadorFragment extends Fragment {
 
         // Botón actualizar
         btnActualizar.setOnClickListener(v -> actualizarDatos());
+
+        // ✅ NUEVO: Botón Hazte Premium
+        btnHaztePremium.setOnClickListener(v -> mostrarPagoPremium());
     }
 
     /**
@@ -242,13 +253,15 @@ public class CompletardatosentrenadorFragment extends Fragment {
             // Mostrar spinner
             layoutLimiteAlumnos.setVisibility(View.VISIBLE);
 
+            // ✅ Ocultar botón Premium
+            cardHaztePremium.setVisibility(View.GONE);
+
             // Opciones del spinner (5 a 50 alumnos)
             List<String> opciones = new ArrayList<>();
             for (int i = 5; i <= 50; i += 5) {
                 opciones.add(String.valueOf(i));
             }
 
-            // Configurar adapter
             ArrayAdapter<String> adapter = new ArrayAdapter<>(
                     requireContext(),
                     android.R.layout.simple_dropdown_item_1line,
@@ -260,7 +273,11 @@ public class CompletardatosentrenadorFragment extends Fragment {
         } else {
             // Ocultar spinner
             layoutLimiteAlumnos.setVisibility(View.GONE);
-            Log.d(TAG, "✓ Spinner de límite oculto (Cuenta gratuita)");
+
+            // ✅ MOSTRAR botón Premium
+            cardHaztePremium.setVisibility(View.VISIBLE);
+
+            Log.d(TAG, "✓ Botón Premium visible (Cuenta gratuita)");
         }
     }
 
@@ -385,5 +402,24 @@ public class CompletardatosentrenadorFragment extends Fragment {
                         Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    /**
+     * Muestra el flujo de pago para hacerse Premium
+     * TODO: Integrar con PayPal
+     */
+    private void mostrarPagoPremium() {
+        Log.d(TAG, "Iniciando proceso de pago Premium...");
+
+        // Por ahora solo mostramos un mensaje
+        Toast.makeText(requireContext(),
+                "Próximamente: Integración con PayPal para hacerte Premium",
+                Toast.LENGTH_LONG).show();
+
+        // TODO: Aquí irá la integración con PayPal
+        // 1. Iniciar flujo de PayPal
+        // 2. Procesar pago
+        // 3. Actualizar cuenta a Premium en el backend
+        // 4. Recargar perfil
     }
 }

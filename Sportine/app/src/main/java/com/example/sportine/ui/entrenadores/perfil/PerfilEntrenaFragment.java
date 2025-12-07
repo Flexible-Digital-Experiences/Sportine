@@ -52,12 +52,13 @@ public class PerfilEntrenaFragment extends Fragment {
     private TextView tvContadorAlumnos;
     private TextView tvContadorAmigos;
 
-    // ✅ NUEVO: Contenedor de deportes dinámico
+    // Contenedor de deportes dinámico
     private LinearLayout deportesContainer;
 
     // Botones
     private MaterialCardView btnSettings;
     private MaterialButton btnCompletardatos;
+    private MaterialButton btnGestionarDeportes; // ✅ NUEVO
 
     // API Service
     private ApiService apiService;
@@ -65,7 +66,7 @@ public class PerfilEntrenaFragment extends Fragment {
     // Datos del usuario
     private String username;
 
-    // ✅ NUEVO: Mapa de deportes a íconos
+    // Mapa de deportes a íconos
     private static final Map<String, Integer> DEPORTE_ICONOS = new HashMap<>();
     private static final Map<String, String> DEPORTE_COLORES = new HashMap<>();
 
@@ -142,12 +143,13 @@ public class PerfilEntrenaFragment extends Fragment {
         tvContadorAlumnos = view.findViewById(R.id.tvContadorAlumnos);
         tvContadorAmigos = view.findViewById(R.id.tvContadorAmigos);
 
-        // ✅ NUEVO: Contenedor de deportes
+        // Contenedor de deportes
         deportesContainer = view.findViewById(R.id.deportesContainer);
 
         // Botones
         btnSettings = view.findViewById(R.id.btnSettings);
         btnCompletardatos = view.findViewById(R.id.btnCompletarentrena);
+        btnGestionarDeportes = view.findViewById(R.id.btnGestionarDeportes); // ✅ NUEVO
 
         Log.d(TAG, "✓ Componentes inicializados");
     }
@@ -179,6 +181,14 @@ public class PerfilEntrenaFragment extends Fragment {
             btnCompletardatos.setOnClickListener(v -> {
                 Navigation.findNavController(v)
                         .navigate(R.id.action_perfilentre_to_completar_datos);
+            });
+        }
+
+        // ✅ NUEVO: Botón gestionar deportes
+        if (btnGestionarDeportes != null) {
+            btnGestionarDeportes.setOnClickListener(v -> {
+                Navigation.findNavController(v)
+                        .navigate(R.id.action_perfilentre_to_gestionar_deportes);
             });
         }
     }
@@ -247,7 +257,7 @@ public class PerfilEntrenaFragment extends Fragment {
         // Cargar foto de perfil
         cargarFotoPerfil(perfil.getFotoPerfil());
 
-        // ✅ NUEVO: Mostrar deportes dinámicamente
+        // Mostrar deportes dinámicamente
         mostrarDeportes(perfil.getDeportes());
 
         Log.d(TAG, "✓ Deportes: " + perfil.getDeportes().size());
@@ -257,7 +267,7 @@ public class PerfilEntrenaFragment extends Fragment {
     }
 
     /**
-     * ✅ NUEVO: Muestra los deportes dinámicamente
+     * Muestra los deportes dinámicamente
      */
     private void mostrarDeportes(List<String> deportes) {
         if (deportesContainer == null) {
@@ -282,7 +292,7 @@ public class PerfilEntrenaFragment extends Fragment {
     }
 
     /**
-     * ✅ NUEVO: Crea un ícono de deporte dinámico
+     * Crea un ícono de deporte dinámico
      */
     private View crearIconoDeporte(String nombreDeporte) {
         // Crear MaterialCardView
