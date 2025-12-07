@@ -1,7 +1,10 @@
 package com.example.sportine;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +16,7 @@ import com.example.sportine.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     private ActivityMainBinding binding;
 
     @Override
@@ -84,5 +88,63 @@ public class MainActivity extends AppCompatActivity {
 
         // Conectar la navegación con el BottomNavigationView
         NavigationUI.setupWithNavController(navView, navController);
+
+        // --- MANEJAR DEEP LINK AL CREAR ---
+        handleDeepLink(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent); // IMPORTANTE: Actualizar el intent actual
+        Log.d(TAG, "onNewIntent llamado");
+        handleDeepLink(intent);
+    }
+
+    private void handleDeepLink(Intent intent) {
+        Uri data = intent.getData();
+
+        Log.d(TAG, "=== DEEP LINK EN MAINACTIVITY ===");
+        Log.d(TAG, "Intent: " + intent);
+        Log.d(TAG, "URI: " + data);
+
+        if (data != null) {
+            String scheme = data.getScheme();
+            String host = data.getHost();
+            String path = data.getLastPathSegment();
+
+            Log.d(TAG, "Scheme: " + scheme);
+            Log.d(TAG, "Host: " + host);
+            Log.d(TAG, "Path: " + path);
+
+            if ("sportine".equals(scheme) && "payment".equals(host)) {
+                // Guardar en SharedPreferences para que el Fragment lo lea
+                SharedPreferences prefs = getSharedPreferences("SportinePrefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+
+                if ("success".equals(path)) {
+                    Log.d(TAG, "✅ PAGO EXITOSO - Guardando flag");
+                    editor.putBoolean("payment_success", true);
+                    editor.putLong("payment_timestamp", System.currentTimeMillis());
+                    editor.apply();
+
+                    Log.d(TAG, "✅ Flags guardados en SharedPreferences");
+
+                } else if ("cancel".equals(path)) {
+                    Log.d(TAG, "❌ PAGO CANCELADO - Guardando flag");
+                    editor.putBoolean("payment_cancelled", true);
+                    editor.apply();
+                }
+
+                // Limpiar el URI del intent para que no se procese de nuevo
+                intent.setData(null);
+
+                Log.d(TAG, "✅ Deep link procesado, URI limpiado");
+            } else {
+                Log.d(TAG, "⚠️ Deep link no coincide con sportine://payment");
+            }
+        } else {
+            Log.d(TAG, "No hay URI en el Intent");
+        }
     }
 }

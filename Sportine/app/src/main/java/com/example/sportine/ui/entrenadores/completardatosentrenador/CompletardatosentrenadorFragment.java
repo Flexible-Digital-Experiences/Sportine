@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
 import com.example.sportine.R;
@@ -47,6 +48,8 @@ public class CompletardatosentrenadorFragment extends Fragment {
     // Componentes Premium
     private MaterialCardView cardHaztePremium;
     private MaterialButton btnHaztePremium;
+    private MaterialCardView cardCancelarSuscripcion;
+    private MaterialButton btnGestionarSuscripcion;
 
     // Datos Actuales (Solo Lectura)
     private TextView tvCostoActual;
@@ -131,6 +134,9 @@ public class CompletardatosentrenadorFragment extends Fragment {
         cardHaztePremium = view.findViewById(R.id.cardHaztePremium);
         btnHaztePremium = view.findViewById(R.id.btnHaztePremium);
 
+        cardCancelarSuscripcion = view.findViewById(R.id.cardCancelarSuscripcion);
+        btnGestionarSuscripcion = view.findViewById(R.id.btnGestionarSuscripcion);
+
         Log.d(TAG, "✓ Componentes inicializados");
     }
 
@@ -150,6 +156,8 @@ public class CompletardatosentrenadorFragment extends Fragment {
 
         // ✅ NUEVO: Botón Hazte Premium
         btnHaztePremium.setOnClickListener(v -> mostrarPagoPremium());
+
+        btnGestionarSuscripcion.setOnClickListener(v -> gestionarSuscripcion());
     }
 
     /**
@@ -255,6 +263,7 @@ public class CompletardatosentrenadorFragment extends Fragment {
 
             // ✅ Ocultar botón Premium
             cardHaztePremium.setVisibility(View.GONE);
+            cardCancelarSuscripcion.setVisibility(View.VISIBLE);
 
             // Opciones del spinner (5 a 50 alumnos)
             List<String> opciones = new ArrayList<>();
@@ -404,22 +413,15 @@ public class CompletardatosentrenadorFragment extends Fragment {
         });
     }
 
-    /**
-     * Muestra el flujo de pago para hacerse Premium
-     * TODO: Integrar con PayPal
-     */
+    private void gestionarSuscripcion() {
+        Log.d(TAG, "Navegando a gestión de suscripción...");
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_completardatosentrenadorFragment_to_suscription_Fragment);
+    }
+
     private void mostrarPagoPremium() {
         Log.d(TAG, "Iniciando proceso de pago Premium...");
-
-        // Por ahora solo mostramos un mensaje
-        Toast.makeText(requireContext(),
-                "Próximamente: Integración con PayPal para hacerte Premium",
-                Toast.LENGTH_LONG).show();
-
-        // TODO: Aquí irá la integración con PayPal
-        // 1. Iniciar flujo de PayPal
-        // 2. Procesar pago
-        // 3. Actualizar cuenta a Premium en el backend
-        // 4. Recargar perfil
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_completardatosentrenadorFragment_to_suscription_Fragment);
     }
 }
