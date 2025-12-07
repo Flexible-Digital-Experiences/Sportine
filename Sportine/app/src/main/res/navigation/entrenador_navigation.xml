@@ -61,7 +61,11 @@
         android:id="@+id/completardatosentrenadorFragment"
         android:name="com.example.sportine.ui.entrenadores.completardatosentrenador.CompletardatosentrenadorFragment"
         android:label="Completar Datos"
-        tools:layout="@layout/fragment_entrenador_completar_datos" />
+        tools:layout="@layout/fragment_entrenador_completar_datos" >
+        <action
+            android:id="@+id/action_completardatosentrenadorFragment_to_suscription_Fragment"
+            app:destination="@id/suscription_Fragment" />
+    </fragment>
 
     <!-- Gestionar Deportes -->
     <fragment
@@ -149,4 +153,8 @@
         android:name="com.example.sportine.ui.entrenadores.alumno.InfoAlumno"
         android:label="fragment_info_alumno"
         tools:layout="@layout/fragment_info_alumno" />
+    <fragment
+        android:id="@+id/suscription_Fragment"
+        android:name="com.example.sportine.ui.entrenadores.suscripcion.Suscription_Fragment"
+        android:label="Suscription_Fragment" />
 </navigation>

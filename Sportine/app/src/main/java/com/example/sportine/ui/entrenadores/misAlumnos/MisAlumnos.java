@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,7 @@ public class MisAlumnos extends Fragment {
     private boolean mostrandoPendientes = false;
 
     // Views
+    private ImageButton btnBack;  // ✅ AGREGADO
     private RecyclerView recyclerAlumnos;
     private LinearLayout layoutEmptyState;
     private LottieAnimationView imagenNoEncontrado;
@@ -79,6 +81,7 @@ public class MisAlumnos extends Fragment {
     }
 
     private void initViews(View view) {
+        btnBack = view.findViewById(R.id.btn_back);  // ✅ AGREGADO
         recyclerAlumnos = view.findViewById(R.id.recycler_entrenadores);
         layoutEmptyState = view.findViewById(R.id.layout_empty_state);
         imagenNoEncontrado = view.findViewById(R.id.imagen_noenco);
@@ -99,6 +102,11 @@ public class MisAlumnos extends Fragment {
     }
 
     private void setupListeners() {
+        // ✅ AGREGADO: Listener del botón back
+        btnBack.setOnClickListener(v -> {
+            NavHostFragment.findNavController(this).navigateUp();
+        });
+
         btnFiltroPendientes.setOnClickListener(v -> toggleFiltro());
     }
 
@@ -112,13 +120,23 @@ public class MisAlumnos extends Fragment {
                 if (!isAdded()) return;
 
                 if (response.isSuccessful() && response.body() != null) {
-                    todosLosAlumnos = response.body();
+                    List<AlumnoEntrenadorDTO> todosLosDatos = response.body();
 
-                    // Filtrar pendientes
+                    // ✅ FILTRAR: Excluir finalizados y separar pendientes
+                    todosLosAlumnos = new ArrayList<>();
                     alumnosPendientes = new ArrayList<>();
-                    for (AlumnoEntrenadorDTO alumno : todosLosAlumnos) {
-                        if ("pendiente".equalsIgnoreCase(alumno.getStatusRelacion())) {
-                            alumnosPendientes.add(alumno);
+
+                    for (AlumnoEntrenadorDTO alumno : todosLosDatos) {
+                        String status = alumno.getStatusRelacion();
+
+                        // ✅ Ignorar finalizados
+                        if (!"finalizado".equalsIgnoreCase(status)) {
+                            todosLosAlumnos.add(alumno);
+
+                            // Agregar a pendientes si aplica
+                            if ("pendiente".equalsIgnoreCase(status)) {
+                                alumnosPendientes.add(alumno);
+                            }
                         }
                     }
 

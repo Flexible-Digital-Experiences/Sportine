@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import java.time.LocalDate;
+
 /**
  * Entity que representa la información adicional del entrenador.
  * Corresponde a la tabla Informacion_Entrenador en la base de datos.
@@ -41,6 +43,67 @@ public class InformacionEntrenador {
 
     @Column(name = "foto_perfil", columnDefinition = "TEXT")
     private String fotoPerfil;
+
+    // ============================================
+// AGREGAR ESTOS CAMPOS A TU CLASE InformacionEntrenador.java
+// ============================================
+
+    // Campos de suscripción (agregar después de los campos existentes)
+
+    @Column(name = "subscription_id")
+    private String subscriptionId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "subscription_status")
+    private SubscriptionStatus subscriptionStatus;
+
+    @Column(name = "fecha_inicio_suscripcion")
+    private LocalDate fechaInicioSuscripcion;
+
+    @Column(name = "fecha_fin_suscripcion")
+    private LocalDate fechaFinSuscripcion;
+
+    // Enum para el status (crear como clase interna o archivo separado)
+    public enum SubscriptionStatus {
+        active,
+        cancelled,
+        expired,
+        suspended
+    }
+
+    // Getters y Setters (agregar estos también)
+
+    public String getSubscriptionId() {
+        return subscriptionId;
+    }
+
+    public void setSubscriptionId(String subscriptionId) {
+        this.subscriptionId = subscriptionId;
+    }
+
+    public SubscriptionStatus getSubscriptionStatus() {
+        return subscriptionStatus;
+    }
+
+    public void setSubscriptionStatus(SubscriptionStatus subscriptionStatus) {
+        this.subscriptionStatus = subscriptionStatus;
+    }
+
+    public LocalDate getFechaInicioSuscripcion() {
+        return fechaInicioSuscripcion;
+    }
+
+    public void setFechaInicioSuscripcion(LocalDate fechaInicioSuscripcion) {
+        this.fechaInicioSuscripcion = fechaInicioSuscripcion;
+    }
+
+    public LocalDate getFechaFinSuscripcion() {
+        return fechaFinSuscripcion;
+    }
+
+    public void setFechaFinSuscripcion(LocalDate fechaFinSuscripcion) {
+        this.fechaFinSuscripcion = fechaFinSuscripcion;
+    }
 
 
     // Relación con Usuario (opcional)
