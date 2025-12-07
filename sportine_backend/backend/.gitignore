@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Archivos de configuración con secretos
+application.properties
+application-dev.properties
+application-prod.properties
+
+# Variables de entorno
+.env
+.env.local
