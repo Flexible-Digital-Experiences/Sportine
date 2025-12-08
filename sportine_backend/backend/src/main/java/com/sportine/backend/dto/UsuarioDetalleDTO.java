@@ -18,4 +18,6 @@ public class UsuarioDetalleDTO {
     private String rol;
 
     private boolean siguiendo;
+
+    private String fotoPerfil;
 }

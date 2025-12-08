@@ -20,4 +20,6 @@ public class CompletarEntrenamientoRequestDTO {
     private Integer nivelCansancio; // 1-10 (opcional)
     private Integer dificultadPercibida; // 1-10 (opcional)
     private String estadoAnimo; // opcional
+
+    private boolean publicarLogro;
 }

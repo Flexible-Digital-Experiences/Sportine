@@ -5,13 +5,10 @@ import com.google.gson.annotations.SerializedName;
 public class Notificacion {
 
     @SerializedName("idNotificacion")
-    private Integer id;
+    private Integer idNotificacion;
 
-    @SerializedName("usuarioActor")
-    private String usuarioActor;
-
-    @SerializedName("tipo")
-    private String tipo;
+    @SerializedName("titulo")
+    private String titulo;
 
     @SerializedName("mensaje")
     private String mensaje;
@@ -19,10 +16,28 @@ public class Notificacion {
     @SerializedName("fecha")
     private String fecha;
 
-    // Getters
-    public Integer getId() { return id; }
-    public String getUsuarioActor() { return usuarioActor; }
-    public String getTipo() { return tipo; }
+    @SerializedName("leido")
+    private boolean leido;
+
+    @SerializedName("tipo")
+    private String tipo;
+
+    // ✅ NUEVOS CAMPOS (Coinciden con el DTO del backend)
+    @SerializedName("fotoActor")
+    private String fotoActor;
+
+    @SerializedName("nombreActor")
+    private String nombreActor;
+
+    // --- Getters ---
+    public Integer getIdNotificacion() { return idNotificacion; }
+    public String getTitulo() { return titulo; }
     public String getMensaje() { return mensaje; }
     public String getFecha() { return fecha; }
+    public boolean isLeido() { return leido; }
+    public String getTipo() { return tipo; }
+
+    // ✅ Getters nuevos
+    public String getFotoActor() { return fotoActor; }
+    public String getNombreActor() { return nombreActor; }
 }

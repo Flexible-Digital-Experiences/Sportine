@@ -29,38 +29,63 @@ public class PostServiceImpl implements PostService {
     @Autowired private LikesRepository likesRepository;
     @Autowired private UsuarioRepository usuarioRepository;
     @Autowired private AlumnoPerfilService alumnoPerfilService;
+
+    // ✅ REPOSITORIOS NECESARIOS PARA BUSCAR EN AMBAS TABLAS
+    @Autowired private InformacionEntrenadorRepository informacionEntrenadorRepository;
+    @Autowired private InformacionAlumnoRepository informacionAlumnoRepository;
+
     @Autowired private ComentarioRepository comentarioRepository;
     @Autowired private SubidaImagenService subidaImagenService;
     @Autowired private NotificacionService notificacionService;
     @Autowired private NotificacionRepository notificacionRepository;
 
+    // ✅ MÉTODO 1: OBTENER FOTO (Búsqueda Inteligente)
+    private String obtenerFotoUsuarioGenerico(String username) {
+        String foto = null;
+
+        // 1. Buscar en Alumnos
+        Optional<InformacionAlumno> alumno = informacionAlumnoRepository.findByUsuario(username);
+        if (alumno.isPresent() && alumno.get().getFotoPerfil() != null && !alumno.get().getFotoPerfil().isEmpty()) {
+            foto = alumno.get().getFotoPerfil();
+        }
+
+        // 2. Si sigue siendo null, buscar en Entrenadores
+        if (foto == null) {
+            Optional<InformacionEntrenador> entrenador = informacionEntrenadorRepository.findByUsuario(username);
+            if (entrenador.isPresent() && entrenador.get().getFotoPerfil() != null && !entrenador.get().getFotoPerfil().isEmpty()) {
+                foto = entrenador.get().getFotoPerfil();
+            }
+        }
+        return foto;
+    }
+
+    // ✅ MÉTODO 2: OBTENER NOMBRE (Desde la tabla Usuario, para que nunca sea null)
+    private String obtenerNombreCompleto(String username) {
+        return usuarioRepository.findByUsuario(username)
+                .map(u -> {
+                    String nombre = u.getNombre() != null ? u.getNombre() : "";
+                    String apellido = u.getApellidos() != null ? u.getApellidos() : "";
+                    String completo = (nombre + " " + apellido).trim();
+                    return completo.isEmpty() ? username : completo;
+                })
+                .orElse(username);
+    }
+
     @Override
     public List<PublicacionFeedDTO> getFeed(String username) {
         List<Publicacion> publicaciones = publicacionRepository.obtenerFeedPersonalizado(username);
 
-        // OPTIMIZACIÓN: Cache local para no consultar el mismo perfil múltiples veces en un request
-        Map<String, PerfilAlumnoResponseDTO> perfilCache = new HashMap<>();
+        // Mapas para caché local (optimización)
+        Map<String, String> fotosCache = new HashMap<>();
+        Map<String, String> nombresCache = new HashMap<>();
 
         return publicaciones.stream().map(publicacion -> {
             String autorUsername = publicacion.getUsuario();
-            String nombreCompleto = autorUsername; // Fallback por defecto
-            String fotoPerfilUrl = null;
 
-            // Lógica de cacheo: Si ya buscamos a este usuario en esta iteración, no lo buscamos de nuevo
-            if (!perfilCache.containsKey(autorUsername)) {
-                try {
-                    PerfilAlumnoResponseDTO perfil = alumnoPerfilService.obtenerPerfilAlumno(autorUsername);
-                    perfilCache.put(autorUsername, perfil);
-                } catch (Exception e) {
-                    logger.error("Error al obtener perfil para el post feed: " + autorUsername, e);
-                    perfilCache.put(autorUsername, null); // Marcamos como null para no reintentar fallidos
-                }
-            }
-
-            PerfilAlumnoResponseDTO perfilCached = perfilCache.get(autorUsername);
-            if (perfilCached != null) {
-                nombreCompleto = perfilCached.getNombre() + " " + perfilCached.getApellidos();
-                fotoPerfilUrl = perfilCached.getFotoPerfil();
+            // Llenar caché si no existe
+            if (!nombresCache.containsKey(autorUsername)) {
+                nombresCache.put(autorUsername, obtenerNombreCompleto(autorUsername));
+                fotosCache.put(autorUsername, obtenerFotoUsuarioGenerico(autorUsername));
             }
 
             int totalLikes = likesRepository.countByIdPublicacion(publicacion.getId_publicacion());
@@ -73,9 +98,12 @@ public class PostServiceImpl implements PostService {
             dto.setDescripcion(publicacion.getDescripcion());
             dto.setImagen(publicacion.getImagen());
             dto.setFechaPublicacion(publicacion.getFechaPublicacion());
+
             dto.setAutorUsername(autorUsername);
-            dto.setAutorNombreCompleto(nombreCompleto);
-            dto.setAutorFotoPerfil(fotoPerfilUrl);
+            // ✅ USAMOS LOS DATOS DE LA CACHÉ INTELIGENTE
+            dto.setAutorNombreCompleto(nombresCache.get(autorUsername));
+            dto.setAutorFotoPerfil(fotosCache.get(autorUsername));
+
             dto.setTotalLikes(totalLikes);
             dto.setLikedByMe(isLikedByMe);
             dto.setMine(isMine);
@@ -100,7 +128,7 @@ public class PostServiceImpl implements PostService {
         nuevaPublicacion.setDescripcion(dto.getDescripcion());
         nuevaPublicacion.setImagen(dto.getImagen());
         nuevaPublicacion.setFechaPublicacion(new Date());
-        nuevaPublicacion.setTipo(1); // 1 = Normal
+        nuevaPublicacion.setTipo(1);
 
         return publicacionRepository.save(nuevaPublicacion);
     }
@@ -108,12 +136,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public Optional<Publicacion> actualizarPublicacion(Integer id, Publicacion publicacionActualizada) {
         return publicacionRepository.findById(id).map(postExistente -> {
-            // Solo actualizamos si viene información
             if(publicacionActualizada.getDescripcion() != null)
                 postExistente.setDescripcion(publicacionActualizada.getDescripcion());
             if(publicacionActualizada.getImagen() != null)
                 postExistente.setImagen(publicacionActualizada.getImagen());
-
             return publicacionRepository.save(postExistente);
         });
     }
@@ -125,7 +151,6 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new RuntimeException("Post no encontrado"));
 
         if (!post.getUsuario().equals(usernameQuePide)) {
-            // Aquí podrías agregar lógica para que un ADMIN también pueda borrar
             throw new RuntimeException("No tienes permiso para borrar este post");
         }
 
@@ -137,7 +162,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void darLike(Integer idPublicacion, String username) {
-        // Verificamos primero para evitar duplicados si el usuario spamea el botón
         if(likesRepository.findLikeByPostAndUser(idPublicacion, username).isEmpty()) {
             Likes newLike = new Likes();
             newLike.setIdPublicacion(idPublicacion);
@@ -145,7 +169,6 @@ public class PostServiceImpl implements PostService {
             likesRepository.save(newLike);
 
             publicacionRepository.findById(idPublicacion).ifPresent(post -> {
-                // No notificarse a uno mismo
                 if(!post.getUsuario().equals(username)){
                     notificacionService.crearNotificacion(
                             post.getUsuario(),
@@ -191,8 +214,6 @@ public class PostServiceImpl implements PostService {
     public List<ComentarioResponseDTO> obtenerComentarios(Integer idPublicacion, String usernameQueMira) {
         List<Comentario> comentarios = comentarioRepository.findByIdPublicacionOrderByFechaAsc(idPublicacion);
 
-        // Aquí también podríamos aplicar la caché de perfiles si hay muchos comentarios,
-        // pero por ahora lo dejamos así para no complicar el método.
         return comentarios.stream().map(c -> {
             ComentarioResponseDTO dto = new ComentarioResponseDTO();
             dto.setIdComentario(c.getIdComentario());
@@ -200,15 +221,11 @@ public class PostServiceImpl implements PostService {
             dto.setFecha(c.getFecha());
             dto.setAutorUsername(c.getUsuario());
             dto.setMine(c.getUsuario().equals(usernameQueMira));
-            try {
-                PerfilAlumnoResponseDTO perfil = alumnoPerfilService.obtenerPerfilAlumno(c.getUsuario());
-                dto.setAutorNombre(perfil.getNombre() + " " + perfil.getApellidos());
-                dto.setAutorFoto(perfil.getFotoPerfil());
-            } catch (Exception e) {
-                // Fallback silencioso pero controlado
-                dto.setAutorNombre(c.getUsuario());
-                dto.setAutorFoto(null);
-            }
+
+            // ✅ USAMOS LOS MÉTODOS INTELIGENTES AQUÍ TAMBIÉN
+            dto.setAutorNombre(obtenerNombreCompleto(c.getUsuario()));
+            dto.setAutorFoto(obtenerFotoUsuarioGenerico(c.getUsuario()));
+
             return dto;
         }).collect(Collectors.toList());
     }

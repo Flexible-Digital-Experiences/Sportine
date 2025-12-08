@@ -13,7 +13,7 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btn_marcar_completado"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -443,25 +443,40 @@
                     android:inputType="textCapSentences|textMultiLine" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <ImageView
+                android:id="@+id/imgCopaLogro"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/ic_cup"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="16dp"
+                android:alpha="0.3"
+                android:clickable="false"
+                android:contentDescription="Desbloquear Logro"
+                app:layout_constraintTop_toBottomOf="@+id/input_layout_comentario"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_marcar_completado"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginStart="@dimen/spacing_medium"
+                android:layout_marginEnd="@dimen/spacing_medium"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:layout_marginBottom="100dp"
+                android:text="@string/btn_marcar_completado"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                app:cornerRadius="@dimen/corner_radius_card"
+                app:backgroundTint="@color/colorAccent"
+                app:layout_constraintTop_toBottomOf="@+id/imgCopaLogro"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_marcar_completado"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginStart="@dimen/spacing_medium"
-        android:layout_marginEnd="@dimen/spacing_medium"
-        android:layout_marginTop="@dimen/spacing_medium"
-        android:layout_marginBottom="130dp"
-        android:text="@string/btn_marcar_completado"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/white"
-        app:cornerRadius="@dimen/corner_radius_card"
-        app:backgroundTint="@color/colorAccent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

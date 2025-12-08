@@ -11,6 +11,7 @@ public class UsuarioDetalleDTO {
 
     // NUEVO: Campo para saber si ya lo sigo
     private boolean siguiendo;
+    private String fotoPerfil;
 
     public UsuarioDetalleDTO() {}
 
@@ -21,6 +22,7 @@ public class UsuarioDetalleDTO {
     public String getSexo() { return sexo; }
     public String getEstado() { return estado; }
     public String getCiudad() { return ciudad; }
+    public String getFotoPerfil() { return fotoPerfil; }
     public String getRol() { return rol; }
 
     // NUEVO: Getter para siguiendo
@@ -33,6 +35,7 @@ public class UsuarioDetalleDTO {
     public void setSexo(String sexo) { this.sexo = sexo; }
     public void setEstado(String estado) { this.estado = estado; }
     public void setCiudad(String ciudad) { this.ciudad = ciudad; }
+    public void setFotoPerfil(String fotoPerfil) { this.fotoPerfil = fotoPerfil; }
     public void setRol(String rol) { this.rol = rol; }
 
     // NUEVO: Setter para siguiendo

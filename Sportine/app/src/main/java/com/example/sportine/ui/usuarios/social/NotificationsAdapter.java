@@ -46,20 +46,31 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     public void onBindViewHolder(@NonNull NotifViewHolder holder, int position) {
         Notificacion notif = lista.get(position);
 
-        String texto = "<b>" + notif.getUsuarioActor() + "</b> " + notif.getMensaje();
+        // 1. ✅ OBTENER NOMBRE REAL (Prioridad: nombreActor > "Usuario")
+        String nombreMostrar = (notif.getNombreActor() != null && !notif.getNombreActor().isEmpty())
+                ? notif.getNombreActor()
+                : "Usuario";
+
+        // Formato: "Juan Perez le dio like..."
+        String texto = "<b>" + nombreMostrar + "</b> " + notif.getMensaje();
         holder.tvTexto.setText(Html.fromHtml(texto, Html.FROM_HTML_MODE_LEGACY));
 
+        // 2. FECHA (Sin cambios, tu lógica estaba bien)
         try {
+            // Nota: Si tu backend manda LocalDateTime (ej: 2023-10-25T10:00:00), este formato funciona.
+            // Si agrega milisegundos, ajusta a "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
-
-            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            // Asumimos que el server manda la hora local o UTC. Si es UTC:
+            // sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
             Date date = sdf.parse(notif.getFecha());
             holder.tvTiempo.setText(prettyTime.format(date));
         } catch (Exception e) {
-            holder.tvTiempo.setText("Hace poco");
+            // Fallback si el formato no coincide exacto
+            holder.tvTiempo.setText("Reciente");
         }
 
+        // 3. ÍCONOS DE TIPO (Sin cambios)
         switch (notif.getTipo()) {
             case "LIKE":
                 holder.ivIconoTipo.setImageResource(R.drawable.ic_favorite_black_24dp);
@@ -73,10 +84,18 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                 holder.ivIconoTipo.setImageResource(R.drawable.ic_person_add_black_24dp);
                 holder.ivIconoTipo.setColorFilter(Color.parseColor("#4CAF50")); // Verde
                 break;
+            default:
+                holder.ivIconoTipo.setImageResource(R.drawable.ic_notifications_black_24dp);
+                holder.ivIconoTipo.setColorFilter(Color.GRAY);
+                break;
         }
 
+        // 4. ✅ CARGAR FOTO DE PERFIL CON GLIDE
+        // Si fotoActor es null, Glide usa el placeholder automáticamente
         Glide.with(context)
-                .load(R.drawable.avatar_user_male)
+                .load(notif.getFotoActor()) // <--- URL que viene del backend
+                .placeholder(R.drawable.avatar_user_male) // Mientras carga o si es null
+                .error(R.drawable.avatar_user_male)       // Si falla la carga
                 .circleCrop()
                 .into(holder.ivAvatar);
     }

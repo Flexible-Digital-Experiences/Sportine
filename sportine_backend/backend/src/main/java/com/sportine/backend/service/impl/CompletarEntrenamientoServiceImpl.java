@@ -61,8 +61,12 @@ public class CompletarEntrenamientoServiceImpl implements CompletarEntrenamiento
             guardarFeedback(request, username);
         }
 
-        // Generación automática de la publicación de logro
-        generarPublicacionAutomatica(entrenamiento, username);
+        // --- MODIFICACIÓN AQUÍ ---
+        // Generación automática de la publicación de logro SOLO si el usuario lo pidió (Clic en la Copa)
+        if (request.isPublicarLogro()) {
+            generarPublicacionAutomatica(entrenamiento, username);
+        }
+        // -------------------------
 
         log.info("Entrenamiento {} completado exitosamente por {}", request.getIdEntrenamiento(), username);
         return "Entrenamiento completado exitosamente";

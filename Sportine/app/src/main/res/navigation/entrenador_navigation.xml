@@ -5,7 +5,6 @@
     android:id="@+id/entrenador_navigation"
     app:startDestination="@+id/navigation_home_entrenador">
 
-    <!-- HOME ENTRENADOR -->
     <fragment
         android:id="@+id/navigation_home_entrenador"
         android:name="com.example.sportine.ui.entrenadores.home.HomeFragment"
@@ -28,14 +27,12 @@
         android:label="Asignar Entrenamiento"
         tools:layout="@layout/fragment_entrenador_asignar_entrenamiento" />
 
-    <!-- ESTADÍSTICAS ENTRENADOR -->
     <fragment
         android:id="@+id/navigation_stats_entrenador"
         android:name="com.example.sportine.ui.entrenadores.estadisticas.EstadisticasEntrenadorFragment"
         android:label="Estadísticas"
         tools:layout="@layout/fragment_entrenador_estadisticas" />
 
-    <!-- PERFIL ENTRENADOR -->
     <fragment
         android:id="@+id/navigation_perfil_entrenador"
         android:name="com.example.sportine.ui.entrenadores.perfil.PerfilEntrenaFragment"
@@ -47,8 +44,6 @@
         <action
             android:id="@+id/action_perfilentre_to_configuracion"
             app:destination="@id/configuracionEntrenadorFragment" />
-
-        <!-- ✅ NUEVA ACCIÓN: Navegar a Gestionar Deportes -->
         <action
             android:id="@+id/action_perfilentre_to_gestionar_deportes"
             app:destination="@id/gestionarDeportesFragment"
@@ -56,21 +51,18 @@
             app:exitAnim="@android:anim/slide_out_right" />
     </fragment>
 
-    <!-- COMPLETAR DATOS ENTRENADOR -->
     <fragment
         android:id="@+id/completardatosentrenadorFragment"
         android:name="com.example.sportine.ui.entrenadores.completardatosentrenador.CompletardatosentrenadorFragment"
         android:label="Completar Datos"
         tools:layout="@layout/fragment_entrenador_completar_datos" />
 
-    <!-- Gestionar Deportes -->
     <fragment
         android:id="@+id/gestionarDeportesFragment"
         android:name="com.example.sportine.ui.entrenadores.gestionardeportes.GestionarDeportesFragment"
         android:label="Gestionar Deportes"
         tools:layout="@layout/fragment_entrenador_gestionar_deportes" />
 
-    <!-- CONFIGURACIÓN ENTRENADOR -->
     <fragment
         android:id="@+id/configuracionEntrenadorFragment"
         android:name="com.example.sportine.ui.entrenadores.configuracion.ConfiguracionEntrenadorFragment"
@@ -81,14 +73,12 @@
             app:destination="@id/modificarDatosEntrenadorFragment" />
     </fragment>
 
-    <!-- MODIFICAR DATOS ENTRENADOR -->
     <fragment
         android:id="@+id/modificarDatosEntrenadorFragment"
         android:name="com.example.sportine.ui.entrenadores.modificardatosentrenador.ModificarDatosEntrenadorFragment"
         android:label="Modificar Datos"
         tools:layout="@layout/fragment_entrenador_modificar_datos" />
 
-    <!-- SOCIAL ENTRENADOR -->
     <fragment
         android:id="@+id/navigation_social_entrenador"
         android:name="com.example.sportine.ui.usuarios.social.SocialFragment"
@@ -104,23 +94,35 @@
             app:destination="@id/navigation_lista_amigos_entrenador"
             app:enterAnim="@android:anim/slide_in_left"
             app:exitAnim="@android:anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_social_to_detalle_post"
+            app:destination="@id/navigation_detalle_post" />
     </fragment>
 
-    <!-- BUSCAR AMIGO ENTRENADOR -->
+    <fragment
+        android:id="@+id/navigation_notifications"
+        android:name="com.example.sportine.ui.usuarios.social.NotificationsFragment"
+        android:label="Notificaciones"
+        tools:layout="@layout/fragment_alumno_notifications" />
+
+    <fragment
+        android:id="@+id/navigation_detalle_post"
+        android:name="com.example.sportine.ui.usuarios.social.DetallePostFragment"
+        android:label="Publicación"
+        tools:layout="@layout/fragment_detalle_post" />
+
     <fragment
         android:id="@+id/navigation_buscar_amigo_entrenador"
         android:name="com.example.sportine.ui.usuarios.social.BuscarAmigoFragment"
         android:label="Buscar Amigo"
         tools:layout="@layout/fragment_alumno_buscar_amigo" />
 
-    <!-- LISTA AMIGOS ENTRENADOR -->
     <fragment
         android:id="@+id/navigation_lista_amigos_entrenador"
         android:name="com.example.sportine.ui.usuarios.social.ListaAmigosFragment"
         android:label="Mis Amigos"
         tools:layout="@layout/fragment_alumno_lista_amigos" />
 
-    <!-- SOLICITUDES ENTRENADOR (antes era "Buscar" para alumnos) -->
     <fragment
         android:id="@+id/navigation_solicitudes_entrenador"
         android:name="com.example.sportine.ui.entrenadores.solicitudes.SolicitudesFragment"
@@ -136,6 +138,7 @@
         android:name="com.example.sportine.ui.entrenadores.feedback.FeedbackFragment"
         android:label="Comentarios Recientes"
         tools:layout="@layout/fragment_entrenador_feedback_list" />
+
     <fragment
         android:id="@+id/misAlumnos"
         android:name="com.example.sportine.ui.entrenadores.misAlumnos.MisAlumnos"
@@ -144,6 +147,7 @@
             android:id="@+id/action_misAlumnos_to_infoAlumno"
             app:destination="@id/infoAlumno" />
     </fragment>
+
     <fragment
         android:id="@+id/infoAlumno"
         android:name="com.example.sportine.ui.entrenadores.alumno.InfoAlumno"
