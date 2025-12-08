@@ -212,6 +212,10 @@ public class PerfilEntrenaFragment extends Fragment {
             @Override
             public void onResponse(Call<PerfilEntrenadorResponseDTO> call,
                                    Response<PerfilEntrenadorResponseDTO> response) {
+
+                // ✅ FIX: Validación para evitar el crash si el fragmento ya no existe
+                if (!isAdded()) return;
+
                 if (response.isSuccessful() && response.body() != null) {
                     PerfilEntrenadorResponseDTO perfil = response.body();
                     Log.d(TAG, "✓ Datos del entrenador cargados exitosamente");
@@ -226,6 +230,9 @@ public class PerfilEntrenaFragment extends Fragment {
 
             @Override
             public void onFailure(Call<PerfilEntrenadorResponseDTO> call, Throwable t) {
+                // ✅ FIX: Validación también aquí por si acaso
+                if (!isAdded()) return;
+
                 Log.e(TAG, "❌ Error de conexión: " + t.getMessage(), t);
                 Toast.makeText(requireContext(),
                         "Error de conexión: " + t.getMessage(),

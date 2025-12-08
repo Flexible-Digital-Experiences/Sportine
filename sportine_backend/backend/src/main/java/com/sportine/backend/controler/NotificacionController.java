@@ -1,6 +1,6 @@
 package com.sportine.backend.controler;
 
-import com.sportine.backend.model.Notificacion;
+import com.sportine.backend.dto.NotificacionDTO; // ✅ IMPORTAR DTO
 import com.sportine.backend.service.NotificacionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +17,8 @@ public class NotificacionController {
     private final NotificacionService notificacionService;
 
     @GetMapping
-    public ResponseEntity<List<Notificacion>> misNotificaciones(Principal principal) {
-
+    // ✅ CAMBIO: Ahora devolvemos List<NotificacionDTO>
+    public ResponseEntity<List<NotificacionDTO>> misNotificaciones(Principal principal) {
         String miUsuario = principal.getName();
         return ResponseEntity.ok(notificacionService.obtenerMisNotificaciones(miUsuario));
     }

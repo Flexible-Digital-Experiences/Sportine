@@ -23,8 +23,6 @@ public class DetalleEntrenamientoServiceImpl implements DetalleEntrenamientoServ
     private final EjerciciosAsignadosRepository ejerciciosAsignadosRepository;
     private final UsuarioRepository usuarioRepository;
     private final InformacionEntrenadorRepository informacionEntrenadorRepository;
-    // Necesitas este repositorio para saber el nombre del deporte (Fútbol, Gym, etc.)
-    // Si no lo tienes creado, avísame y te paso el código rápido.
     private final DeporteRepository deporteRepository;
 
     @Override
@@ -67,6 +65,9 @@ public class DetalleEntrenamientoServiceImpl implements DetalleEntrenamientoServ
         dto.setObjetivo(entrenamiento.getObjetivo());
         dto.setFecha(entrenamiento.getFechaEntrenamiento());
 
+        // ✅ LÍNEA NUEVA: Agregamos la dificultad para que Android no truene
+        dto.setDificultad(entrenamiento.getDificultad());
+
         if (entrenamiento.getHoraEntrenamiento() != null) {
             // Formatear hora a String amigable (ej: "10:30")
             dto.setHora(entrenamiento.getHoraEntrenamiento().format(DateTimeFormatter.ofPattern("HH:mm")));
@@ -102,9 +103,6 @@ public class DetalleEntrenamientoServiceImpl implements DetalleEntrenamientoServ
                 EjerciciosAsignados.StatusEjercicio.pendiente);
 
         ejerciciosAsignadosRepository.save(ejercicio);
-
-        // Opcional: Aquí podrías agregar lógica para verificar si TODOS los ejercicios
-        // están listos y marcar el entrenamiento completo automáticamente.
     }
 
     // Helper para convertir Entity -> DTO

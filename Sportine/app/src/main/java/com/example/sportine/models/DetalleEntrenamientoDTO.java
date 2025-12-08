@@ -16,6 +16,8 @@ public class DetalleEntrenamientoDTO {
     private String fotoEntrenador;
     private String deporteIcono;
 
+    private String dificultad;
+
     // Lista de Ejercicios
     private List<AsignarEjercicioDTO> ejercicios;
 
@@ -23,9 +25,13 @@ public class DetalleEntrenamientoDTO {
     public String getTitulo() { return titulo; }
     public String getFecha() { return fecha; }
     public String getHora() { return hora; }
+
+    public String getDificultad() { return dificultad; }
     public String getNombreEntrenador() { return nombreEntrenador; }
     public String getEspecialidadEntrenador() { return especialidadEntrenador; }
     public String getFotoEntrenador() { return fotoEntrenador; }
     public String getObjetivo() { return objetivo; }
     public List<AsignarEjercicioDTO> getEjercicios() { return ejercicios; }
+
+    public void setDificultad(String dificultad) { this.dificultad = dificultad; }
 }

@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout; // <--- ESTA FALTABA
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,10 +48,19 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private ApiService apiService;
     private Context context;
 
-    public SocialFeedAdapter(List<PublicacionFeedDTO> publicacionList, Context context, ApiService apiService) {
+    // 1. Interfaz para comunicar clics al Fragmento
+    private OnPostInteractionListener interactionListener;
+
+    public interface OnPostInteractionListener {
+        void onCommentClick(Integer postId);
+    }
+
+    // 2. Constructor actualizado
+    public SocialFeedAdapter(List<PublicacionFeedDTO> publicacionList, Context context, ApiService apiService, OnPostInteractionListener listener) {
         this.publicacionList = publicacionList;
         this.context = context;
         this.apiService = apiService;
+        this.interactionListener = listener; // Guardar listener
         this.prettyTime = new PrettyTime(new Locale("es"));
 
         TimeUnit justNowUnit = prettyTime.getUnit(JustNow.class);
@@ -115,6 +124,22 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         holder.ivLike.setOnClickListener(v -> toggleLikeGenerico(publicacion, holder.tvLikesCount, holder.ivLike));
+
+        // --- DOBLE TAP PARA LOGROS ---
+        final GestureDetector gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) { return true; }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                if (!publicacion.isLikedByMe()) {
+                    toggleLikeGenerico(publicacion, holder.tvLikesCount, holder.ivLike);
+                }
+                return true;
+            }
+        });
+
+        holder.itemView.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
     }
 
     // --- POST NORMAL (Tarjeta Blanca) ---
@@ -122,7 +147,6 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         String nombre = publicacion.getAutorNombreCompleto() != null ? publicacion.getAutorNombreCompleto() : publicacion.getAutorUsername();
         holder.tvUsername.setText(nombre);
 
-        // Menú de 3 puntitos
         if (publicacion.isMine()) {
             holder.moreOptionsImageView.setVisibility(View.VISIBLE);
             holder.moreOptionsImageView.setOnClickListener(v -> showPopupMenu(v, publicacion, holder.getAdapterPosition()));
@@ -130,16 +154,13 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             holder.moreOptionsImageView.setVisibility(View.GONE);
         }
 
-        // --- DESCRIPCIÓN (TEXTO) ---
         if (publicacion.getDescripcion() != null && !publicacion.getDescripcion().isEmpty()) {
             holder.tvDescription.setVisibility(View.VISIBLE);
             holder.tvDescription.setText(publicacion.getDescripcion());
 
-            // 1. Doble Tap en TEXTO: Solo Like en botón, SIN animación gigante
             final GestureDetector textGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
                 @Override
                 public boolean onDown(MotionEvent e) { return true; }
-
                 @Override
                 public boolean onDoubleTap(MotionEvent e) {
                     if (!publicacion.isLikedByMe()) {
@@ -151,7 +172,6 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             holder.tvDescription.setClickable(true);
             holder.tvDescription.setFocusable(true);
             holder.tvDescription.setOnTouchListener((v, event) -> textGestureDetector.onTouchEvent(event));
-
         } else {
             holder.tvDescription.setVisibility(View.GONE);
         }
@@ -159,36 +179,26 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         Glide.with(context).load(publicacion.getAutorFotoPerfil())
                 .placeholder(R.drawable.avatar_user_male).circleCrop().into(holder.userAvatarImageView);
 
-        // --- IMAGEN (CON ANIMACIÓN CORAZÓN GIGANTE) ---
         boolean tieneImagen = publicacion.getImagen() != null && !publicacion.getImagen().isEmpty();
         if (tieneImagen) {
             holder.postImageView.setVisibility(View.VISIBLE);
             Glide.with(context).load(publicacion.getImagen()).into(holder.postImageView);
 
-            // 2. Doble Tap en IMAGEN
             final GestureDetector imageGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
                 @Override
                 public boolean onDown(MotionEvent e) { return true; }
-
                 @Override
                 public boolean onDoubleTap(MotionEvent e) {
-                    // CORRECCIÓN: Sumamos getLeft/getTop para ajustar coordenadas relativas al padre
                     float x = e.getX() + holder.postImageView.getLeft();
                     float y = e.getY() + holder.postImageView.getTop();
-
-                    // Animar el corazón
                     animateBigHeart(holder.bigHeartImageView, x, y);
-
-                    // Dar Like
                     if (!publicacion.isLikedByMe()) {
                         toggleLikeGenerico(publicacion, holder.tvLikesCount, holder.likeButtonImageView);
                     }
                     return true;
                 }
             });
-
             holder.postImageView.setOnTouchListener((v, event) -> imageGestureDetector.onTouchEvent(event));
-
         } else {
             holder.postImageView.setVisibility(View.GONE);
         }
@@ -211,60 +221,48 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             v.animate().scaleX(1.2f).scaleY(1.2f).setDuration(100).withEndAction(() -> v.animate().scaleX(1f).scaleY(1f).start()).start();
             toggleLikeGenerico(publicacion, holder.tvLikesCount, holder.likeButtonImageView);
         });
+
+        // 3. Conectar botón de comentarios
+        holder.commentButtonImageView.setOnClickListener(v -> {
+            if (interactionListener != null) {
+                interactionListener.onCommentClick(publicacion.getIdPublicacion());
+            }
+        });
     }
 
-    // --- ANIMACIÓN CORAZÓN (AJUSTADA AL CENTRO) ---
     private void animateBigHeart(ImageView heart, float x, float y) {
+        if(heart == null) return;
         heart.setVisibility(View.VISIBLE);
         heart.setAlpha(1f);
-
-        // Medir si aún no tiene dimensiones
         if (heart.getWidth() == 0 || heart.getHeight() == 0) {
             heart.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
         }
-
         int width = heart.getMeasuredWidth();
         int height = heart.getMeasuredHeight();
         if (width == 0) width = dpToPx(70);
         if (height == 0) height = dpToPx(70);
-
-        // Centrar el corazón en el punto de toque
         float xPosition = x - (width / 2f);
         float yPosition = y - (height / 2f);
-
         heart.setX(xPosition);
         heart.setY(yPosition);
-
         heart.setScaleX(0f);
         heart.setScaleY(0f);
-
-        heart.animate()
-                .scaleX(1.0f).scaleY(1.0f)
-                .setDuration(200)
-                .withEndAction(() -> {
-                    heart.animate()
-                            .scaleX(0.8f).scaleY(0.8f)
-                            .alpha(0f)
-                            .setDuration(150)
-                            .setStartDelay(100)
-                            .withEndAction(() -> heart.setVisibility(View.GONE))
-                            .start();
-                }).start();
+        heart.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).withEndAction(() -> {
+            heart.animate().scaleX(0.8f).scaleY(0.8f).alpha(0f).setDuration(150).setStartDelay(100).withEndAction(() -> heart.setVisibility(View.GONE)).start();
+        }).start();
     }
 
     private int dpToPx(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
-    // --- MÉTODOS DEL MENÚ Y ACCIONES ---
     private void showPopupMenu(View view, PublicacionFeedDTO publicacion, int position) {
         PopupMenu popup = new PopupMenu(context, view);
         if (publicacion.isMine()) {
             popup.getMenu().add("Modificar");
             popup.getMenu().add("Eliminar");
         }
-
         popup.setOnMenuItemClickListener(item -> {
             String title = item.getTitle().toString();
             if (title.equals("Eliminar")) {
@@ -307,22 +305,17 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private void mostrarDialogoEditar(PublicacionFeedDTO publicacion, int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Editar publicación");
-
         final EditText input = new EditText(context);
         input.setText(publicacion.getDescripcion());
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         input.setLayoutParams(lp);
         builder.setView(input);
-
         builder.setPositiveButton("Guardar", (dialog, which) -> {
             String nuevoTexto = input.getText().toString();
             if(!nuevoTexto.trim().isEmpty()){
                 Publicacion pubActualizada = new Publicacion();
                 pubActualizada.setDescripcion(nuevoTexto);
                 pubActualizada.setImagen(publicacion.getImagen());
-
                 apiService.editarPost(publicacion.getIdPublicacion(), pubActualizada).enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
@@ -349,13 +342,10 @@ public class SocialFeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         Integer postId = publicacion.getIdPublicacion();
         boolean newState = !publicacion.isLikedByMe();
         publicacion.setLikedByMe(newState);
-
         int current = publicacion.getTotalLikes();
         if (newState) current++; else if (current > 0) current--;
         publicacion.setTotalLikes(current);
-
         tvCounter.setText(String.valueOf(current));
-
         if (newState) {
             btnLike.setImageResource(R.drawable.ic_favorite_black_24dp);
             if (publicacion.getTipo() == null || publicacion.getTipo() == 1) {

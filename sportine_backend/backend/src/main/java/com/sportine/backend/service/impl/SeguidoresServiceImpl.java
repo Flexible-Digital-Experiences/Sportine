@@ -1,9 +1,13 @@
 package com.sportine.backend.service.impl;
 
 import com.sportine.backend.dto.UsuarioDetalleDTO;
+import com.sportine.backend.model.InformacionAlumno;
+import com.sportine.backend.model.InformacionEntrenador;
 import com.sportine.backend.model.Notificacion;
 import com.sportine.backend.model.Seguidores;
 import com.sportine.backend.model.Usuario;
+import com.sportine.backend.repository.InformacionAlumnoRepository;
+import com.sportine.backend.repository.InformacionEntrenadorRepository;
 import com.sportine.backend.repository.SeguidoresRepository;
 import com.sportine.backend.repository.UsuarioRepository;
 import com.sportine.backend.service.NotificacionService;
@@ -23,6 +27,10 @@ public class SeguidoresServiceImpl implements SeguidoresService {
     private final SeguidoresRepository seguidoresRepository;
     private final UsuarioRepository usuarioRepository;
     private final NotificacionService notificacionService;
+
+    // 1️⃣ INYECTAMOS LOS REPOSITORIOS DE INFORMACIÓN
+    private final InformacionAlumnoRepository informacionAlumnoRepository;
+    private final InformacionEntrenadorRepository informacionEntrenadorRepository;
 
     @Override
     @Transactional
@@ -80,11 +88,35 @@ public class SeguidoresServiceImpl implements SeguidoresService {
                 .collect(Collectors.toList());
     }
 
+    // 2️⃣ MÉTODO HELPER PARA OBTENER FOTO (Igual que en tus otros servicios)
+    private String obtenerFotoUsuarioGenerico(String username) {
+        String foto = null;
+
+        // Buscar en Alumnos
+        Optional<InformacionAlumno> alumno = informacionAlumnoRepository.findByUsuario(username);
+        if (alumno.isPresent() && alumno.get().getFotoPerfil() != null && !alumno.get().getFotoPerfil().isEmpty()) {
+            foto = alumno.get().getFotoPerfil();
+        }
+
+        // Buscar en Entrenadores si no se encontró
+        if (foto == null) {
+            Optional<InformacionEntrenador> entrenador = informacionEntrenadorRepository.findByUsuario(username);
+            if (entrenador.isPresent() && entrenador.get().getFotoPerfil() != null && !entrenador.get().getFotoPerfil().isEmpty()) {
+                foto = entrenador.get().getFotoPerfil();
+            }
+        }
+        return foto;
+    }
+
     private UsuarioDetalleDTO convertirADTO(Usuario u, String miUsuario) {
         boolean loSigo = loSigo(miUsuario, u.getUsuario());
         String infoEstado = (u.getIdEstado() != null) ? "Estado ID: " + u.getIdEstado() : "Sin Estado";
 
-        // ✅ CORRECCIÓN: Pasamos el booleano al nuevo campo 'siguiendo'
+        // 1. Obtenemos la foto (igual que antes)
+        String fotoPerfil = obtenerFotoUsuarioGenerico(u.getUsuario());
+
+        // 2. ✅ CORRECCIÓN: Pasamos 'fotoPerfil' DENTRO del constructor
+        // El orden debe ser igual al de tus campos en el archivo UsuarioDetalleDTO.java
         return new UsuarioDetalleDTO(
                 u.getUsuario(),
                 u.getNombre(),
@@ -93,7 +125,9 @@ public class SeguidoresServiceImpl implements SeguidoresService {
                 infoEstado,
                 u.getCiudad(),
                 "alumno",
-                loSigo
+                loSigo,
+                fotoPerfil // <--- ¡AQUÍ ESTABA EL FALTANTE! 😎
         );
+
     }
 }

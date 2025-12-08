@@ -4,20 +4,16 @@ import com.sportine.backend.dto.*;
 import com.sportine.backend.exception.ConflictoException;
 import com.sportine.backend.exception.DatosInvalidosException;
 import com.sportine.backend.exception.RecursoNoEncontradoException;
-import com.sportine.backend.model.Estado;
-import com.sportine.backend.model.Rol;
-import com.sportine.backend.model.Usuario;
-import com.sportine.backend.model.UsuarioRol;
-import com.sportine.backend.repository.EstadoRepository;
-import com.sportine.backend.repository.RolRepository;
-import com.sportine.backend.repository.UsuarioRepository;
-import com.sportine.backend.repository.UsuarioRolRepository;
+import com.sportine.backend.model.*;
+import com.sportine.backend.repository.*;
 import com.sportine.backend.service.JwtService;
 import com.sportine.backend.service.UsuarioService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +24,10 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final UsuarioRolRepository usuarioRolRepository;
     private final JwtService jwtService;
     private final EstadoRepository estadoRepository;
+
+    // ✅ NUEVO: Repositorios para buscar la foto de perfil
+    private final InformacionAlumnoRepository informacionAlumnoRepository;
+    private final InformacionEntrenadorRepository informacionEntrenadorRepository;
 
     // ============================================
     // MÉTODOS HELPER PRIVADOS (EVITA REPETICIÓN)
@@ -55,6 +55,23 @@ public class UsuarioServiceImpl implements UsuarioService {
     private UsuarioRol obtenerUsuarioRolOError(String username) {
         return usuarioRolRepository.findByUsuario(username)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Rol del usuario", username));
+    }
+
+    // ✅ NUEVO: Método helper para obtener la foto de perfil
+    private String obtenerFotoPerfil(String username) {
+        // 1. Buscar en Alumnos
+        Optional<InformacionAlumno> alumno = informacionAlumnoRepository.findByUsuario(username);
+        if (alumno.isPresent() && alumno.get().getFotoPerfil() != null && !alumno.get().getFotoPerfil().isEmpty()) {
+            return alumno.get().getFotoPerfil();
+        }
+
+        // 2. Si no, buscar en Entrenadores
+        Optional<InformacionEntrenador> entrenador = informacionEntrenadorRepository.findByUsuario(username);
+        if (entrenador.isPresent() && entrenador.get().getFotoPerfil() != null && !entrenador.get().getFotoPerfil().isEmpty()) {
+            return entrenador.get().getFotoPerfil();
+        }
+
+        return null; // Si no tiene foto
     }
 
     // ============================================
@@ -114,6 +131,10 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .orElse(null);
         String nombreEstado = estado != null ? estado.getEstado() : "";
 
+        // ✅ CORRECCIÓN: Obtenemos la foto usando el helper
+        String fotoPerfil = obtenerFotoPerfil(username);
+
+        // ✅ CORRECCIÓN: Agregamos fotoPerfil al final del constructor
         return new UsuarioDetalleDTO(
                 usuario.getUsuario(),
                 usuario.getNombre(),
@@ -122,7 +143,8 @@ public class UsuarioServiceImpl implements UsuarioService {
                 nombreEstado,
                 usuario.getCiudad(),
                 rol.getRol(),
-                false
+                false,
+                fotoPerfil
         );
     }
 
@@ -254,8 +276,6 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         System.out.println("=== FIN ACTUALIZACIÓN ===");
     }
-
-
 
     @Override
     @Transactional

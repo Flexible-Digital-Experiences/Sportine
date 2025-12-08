@@ -167,7 +167,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Buscar Amigos"
-            android:backgroundTint="@color/purple_500"/>
+            android:backgroundTint="#16D01D"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
