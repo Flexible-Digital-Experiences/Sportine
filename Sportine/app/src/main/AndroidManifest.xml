@@ -24,6 +24,7 @@
         android:theme="@style/Theme.Sportine"
         tools:targetApi="31">
 
+        <!-- Splash como launcher -->
         <activity
             android:name=".SplashActivity"
             android:exported="true"
@@ -42,10 +43,23 @@
             android:name=".ui.usuarios.registro.RegistroActivity"
             android:exported="false" />
 
+        <!-- MainActivity maneja el deep link de PayPal -->
         <activity
             android:name=".MainActivity"
-            android:exported="false"
-            android:label="@string/app_name" />
+            android:exported="true"
+            android:label="Sportine"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <!-- URL de retorno de PayPal -->
+                <data
+                    android:scheme="sportine"
+                    android:host="payment" />
+            </intent-filter>
+        </activity>
 
     </application>
 

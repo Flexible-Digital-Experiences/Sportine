@@ -55,7 +55,6 @@ CREATE TABLE Informacion_Alumno (
     estatura FLOAT,
     peso FLOAT,
     lesiones VARCHAR(255),
-    nivel VARCHAR(50), 
     padecimientos VARCHAR(255),
     foto_perfil TEXT,
     fecha_nacimiento DATE,
@@ -71,22 +70,33 @@ CREATE TABLE Informacion_Entrenador (
     limite_alumnos INT DEFAULT 3,
     descripcion_perfil VARCHAR(255),
     foto_perfil TEXT,
+	subscription_id VARCHAR(255) NULL COMMENT 'ID de suscripción de PayPal',
+	subscription_status ENUM('active', 'cancelled', 'expired', 'suspended') DEFAULT NULL COMMENT 'Estado de la suscripción',
+	fecha_inicio_suscripcion DATE NULL COMMENT 'Fecha en que se activó Premium',
+	fecha_fin_suscripcion DATE NULL COMMENT 'Fecha en que vence/venció la suscripción',
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
-CREATE TABLE Tarjeta (
-    id_tarjeta INT PRIMARY KEY AUTO_INCREMENT,
-    usuario VARCHAR(255),
-    numero_tarjeta VARCHAR(50),
-    fecha_caducidad DATE,
-    nombre_titular VARCHAR(255),
-    direccion_facturacion VARCHAR(255),
-    localidad VARCHAR(100),
-    codigo_postal VARCHAR(20),
-    pais VARCHAR(100),
-    telefono VARCHAR(20),
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
-);
+-- 2. Crear tabla de historial de pagos
+CREATE TABLE Historial_Suscripciones (
+    id_historial INT PRIMARY KEY AUTO_INCREMENT,
+    usuario VARCHAR(255) NOT NULL,
+    subscription_id VARCHAR(255) COMMENT 'ID de suscripción en PayPal',
+    plan_id VARCHAR(255) COMMENT 'ID del plan en PayPal (P-28M32623D2448144SNE2MWEQ)',
+    tipo_plan VARCHAR(20) DEFAULT 'premium' COMMENT 'Tipo de plan',
+    monto DECIMAL(10,2) COMMENT 'Monto pagado',
+    moneda VARCHAR(3) DEFAULT 'MXN',
+    status_pago VARCHAR(50) COMMENT 'completed, pending, failed, refunded',
+    fecha_pago DATETIME COMMENT 'Fecha del pago',
+    fecha_proximo_pago DATE COMMENT 'Fecha del próximo cobro',
+    paypal_transaction_id VARCHAR(255) COMMENT 'ID de transacción de PayPal',
+    evento_webhook TEXT COMMENT 'JSON completo del webhook de PayPal',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
+    INDEX idx_subscription_id (subscription_id),
+    INDEX idx_usuario (usuario),
+    INDEX idx_fecha_pago (fecha_pago)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Historial de pagos de suscripciones Premium';
 
 -- ============================================
 -- 3. RELACIONES Y CONTRATOS
@@ -113,7 +123,6 @@ CREATE TABLE Entrenador_Deporte (
     UNIQUE KEY unique_entrenador_deporte (usuario, id_deporte)
 );
 
--- ✅ TABLA CORREGIDA Y COMPLETA
 CREATE TABLE Entrenador_Alumno (
     id_relacion INT PRIMARY KEY AUTO_INCREMENT,
     usuario_entrenador VARCHAR(255),
@@ -166,10 +175,10 @@ CREATE TABLE Entrenamiento (
 CREATE TABLE Ejercicios_Asignados (
     id_asignado INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT,
-    id_catalogo INT,               -- Opcional, por si usas catálogo futuro
+    id_catalogo INT,
     nombre_personalizado VARCHAR(255),
     usuario VARCHAR(255),
-    nombre_ejercicio VARCHAR(255) NOT NULL, -- ✅ ESTE es el que usa tu Java
+    nombre_ejercicio VARCHAR(255) NOT NULL,
     series INT,
     repeticiones INT,
     peso FLOAT,
@@ -207,6 +216,7 @@ CREATE TABLE Feedback_Entrenamiento (
 -- ============================================
 -- 5. MÓDULO SOCIAL Y OTROS
 -- ============================================
+
 CREATE TABLE Calificaciones (
     id_calificacion INT PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(255),
@@ -223,7 +233,7 @@ CREATE TABLE Publicacion (
     descripcion VARCHAR(255),
     fecha_publicacion DATETIME,
     imagen TEXT,
-    tipo INT DEFAULT 1, -- 1=Normal (Blanco), 2=Logro (Verde)
+    tipo INT DEFAULT 1,
     FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
 );
 
@@ -272,7 +282,6 @@ CREATE TABLE Notificacion (
 -- ============================================
 -- 6. TABLAS ESTADÍSTICAS
 -- ============================================
--- (Incluidas todas tal cual las enviaste, son correctas)
 
 CREATE TABLE Estadisticas_Futbol (
     id_estadistica INT PRIMARY KEY AUTO_INCREMENT,
@@ -460,13 +469,11 @@ CREATE TABLE Estadisticas_Beisbol (
     bases_robadas INT DEFAULT 0,
     ponches_bateando INT DEFAULT 0,
     boletos_recibidos INT DEFAULT 0,
-    -- Pitcheo
     innings_lanzados FLOAT,
     ponches_lanzando INT DEFAULT 0,
     boletos_otorgados INT DEFAULT 0,
     hits_permitidos INT DEFAULT 0,
     carreras_permitidas INT DEFAULT 0,
-    -- Defensa
     outs_defensivos INT DEFAULT 0,
     asistencias_defensivas INT DEFAULT 0,
     errores_defensivos INT DEFAULT 0,
@@ -476,9 +483,15 @@ CREATE TABLE Estadisticas_Beisbol (
 );
 
 -- ============================================
--- INSERTS DE DATOS
+-- INSERTS DE DATOS INICIALES
 -- ============================================
 
+-- ============================================
+-- SCRIPT COMPLETO DE INSERCIONES - SPORTINE DB
+-- Con campos correo y telefono actualizados
+-- ============================================
+
+-- ESTADOS
 INSERT INTO Estado (estado) VALUES
     ('Ciudad de México'), ('Aguascalientes'), ('Baja California'), ('Baja California Sur'), ('Campeche'),
     ('Chiapas'), ('Chihuahua'), ('Coahuila'), ('Colima'), ('Durango'), ('Guanajuato'), ('Guerrero'),
@@ -486,10 +499,13 @@ INSERT INTO Estado (estado) VALUES
     ('Oaxaca'), ('Puebla'), ('Querétaro'), ('Quintana Roo'), ('San Luis Potosí'), ('Sinaloa'),
     ('Sonora'), ('Tabasco'), ('Tamaulipas'), ('Tlaxcala'), ('Veracruz'), ('Yucatán'), ('Zacatecas');
 
+-- ROLES
 INSERT INTO Rol (rol) VALUES ('alumno'), ('entrenador');
 
+-- DEPORTES
 INSERT INTO Deporte (nombre_deporte) VALUES 
     ('Fútbol'), ('Basketball'), ('Natación'), ('Running'), ('Boxeo'),
     ('Tenis'), ('Gimnasio'), ('Ciclismo'), ('Béisbol');
 
+-- NIVELES
 INSERT INTO Nivel (nombre_nivel) VALUES ('Principiante'), ('Intermedio'), ('Avanzado');

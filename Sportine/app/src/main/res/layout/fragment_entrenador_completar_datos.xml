@@ -620,6 +620,168 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!--  TARJETA CANCELAR SUSCRIPCIÓN -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardCancelarSuscripcion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/gradient_premium"
+                        android:padding="20dp">
+
+                        <!-- Título con icono de alerta -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="8dp">
+
+                            <ImageView
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:src="@drawable/ic_crown"
+                                app:tint="#FFD700"
+                                android:contentDescription="Corona Premium"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="CUENTA PREMIUM"
+                                android:textColor="@color/white"
+                                android:textSize="24sp"
+                                android:textStyle="bold"
+                                android:layout_marginStart="12dp"
+                                android:letterSpacing="0.05"/>
+                        </LinearLayout>
+
+                        <!-- Estado activo -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="✓ Tu suscripción está activa"
+                            android:textColor="#4CAF50"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="12dp"/>
+
+                        <!-- Beneficios actuales -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginBottom="16dp">
+
+                            <!-- Beneficio 1 -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="8dp">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_check_circle"
+                                    app:tint="#4CAF50"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Hasta 50 alumnos"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:layout_marginStart="8dp"/>
+                            </LinearLayout>
+
+                            <!-- Beneficio 2 -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="8dp">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_check_circle"
+                                    app:tint="#4CAF50"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Estadísticas avanzadas"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:layout_marginStart="8dp"/>
+                            </LinearLayout>
+
+                            <!-- Beneficio 3 -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_check_circle"
+                                    app:tint="#4CAF50"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Prioridad en el soporte"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp"
+                                    android:layout_marginStart="8dp"/>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Mensaje informativo -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Puedes gestionar tu suscripción en cualquier momento"
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            android:textStyle="italic"
+                            android:alpha="0.8"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:layout_marginBottom="16dp"/>
+
+                        <!-- Botón gestionar suscripción -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnGestionarSuscripcion"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:text="Gestionar Suscripción"
+                            android:textColor="#FF6F00"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="28dp"
+                            app:backgroundTint="@color/white"
+                            app:elevation="4dp"
+                            android:textAllCaps="false"
+                            app:iconGravity="end"
+                            app:iconTint="#FF6F00"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

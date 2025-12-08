@@ -22,15 +22,15 @@ public class DeportesAdapter extends RecyclerView.Adapter<DeportesAdapter.Deport
 
     // Mapa de iconos por deporte
     private static final Map<String, Integer> DEPORTE_ICONS = new HashMap<String, Integer>() {{
-        put("Fútbol", R.drawable.ic_ensena); // Reemplaza con tus iconos
-        put("Basketball", R.drawable.ic_ensena);
-        put("Natación", R.drawable.ic_ensena);
-        put("Running", R.drawable.ic_ensena);
-        put("Boxeo", R.drawable.ic_ensena);
-        put("Tenis", R.drawable.ic_ensena);
-        put("Gimnasio", R.drawable.ic_ensena);
-        put("Ciclismo", R.drawable.ic_ensena);
-        put("Béisbol", R.drawable.ic_ensena);
+        put("Fútbol", R.drawable.balon_futbol); // Reemplaza con tus iconos
+        put("Basketball", R.drawable.balon_basket);
+        put("Natación", R.drawable.ic_natacion);
+        put("Running", R.drawable.ic_running);
+        put("Boxeo", R.drawable.ic_boxeo);
+        put("Tenis", R.drawable.pelota_tenis);
+        put("Gimnasio", R.drawable.ic_gimnasio);
+        put("Ciclismo", R.drawable.ic_ciclismo);
+        put("Béisbol", R.drawable.ic_beisbol);
     }};
 
     public void setDeportes(List<String> deportes) {
