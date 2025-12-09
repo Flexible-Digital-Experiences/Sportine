@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide; // Asegúrate de tener Glide para las imágenes
+import com.bumptech.glide.Glide;
 import com.example.sportine.R;
 import com.example.sportine.models.AlumnoProgresoDTO;
 
@@ -38,8 +38,6 @@ public class AlumnosAdapter extends RecyclerView.Adapter<AlumnosAdapter.AlumnoVi
     @Override
     public AlumnoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
-        // Nota: Asegúrate de que este layout (item_entrenador_alumno_home) sea el que modificamos
-        // con los IDs nuevos (text_deporte, icon_deporte, layout_sport_info).
         View view = LayoutInflater.from(context).inflate(R.layout.item_entrenador_alumno_home, parent, false);
         return new AlumnoViewHolder(view);
     }
@@ -48,14 +46,9 @@ public class AlumnosAdapter extends RecyclerView.Adapter<AlumnosAdapter.AlumnoVi
     public void onBindViewHolder(@NonNull AlumnoViewHolder holder, int position) {
         AlumnoProgresoDTO alumno = alumnos.get(position);
 
-        // --- 1. Lógica de Márgenes (Tu código original) ---
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
-        if (position == 0) {
-            params.topMargin = 0;
-        } else {
-            params.topMargin = (int) (12 * context.getResources().getDisplayMetrics().density);
-        }
-        holder.itemView.setLayoutParams(params);
+        // --- 1. Lógica de Márgenes ELIMINADA ---
+        // Se ha quitado el bloque que agregaba topMargin programáticamente.
+        // Ahora se respeta el diseño original del XML.
 
         // --- 2. Textos Básicos ---
         holder.nombre.setText(alumno.getNombre() + " " + (alumno.getApellidos() != null ? alumno.getApellidos() : ""));
@@ -68,23 +61,22 @@ public class AlumnosAdapter extends RecyclerView.Adapter<AlumnosAdapter.AlumnoVi
         holder.textPendientes.setText(pendientes + (pendientes == 1 ? " Pendiente" : " Pendientes"));
 
         // --- 4. Indicador de Activo ---
-        if (Boolean.TRUE.equals(alumno.getActivo())) { // Boolean.TRUE para evitar NullPointer
+        if (Boolean.TRUE.equals(alumno.getActivo())) {
             holder.indicatorActivo.setVisibility(View.VISIBLE);
         } else {
             holder.indicatorActivo.setVisibility(View.GONE);
         }
 
-        // --- 5. LÓGICA DE DEPORTE (AGREGADO) ---
-        String deporte = alumno.getDeporte().trim();
+        // --- 5. LÓGICA DE DEPORTE ---
+        // Validación segura para evitar error si getDeporte es null
+        String deporte = "";
+        if (alumno.getDeporte() != null) {
+            deporte = alumno.getDeporte().trim();
+        }
 
-        // Verificamos que el deporte sea válido y que el holder tenga las vistas (por seguridad)
-        if (holder.layoutSportInfo != null && deporte != null && !deporte.isEmpty() && !deporte.equalsIgnoreCase("Sin asignar")) {
+        if (holder.layoutSportInfo != null && !deporte.isEmpty() && !deporte.equalsIgnoreCase("Sin asignar")) {
             holder.layoutSportInfo.setVisibility(View.VISIBLE);
             holder.textDeporte.setText(deporte);
-
-            // Switch para iconos locales
-            // Mapeo del String que viene de Spring Boot a tus Drawables locales
-            // En AlumnosAdapter.java -> onBindViewHolder
 
             switch (deporte) {
                 case "Fútbol": case "Futbol":
@@ -108,22 +100,17 @@ public class AlumnosAdapter extends RecyclerView.Adapter<AlumnosAdapter.AlumnoVi
                 case "Running":
                     holder.iconDeporte.setImageResource(R.drawable.ic_running);
                     break;
-
-                // --- ASEGÚRATE DE QUE ESTOS ESTÉN ---
                 case "Gimnasio": case "Gym":
                     holder.iconDeporte.setImageResource(R.drawable.ic_gimnasio);
                     break;
                 case "Ciclismo":
                     holder.iconDeporte.setImageResource(R.drawable.ic_ciclismo);
                     break;
-                // ------------------------------------
-
                 default:
                     holder.iconDeporte.setImageResource(R.drawable.ic_ejercicio);
                     break;
             }
         } else if (holder.layoutSportInfo != null) {
-            // Ocultar si no hay deporte
             holder.layoutSportInfo.setVisibility(View.GONE);
         }
 
@@ -132,7 +119,7 @@ public class AlumnosAdapter extends RecyclerView.Adapter<AlumnosAdapter.AlumnoVi
             Glide.with(context)
                     .load(alumno.getFotoPerfil())
                     .placeholder(R.drawable.ic_avatar_default)
-                    .circleCrop() // Hace la imagen redonda
+                    .circleCrop()
                     .into(holder.avatar);
         } else {
             holder.avatar.setImageResource(R.drawable.ic_avatar_default);
@@ -173,7 +160,6 @@ public class AlumnosAdapter extends RecyclerView.Adapter<AlumnosAdapter.AlumnoVi
             textCompletados = itemView.findViewById(R.id.text_completados);
             textPendientes = itemView.findViewById(R.id.text_pendientes);
 
-            // Inicializamos los nuevos IDs del XML modificado
             textDeporte = itemView.findViewById(R.id.text_deporte);
             iconDeporte = itemView.findViewById(R.id.icon_deporte);
             layoutSportInfo = itemView.findViewById(R.id.layout_sport_info);

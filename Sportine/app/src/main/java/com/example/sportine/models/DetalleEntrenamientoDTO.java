@@ -32,6 +32,7 @@ public class DetalleEntrenamientoDTO {
     public String getFotoEntrenador() { return fotoEntrenador; }
     public String getObjetivo() { return objetivo; }
     public List<AsignarEjercicioDTO> getEjercicios() { return ejercicios; }
+    public String getDeporteIcono() {return deporteIcono;}
 
     public void setDificultad(String dificultad) { this.dificultad = dificultad; }
 }

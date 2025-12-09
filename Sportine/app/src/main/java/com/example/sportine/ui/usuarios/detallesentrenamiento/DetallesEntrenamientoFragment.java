@@ -1,5 +1,9 @@
 package com.example.sportine.ui.usuarios.detallesentrenamiento;
 
+// ✅ 1. IMPORTACIONES AGREGADAS (Esto soluciona el error de la R y del DTO)
+import com.example.sportine.R;
+import com.example.sportine.models.DetalleEntrenamientoDTO;
+
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Bundle;
@@ -71,7 +75,6 @@ public class DetallesEntrenamientoFragment extends Fragment {
 
     // ✅ MÉTODO INTELIGENTE: Ilumina la copa y valida dificultad
     private void actualizarProgresoCopa() {
-        // 1. Si la copa está oculta (porque es fácil), no gastamos recursos calculando
         if (binding.imgCopaLogro.getVisibility() == View.GONE) return;
 
         if (viewModel.getDetalle().getValue() == null) return;
@@ -85,15 +88,10 @@ public class DetallesEntrenamientoFragment extends Fragment {
             if (e.isCompletado()) completados++;
         }
 
-        // Porcentaje (0.0 a 1.0)
         float porcentaje = (float) completados / total;
 
         // --- EFECTOS VISUALES ---
-
-        // A. Opacidad: Sube de 0.3 (apagado) a 1.0 (encendido)
         binding.imgCopaLogro.setAlpha(0.3f + (0.7f * porcentaje));
-
-        // B. Color: Se satura de Gris (B&N) a Color Real
         ColorMatrix matrix = new ColorMatrix();
         matrix.setSaturation(porcentaje);
         binding.imgCopaLogro.setColorFilter(new ColorMatrixColorFilter(matrix));
@@ -101,21 +99,14 @@ public class DetallesEntrenamientoFragment extends Fragment {
         // --- DESBLOQUEO ---
         if (completados == total) {
             if (!binding.imgCopaLogro.isClickable()) {
-                // ¡YA ACABÓ! Habilitamos el click
                 binding.imgCopaLogro.setClickable(true);
-
-                // Efecto "POP" para avisar que se desbloqueó
                 binding.imgCopaLogro.animate().scaleX(1.3f).scaleY(1.3f).setDuration(200)
                         .withEndAction(() -> binding.imgCopaLogro.animate().scaleX(1f).scaleY(1f).start())
                         .start();
-
-                // Quitamos cualquier filtro para que se vea el PNG original brillante
                 binding.imgCopaLogro.clearColorFilter();
-
                 Toast.makeText(getContext(), "¡Logro desbloqueado! Toca la copa para presumirlo 🏆", Toast.LENGTH_SHORT).show();
             }
         } else {
-            // Aún le falta, deshabilitamos click
             binding.imgCopaLogro.setClickable(false);
         }
     }
@@ -125,17 +116,17 @@ public class DetallesEntrenamientoFragment extends Fragment {
 
         // Observar datos del entrenamiento
         viewModel.getDetalle().observe(getViewLifecycleOwner(), dto -> {
+            // --- DATOS BÁSICOS ---
             binding.textTituloEntrenamiento.setText(dto.getTitulo());
             binding.textFecha.setText(dto.getFecha() + " " + dto.getHora());
             binding.textNombreEntrenador.setText(dto.getNombreEntrenador());
             binding.textEspecialidad.setText(dto.getEspecialidadEntrenador());
             binding.textDescripcion.setText(dto.getObjetivo());
 
-            // --- LÓGICA DE DIFICULTAD EXCLUSIVA ---
-            String dificultad = dto.getDificultad(); // Asegúrate que tu DTO tenga este campo
-            if (dificultad == null) dificultad = "Medio"; // Fallback por seguridad
+            // --- LÓGICA DE DIFICULTAD ---
+            String dificultad = dto.getDificultad();
+            if (dificultad == null) dificultad = "Medio";
 
-            // Solo mostramos la copa si es un reto real
             boolean esDificil = dificultad.equalsIgnoreCase("Dificil") ||
                     dificultad.equalsIgnoreCase("Avanzado") ||
                     dificultad.equalsIgnoreCase("Experto");
@@ -145,20 +136,32 @@ public class DetallesEntrenamientoFragment extends Fragment {
             } else {
                 binding.imgCopaLogro.setVisibility(View.GONE);
             }
-            // --------------------------------------
 
+            // --- LÓGICA DE EJERCICIOS ---
             if (dto.getEjercicios() != null) {
                 binding.textContadorEjercicios.setText(dto.getEjercicios().size() + " ejercicios");
                 adapter.setEjercicios(dto.getEjercicios());
 
-                // Calculamos estado inicial de la copa (si es visible)
                 if (esDificil) {
                     actualizarProgresoCopa();
                 }
             }
 
-            if (dto.getFotoEntrenador() != null) {
-                Glide.with(this).load(dto.getFotoEntrenador()).into(binding.imgAvatarEntrenador);
+            // --- FOTO DE PERFIL ---
+            if (dto.getFotoEntrenador() != null && !dto.getFotoEntrenador().isEmpty()) {
+                Glide.with(this)
+                        .load(dto.getFotoEntrenador())
+                        .placeholder(R.drawable.ic_avatar_default)
+                        .circleCrop()
+                        .into(binding.imgAvatarEntrenador);
+            }
+
+            // =================================================================
+            // NUEVA LÓGICA: ÍCONO DEL DEPORTE
+            // =================================================================
+            if (dto.getDeporteIcono() != null) {
+                int iconResId = obtenerIconoDeporte(dto.getDeporteIcono());
+                binding.imgDeporteIcon.setImageResource(iconResId);
             }
         });
 
@@ -180,7 +183,6 @@ public class DetallesEntrenamientoFragment extends Fragment {
             if (getActivity() != null) getActivity().onBackPressed();
         });
 
-        // Feedback visual de los Sliders
         binding.sliderCansancio.addOnChangeListener((slider, value, fromUser) -> {
             binding.labelCansancio.setText("Nivel de Cansancio (" + (int)value + "/10)");
         });
@@ -188,15 +190,12 @@ public class DetallesEntrenamientoFragment extends Fragment {
             binding.labelDificultad.setText("Dificultad (" + (int)value + "/10)");
         });
 
-        // 🏆 CLICK EN LA COPA: Publicar Logro = TRUE
         binding.imgCopaLogro.setOnClickListener(v -> {
             Toast.makeText(getContext(), "¡Presumiendo logro! 🏆🔥", Toast.LENGTH_SHORT).show();
             enviarCompletado(true);
         });
 
-        // ✅ CLICK EN BOTÓN NORMAL: Publicar Logro = FALSE (Privado)
         binding.btnMarcarCompletado.setOnClickListener(v -> {
-            // Validaciones de ejercicios pendientes
             boolean hayPendientes = false;
             if (viewModel.getDetalle().getValue() != null && viewModel.getDetalle().getValue().getEjercicios() != null) {
                 for (AsignarEjercicioDTO ejercicio : viewModel.getDetalle().getValue().getEjercicios()) {
@@ -236,7 +235,6 @@ public class DetallesEntrenamientoFragment extends Fragment {
             if(chip != null) animo = chip.getText().toString();
         }
 
-        // Pasamos el booleano al ViewModel para que le diga al backend qué hacer
         viewModel.completarEntrenamiento(idEntrenamiento, comentario, cansancio, dificultad, animo, publicarLogro);
     }
 
@@ -244,5 +242,35 @@ public class DetallesEntrenamientoFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    // ✅ MÉTODO HELPER PARA MAPEAR STRING A DRAWABLE
+    private int obtenerIconoDeporte(String nombreDeporte) {
+        if (nombreDeporte == null) return R.drawable.ic_fitness_center_black_24dp;
+
+        String deporteNormalizado = nombreDeporte.trim();
+
+        switch (deporteNormalizado) {
+            case "Fútbol":
+                return R.drawable.balon_futbol;
+            case "Basketball":
+                return R.drawable.balon_basket;
+            case "Natación":
+                return R.drawable.ic_natacion;
+            case "Running":
+                return R.drawable.ic_running;
+            case "Boxeo":
+                return R.drawable.ic_boxeo;
+            case "Tenis":
+                return R.drawable.pelota_tenis;
+            case "Gimnasio":
+                return R.drawable.ic_gimnasio;
+            case "Ciclismo":
+                return R.drawable.ic_ciclismo;
+            case "Béisbol":
+                return R.drawable.ic_beisbol;
+            default:
+                return R.drawable.ic_deporte_default;
+        }
     }
 }

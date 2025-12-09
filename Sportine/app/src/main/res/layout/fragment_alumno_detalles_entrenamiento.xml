@@ -197,7 +197,9 @@
                         android:layout_height="@dimen/avatar_size"
                         app:cardCornerRadius="@dimen/corner_radius_avatar"
                         app:cardElevation="0dp"
-                        android:backgroundTint="@color/colorIconBackground"
+                        android:backgroundTint="@android:color/transparent"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="@color/colorDivider"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent">
