@@ -6,11 +6,11 @@
     android:id="@+id/card_entrenamiento"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/spacing_xlarge"
     android:layout_marginBottom="@dimen/spacing_medium"
-    app:cardCornerRadius="@dimen/corner_radius_card"
-    app:cardElevation="2dp"
-    app:strokeWidth="1dp"
-    app:strokeColor="@color/colorDivider"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="4dp"
+    app:strokeWidth="0dp"
     android:backgroundTint="@color/colorCardBackground"
     android:clickable="true"
     android:focusable="true"
@@ -19,144 +19,152 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_large">
+        android:padding="16dp">
 
-        <!-- Ícono del deporte -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_icono_deporte"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:cardCornerRadius="12dp"
+            app:cardCornerRadius="25dp"
             app:cardElevation="0dp"
-            android:backgroundTint="@color/colorIconBackground"
+            android:backgroundTint="#F0F4F8"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
             <ImageView
                 android:id="@+id/img_icono_deporte"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="10dp"
+                android:padding="12dp"
                 android:scaleType="fitCenter"
                 android:contentDescription="@string/icono_deporte_desc" />
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Título del entrenamiento -->
-        <TextView
-            android:id="@+id/text_titulo_entrenamiento"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_large"
-            android:layout_marginEnd="@dimen/spacing_medium"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorTextPrimary"
-            android:fontFamily="sans-serif-medium"
-            android:maxLines="1"
-            android:ellipsize="end"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
             app:layout_constraintStart_toEndOf="@id/card_icono_deporte"
             app:layout_constraintEnd_toStartOf="@id/badge_estado"
-            app:layout_constraintTop_toTopOf="@id/card_icono_deporte" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Objetivo del entrenamiento -->
-        <TextView
-            android:id="@+id/text_objetivo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_xsmall"
-            android:textSize="14sp"
-            android:textColor="@color/colorTextSecondary"
-            android:maxLines="1"
-            android:ellipsize="end"
-            app:layout_constraintStart_toStartOf="@id/text_titulo_entrenamiento"
-            app:layout_constraintEnd_toEndOf="@id/text_titulo_entrenamiento"
-            app:layout_constraintTop_toBottomOf="@id/text_titulo_entrenamiento" />
+            <TextView
+                android:id="@+id/text_titulo_entrenamiento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorTextPrimary"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:ellipsize="end"
+                tools:text="Entrenamiento HIIT" />
 
-        <!-- Badge de estado (pendiente/en progreso/completado) -->
+            <TextView
+                android:id="@+id/text_objetivo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textSize="13sp"
+                android:textColor="@color/colorTextSecondary"
+                android:maxLines="1"
+                android:ellipsize="end"
+                tools:text="Quema grasa y resistencia" />
+
+            <LinearLayout
+                android:id="@+id/layout_info_adicional"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/rounded_edittext_background"
+                    android:backgroundTint="#F5F5F5"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="4dp">
+
+                    <ImageView
+                        android:id="@+id/icon_hora"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        app:tint="@color/colorTextSecondary"
+                        android:src="@drawable/ic_clock"
+                        android:contentDescription="Hora" />
+
+                    <TextView
+                        android:id="@+id/text_hora"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorTextSecondary"
+                        tools:text="10:00" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/rounded_edittext_background"
+                    android:backgroundTint="#F5F5F5"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="4dp">
+
+                    <ImageView
+                        android:id="@+id/icon_dificultad"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        app:tint="@color/colorTextSecondary"
+                        android:src="@drawable/ic_estadisticas"
+                        android:contentDescription="Dificultad" />
+
+                    <TextView
+                        android:id="@+id/text_dificultad"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorTextSecondary"
+                        tools:text="Medio" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
         <TextView
             android:id="@+id/badge_estado"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="12dp"
+            android:paddingHorizontal="10dp"
             android:paddingVertical="4dp"
-            android:textSize="12sp"
+            android:textSize="10sp"
             android:textStyle="bold"
+            android:textAllCaps="true"
             android:textColor="@android:color/white"
             android:background="@drawable/bg_badge_rounded"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="PENDIENTE" />
 
-        <!-- Línea separadora -->
         <View
             android:id="@+id/divider_info"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="@color/colorDivider"
-            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_height="0dp"
+            android:visibility="invisible"
             app:layout_constraintTop_toBottomOf="@id/card_icono_deporte"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- Info adicional: Hora y Dificultad -->
-        <LinearLayout
-            android:id="@+id/layout_info_adicional"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            app:layout_constraintTop_toBottomOf="@id/divider_info"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <!-- Hora -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:id="@+id/icon_hora"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    app:tint="@color/colorTextSecondary"
-                    android:contentDescription="Hora" />
-
-                <TextView
-                    android:id="@+id/text_hora"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:textSize="14sp"
-                    android:textColor="@color/colorTextSecondary" />
-            </LinearLayout>
-
-            <!-- Dificultad -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:id="@+id/icon_dificultad"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    app:tint="@color/colorTextSecondary"
-                    android:contentDescription="Dificultad" />
-
-                <TextView
-                    android:id="@+id/text_dificultad"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:textSize="14sp"
-                    android:textColor="@color/colorTextSecondary" />
-            </LinearLayout>
-        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

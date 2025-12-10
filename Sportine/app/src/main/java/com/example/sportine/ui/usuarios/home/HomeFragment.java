@@ -178,14 +178,12 @@ public class HomeFragment extends Fragment {
     }
 
     private void configurarSwipeRefresh() {
-        // Si tienes SwipeRefreshLayout, descomenta esto:
-        /*
+
         if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setOnRefreshListener(() -> {
                 viewModel.refrescarDatos();
             });
         }
-        */
     }
 
     // En HomeFragment.java

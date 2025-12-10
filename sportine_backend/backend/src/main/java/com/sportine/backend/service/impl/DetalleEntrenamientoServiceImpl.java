@@ -65,7 +65,7 @@ public class DetalleEntrenamientoServiceImpl implements DetalleEntrenamientoServ
         dto.setObjetivo(entrenamiento.getObjetivo());
         dto.setFecha(entrenamiento.getFechaEntrenamiento());
 
-        // ✅ LÍNEA NUEVA: Agregamos la dificultad para que Android no truene
+        // ✅ Agregamos la dificultad para consistencia
         dto.setDificultad(entrenamiento.getDificultad());
 
         if (entrenamiento.getHoraEntrenamiento() != null) {
@@ -77,9 +77,9 @@ public class DetalleEntrenamientoServiceImpl implements DetalleEntrenamientoServ
 
         // Info Entrenador
         dto.setNombreEntrenador(entrenador.getNombre() + " " + entrenador.getApellidos());
-        dto.setEspecialidadEntrenador("Entrenador de " + nombreDeporte); // Ej: "Entrenador de Fútbol"
+        dto.setEspecialidadEntrenador("Entrenador de " + nombreDeporte);
         dto.setFotoEntrenador(infoEntrenador.getFotoPerfil());
-        dto.setDeporteIcono(nombreDeporte); // El frontend decidirá qué icono poner según este string
+        dto.setDeporteIcono(nombreDeporte);
 
         // 7. Mapear Ejercicios
         List<AsignarEjercicioDTO> ejerciciosDTO = ejerciciosEntities.stream()
@@ -97,12 +97,30 @@ public class DetalleEntrenamientoServiceImpl implements DetalleEntrenamientoServ
         EjerciciosAsignados ejercicio = ejerciciosAsignadosRepository.findById(idAsignado)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Ejercicio no encontrado"));
 
-        // Actualizar estado
+        // 1. Actualizar estado del ejercicio
         ejercicio.setStatusEjercicio(completado ?
                 EjerciciosAsignados.StatusEjercicio.completado :
                 EjerciciosAsignados.StatusEjercicio.pendiente);
 
         ejerciciosAsignadosRepository.save(ejercicio);
+
+        // =================================================================================
+        // 2. NUEVA REGLA DE UX: Actualizar estado del Entrenamiento Padre
+        // =================================================================================
+        // Si el usuario completa al menos un ejercicio, asumimos que ya empezó a entrenar.
+        if (completado) {
+            Entrenamiento entrenamiento = entrenamientoRepository.findById(ejercicio.getIdEntrenamiento())
+                    .orElse(null);
+
+            // Verificamos si el entrenamiento existe y si todavía está en estado "pendiente"
+            if (entrenamiento != null &&
+                    entrenamiento.getEstadoEntrenamiento() == Entrenamiento.EstadoEntrenamiento.pendiente) {
+
+                // ¡Cambio automático a En Progreso!
+                entrenamiento.setEstadoEntrenamiento(Entrenamiento.EstadoEntrenamiento.en_progreso);
+                entrenamientoRepository.save(entrenamiento);
+            }
+        }
     }
 
     // Helper para convertir Entity -> DTO
@@ -113,13 +131,13 @@ public class DetalleEntrenamientoServiceImpl implements DetalleEntrenamientoServ
         dto.setIdEntrenamiento(e.getIdEntrenamiento());
         dto.setNombreEjercicio(e.getNombreEjercicio());
 
-        // Métricas (pueden ser nulas si es cardio/fuerza mixta)
+        // Métricas
         dto.setSeries(e.getSeries());
         dto.setRepeticiones(e.getRepeticiones());
         dto.setPeso(e.getPeso());
         dto.setDistancia(e.getDistancia());
 
-        // Duración (minutos)
+        // Duración
         if(e.getDuracion() != null) {
             dto.setDuracion(e.getDuracion());
         }
