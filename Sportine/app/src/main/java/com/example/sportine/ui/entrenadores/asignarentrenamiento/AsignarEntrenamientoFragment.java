@@ -33,6 +33,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -46,8 +48,6 @@ public class AsignarEntrenamientoFragment extends Fragment {
     private static final String ARG_USUARIO_ALUMNO = "arg_usuario";
     private static final String ARG_NOMBRE_ALUMNO = "arg_nombre";
     private static final String ARG_FOTO_ALUMNO = "arg_foto";
-
-    // ARGUMENTOS NUEVOS PARA DEPORTE Y ACTIVIDAD
     private static final String ARG_DEPORTE_ALUMNO = "arg_deporte";
     private static final String ARG_ACTIVIDAD_ALUMNO = "arg_actividad";
 
@@ -65,11 +65,8 @@ public class AsignarEntrenamientoFragment extends Fragment {
     private MaterialButton btnGuardar;
     private ImageView btnBack;
 
-    // Vistas de la tarjeta de alumno
     private ImageView imgAlumnoAvatar;
     private TextView textAlumnoNombre, textAlumnoDetalle;
-
-    // Vistas para el deporte (Dentro de la tarjeta)
     private TextView textDeporte;
     private ImageView iconDeporte;
     private LinearLayout layoutSportInfo;
@@ -81,7 +78,6 @@ public class AsignarEntrenamientoFragment extends Fragment {
 
     public AsignarEntrenamientoFragment() { }
 
-    // MÉTODO NEWINSTANCE ACTUALIZADO (Recibe 5 parámetros)
     public static AsignarEntrenamientoFragment newInstance(String usuario, String nombre, String foto, String deporte, String actividad) {
         AsignarEntrenamientoFragment fragment = new AsignarEntrenamientoFragment();
         Bundle args = new Bundle();
@@ -135,7 +131,6 @@ public class AsignarEntrenamientoFragment extends Fragment {
         textAlumnoNombre = cardAlumno.findViewById(R.id.text_alumno_nombre);
         textAlumnoDetalle = cardAlumno.findViewById(R.id.text_alumno_descripcion);
 
-        // VINCULACIÓN DE VISTAS DEL DEPORTE
         textDeporte = cardAlumno.findViewById(R.id.text_deporte);
         iconDeporte = cardAlumno.findViewById(R.id.icon_deporte);
         layoutSportInfo = cardAlumno.findViewById(R.id.layout_sport_info);
@@ -154,7 +149,6 @@ public class AsignarEntrenamientoFragment extends Fragment {
     private void configurarDatosAlumno() {
         textAlumnoNombre.setText(nombreAlumno);
 
-        // Asignar descripción de actividad (Ej: "Completó entrenamiento hoy")
         if (actividadAlumno != null && !actividadAlumno.isEmpty()) {
             textAlumnoDetalle.setText(actividadAlumno);
         } else {
@@ -165,7 +159,6 @@ public class AsignarEntrenamientoFragment extends Fragment {
             Glide.with(this).load(fotoAlumno).circleCrop().into(imgAlumnoAvatar);
         }
 
-        // LÓGICA VISUAL DEL DEPORTE
         if (layoutSportInfo != null && deporteAlumno != null && !deporteAlumno.isEmpty() && !deporteAlumno.equalsIgnoreCase("Sin asignar")) {
             layoutSportInfo.setVisibility(View.VISIBLE);
             textDeporte.setText(deporteAlumno);
@@ -257,6 +250,7 @@ public class AsignarEntrenamientoFragment extends Fragment {
         cardEmptyState.setVisibility(count > 0 ? View.GONE : View.VISIBLE);
     }
 
+    // ✅ MÉTODO MEJORADO CON VALIDACIONES DE CAMPO
     private void mostrarDialogoAgregarEjercicio() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_agregar_ejercicio, null);
@@ -288,26 +282,56 @@ public class AsignarEntrenamientoFragment extends Fragment {
         });
 
         btnAgregar.setOnClickListener(v -> {
-            String nombre = etNombre.getText().toString();
+            String nombre = etNombre.getText().toString().trim();
+
+            // Limpiar errores previos
+            etNombre.setError(null);
+            etSeries.setError(null);
+            etReps.setError(null);
+            etDistancia.setError(null);
+            etTiempo.setError(null);
+
+            // Validar Nombre
             if (nombre.isEmpty()) { etNombre.setError("Requerido"); return; }
+            if (nombre.length() < 3) { etNombre.setError("Mínimo 3 caracteres"); return; }
 
             AsignarEjercicioDTO ejercicio = new AsignarEjercicioDTO();
             ejercicio.setNombreEjercicio(nombre);
             ejercicio.setStatusEjercicio("pendiente");
 
+            // Validaciones según tipo
             if (containerReps.getVisibility() == View.VISIBLE) {
-                ejercicio.setSeries(parseInteger(etSeries));
-                ejercicio.setRepeticiones(parseInteger(etReps));
+                // -- REPETICIONES Y SERIES --
+                Integer series = parseInteger(etSeries);
+                Integer reps = parseInteger(etReps);
+
+                if (series == null || series < 1) { etSeries.setError("Mínimo 1 serie"); return; }
+                if (reps == null || reps < 1) { etReps.setError("Mínimo 1 repetición"); return; }
+
+                ejercicio.setSeries(series);
+                ejercicio.setRepeticiones(reps);
                 ejercicio.setPeso(parseFloat(etPeso));
+
             } else {
-                ejercicio.setDistancia(parseFloat(etDistancia));
-                ejercicio.setDuracion(parseInteger(etTiempo));
+                // -- CARDIO --
+                Float distancia = parseFloat(etDistancia); // El usuario escribe KM o M según tu UI
+                Integer duracion = parseInteger(etTiempo); // Minutos
+
+                // Validación simple para que no envíen vacíos
+                if (distancia == null && duracion == null) {
+                    Toast.makeText(getContext(), "Ingresa distancia o tiempo", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                ejercicio.setDistancia(distancia);
+                ejercicio.setDuracion(duracion);
             }
 
             adapter.agregarEjercicio(ejercicio);
             actualizarEstadoLista();
             dialog.dismiss();
         });
+
         btnCancelar.setOnClickListener(v -> dialog.dismiss());
         dialog.show();
     }
@@ -321,11 +345,22 @@ public class AsignarEntrenamientoFragment extends Fragment {
         return s.isEmpty() ? null : Float.parseFloat(s);
     }
 
+    // ✅ MÉTODO MEJORADO CON MANEJO DE ERRORES BACKEND
     private void guardarEntrenamiento() {
         String titulo = inputTitulo.getText().toString();
-        if (titulo.isEmpty()) { inputTitulo.setError("Requerido"); return; }
-        if (fechaParaEnviar == null) { Toast.makeText(getContext(), "Selecciona una fecha", Toast.LENGTH_SHORT).show(); return; }
-        if (adapter.getItemCount() == 0) { Toast.makeText(getContext(), "Agrega al menos un ejercicio", Toast.LENGTH_SHORT).show(); return; }
+
+        if (titulo.isEmpty()) {
+            inputTitulo.setError("El título es obligatorio");
+            return;
+        }
+        if (fechaParaEnviar == null) {
+            Toast.makeText(getContext(), "Por favor selecciona una fecha", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (adapter.getItemCount() == 0) {
+            Toast.makeText(getContext(), "Debes agregar al menos un ejercicio", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         CrearEntrenamientoRequestDTO request = new CrearEntrenamientoRequestDTO();
         request.setUsuarioAlumno(usuarioAlumno);
@@ -345,19 +380,69 @@ public class AsignarEntrenamientoFragment extends Fragment {
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 btnGuardar.setEnabled(true);
                 btnGuardar.setText("Guardar Entrenamiento");
+
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "¡Entrenamiento asignado!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "¡Entrenamiento asignado con éxito!", Toast.LENGTH_LONG).show();
                     requireActivity().onBackPressed();
                 } else {
-                    Toast.makeText(getContext(), "Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                    // LLAMADA AL MÉTODO DE ERRORES PERSONALIZADO
+                    mostrarErroresValidacion(response);
                 }
             }
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 btnGuardar.setEnabled(true);
                 btnGuardar.setText("Guardar Entrenamiento");
-                Toast.makeText(getContext(), "Fallo de conexión", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error de conexión: Verifica tu internet", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * Muestra un diálogo con los errores específicos que devuelve el Backend
+     * (Ej: "El título debe tener entre 3 y 100 caracteres")
+     */
+    private void mostrarErroresValidacion(Response<Void> response) {
+        try {
+            if (response.errorBody() != null) {
+                String errorBody = response.errorBody().string();
+
+                // Intenta parsear si es un JSON de errores de validación estándar de Spring
+                // Formato esperado: { "tituloEntrenamiento": "...", "objetivo": "..." }
+                JSONObject jsonError = new JSONObject(errorBody);
+                StringBuilder mensaje = new StringBuilder();
+
+                // Si tiene un campo "mensaje" genérico
+                if (jsonError.has("mensaje")) {
+                    mensaje.append(jsonError.getString("mensaje"));
+                } else {
+                    // Si es lista de errores por campo
+                    if (jsonError.length() > 0) {
+                        mensaje.append("Por favor corrige lo siguiente:\n");
+                        // Recorremos las llaves del JSON
+                        java.util.Iterator<String> keys = jsonError.keys();
+                        while (keys.hasNext()) {
+                            String key = keys.next();
+                            String value = jsonError.getString(key);
+                            mensaje.append("• ").append(value).append("\n");
+                        }
+                    } else {
+                        mensaje.append("Error desconocido en la solicitud.");
+                    }
+                }
+
+                new AlertDialog.Builder(getContext())
+                        .setTitle("No se pudo asignar")
+                        .setMessage(mensaje.toString())
+                        .setPositiveButton("Entendido", null)
+                        .show();
+
+            } else {
+                Toast.makeText(getContext(), "Error del servidor: " + response.code(), Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            // Si falla el parseo (ej. error 500 html), mostramos algo genérico
+            Toast.makeText(getContext(), "Ocurrió un error al procesar la respuesta", Toast.LENGTH_SHORT).show();
+        }
     }
 }

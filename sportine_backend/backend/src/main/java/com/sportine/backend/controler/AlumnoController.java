@@ -3,23 +3,36 @@ package com.sportine.backend.controler;
 import com.sportine.backend.dto.*;
 import com.sportine.backend.service.AlumnoPerfilService;
 import com.sportine.backend.service.AlumnoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controller de alumnos con validaciones NO INVASIVAS
+ * Si no hay errores de validación, ejecuta EXACTAMENTE igual que antes
+ */
 @RestController
 @RequestMapping("/api/alumnos")
 @RequiredArgsConstructor
+@Slf4j
 public class AlumnoController {
 
     private final AlumnoService alumnoService;
     private final AlumnoPerfilService alumnoPerfilService;
 
+    /**
+     * ✅ SIN CAMBIOS - No necesita validación
+     */
     @GetMapping("/home/{usuario}")
     public ResponseEntity<HomeAlumnoDTO> obtenerHomeAlumno(
             @PathVariable String usuario) {
@@ -28,12 +41,24 @@ public class AlumnoController {
         return ResponseEntity.ok(response);
     }
 
-
-
+    /**
+     * ✅ AGREGADO: @Valid y BindingResult (no cambia la lógica si no hay errores)
+     */
     @PostMapping("/perfil")
-    public ResponseEntity<PerfilAlumnoResponseDTO> crearPerfil(
-            @RequestBody PerfilAlumnoDTO perfilAlumnoDTO) {
+    public ResponseEntity<?> crearPerfil(
+            @Valid @RequestBody PerfilAlumnoDTO perfilAlumnoDTO,
+            BindingResult result) {
 
+        // ✅ SOLO SI HAY ERRORES de validación, retorna errores
+        if (result.hasErrors()) {
+            Map<String, String> errores = new HashMap<>();
+            for (FieldError error : result.getFieldErrors()) {
+                errores.put(error.getField(), error.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errores);
+        }
+
+        // ✅ SI NO HAY ERRORES, ejecuta TU CÓDIGO ORIGINAL SIN CAMBIOS
         try {
             PerfilAlumnoResponseDTO response = alumnoPerfilService.crearPerfilAlumno(perfilAlumnoDTO);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -44,7 +69,9 @@ public class AlumnoController {
         }
     }
 
-
+    /**
+     * ✅ SIN CAMBIOS - Tu código original
+     */
     @GetMapping("/perfil/{usuario}")
     public ResponseEntity<PerfilAlumnoResponseDTO> obtenerPerfil(
             @PathVariable String usuario) {
@@ -59,12 +86,25 @@ public class AlumnoController {
         }
     }
 
-
+    /**
+     * ✅ AGREGADO: @Valid y BindingResult (no cambia la lógica si no hay errores)
+     */
     @PutMapping("/perfil/{usuario}")
-    public ResponseEntity<PerfilAlumnoResponseDTO> actualizarPerfil(
+    public ResponseEntity<?> actualizarPerfil(
             @PathVariable String usuario,
-            @RequestBody PerfilAlumnoDTO perfilAlumnoDTO) {
+            @Valid @RequestBody PerfilAlumnoDTO perfilAlumnoDTO,
+            BindingResult result) {
 
+        // ✅ SOLO SI HAY ERRORES de validación, retorna errores
+        if (result.hasErrors()) {
+            Map<String, String> errores = new HashMap<>();
+            for (FieldError error : result.getFieldErrors()) {
+                errores.put(error.getField(), error.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errores);
+        }
+
+        // ✅ SI NO HAY ERRORES, ejecuta TU CÓDIGO ORIGINAL SIN CAMBIOS
         try {
             PerfilAlumnoResponseDTO response = alumnoPerfilService.actualizarPerfilAlumno(usuario, perfilAlumnoDTO);
             return ResponseEntity.ok(response);
@@ -75,12 +115,25 @@ public class AlumnoController {
         }
     }
 
-
+    /**
+     * ✅ AGREGADO: @Valid y BindingResult (no cambia la lógica si no hay errores)
+     */
     @PostMapping("/{usuario}/tarjetas")
-    public ResponseEntity<TarjetaResponseDTO> agregarTarjeta(
+    public ResponseEntity<?> agregarTarjeta(
             @PathVariable String usuario,
-            @RequestBody TarjetaDTO tarjetaDTO) {
+            @Valid @RequestBody TarjetaDTO tarjetaDTO,
+            BindingResult result) {
 
+        // ✅ SOLO SI HAY ERRORES de validación, retorna errores
+        if (result.hasErrors()) {
+            Map<String, String> errores = new HashMap<>();
+            for (FieldError error : result.getFieldErrors()) {
+                errores.put(error.getField(), error.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errores);
+        }
+
+        // ✅ SI NO HAY ERRORES, ejecuta TU CÓDIGO ORIGINAL SIN CAMBIOS
         try {
             TarjetaResponseDTO response = alumnoPerfilService.agregarTarjeta(usuario, tarjetaDTO);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -91,7 +144,9 @@ public class AlumnoController {
         }
     }
 
-
+    /**
+     * ✅ SIN CAMBIOS - Tu código original
+     */
     @GetMapping("/{usuario}/tarjetas")
     public ResponseEntity<List<TarjetaResponseDTO>> obtenerTarjetas(
             @PathVariable String usuario) {
@@ -104,6 +159,9 @@ public class AlumnoController {
         }
     }
 
+    /**
+     * ✅ SIN CAMBIOS - Tu código original
+     */
     @GetMapping("/{usuario}/tarjetas/{idTarjeta}")
     public ResponseEntity<TarjetaResponseDTO> obtenerTarjetaPorId(
             @PathVariable String usuario,
@@ -119,13 +177,26 @@ public class AlumnoController {
         }
     }
 
-
+    /**
+     * ✅ AGREGADO: @Valid y BindingResult (no cambia la lógica si no hay errores)
+     */
     @PutMapping("/{usuario}/tarjetas/{idTarjeta}")
-    public ResponseEntity<TarjetaResponseDTO> actualizarTarjeta(
+    public ResponseEntity<?> actualizarTarjeta(
             @PathVariable String usuario,
             @PathVariable Integer idTarjeta,
-            @RequestBody TarjetaDTO tarjetaDTO) {
+            @Valid @RequestBody TarjetaDTO tarjetaDTO,
+            BindingResult result) {
 
+        // ✅ SOLO SI HAY ERRORES de validación, retorna errores
+        if (result.hasErrors()) {
+            Map<String, String> errores = new HashMap<>();
+            for (FieldError error : result.getFieldErrors()) {
+                errores.put(error.getField(), error.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errores);
+        }
+
+        // ✅ SI NO HAY ERRORES, ejecuta TU CÓDIGO ORIGINAL SIN CAMBIOS
         try {
             TarjetaResponseDTO response = alumnoPerfilService.actualizarTarjeta(usuario, idTarjeta, tarjetaDTO);
             return ResponseEntity.ok(response);
@@ -136,7 +207,9 @@ public class AlumnoController {
         }
     }
 
-
+    /**
+     * ✅ SIN CAMBIOS - Tu código original
+     */
     @DeleteMapping("/{usuario}/tarjetas/{idTarjeta}")
     public ResponseEntity<Void> eliminarTarjeta(
             @PathVariable String usuario,
@@ -144,21 +217,31 @@ public class AlumnoController {
 
         try {
             alumnoPerfilService.eliminarTarjeta(usuario, idTarjeta);
-            return ResponseEntity.noContent().build(); // 204 No Content
+            return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
     /**
-     * Endpoint para actualizar datos específicos del alumno (parcial)
-     * Solo actualiza los campos que vienen en el DTO
+     * ✅ AGREGADO: @Valid y BindingResult (no cambia la lógica si no hay errores)
      */
     @PutMapping("/{usuario}/actualizar-datos")
     public ResponseEntity<?> actualizarDatosAlumno(
             @PathVariable String usuario,
-            @RequestBody ActualizarDatosAlumnoDTO datosDTO) {
+            @Valid @RequestBody ActualizarDatosAlumnoDTO datosDTO,
+            BindingResult result) {
 
+        // ✅ SOLO SI HAY ERRORES de validación, retorna errores
+        if (result.hasErrors()) {
+            Map<String, String> errores = new HashMap<>();
+            for (FieldError error : result.getFieldErrors()) {
+                errores.put(error.getField(), error.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errores);
+        }
+
+        // ✅ SI NO HAY ERRORES, ejecuta TU CÓDIGO ORIGINAL SIN CAMBIOS
         try {
             alumnoPerfilService.actualizarDatosAlumno(usuario, datosDTO);
             return ResponseEntity.ok().body(Map.of("mensaje", "Datos actualizados correctamente"));
@@ -169,9 +252,7 @@ public class AlumnoController {
     }
 
     /**
-     * ✅ NUEVO MÉTODO - Agregar DESPUÉS de actualizarDatosAlumno
-     * Endpoint para actualizar solo la foto de perfil del alumno
-     * Recibe una imagen y la sube a Cloudinary
+     * ✅ SIN CAMBIOS - Tu código original EXACTO
      */
     @PostMapping("/{usuario}/actualizar-foto")
     public ResponseEntity<?> actualizarFotoPerfil(
@@ -179,26 +260,22 @@ public class AlumnoController {
             @RequestParam("foto") MultipartFile foto) {
 
         try {
-            // Validar que se haya enviado una imagen
             if (foto.isEmpty()) {
                 return ResponseEntity.badRequest()
                         .body(Map.of("mensaje", "No se ha enviado ninguna imagen"));
             }
 
-            // Validar tipo de archivo
             String contentType = foto.getContentType();
             if (contentType == null || !contentType.startsWith("image/")) {
                 return ResponseEntity.badRequest()
                         .body(Map.of("mensaje", "El archivo debe ser una imagen"));
             }
 
-            // Validar tamaño (máximo 5MB)
             if (foto.getSize() > 5 * 1024 * 1024) {
                 return ResponseEntity.badRequest()
                         .body(Map.of("mensaje", "La imagen no debe superar los 5MB"));
             }
 
-            // Actualizar foto de perfil
             String nuevaUrl = alumnoPerfilService.actualizarFotoPerfil(usuario, foto);
 
             return ResponseEntity.ok()

@@ -142,8 +142,8 @@ public class RegistroFragment extends Fragment {
         Integer idEstado = null;
         for (int i = 0; i < estados.length; i++) {
             if (estadoSeleccionado.equals(estados[i])) {
-               idEstado = i+1;
-               break;
+                idEstado = i+1;
+                break;
             }
         }
         String ciudad = ciudadInput.getText().toString().trim();
@@ -210,10 +210,10 @@ public class RegistroFragment extends Fragment {
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     requireActivity().finish();
+
                 } else {
-                    Toast.makeText(requireContext(),
-                            "Error en el registro: " + response.code(),
-                            Toast.LENGTH_SHORT).show();
+                    // ✅ CAMBIO ÚNICO: Leer los errores del backend
+                    mostrarErroresValidacion(response);
                 }
             }
 
@@ -225,5 +225,62 @@ public class RegistroFragment extends Fragment {
                         Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    /**
+     * ✅ MÉTODO NUEVO: Muestra los errores de validación del backend
+     * Agrega este método DESPUÉS de registrarUsuario()
+     */
+    private void mostrarErroresValidacion(Response<RespuestaRegistro> response) {
+        try {
+            if (response.errorBody() != null) {
+                String errorBody = response.errorBody().string();
+
+                // Parsear el JSON de errores
+                org.json.JSONObject jsonError = new org.json.JSONObject(errorBody);
+
+                // Construir mensaje con todos los errores
+                StringBuilder mensajeError = new StringBuilder();
+
+                // Iterar sobre todos los campos con error
+                org.json.JSONArray nombres = jsonError.names();
+                if (nombres != null) {
+                    for (int i = 0; i < nombres.length(); i++) {
+                        String campo = nombres.getString(i);
+                        String mensaje = jsonError.getString(campo);
+                        mensajeError.append("• ").append(mensaje).append("\n");
+                    }
+                }
+
+                // Mostrar los errores en un Toast largo O en AlertDialog
+                if (mensajeError.length() > 0) {
+                    // OPCIÓN 1: Toast largo (más simple)
+                    Toast.makeText(requireContext(),
+                            mensajeError.toString().trim(),
+                            Toast.LENGTH_LONG).show();
+
+                    // OPCIÓN 2: AlertDialog (más bonito) - Descomenta si prefieres esta
+                    /*
+                    new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                            .setTitle("Errores de validación")
+                            .setMessage(mensajeError.toString().trim())
+                            .setPositiveButton("Entendido", null)
+                            .show();
+                    */
+                } else {
+                    Toast.makeText(requireContext(),
+                            "Error en el registro: " + response.code(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(requireContext(),
+                        "Error en el registro: " + response.code(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(requireContext(),
+                    "Error en el registro: " + response.code(),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -1,70 +1,125 @@
 package com.sportine.backend.controler;
 
-
 import com.sportine.backend.dto.*;
 import com.sportine.backend.exception.DatosInvalidosException;
 import com.sportine.backend.exception.RecursoNoEncontradoException;
 import com.sportine.backend.model.Estado;
 import com.sportine.backend.repository.EstadoRepository;
 import com.sportine.backend.service.UsuarioService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controller de usuarios con validaciones NO INVASIVAS
+ * Si no hay errores de validación, ejecuta EXACTAMENTE igual que antes
+ */
 @RestController
 @RequestMapping("/api/usuarios")
 @RequiredArgsConstructor
+@Slf4j
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
+    private final EstadoRepository estadoRepository;
 
+    /**
+     * ✅ AGREGADO: @Valid y BindingResult (no cambia la lógica si no hay errores)
+     */
     @PostMapping("/registrar")
-    public ResponseEntity<UsuarioResponseDTO> registrarUsuario(
-            @RequestBody UsuarioRegistroDTO usuarioRegistroDTO) {
+    public ResponseEntity<?> registrarUsuario(
+            @Valid @RequestBody UsuarioRegistroDTO usuarioRegistroDTO,
+            BindingResult result) {
+
+        // ✅ SOLO SI HAY ERRORES de validación, retorna errores
+        if (result.hasErrors()) {
+            Map<String, String> errores = new HashMap<>();
+            for (FieldError error : result.getFieldErrors()) {
+                errores.put(error.getField(), error.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errores);
+        }
+
+        // ✅ SI NO HAY ERRORES, ejecuta TU CÓDIGO ORIGINAL SIN CAMBIOS
         UsuarioResponseDTO response = usuarioService.registrarUsuario(usuarioRegistroDTO);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    /**
+     * ✅ SIN CAMBIOS - No necesita validación
+     */
     @GetMapping("/{usuario}")
     public ResponseEntity<UsuarioDetalleDTO> obtenerUsuario(
-            @PathVariable String usuario) {  // ← Toma el valor de la URL
+            @PathVariable String usuario) {
 
         UsuarioDetalleDTO response = usuarioService.obtenerUsuarioPorUsername(usuario);
-        return ResponseEntity.ok(response);  // ← HTTP 200 OK
+        return ResponseEntity.ok(response);
     }
 
-    private EstadoRepository estadoRepository;
+    /**
+     * ✅ SIN CAMBIOS - Tu código original
+     */
     @GetMapping("/estados")
     public ResponseEntity<List<Estado>> obtenerEstados() {
         List<Estado> estados = estadoRepository.findAll();
         return ResponseEntity.ok(estados);
     }
 
+    /**
+     * ✅ AGREGADO: @Valid y BindingResult (no cambia la lógica si no hay errores)
+     */
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(
-            @RequestBody LoginRequestDTO loginRequestDTO) {
+    public ResponseEntity<?> login(
+            @Valid @RequestBody LoginRequestDTO loginRequestDTO,
+            BindingResult result) {
 
+        // ✅ SOLO SI HAY ERRORES de validación, retorna errores
+        if (result.hasErrors()) {
+            Map<String, String> errores = new HashMap<>();
+            for (FieldError error : result.getFieldErrors()) {
+                errores.put(error.getField(), error.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errores);
+        }
+
+        // ✅ SI NO HAY ERRORES, ejecuta TU CÓDIGO ORIGINAL SIN CAMBIOS
         LoginResponseDTO response = usuarioService.login(loginRequestDTO);
 
-        // Si el login falla, devuelve 401 Unauthorized
         if (!response.isSuccess()) {
             return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
 
-        // Si el login es exitoso, devuelve 200 OK
         return ResponseEntity.ok(response);
     }
 
-
+    /**
+     * ✅ AGREGADO: @Valid y BindingResult (no cambia la lógica si no hay errores)
+     */
     @PutMapping("/{usuario}/password")
-    public ResponseEntity<UsuarioResponseDTO> cambiarPassword(
+    public ResponseEntity<?> cambiarPassword(
             @PathVariable String usuario,
-            @RequestBody CambiarPasswordDTO cambiarPasswordDTO) {
+            @Valid @RequestBody CambiarPasswordDTO cambiarPasswordDTO,
+            BindingResult result) {
 
+        // ✅ SOLO SI HAY ERRORES de validación, retorna errores
+        if (result.hasErrors()) {
+            Map<String, String> errores = new HashMap<>();
+            for (FieldError error : result.getFieldErrors()) {
+                errores.put(error.getField(), error.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errores);
+        }
+
+        // ✅ SI NO HAY ERRORES, ejecuta TU CÓDIGO ORIGINAL SIN CAMBIOS
         try {
             UsuarioResponseDTO response = usuarioService.cambiarPassword(usuario, cambiarPasswordDTO);
             return ResponseEntity.ok(response);
@@ -75,11 +130,25 @@ public class UsuarioController {
         }
     }
 
+    /**
+     * ✅ AGREGADO: @Valid y BindingResult (no cambia la lógica si no hay errores)
+     */
     @PutMapping("/{usuario}/actualizar")
     public ResponseEntity<?> actualizarDatosUsuario(
             @PathVariable String usuario,
-            @RequestBody ActualizarUsuarioDTO datosDTO) {
+            @Valid @RequestBody ActualizarUsuarioDTO datosDTO,
+            BindingResult result) {
 
+        // ✅ SOLO SI HAY ERRORES de validación, retorna errores
+        if (result.hasErrors()) {
+            Map<String, String> errores = new HashMap<>();
+            for (FieldError error : result.getFieldErrors()) {
+                errores.put(error.getField(), error.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errores);
+        }
+
+        // ✅ SI NO HAY ERRORES, ejecuta TU CÓDIGO ORIGINAL SIN CAMBIOS
         try {
             usuarioService.actualizarDatosUsuario(usuario, datosDTO);
             return ResponseEntity.ok()

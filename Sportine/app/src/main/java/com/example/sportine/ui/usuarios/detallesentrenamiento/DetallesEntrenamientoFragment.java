@@ -220,14 +220,37 @@ public class DetallesEntrenamientoFragment extends Fragment {
     }
 
     private void enviarCompletado(boolean publicarLogro) {
+        // 1. Obtener y limpiar el comentario
         String comentario = "";
         if (binding.inputComentario.getText() != null) {
-            comentario = binding.inputComentario.getText().toString();
+            comentario = binding.inputComentario.getText().toString().trim();
         }
 
+        // 🚨 VALIDACIÓN 1: Comentarios (Max 255 caracteres)
+        if (comentario.length() > 255) {
+            Toast.makeText(getContext(), "Los comentarios no pueden exceder 255 caracteres", Toast.LENGTH_LONG).show();
+            binding.inputLayoutComentario.setError("Máximo 255 caracteres"); // Feedback visual extra en el input
+            return; // Detenemos el envío
+        } else {
+            binding.inputLayoutComentario.setError(null); // Limpiamos error si ya corrigió
+        }
+
+        // 2. Obtener valores de los sliders
         int cansancio = (int) binding.sliderCansancio.getValue();
         int dificultad = (int) binding.sliderDificultad.getValue();
 
+        // 🚨 VALIDACIÓN 2: Rangos (1-10)
+        // Aunque el Slider visualmente lo limita, validamos por seguridad lógica
+        if (cansancio < 1 || cansancio > 10) {
+            Toast.makeText(getContext(), "El nivel de cansancio debe ser entre 1 y 10", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (dificultad < 1 || dificultad > 10) {
+            Toast.makeText(getContext(), "La dificultad percibida debe ser entre 1 y 10", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 3. Obtener estado de ánimo
         String animo = "Normal";
         int chipId = binding.chipGroupAnimo.getCheckedChipId();
         if (chipId != -1) {
@@ -235,6 +258,7 @@ public class DetallesEntrenamientoFragment extends Fragment {
             if(chip != null) animo = chip.getText().toString();
         }
 
+        // ✅ Si todo pasa, enviamos al ViewModel
         viewModel.completarEntrenamiento(idEntrenamiento, comentario, cansancio, dificultad, animo, publicarLogro);
     }
 
@@ -244,33 +268,35 @@ public class DetallesEntrenamientoFragment extends Fragment {
         binding = null;
     }
 
-    // ✅ MÉTODO HELPER PARA MAPEAR STRING A DRAWABLE
+    // ✅ MÉTODO HELPER MEJORADO (A prueba de errores de texto)
     private int obtenerIconoDeporte(String nombreDeporte) {
-        if (nombreDeporte == null) return R.drawable.ic_fitness_center_black_24dp;
+        if (nombreDeporte == null) return R.drawable.ic_deporte_default;
 
-        String deporteNormalizado = nombreDeporte.trim();
+        // 1. Limpiamos el texto: quitamos espacios y pasamos a minúsculas
+        String deporte = nombreDeporte.trim().toLowerCase();
 
-        switch (deporteNormalizado) {
-            case "Fútbol":
-                return R.drawable.balon_futbol;
-            case "Basketball":
-                return R.drawable.balon_basket;
-            case "Natación":
-                return R.drawable.ic_natacion;
-            case "Running":
-                return R.drawable.ic_running;
-            case "Boxeo":
-                return R.drawable.ic_boxeo;
-            case "Tenis":
-                return R.drawable.pelota_tenis;
-            case "Gimnasio":
-                return R.drawable.ic_gimnasio;
-            case "Ciclismo":
-                return R.drawable.ic_ciclismo;
-            case "Béisbol":
-                return R.drawable.ic_beisbol;
-            default:
-                return R.drawable.ic_deporte_default;
+        // 2. Buscamos palabras clave en lugar de coincidencia exacta
+        if (deporte.contains("futbol") || deporte.contains("fútbol") || deporte.contains("soccer")) {
+            return R.drawable.balon_futbol;
+        } else if (deporte.contains("basket") || deporte.contains("basquet") || deporte.contains("baloncesto")) {
+            return R.drawable.balon_basket;
+        } else if (deporte.contains("natacion") || deporte.contains("natación") || deporte.contains("nadar")) {
+            return R.drawable.ic_natacion;
+        } else if (deporte.contains("run") || deporte.contains("correr") || deporte.contains("trotar")) {
+            return R.drawable.ic_running;
+        } else if (deporte.contains("box") || deporte.contains("pugilismo")) {
+            return R.drawable.ic_boxeo;
+        } else if (deporte.contains("tenis") || deporte.contains("tennis")) {
+            return R.drawable.pelota_tenis;
+        } else if (deporte.contains("beisbol") || deporte.contains("béisbol") || deporte.contains("baseball")) {
+            // ✅ AQUÍ ESTÁ LA CORRECCIÓN: Acepta con y sin tilde
+            return R.drawable.ic_beisbol;
+        } else if (deporte.contains("gym") || deporte.contains("gimnasio") || deporte.contains("pesas") || deporte.contains("crossfit")) {
+            return R.drawable.ic_gimnasio;
+        } else if (deporte.contains("ciclis") || deporte.contains("bici") || deporte.contains("veloz")) {
+            return R.drawable.ic_ciclismo;
+        } else {
+            return R.drawable.ic_deporte_default;
         }
     }
 }
