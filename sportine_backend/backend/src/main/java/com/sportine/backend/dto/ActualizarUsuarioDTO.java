@@ -24,4 +24,7 @@ public class ActualizarUsuarioDTO {
 
     @JsonProperty("password")
     private String password;
+
+    @JsonProperty("correo")
+    private String correo;
 }

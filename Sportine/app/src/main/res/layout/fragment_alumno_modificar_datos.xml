@@ -242,7 +242,7 @@
                             </LinearLayout>
                         </LinearLayout>
 
-                        <!-- Fila 3: Username (NO EDITABLE) y Ciudad -->
+                        <!-- Fila 3: Username y Correo -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -290,6 +290,41 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:text="Correo"
+                                    android:textColor="#9CA3AF"
+                                    android:textSize="11sp"
+                                    android:textStyle="bold"
+                                    android:letterSpacing="0.05"/>
+
+                                <TextView
+                                    android:id="@+id/tvCorreoActual"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="-"
+                                    android:textColor="#1A1A1A"
+                                    android:textSize="15sp"
+                                    android:layout_marginTop="4dp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Fila 4: Ciudad y Contraseña -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:background="@drawable/fondo_campos_perfil"
+                                android:padding="12dp"
+                                android:layout_marginEnd="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
                                     android:text="Ciudad"
                                     android:textColor="#9CA3AF"
                                     android:textSize="11sp"
@@ -305,13 +340,6 @@
                                     android:textSize="15sp"
                                     android:layout_marginTop="4dp" />
                             </LinearLayout>
-                        </LinearLayout>
-
-                        <!-- Fila 4: Contraseña -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
 
                             <LinearLayout
                                 android:layout_width="0dp"
@@ -320,7 +348,7 @@
                                 android:orientation="vertical"
                                 android:background="@drawable/fondo_campos_perfil"
                                 android:padding="12dp"
-                                android:layout_marginEnd="8dp">
+                                android:layout_marginStart="8dp">
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -340,8 +368,6 @@
                                     android:textSize="15sp"
                                     android:layout_marginTop="4dp" />
                             </LinearLayout>
-
-                            <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" android:layout_marginStart="8dp"/>
                         </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -454,7 +480,52 @@
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
-                <!-- ✅ MODIFICADO: Fila 3: Ciudad y Contraseña (AHORA CON EditText) -->
+                <!-- ✅ Fila 3: Correo y Contraseña -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Correo nuevo"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                        app:boxStrokeColor="#00A896"
+                        android:layout_marginEnd="8dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etCorreoNuevo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textEmailAddress"
+                            android:textColor="#1A1A1A"
+                            android:textSize="14sp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Contraseña nueva"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                        app:endIconMode="password_toggle"
+                        app:boxStrokeColor="#00A896"
+                        android:layout_marginStart="8dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etPasswordNuevo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword"
+                            android:textColor="#1A1A1A"
+                            android:textSize="14sp"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+
+                <!-- ✅ Fila 4: Ciudad -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -479,24 +550,11 @@
                             android:textSize="14sp"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
+                    <View
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:hint="Contraseña nueva"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                        app:endIconMode="password_toggle"
-                        app:boxStrokeColor="#00A896"
-                        android:layout_marginStart="8dp">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etPasswordNuevo"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textPassword"
-                            android:textColor="#1A1A1A"
-                            android:textSize="14sp"/>
-                    </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginStart="8dp"/>
                 </LinearLayout>
 
                 <!-- Botón Actualizar -->

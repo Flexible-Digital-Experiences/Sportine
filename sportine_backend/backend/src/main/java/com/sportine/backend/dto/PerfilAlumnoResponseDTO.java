@@ -18,6 +18,7 @@ public class PerfilAlumnoResponseDTO {
     private String apellidos;
     private String sexo;
     private String estado;
+    private String correo;
     private String ciudad;
 
     // Datos físicos

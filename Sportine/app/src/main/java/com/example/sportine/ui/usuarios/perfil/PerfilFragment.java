@@ -51,6 +51,7 @@ public class PerfilFragment extends Fragment {
     private TextView tvSexo;
     private TextView tvEstado;
     private TextView tvCiudad;
+    private TextView tvCorreo;
     private TextView tvTotalAmigos;
     private TextView tvTotalEntrenadores;
 
@@ -111,6 +112,7 @@ public class PerfilFragment extends Fragment {
         tvSexo = view.findViewById(R.id.tvSexo);
         tvEstado = view.findViewById(R.id.tvEstado);
         tvCiudad = view.findViewById(R.id.tvCiudad);
+        tvCorreo = view.findViewById(R.id.tvCorreo);
         tvTotalAmigos = view.findViewById(R.id.tvTotalAmigos);
         tvTotalEntrenadores = view.findViewById(R.id.tvTotalEntrenadores);
 
@@ -208,6 +210,7 @@ public class PerfilFragment extends Fragment {
         tvSexo.setText(usuario.getSexo());
         tvEstado.setText(usuario.getEstado());
         tvCiudad.setText(usuario.getCiudad());
+        tvCorreo.setText(usuario.getCorreo() != null ? usuario.getCorreo() : "-");
     }
 
     /**

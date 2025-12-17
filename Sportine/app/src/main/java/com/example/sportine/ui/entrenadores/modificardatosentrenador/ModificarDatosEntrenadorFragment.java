@@ -39,6 +39,7 @@ public class ModificarDatosEntrenadorFragment extends Fragment {
     private TextView tvApellidoActual;
     private TextView tvUsernameActual;
     private TextView tvSexoActual;
+    private TextView tvCorreoActual;
     private TextView tvEstadoActual;
     private TextView tvCiudadActual;
     private TextView tvPasswordActual;
@@ -52,6 +53,7 @@ public class ModificarDatosEntrenadorFragment extends Fragment {
     private TextInputEditText etEstadoNuevo;
     private TextInputEditText etCiudadNuevo;
     private TextInputEditText etPasswordNuevo;
+    private TextInputEditText etCorreoNuevo;
 
     // Botones
     private MaterialCardView btnBack;
@@ -107,12 +109,14 @@ public class ModificarDatosEntrenadorFragment extends Fragment {
         tvSexoActual = view.findViewById(R.id.tvSexoActual);
         tvEstadoActual = view.findViewById(R.id.tvEstadoActual);
         tvCiudadActual = view.findViewById(R.id.tvCiudadActual);
+        tvCorreoActual = view.findViewById(R.id.tvCorreoActual);
         tvPasswordActual = view.findViewById(R.id.tvPasswordActual);
 
         // ✅ Campos editables (TODOS EditTexts ahora)
         etNombreNuevo = view.findViewById(R.id.etNombreNuevo);
         etApellidoNuevo = view.findViewById(R.id.etApellidoNuevo);
         etSexoNuevo = view.findViewById(R.id.etSexoNuevo);
+        etCorreoNuevo = view.findViewById(R.id.etCorreoNuevo);
         etEstadoNuevo = view.findViewById(R.id.etEstadoNuevo);
         etCiudadNuevo = view.findViewById(R.id.etCiudadNuevo);
         etPasswordNuevo = view.findViewById(R.id.etPasswordNuevo);
@@ -195,6 +199,7 @@ public class ModificarDatosEntrenadorFragment extends Fragment {
         tvSexoActual.setText(usuario.getSexo() != null ? usuario.getSexo() : "-");
         tvEstadoActual.setText(usuario.getEstado() != null ? usuario.getEstado() : "-");
         tvCiudadActual.setText(usuario.getCiudad() != null ? usuario.getCiudad() : "-");
+        tvCorreoActual.setText(usuario.getCorreo() != null ? usuario.getCorreo() : "-");
         tvPasswordActual.setText("••••••••");
 
         Log.d(TAG, "===== FIN MOSTRAR DATOS =====");
@@ -206,12 +211,12 @@ public class ModificarDatosEntrenadorFragment extends Fragment {
     private void actualizarDatos() {
         Log.d(TAG, "Iniciando actualización de datos...");
 
-        // ✅ Obtener valores de los campos (TODOS EditTexts ahora)
         String nuevoNombre = etNombreNuevo.getText().toString().trim();
         String nuevoApellido = etApellidoNuevo.getText().toString().trim();
         String nuevoSexo = etSexoNuevo.getText().toString().trim();
         String nuevoEstado = etEstadoNuevo.getText().toString().trim();
         String nuevaCiudad = etCiudadNuevo.getText().toString().trim();
+        String nuevoCorreo = etCorreoNuevo.getText().toString().trim();
         String nuevaPassword = etPasswordNuevo.getText().toString().trim();
 
         // Validar que al menos un campo tenga datos
@@ -220,6 +225,7 @@ public class ModificarDatosEntrenadorFragment extends Fragment {
                 TextUtils.isEmpty(nuevoSexo) &&
                 TextUtils.isEmpty(nuevoEstado) &&
                 TextUtils.isEmpty(nuevaCiudad) &&
+                TextUtils.isEmpty(nuevoCorreo) &&
                 TextUtils.isEmpty(nuevaPassword)) {
 
             Toast.makeText(requireContext(),
@@ -246,11 +252,13 @@ public class ModificarDatosEntrenadorFragment extends Fragment {
         if (!TextUtils.isEmpty(nuevaCiudad)) {
             dto.setCiudad(nuevaCiudad);
         }
+        if (!TextUtils.isEmpty(nuevoCorreo)) {
+            dto.setCorreo(nuevoCorreo);
+        }
         if (!TextUtils.isEmpty(nuevaPassword)) {
             dto.setPassword(nuevaPassword);
         }
 
-        // Enviar actualización
         enviarActualizacion(dto);
     }
 
@@ -314,6 +322,7 @@ public class ModificarDatosEntrenadorFragment extends Fragment {
         etSexoNuevo.setText("");
         etEstadoNuevo.setText("");
         etCiudadNuevo.setText("");
+        etCorreoNuevo.setText("");
         etPasswordNuevo.setText("");
     }
 }

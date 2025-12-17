@@ -324,7 +324,7 @@
                             </LinearLayout>
                         </LinearLayout>
 
-                        <!-- FILA 4: Tipo de Cuenta y Contraseña -->
+                        <!-- FILA 4: Correo y Contraseña -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -342,18 +342,18 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Tipo de Cuenta"
+                                    android:text="Correo"
                                     android:textColor="#9CA3AF"
                                     android:textSize="11sp"
                                     android:textStyle="bold"/>
 
                                 <TextView
-                                    android:id="@+id/tvTipoCuenta"
+                                    android:id="@+id/tvCorreo"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:text="-"
                                     android:textColor="#1A1A1A"
                                     android:textSize="15sp"
-                                    android:textStyle="bold"
                                     android:layout_marginTop="4dp" />
                             </LinearLayout>
 

@@ -45,28 +45,18 @@ public class CompletardatosentrenadorFragment extends Fragment {
     // ==========================================
     private View btnBack;
     private ImageView ivAvatarCompletar;
-    // Componentes Premium
-    private MaterialCardView cardHaztePremium;
-    private MaterialButton btnHaztePremium;
-    private MaterialCardView cardCancelarSuscripcion;
-    private MaterialButton btnGestionarSuscripcion;
 
     // Datos Actuales (Solo Lectura)
     private TextView tvCostoActual;
-    private TextView tvTipoCuentaActual;
     private TextView tvDeportesActual;
     private TextView tvLimiteAlumnosActual;
     private TextView tvDescripcionActual;
-    private TextView tvCorreoActual;
-    private TextView tvTelefonoActual;
 
     // Datos Nuevos (Editables)
     private TextInputEditText etCostoNuevo;
     private TextInputLayout layoutLimiteAlumnos;
     private AutoCompleteTextView spinnerLimiteAlumnos;
     private TextInputEditText etDescripcionNuevo;
-    private TextInputEditText etCorreoNuevo;
-    private TextInputEditText etTelefonoNuevo;
 
     private MaterialButton btnActualizar;
 
@@ -112,30 +102,18 @@ public class CompletardatosentrenadorFragment extends Fragment {
 
         // Datos Actuales
         tvCostoActual = view.findViewById(R.id.tvCostoActual);
-        tvTipoCuentaActual = view.findViewById(R.id.tvTipoCuentaActual);
-        tvCorreoActual = view.findViewById(R.id.tvCorreoActual);           // ✅ NUEVO
-        tvTelefonoActual = view.findViewById(R.id.tvTelefonoActual);       // ✅ NUEVO
         tvDeportesActual = view.findViewById(R.id.tvDeportesActual);
         tvLimiteAlumnosActual = view.findViewById(R.id.tvLimiteAlumnosActual);
         tvDescripcionActual = view.findViewById(R.id.tvDescripcionActual);
 
         // Datos Nuevos
         etCostoNuevo = view.findViewById(R.id.etCostoNuevo);
-        etCorreoNuevo = view.findViewById(R.id.etCorreoNuevo);             // ✅ NUEVO
-        etTelefonoNuevo = view.findViewById(R.id.etTelefonoNuevo);         // ✅ NUEVO
         layoutLimiteAlumnos = view.findViewById(R.id.layoutLimiteAlumnos);
         spinnerLimiteAlumnos = view.findViewById(R.id.spinnerLimiteAlumnos);
         etDescripcionNuevo = view.findViewById(R.id.etDescripcionNuevo);
 
         // Botón
         btnActualizar = view.findViewById(R.id.btnActualizar);
-
-        // ✅ NUEVOS: Componentes Premium
-        cardHaztePremium = view.findViewById(R.id.cardHaztePremium);
-        btnHaztePremium = view.findViewById(R.id.btnHaztePremium);
-
-        cardCancelarSuscripcion = view.findViewById(R.id.cardCancelarSuscripcion);
-        btnGestionarSuscripcion = view.findViewById(R.id.btnGestionarSuscripcion);
 
         Log.d(TAG, "✓ Componentes inicializados");
     }
@@ -153,11 +131,6 @@ public class CompletardatosentrenadorFragment extends Fragment {
 
         // Botón actualizar
         btnActualizar.setOnClickListener(v -> actualizarDatos());
-
-        // ✅ NUEVO: Botón Hazte Premium
-        btnHaztePremium.setOnClickListener(v -> mostrarPagoPremium());
-
-        btnGestionarSuscripcion.setOnClickListener(v -> gestionarSuscripcion());
     }
 
     /**
@@ -212,22 +185,6 @@ public class CompletardatosentrenadorFragment extends Fragment {
                 ? "$" + perfil.getCostoMensualidad()
                 : "-");
 
-        // Tipo de cuenta
-        String tipoCuenta = perfil.getTipoCuenta() != null
-                ? perfil.getTipoCuenta().toUpperCase()
-                : "GRATIS";
-        tvTipoCuentaActual.setText(tipoCuenta);
-
-        // ✅ Correo
-        tvCorreoActual.setText(perfil.getCorreo() != null && !perfil.getCorreo().isEmpty()
-                ? perfil.getCorreo()
-                : "-");
-
-        // ✅ Teléfono
-        tvTelefonoActual.setText(perfil.getTelefono() != null && !perfil.getTelefono().isEmpty()
-                ? perfil.getTelefono()
-                : "-");
-
         // Deportes
         String deportes = perfil.getDeportes() != null && !perfil.getDeportes().isEmpty()
                 ? String.join(", ", perfil.getDeportes())
@@ -248,7 +205,7 @@ public class CompletardatosentrenadorFragment extends Fragment {
         cargarFotoPerfil(perfil.getFotoPerfil());
 
         // Configurar spinner de límite SOLO si es Premium
-        configurarSpinnerLimite(tipoCuenta);
+        configurarSpinnerLimite();
 
         Log.d(TAG, "===== FIN MOSTRAR DATOS =====");
     }
@@ -256,14 +213,9 @@ public class CompletardatosentrenadorFragment extends Fragment {
     /**
      * ✅ Configura el spinner de límite de alumnos SOLO si es Premium
      */
-    private void configurarSpinnerLimite(String tipoCuenta) {
-        if ("PREMIUM".equalsIgnoreCase(tipoCuenta)) {
+    private void configurarSpinnerLimite() {
             // Mostrar spinner
             layoutLimiteAlumnos.setVisibility(View.VISIBLE);
-
-            // ✅ Ocultar botón Premium
-            cardHaztePremium.setVisibility(View.GONE);
-            cardCancelarSuscripcion.setVisibility(View.VISIBLE);
 
             // Opciones del spinner (5 a 50 alumnos)
             List<String> opciones = new ArrayList<>();
@@ -277,17 +229,6 @@ public class CompletardatosentrenadorFragment extends Fragment {
                     opciones
             );
             spinnerLimiteAlumnos.setAdapter(adapter);
-
-            Log.d(TAG, "✓ Spinner de límite habilitado (Premium)");
-        } else {
-            // Ocultar spinner
-            layoutLimiteAlumnos.setVisibility(View.GONE);
-
-            // ✅ MOSTRAR botón Premium
-            cardHaztePremium.setVisibility(View.VISIBLE);
-
-            Log.d(TAG, "✓ Botón Premium visible (Cuenta gratuita)");
-        }
     }
 
     /**
@@ -314,32 +255,14 @@ public class CompletardatosentrenadorFragment extends Fragment {
 
         // 1. Recoger datos
         String costoStr = etCostoNuevo.getText().toString().trim();
-        String correo = etCorreoNuevo.getText().toString().trim();          // ✅ NUEVO
-        String telefono = etTelefonoNuevo.getText().toString().trim();      // ✅ NUEVO
         String limiteStr = spinnerLimiteAlumnos.getText().toString().trim();
         String descripcion = etDescripcionNuevo.getText().toString().trim();
 
         // 2. Validar que al menos un campo esté lleno
-        if (costoStr.isEmpty() && correo.isEmpty() && telefono.isEmpty() &&
+        if (costoStr.isEmpty() &&
                 limiteStr.isEmpty() && descripcion.isEmpty()) {
             Toast.makeText(requireContext(),
                     "Ingresa al menos un campo para actualizar",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // ✅ 2.5. Validar correo
-        if (!correo.isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(correo).matches()) {
-            Toast.makeText(requireContext(),
-                    "Ingresa un correo válido",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // ✅ 2.6. Validar teléfono
-        if (!telefono.isEmpty() && telefono.length() != 10) {
-            Toast.makeText(requireContext(),
-                    "El teléfono debe tener 10 dígitos",
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -349,15 +272,6 @@ public class CompletardatosentrenadorFragment extends Fragment {
 
         if (!costoStr.isEmpty()) {
             dto.setCostoMensualidad(Integer.parseInt(costoStr));
-        }
-
-        // ✅ AGREGAR correo y teléfono
-        if (!correo.isEmpty()) {
-            dto.setCorreo(correo);
-        }
-
-        if (!telefono.isEmpty()) {
-            dto.setTelefono(telefono);
         }
 
         if (!limiteStr.isEmpty()) {
@@ -390,8 +304,6 @@ public class CompletardatosentrenadorFragment extends Fragment {
 
                     // Limpiar campos
                     etCostoNuevo.setText("");
-                    etCorreoNuevo.setText("");                 // ✅ NUEVO
-                    etTelefonoNuevo.setText("");               // ✅ NUEVO
                     spinnerLimiteAlumnos.setText("");
                     etDescripcionNuevo.setText("");
 
@@ -411,17 +323,5 @@ public class CompletardatosentrenadorFragment extends Fragment {
                         Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    private void gestionarSuscripcion() {
-        Log.d(TAG, "Navegando a gestión de suscripción...");
-        NavHostFragment.findNavController(this)
-                .navigate(R.id.action_completardatosentrenadorFragment_to_suscription_Fragment);
-    }
-
-    private void mostrarPagoPremium() {
-        Log.d(TAG, "Iniciando proceso de pago Premium...");
-        NavHostFragment.findNavController(this)
-                .navigate(R.id.action_completardatosentrenadorFragment_to_suscription_Fragment);
     }
 }

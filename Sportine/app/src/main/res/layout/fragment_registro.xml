@@ -140,6 +140,32 @@
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Campo de nombre de correo-->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/mailInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:boxStrokeColor="#000000"
+            app:hintTextColor="#000000"
+            app:endIconTint="#000000"
+            app:layout_constraintTop_toBottomOf="@id/usernameInputLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="16dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/mailInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Correo"
+                android:textColor="#000000"
+                android:textColorHint="#9E9E9E"
+                android:inputType="text"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <!-- Campo de contraseña -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/passwordInputLayout"
@@ -150,7 +176,7 @@
             app:hintTextColor="#000000"
             app:endIconMode="password_toggle"
             app:endIconTint="#020202"
-            app:layout_constraintTop_toBottomOf="@id/usernameInputLayout"
+            app:layout_constraintTop_toBottomOf="@id/mailInputLayout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginHorizontal="32dp"

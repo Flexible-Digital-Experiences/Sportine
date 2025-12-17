@@ -122,6 +122,7 @@ public class SeguidoresServiceImpl implements SeguidoresService {
                 u.getNombre(),
                 u.getApellidos(),
                 u.getSexo(),
+                u.getCorreo(),
                 infoEstado,
                 u.getCiudad(),
                 "alumno",

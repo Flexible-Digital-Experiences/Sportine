@@ -60,6 +60,7 @@ public class ConfiguracionFragment extends Fragment {
     private TextView tvApellido;
     private TextView tvUsername;
     private TextView tvSexo;
+    private TextView tvCorreo;
     private TextView tvEstado;
     private TextView tvCiudad;
     private TextView tvPassword;
@@ -102,6 +103,7 @@ public class ConfiguracionFragment extends Fragment {
         tvUsername = view.findViewById(R.id.tvUsername);
         tvSexo = view.findViewById(R.id.tvSexo);
         tvEstado = view.findViewById(R.id.tvEstado);
+        tvCorreo = view.findViewById(R.id.tvCorreo);
         tvCiudad = view.findViewById(R.id.tvCiudad);
         tvPassword = view.findViewById(R.id.tvPassword);
         btnTogglePassword = view.findViewById(R.id.btnTogglePassword);
@@ -171,6 +173,7 @@ public class ConfiguracionFragment extends Fragment {
         tvSexo.setText(usuario.getSexo() != null ? usuario.getSexo() : "-");
         tvEstado.setText(usuario.getEstado() != null ? usuario.getEstado() : "-");
         tvCiudad.setText(usuario.getCiudad() != null ? usuario.getCiudad() : "-");
+        tvCorreo.setText(usuario.getCorreo() != null ? usuario.getCorreo() : "-");
         tvPassword.setText("••••••••");
     }
 

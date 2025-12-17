@@ -46,7 +46,6 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
                     System.out.println("⚠ No existe información del entrenador, creando nueva entrada...");
                     InformacionEntrenador nuevo = new InformacionEntrenador();
                     nuevo.setUsuario(usuario);
-                    nuevo.setTipoCuenta(InformacionEntrenador.TipoCuenta.gratis);
                     nuevo.setLimiteAlumnos(3);
                     nuevo.setCostoMensualidad(0);
                     return informacionEntrenadorRepository.save(nuevo);
@@ -82,13 +81,11 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
                 usuarioEntity.getSexo(),
                 nombreEstado,
                 usuarioEntity.getCiudad(),
+                usuarioEntity.getCorreo(),
                 infoEntrenador.getCostoMensualidad(),
-                infoEntrenador.getTipoCuenta() != null ? infoEntrenador.getTipoCuenta().name() : "gratis",
                 infoEntrenador.getLimiteAlumnos(),
                 infoEntrenador.getDescripcionPerfil(),
                 infoEntrenador.getFotoPerfil(),
-                infoEntrenador.getCorreo(),
-                infoEntrenador.getTelefono(),
                 deportes,
                 totalAlumnos,
                 totalAmigos,
@@ -119,7 +116,6 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
                     System.out.println("⚠ No existe información del entrenador, creando nueva entrada...");
                     InformacionEntrenador nuevo = new InformacionEntrenador();
                     nuevo.setUsuario(usuario);
-                    nuevo.setTipoCuenta(InformacionEntrenador.TipoCuenta.gratis);
                     nuevo.setLimiteAlumnos(3);
                     nuevo.setCostoMensualidad(0);
                     return nuevo; // No guardamos aún, se guardará después de actualizar
@@ -136,24 +132,11 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
             infoEntrenador.setDescripcionPerfil(datos.getDescripcionPerfil());
         }
 
-        if (datos.getCorreo() != null && !datos.getCorreo().trim().isEmpty()) {
-            System.out.println("✓ Actualizando correo: " + datos.getCorreo());
-            infoEntrenador.setCorreo(datos.getCorreo());
-        }
 
-        if (datos.getTelefono() != null && !datos.getTelefono().trim().isEmpty()) {
-            System.out.println("✓ Actualizando teléfono: " + datos.getTelefono());
-            infoEntrenador.setTelefono(datos.getTelefono());
-        }
-
-        // 4. Actualizar límite de alumnos SOLO si es premium
+        // 4. Actualizar límite de alumnos
         if (datos.getLimiteAlumnos() != null) {
-            if (infoEntrenador.getTipoCuenta() == InformacionEntrenador.TipoCuenta.premium) {
-                System.out.println("✓ Actualizando límite de alumnos: " + datos.getLimiteAlumnos());
-                infoEntrenador.setLimiteAlumnos(datos.getLimiteAlumnos());
-            } else {
-                throw new RuntimeException("Solo cuentas premium pueden cambiar el límite de alumnos");
-            }
+            System.out.println("✓ Actualizando límite de alumnos: " + datos.getLimiteAlumnos());
+            infoEntrenador.setLimiteAlumnos(datos.getLimiteAlumnos());
         }
 
         // 5. Guardar cambios

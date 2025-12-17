@@ -406,7 +406,7 @@
                 android:orientation="vertical"
                 android:padding="16dp"
                 android:background="#FFF9E6"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -420,7 +420,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="¡Excelente! El entrenador aceptó tu solicitud. Comunícate con él para coordinar tu entrenamiento."
+                    android:text="¡Excelente! El entrenador aceptó tu solicitud. Paga para iniciar tu entrenamiento."
                     android:textSize="14sp"
                     android:layout_marginBottom="16dp" />
 
@@ -432,32 +432,16 @@
                     android:gravity="center"
                     android:weightSum="2">
 
-                    <!-- Botón de correo -->
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_enviar_correo"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="8dp"
-                        android:text="📧 Correo"
-                        android:textSize="14sp"
-                        app:cornerRadius="12dp"
-                        app:icon="@drawable/ic_email"
-                        app:iconGravity="textStart"
-                        app:iconPadding="8dp"
-                        android:backgroundTint="#3B82F6" />
-
                     <!-- Botón de WhatsApp -->
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_enviar_whatsapp"
+                        android:id="@+id/btn_pagar"
                         android:layout_width="0dp"
                         android:layout_height="56dp"
                         android:layout_weight="1"
                         android:layout_marginStart="8dp"
-                        android:text="WhatsApp"
+                        android:text="Pagar"
                         android:textSize="14sp"
                         app:cornerRadius="12dp"
-                        app:icon="@drawable/ic_whatsapp"
                         app:iconGravity="textStart"
                         app:iconPadding="8dp"
                         android:backgroundTint="#25D366" />

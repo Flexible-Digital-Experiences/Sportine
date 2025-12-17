@@ -47,6 +47,7 @@ public class PerfilEntrenaFragment extends Fragment {
     private TextView tvApellidoEntrenador;
     private TextView tvUsernameEntrenador;
     private TextView tvSexoEntrenador;
+    private TextView tvCorreoEntrenador;
     private TextView tvEstadoEntrenador;
     private TextView tvCiudadEntrenador;
     private TextView tvContadorAlumnos;
@@ -135,6 +136,7 @@ public class PerfilEntrenaFragment extends Fragment {
         tvNombreEntrenador = view.findViewById(R.id.tvNombreEntrenador);
         tvApellidoEntrenador = view.findViewById(R.id.tvApellidoEntrenador);
         tvUsernameEntrenador = view.findViewById(R.id.tvUsernameEntrenador);
+        tvCorreoEntrenador = view.findViewById(R.id.tvCorreoEntrenador);
         tvSexoEntrenador = view.findViewById(R.id.tvSexoEntrenador);
         tvEstadoEntrenador = view.findViewById(R.id.tvEstadoEntrenador);
         tvCiudadEntrenador = view.findViewById(R.id.tvCiudadEntrenador);
@@ -256,6 +258,7 @@ public class PerfilEntrenaFragment extends Fragment {
         tvSexoEntrenador.setText(perfil.getSexo() != null ? perfil.getSexo() : "-");
         tvEstadoEntrenador.setText(perfil.getEstado() != null ? perfil.getEstado() : "-");
         tvCiudadEntrenador.setText(perfil.getCiudad() != null ? perfil.getCiudad() : "-");
+        tvCorreoEntrenador.setText(perfil.getCorreo() != null ? perfil.getCorreo() : "-");
 
         // Contadores
         tvContadorAlumnos.setText(String.valueOf(perfil.getTotalAlumnos()));

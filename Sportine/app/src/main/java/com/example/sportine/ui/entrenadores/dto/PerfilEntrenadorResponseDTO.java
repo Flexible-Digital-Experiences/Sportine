@@ -4,6 +4,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DTO de respuesta al obtener el perfil del entrenador
+ * ✅ SPORTINE V2: correo y telefono YA están incluidos
+ */
 public class PerfilEntrenadorResponseDTO {
 
     // Datos del usuario
@@ -43,9 +47,6 @@ public class PerfilEntrenadorResponseDTO {
     @SerializedName("correo")
     private String correo;
 
-    @SerializedName("telefono")
-    private String telefono;
-
     // Mensaje
     private String mensaje;
 
@@ -62,13 +63,11 @@ public class PerfilEntrenadorResponseDTO {
     public String getEstado() { return estado; }
     public String getCiudad() { return ciudad; }
     public Integer getCostoMensualidad() { return costoMensualidad; }
-    public String getTipoCuenta() { return tipoCuenta; }
     public Integer getLimiteAlumnos() { return limiteAlumnos; }
     public String getDescripcionPerfil() { return descripcionPerfil; }
     public String getFotoPerfil() { return fotoPerfil; }
     public String getMensaje() { return mensaje; }
     public String getCorreo() { return correo; }
-    public String getTelefono() { return telefono; }
 
     public List<String> getDeportes() {
         return deportes != null ? deportes : new ArrayList<>();
@@ -92,12 +91,12 @@ public class PerfilEntrenadorResponseDTO {
     public void setEstado(String estado) { this.estado = estado; }
     public void setCiudad(String ciudad) { this.ciudad = ciudad; }
     public void setCostoMensualidad(Integer costoMensualidad) { this.costoMensualidad = costoMensualidad; }
-    public void setTipoCuenta(String tipoCuenta) { this.tipoCuenta = tipoCuenta; }
     public void setLimiteAlumnos(Integer limiteAlumnos) { this.limiteAlumnos = limiteAlumnos; }
     public void setDescripcionPerfil(String descripcionPerfil) { this.descripcionPerfil = descripcionPerfil; }
     public void setFotoPerfil(String fotoPerfil) { this.fotoPerfil = fotoPerfil; }
     public void setDeportes(List<String> deportes) { this.deportes = deportes; }
     public void setTotalAlumnos(Integer totalAlumnos) { this.totalAlumnos = totalAlumnos; }
     public void setTotalAmigos(Integer totalAmigos) { this.totalAmigos = totalAmigos; }
+    public void setCorreo(String correo) { this.correo = correo; }
     public void setMensaje(String mensaje) { this.mensaje = mensaje; }
 }

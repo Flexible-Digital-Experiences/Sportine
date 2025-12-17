@@ -18,17 +18,13 @@ public class PerfilEntrenadorResponseDTO {
     private String sexo;
     private String estado;
     private String ciudad;
+    private String correo;
 
     // Datos del entrenador
     private Integer costoMensualidad;
-    private String tipoCuenta;  // "premium" o "gratis"
     private Integer limiteAlumnos;
     private String descripcionPerfil;
     private String fotoPerfil;
-
-    // ✅ NUEVOS CAMPOS (agregados al constructor)
-    private String correo;
-    private String telefono;
 
     // Deportes que imparte (SOLO NOMBRES, sin experiencia)
     private List<String> deportes;
