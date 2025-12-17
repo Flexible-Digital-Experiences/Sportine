@@ -61,6 +61,7 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
     private TextView tvSexo;
     private TextView tvEstado;
     private TextView tvCiudad;
+    private TextView tvCorreo;
     private TextView tvTipoCuenta;
     private TextView tvPassword;
 
@@ -160,7 +161,7 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
         tvSexo = view.findViewById(R.id.tvSexo);
         tvEstado = view.findViewById(R.id.tvEstado);
         tvCiudad = view.findViewById(R.id.tvCiudad);
-        tvTipoCuenta = view.findViewById(R.id.tvTipoCuenta);
+        tvCorreo = view.findViewById(R.id.tvCorreo);
         tvPassword = view.findViewById(R.id.tvPassword);
 
         // Detalles de Clases
@@ -249,6 +250,9 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
     /**
      * Muestra los datos en la UI
      */
+    /**
+     * Muestra los datos en la UI
+     */
     private void mostrarDatos(PerfilEntrenadorResponseDTO perfil) {
         Log.d(TAG, "===== MOSTRANDO DATOS =====");
 
@@ -259,19 +263,7 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
         tvSexo.setText(perfil.getSexo() != null ? perfil.getSexo() : "-");
         tvEstado.setText(perfil.getEstado() != null ? perfil.getEstado() : "-");
         tvCiudad.setText(perfil.getCiudad() != null ? perfil.getCiudad() : "-");
-
-        // Tipo de Cuenta (con formato)
-        String tipoCuenta = perfil.getTipoCuenta() != null
-                ? perfil.getTipoCuenta().toUpperCase()
-                : "GRATIS";
-        tvTipoCuenta.setText(tipoCuenta);
-
-        // Cambiar color según el tipo
-        if ("PREMIUM".equalsIgnoreCase(tipoCuenta)) {
-            tvTipoCuenta.setTextColor(getResources().getColor(android.R.color.holo_orange_dark));
-        } else {
-            tvTipoCuenta.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
-        }
+        tvCorreo.setText(perfil.getCorreo() != null ? perfil.getCorreo() : "-");
 
         // Contraseña (siempre oculta)
         tvPassword.setText("••••••••");

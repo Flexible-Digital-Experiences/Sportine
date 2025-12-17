@@ -96,6 +96,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setSexo(dto.getSexo());
         usuario.setIdEstado(dto.getIdEstado());
         usuario.setCiudad(dto.getCiudad());
+        usuario.setCorreo(dto.getCorreo());  // ✅ CORRECCIÓN APLICADA
         usuarioRepository.save(usuario);
 
         // Usar método helper
@@ -111,6 +112,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.getUsuario(),
                 usuario.getNombre(),
                 usuario.getApellidos(),
+                usuario.getCorreo(),
                 dto.getRol(),
                 "Usuario registrado exitosamente"
         );
@@ -140,6 +142,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.getNombre(),
                 usuario.getApellidos(),
                 usuario.getSexo(),
+                usuario.getCorreo(),
                 nombreEstado,
                 usuario.getCiudad(),
                 rol.getRol(),
@@ -264,6 +267,12 @@ public class UsuarioServiceImpl implements UsuarioService {
             huboActualizacion = true;
         }
 
+        if(dto.getCorreo() != null && !dto.getCorreo().trim().isEmpty()){
+            System.out.println("✓ Actualizando correo");
+            usuario.setCorreo(dto.getCorreo());
+            huboActualizacion = true;
+        }
+
         // 3. Guardar si hubo cambios
         if (huboActualizacion) {
             usuarioRepository.save(usuario);
@@ -315,6 +324,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.getUsuario(),
                 usuario.getNombre(),
                 usuario.getApellidos(),
+                usuario.getCorreo(),
                 rol.getRol(),
                 "Contraseña actualizada exitosamente"
         );

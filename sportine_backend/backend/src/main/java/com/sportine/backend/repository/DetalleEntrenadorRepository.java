@@ -20,12 +20,11 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
             u.apellidos as apellidos,
             u.ciudad as ciudad,
             e.estado as estado,
+            u.correo as correo,
             ie.foto_perfil as fotoPerfil,
             ie.descripcion_perfil as descripcionPerfil,
             ie.costo_mensualidad as costoMensualidad,
             ie.limite_alumnos AS limiteAlumnos,
-            ie.correo as correo,
-            ie.telefono as telefono,
             COUNT(DISTINCT ea.usuario_alumno) AS alumnosActuales
         FROM Usuario u
         LEFT JOIN Estado e ON u.id_estado = e.id_estado

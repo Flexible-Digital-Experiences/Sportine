@@ -101,9 +101,6 @@ public class DetalleEntrenadorServiceImpl implements DetalleEntrenadorService {
         }
         perfil.setAlumnosActuales(actuales);
 
-        // ✅ NUEVOS CAMPOS: Correo y Teléfono
-        perfil.setCorreo((String) datosEntrenador.get("correo"));
-        perfil.setTelefono((String) datosEntrenador.get("telefono"));
 
         perfil.setCalificacion(calificacion);
         perfil.setEspecialidades(especialidades != null ? especialidades : new ArrayList<>());

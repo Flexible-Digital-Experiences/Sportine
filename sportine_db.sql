@@ -13,13 +13,15 @@ CREATE TABLE Estado(
 
 CREATE TABLE Usuario (
     usuario VARCHAR(255) PRIMARY KEY,
+    correo VARCHAR(255) UNIQUE NOT NULL,
     contraseña VARCHAR(255),
     nombre VARCHAR(255),
     apellidos VARCHAR(255),
     sexo VARCHAR(50),
     id_estado INT,
     ciudad VARCHAR(100),
-    FOREIGN KEY (id_estado) REFERENCES Estado(id_estado)
+    FOREIGN KEY (id_estado) REFERENCES Estado(id_estado),
+    INDEX idx_correo (correo)
 );
 
 CREATE TABLE Rol (
@@ -63,40 +65,144 @@ CREATE TABLE Informacion_Alumno (
 
 CREATE TABLE Informacion_Entrenador (
     usuario VARCHAR(255),
-    correo VARCHAR(255),
-    telefono VARCHAR(10),
     costo_mensualidad INT,
-    tipo_cuenta ENUM('premium','gratis'),
-    limite_alumnos INT DEFAULT 3,
     descripcion_perfil VARCHAR(255),
     foto_perfil TEXT,
-	subscription_id VARCHAR(255) NULL COMMENT 'ID de suscripción de PayPal',
-	subscription_status ENUM('active', 'cancelled', 'expired', 'suspended') DEFAULT NULL COMMENT 'Estado de la suscripción',
-	fecha_inicio_suscripcion DATE NULL COMMENT 'Fecha en que se activó Premium',
-	fecha_fin_suscripcion DATE NULL COMMENT 'Fecha en que vence/venció la suscripción',
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
+    limite_alumnos INT,
+    -- Platform Partner Paypal
+    merchant_id VARCHAR(255) NULL COMMENT 'PayPal Merchant ID del entrenador (partner_merchant_id)',
+    merchant_id_in_paypal VARCHAR(255) NULL COMMENT 'Merchant ID en PayPal (payer_id)',
+    paypal_email_confirmed VARCHAR(255) NULL COMMENT 'Email confirmado en PayPal del entrenador',
+    tracking_id VARCHAR(255) NULL COMMENT 'Tracking ID del proceso de onboarding',
+    onboarding_status ENUM('pending', 'completed', 'failed', 'not_started') DEFAULT 'not_started' COMMENT 'Estado del onboarding PayPal',
+    onboarding_link TEXT NULL COMMENT 'Link de onboarding generado por PayPal',
+    fecha_onboarding DATE NULL COMMENT 'Fecha en que completó el onboarding',
+    permissions_granted TEXT NULL COMMENT 'JSON con permisos otorgados por el entrenador',
+    
+    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
+    INDEX idx_merchant_id (merchant_id),
+    INDEX idx_onboarding_status (onboarding_status)
 );
 
--- 2. Crear tabla de historial de pagos
-CREATE TABLE Historial_Suscripciones (
-    id_historial INT PRIMARY KEY AUTO_INCREMENT,
-    usuario VARCHAR(255) NOT NULL,
-    subscription_id VARCHAR(255) COMMENT 'ID de suscripción en PayPal',
-    plan_id VARCHAR(255) COMMENT 'ID del plan en PayPal (P-28M32623D2448144SNE2MWEQ)',
-    tipo_plan VARCHAR(20) DEFAULT 'premium' COMMENT 'Tipo de plan',
-    monto DECIMAL(10,2) COMMENT 'Monto pagado',
+-- ============================================
+-- TABLAS DE SUSCRIPCIONES V2 - PLATFORM PARTNER
+-- ============================================
+
+-- Suscripciones de estudiantes a entrenadores (multiparty)
+CREATE TABLE Estudiante_Suscripcion_Entrenador (
+    id_suscripcion INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_estudiante VARCHAR(255) NOT NULL,
+    usuario_entrenador VARCHAR(255) NOT NULL,
+    id_deporte INT NOT NULL,
+    
+    -- Información de la suscripción en PayPal
+    subscription_id VARCHAR(255) NOT NULL COMMENT 'ID de suscripción multiparty en PayPal',
+    plan_id VARCHAR(255) COMMENT 'ID del plan creado por el entrenador',
+    
+    -- Montos
+    monto_total DECIMAL(10,2) NOT NULL COMMENT 'Monto total que paga el estudiante',
+    monto_entrenador DECIMAL(10,2) NOT NULL COMMENT 'Monto que recibe el entrenador (después de comisión)',
+    monto_comision_sportine DECIMAL(10,2) NOT NULL COMMENT 'Comisión de Sportine',
+    porcentaje_comision DECIMAL(5,2) DEFAULT 10.00 COMMENT 'Porcentaje de comisión aplicado (ej: 10.00 = 10%)',
     moneda VARCHAR(3) DEFAULT 'MXN',
-    status_pago VARCHAR(50) COMMENT 'completed, pending, failed, refunded',
-    fecha_pago DATETIME COMMENT 'Fecha del pago',
-    fecha_proximo_pago DATE COMMENT 'Fecha del próximo cobro',
-    paypal_transaction_id VARCHAR(255) COMMENT 'ID de transacción de PayPal',
-    evento_webhook TEXT COMMENT 'JSON completo del webhook de PayPal',
+    
+    -- Estados
+    status_suscripcion ENUM('active', 'cancelled', 'expired', 'suspended', 'pending') DEFAULT 'pending' COMMENT 'Estado de la suscripción',
+    
+    -- Fechas
+    fecha_inicio_suscripcion DATE NULL COMMENT 'Fecha en que se activó la suscripción',
+    fecha_proximo_pago DATE NULL COMMENT 'Fecha del próximo cobro mensual',
+    fecha_fin_suscripcion DATE NULL COMMENT 'Fecha de cancelación/expiración (NULL si está activa)',
+    fecha_cancelacion DATE NULL COMMENT 'Fecha específica de cancelación',
+    motivo_cancelacion TEXT NULL COMMENT 'Razón de la cancelación',
+    
+    -- Metadata
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (usuario_estudiante) REFERENCES Usuario(usuario),
+    FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
+    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
+    
+    -- Índices para optimización
     INDEX idx_subscription_id (subscription_id),
-    INDEX idx_usuario (usuario),
-    INDEX idx_fecha_pago (fecha_pago)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Historial de pagos de suscripciones Premium';
+    INDEX idx_estudiante (usuario_estudiante),
+    INDEX idx_entrenador (usuario_entrenador),
+    INDEX idx_status (status_suscripcion),
+    INDEX idx_fecha_proximo_pago (fecha_proximo_pago),
+    
+    -- Un estudiante solo puede tener UNA suscripción activa con un entrenador para un deporte específico
+    UNIQUE KEY unique_estudiante_entrenador_deporte_activo (usuario_estudiante, usuario_entrenador, id_deporte, status_suscripcion)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Suscripciones multiparty: estudiantes pagan a entrenadores con comisión a Sportine';
+
+-- Historial de pagos mensuales de estudiantes a entrenadores
+CREATE TABLE Historial_Pagos_Estudiante_Entrenador (
+    id_pago INT PRIMARY KEY AUTO_INCREMENT,
+    id_suscripcion INT NOT NULL COMMENT 'FK a Estudiante_Suscripcion_Entrenador',
+    
+    -- Información del pago en PayPal
+    paypal_transaction_id VARCHAR(255) COMMENT 'ID de transacción en PayPal',
+    paypal_payment_id VARCHAR(255) COMMENT 'Payment ID de PayPal',
+    paypal_sale_id VARCHAR(255) COMMENT 'Sale ID de PayPal',
+    
+    -- Montos del pago específico
+    monto_total DECIMAL(10,2) NOT NULL COMMENT 'Monto total pagado por el estudiante',
+    monto_entrenador DECIMAL(10,2) NOT NULL COMMENT 'Monto recibido por el entrenador',
+    monto_comision_sportine DECIMAL(10,2) NOT NULL COMMENT 'Comisión recibida por Sportine',
+    moneda VARCHAR(3) DEFAULT 'MXN',
+    
+    -- Estado del pago
+    status_pago VARCHAR(50) COMMENT 'COMPLETED, PENDING, FAILED, REFUNDED, CANCELLED',
+    
+    -- Fechas
+    fecha_pago DATETIME COMMENT 'Fecha y hora en que se procesó el pago',
+    fecha_esperada_pago DATE COMMENT 'Fecha en que se esperaba el pago mensual',
+    
+    -- Datos del webhook de PayPal
+    evento_webhook TEXT COMMENT 'JSON completo del webhook de PayPal',
+    tipo_evento VARCHAR(100) COMMENT 'Tipo de evento: PAYMENT.SALE.COMPLETED, etc.',
+    
+    -- Metadata
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (id_suscripcion) REFERENCES Estudiante_Suscripcion_Entrenador(id_suscripcion),
+    
+    INDEX idx_suscripcion (id_suscripcion),
+    INDEX idx_transaction_id (paypal_transaction_id),
+    INDEX idx_status (status_pago),
+    INDEX idx_fecha_pago (fecha_pago),
+    INDEX idx_tipo_evento (tipo_evento)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Registro de cada pago mensual de estudiantes a entrenadores';
+
+-- Comisiones de Sportine por cada transacción
+CREATE TABLE Comisiones_Sportine (
+    id_comision INT PRIMARY KEY AUTO_INCREMENT,
+    id_pago INT NOT NULL COMMENT 'FK a Historial_Pagos_Estudiante_Entrenador',
+    
+    -- Montos de la comisión
+    monto_comision DECIMAL(10,2) NOT NULL COMMENT 'Monto de la comisión',
+    moneda VARCHAR(3) DEFAULT 'MXN',
+    porcentaje_aplicado DECIMAL(5,2) COMMENT 'Porcentaje aplicado en esta transacción',
+    
+    -- Estado del depósito a Sportine
+    status_deposito ENUM('pending', 'deposited', 'failed') DEFAULT 'pending' COMMENT 'Estado del depósito de PayPal a Sportine',
+    fecha_deposito_esperado DATE COMMENT 'PayPal deposita las platform fees diariamente',
+    fecha_deposito_real DATETIME NULL COMMENT 'Fecha real en que se depositó',
+    
+    -- Información de PayPal
+    paypal_payout_batch_id VARCHAR(255) COMMENT 'ID del batch de payout de PayPal',
+    paypal_payout_item_id VARCHAR(255) COMMENT 'ID del item individual de payout',
+    
+    -- Metadata
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (id_pago) REFERENCES Historial_Pagos_Estudiante_Entrenador(id_pago),
+    
+    INDEX idx_pago (id_pago),
+    INDEX idx_status (status_deposito),
+    INDEX idx_fecha_deposito (fecha_deposito_esperado)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Comisiones que Sportine recibe de cada transacción';
 
 -- ============================================
 -- 3. RELACIONES Y CONTRATOS
@@ -486,11 +592,6 @@ CREATE TABLE Estadisticas_Beisbol (
 -- INSERTS DE DATOS INICIALES
 -- ============================================
 
--- ============================================
--- SCRIPT COMPLETO DE INSERCIONES - SPORTINE DB
--- Con campos correo y telefono actualizados
--- ============================================
-
 -- ESTADOS
 INSERT INTO Estado (estado) VALUES
     ('Ciudad de México'), ('Aguascalientes'), ('Baja California'), ('Baja California Sur'), ('Campeche'),
@@ -509,3 +610,5 @@ INSERT INTO Deporte (nombre_deporte) VALUES
 
 -- NIVELES
 INSERT INTO Nivel (nombre_nivel) VALUES ('Principiante'), ('Intermedio'), ('Avanzado');
+
+select*from Usuario;

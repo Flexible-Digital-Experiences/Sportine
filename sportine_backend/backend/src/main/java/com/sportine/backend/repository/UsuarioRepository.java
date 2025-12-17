@@ -21,4 +21,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, String> {
             "LOWER(u.nombre) LIKE LOWER(CONCAT('%', :termino, '%')) OR " +
             "LOWER(u.apellidos) LIKE LOWER(CONCAT('%', :termino, '%'))")
     List<Usuario> buscarPorNombreOUsuario(@Param("termino") String termino);
+
+    Optional<Usuario> findByCorreo(String correo);
+
+    boolean existsByCorreo(String correo);
 }

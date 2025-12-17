@@ -15,6 +15,9 @@ public class Usuario {
     @Column(name = "usuario")
     private String usuario;
 
+    @Column(name="correo")
+    private String correo;
+
     @Column(name = "contraseña")
     private String contrasena;
 
@@ -27,7 +30,7 @@ public class Usuario {
     @Column(name = "sexo")
     private String sexo;
 
-    @Column(name = "idEstado")
+    @Column(name = "id_estado")
     private Integer idEstado;
 
     @Column(name = "ciudad")

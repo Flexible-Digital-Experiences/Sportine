@@ -13,6 +13,7 @@ public class UsuarioDetalleDTO {
     private String nombre;
     private String apellidos;
     private String sexo;
+    private String correo;
     private String estado;
     private String ciudad;
     private String rol;

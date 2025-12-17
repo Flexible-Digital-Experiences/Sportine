@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.web.multipart.MultipartFile;
@@ -87,6 +86,7 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 usuarioEntity.getNombre(),
                 usuarioEntity.getApellidos(),
                 usuarioEntity.getSexo(),
+                usuarioEntity.getCorreo(),
                 nombreEstado,
                 usuarioEntity.getCiudad(),
                 infoAlumno.getEstatura(),
@@ -148,6 +148,7 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 usuario.getNombre(),
                 usuario.getApellidos(),
                 usuario.getSexo(),
+                usuario.getCorreo(),
                 nombreEstado,
                 usuario.getCiudad(),
                 infoAlumno.getEstatura(),
@@ -224,7 +225,7 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 usuarioEntity.getSexo(),
                 nombreEstado,
                 usuarioEntity.getCiudad(),
-                infoAlumno.getEstatura(),
+                usuarioEntity.getCiudad(), infoAlumno.getEstatura(),
                 infoAlumno.getPeso(),
                 infoAlumno.getLesiones(),
                 infoAlumno.getPadecimientos(),

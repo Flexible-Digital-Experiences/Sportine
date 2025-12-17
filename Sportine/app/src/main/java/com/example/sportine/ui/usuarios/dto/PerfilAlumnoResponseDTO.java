@@ -5,16 +5,16 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 import java.util.List;
 
-/**
- * DTO de respuesta al obtener el perfil.
- * Ahora los deportes vienen con su nivel específico.
- */
 public class PerfilAlumnoResponseDTO {
 
     private String usuario;
     private String nombre;
     private String apellidos;
     private String sexo;
+
+    // ✅ NUEVO: Campo correo
+    private String correo;
+
     private String estado;
     private String ciudad;
     private Float estatura;
@@ -30,9 +30,7 @@ public class PerfilAlumnoResponseDTO {
 
     private Integer edad;
 
-    // ========================================
-    // CAMBIO: Ahora deportes viene con nivel
-    // ========================================
+    // Deportes con nivel específico
     private List<DeporteConNivel> deportes;
 
     @SerializedName("totalAmigos")
@@ -43,9 +41,7 @@ public class PerfilAlumnoResponseDTO {
 
     private String mensaje;
 
-    // ========================================
-    // CONSTRUCTOR VACÍO
-    // ========================================
+    // Constructor vacío
     public PerfilAlumnoResponseDTO() {}
 
     // ========================================
@@ -53,46 +49,31 @@ public class PerfilAlumnoResponseDTO {
     // ========================================
     public static class DeporteConNivel {
         private String deporte;
-        private String nivel;  // ← Nivel específico del deporte
+        private String nivel;
 
         @SerializedName("fechaInicio")
         private Date fechaInicio;
 
         public DeporteConNivel() {}
 
-        public String getDeporte() {
-            return deporte;
-        }
+        public String getDeporte() { return deporte; }
+        public void setDeporte(String deporte) { this.deporte = deporte; }
 
-        public void setDeporte(String deporte) {
-            this.deporte = deporte;
-        }
+        public String getNivel() { return nivel; }
+        public void setNivel(String nivel) { this.nivel = nivel; }
 
-        public String getNivel() {
-            return nivel;
-        }
-
-        public void setNivel(String nivel) {
-            this.nivel = nivel;
-        }
-
-        public Date getFechaInicio() {
-            return fechaInicio;
-        }
-
-        public void setFechaInicio(Date fechaInicio) {
-            this.fechaInicio = fechaInicio;
-        }
+        public Date getFechaInicio() { return fechaInicio; }
+        public void setFechaInicio(Date fechaInicio) { this.fechaInicio = fechaInicio; }
     }
 
     // ========================================
     // GETTERS
     // ========================================
-
     public String getUsuario() { return usuario; }
     public String getNombre() { return nombre; }
     public String getApellidos() { return apellidos; }
     public String getSexo() { return sexo; }
+    public String getCorreo() { return correo; }  // ✅ NUEVO
     public String getEstado() { return estado; }
     public String getCiudad() { return ciudad; }
     public Float getEstatura() { return estatura; }
@@ -116,11 +97,11 @@ public class PerfilAlumnoResponseDTO {
     // ========================================
     // SETTERS
     // ========================================
-
     public void setUsuario(String usuario) { this.usuario = usuario; }
     public void setNombre(String nombre) { this.nombre = nombre; }
     public void setApellidos(String apellidos) { this.apellidos = apellidos; }
     public void setSexo(String sexo) { this.sexo = sexo; }
+    public void setCorreo(String correo) { this.correo = correo; }  // ✅ NUEVO
     public void setEstado(String estado) { this.estado = estado; }
     public void setCiudad(String ciudad) { this.ciudad = ciudad; }
     public void setEstatura(Float estatura) { this.estatura = estatura; }

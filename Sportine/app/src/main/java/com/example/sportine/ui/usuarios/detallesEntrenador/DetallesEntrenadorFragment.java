@@ -89,8 +89,7 @@ public class DetallesEntrenadorFragment extends Fragment {
 
     // Botones por estado
     private MaterialButton btnEnviarSolicitud;
-    private MaterialButton btnEnviarCorreo;
-    private MaterialButton btnEnviarWhatsapp;
+    private MaterialButton btnPagar;
     private MaterialButton btnCalificarActivo;
     private MaterialButton btnSolicitarNuevamente;
     private MaterialButton btnCalificarFinalizado;
@@ -146,8 +145,7 @@ public class DetallesEntrenadorFragment extends Fragment {
         layoutActivo = view.findViewById(R.id.layout_activo);
         layoutFinalizado = view.findViewById(R.id.layout_finalizado);
         btnEnviarSolicitud = view.findViewById(R.id.btn_enviar_solicitud);
-        btnEnviarCorreo = view.findViewById(R.id.btn_enviar_correo);
-        btnEnviarWhatsapp = view.findViewById(R.id.btn_enviar_whatsapp);
+        btnPagar = view.findViewById(R.id.btn_pagar);
         btnCalificarActivo = view.findViewById(R.id.btn_calificar_activo);
         btnSolicitarNuevamente = view.findViewById(R.id.btn_solicitar_nuevamente);
         btnCalificarFinalizado = view.findViewById(R.id.btn_calificar_finalizado);
@@ -176,8 +174,7 @@ public class DetallesEntrenadorFragment extends Fragment {
         btnBack.setOnClickListener(v -> NavHostFragment.findNavController(this).navigateUp());
         btnVerTodas.setOnClickListener(v -> toggleResenas());
         btnEnviarSolicitud.setOnClickListener(v -> enviarSolicitud());
-        btnEnviarCorreo.setOnClickListener(v -> enviarCorreo());
-        btnEnviarWhatsapp.setOnClickListener(v -> enviarWhatsapp());
+        btnPagar.setOnClickListener(v -> pagar());
         btnCalificarActivo.setOnClickListener(v -> abrirDialogCalificacion());
         btnSolicitarNuevamente.setOnClickListener(v -> enviarSolicitud());
         btnCalificarFinalizado.setOnClickListener(v -> abrirDialogCalificacion());
@@ -336,10 +333,6 @@ public class DetallesEntrenadorFragment extends Fragment {
         deportesAdapter.setDeportes(perfil.getEspecialidades());
         mostrarResenas(perfil.getResenas());
 
-        // ✅ GUARDAR DATOS DE CONTACTO DEL BACKEND
-        correoEntrenador = perfil.getCorreo();
-        telefonoEntrenador = perfil.getTelefono();
-
         mostrarUISegunEstadoRelacion(perfil.getEstadoRelacion());
     }
 
@@ -481,55 +474,12 @@ public class DetallesEntrenadorFragment extends Fragment {
     /**
      * Abre la aplicación de correo para enviar un mensaje al entrenador
      */
-    private void enviarCorreo() {
-        if (correoEntrenador == null || correoEntrenador.isEmpty()) {
-            Toast.makeText(getContext(),
-                    "Correo del entrenador no disponible",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("mailto:" + correoEntrenador));
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Consulta sobre entrenamiento");
-
+    private void pagar() {
         try {
-            startActivity(Intent.createChooser(intent, "Enviar correo"));
+
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(getContext(),
                     "No hay aplicaciones de correo instaladas",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     * Abre WhatsApp para enviar un mensaje al entrenador
-     */
-    private void enviarWhatsapp() {
-        if (telefonoEntrenador == null || telefonoEntrenador.isEmpty()) {
-            Toast.makeText(getContext(),
-                    "Número de WhatsApp del entrenador no disponible",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Formato: 52 + 10 dígitos (ejemplo: 5215512345678)
-        String numeroFormateado = telefonoEntrenador.replaceAll("[^0-9]", "");
-        if (!numeroFormateado.startsWith("52")) {
-            numeroFormateado = "52" + numeroFormateado;
-        }
-
-        String mensaje = "Hola, me interesa tu entrenamiento";
-        String url = "https://wa.me/" + numeroFormateado + "?text=" + Uri.encode(mensaje);
-
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(url));
-
-        try {
-            startActivity(intent);
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(getContext(),
-                    "WhatsApp no está instalado",
                     Toast.LENGTH_SHORT).show();
         }
     }

@@ -20,13 +20,12 @@ public class ActualizarPerfilEntrenadorDTO {
     @SerializedName("correo")
     private String correo;
 
-    @SerializedName("telefono")
-    private String telefono;
-
     // Constructor vacío
     public ActualizarPerfilEntrenadorDTO() {}
 
-    // Getters y Setters
+    // ========================================
+    // GETTERS Y SETTERS
+    // ========================================
     public Integer getCostoMensualidad() { return costoMensualidad; }
     public void setCostoMensualidad(Integer costoMensualidad) {
         this.costoMensualidad = costoMensualidad;
@@ -49,7 +48,4 @@ public class ActualizarPerfilEntrenadorDTO {
 
     public String getCorreo() { return correo; }
     public void setCorreo(String correo) { this.correo = correo; }
-
-    public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
 }

@@ -199,45 +199,6 @@ public interface ApiService {
             @Query("nuevoEstado") String nuevoEstado
     );
 
-    // SUSCRIPCIONES PAYPAL
-
-    /**
-     * Crear suscripción Premium
-     * POST /api/suscripciones/crear?usuario=EMAIL
-     */
-    @POST("/api/suscripciones/crear")
-    Call<Map<String, Object>> crearSuscripcion(@Query("usuario") String usuario);
-
-    /**
-     * Confirmar suscripción después de aprobar en PayPal
-     * POST /api/suscripciones/confirmar?subscriptionId=XXX&usuario=EMAIL
-     */
-    @POST("api/suscripciones/confirmar")
-    Call<Map<String, Object>> confirmarSuscripcion(
-            @Query("subscriptionId") String subscriptionId,
-            @Query("usuario") String usuario
-    );
-
-    /**
-     * Verificar estado de suscripción
-     * GET /api/suscripciones/estado?usuario=EMAIL
-     */
-    @GET("/api/suscripciones/estado")
-    Call<Map<String, Object>> verificarEstadoSuscripcion(@Query("usuario") String usuario);
-
-    /**
-     * Cancelar suscripción
-     * POST /api/suscripciones/cancelar?usuario=EMAIL&razon=TEXTO
-     */
-    @POST("/api/suscripciones/cancelar")
-    Call<Map<String, Object>> cancelarSuscripcion(
-            @Query("usuario") String usuario,
-            @Query("razon") String razon
-    );
-
-    @GET("api/suscripciones/approval-url")
-    Call<Map<String, Object>> obtenerApprovalUrl(@Query("subscriptionId") String subscriptionId);
-
     // Enviar calificación
     @POST("api/calificaciones/enviar")
     Call<CalificacionResponseDTO> enviarCalificacion(@Body CalificacionRequestDTO request);
