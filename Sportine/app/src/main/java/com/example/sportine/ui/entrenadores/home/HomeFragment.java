@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -69,7 +70,7 @@ public class HomeFragment extends Fragment {
         alumnosRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         alumnosAdapter = new AlumnosAdapter();
         alumnosRecyclerView.setAdapter(alumnosAdapter);
-
+        /*
         // CONFIGURACIÓN DE NAVEGACIÓN
         alumnosAdapter.setOnAlumnoClickListener(alumno -> {
             // AHORA PASAMOS 5 ARGUMENTOS (usuario, nombre, foto, deporte, actividad)
@@ -89,6 +90,24 @@ public class HomeFragment extends Fragment {
                         .commit();
             }
         });
+        */
+
+        alumnosAdapter.setOnAlumnoClickListener(alumno -> {
+
+            Bundle args = new Bundle();
+            args.putString("usuario", alumno.getUsuario());
+            args.putString("nombre",
+                    alumno.getNombre() + " " +
+                            (alumno.getApellidos() != null ? alumno.getApellidos() : ""));
+            args.putString("foto", alumno.getFotoPerfil());
+            args.putString("deporte", alumno.getDeporte());
+            args.putString("actividad", alumno.getDescripcionActividad());
+
+            NavHostFragment.findNavController(this)
+                    .navigate(R.id.asignarEntrenamientoFragment, args);
+        });
+
+
     }
 
     private void cargarDatosHome() {

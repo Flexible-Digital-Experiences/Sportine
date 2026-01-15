@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.sportine.R;
 import com.example.sportine.data.ApiService;
@@ -131,6 +132,7 @@ public class DetalleAlumnoFragment extends Fragment {
         // Configurar gráficas
         configurarGraficas();
 
+        /*
         // Configurar botón volver
         btnVolver.setOnClickListener(v -> {
             if (getActivity() != null) {
@@ -142,6 +144,12 @@ public class DetalleAlumnoFragment extends Fragment {
                         .commit();
             }
         });
+        */
+
+        btnVolver.setOnClickListener(v -> {
+            NavHostFragment.findNavController(this).popBackStack();
+        });
+
 
         // Observar ViewModel
         observarViewModel();

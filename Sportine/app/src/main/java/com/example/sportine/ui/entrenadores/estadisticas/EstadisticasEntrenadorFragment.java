@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -197,6 +198,9 @@ public class EstadisticasEntrenadorFragment extends Fragment implements AlumnosS
      * Maneja el click en un alumno de la lista.
      * Navega al detalle del alumno.
      */
+
+
+    /*
     @Override
     public void onAlumnoClick(AlumnoCardStatsDTO alumno) {
         // Crear el fragment de detalle
@@ -215,6 +219,22 @@ public class EstadisticasEntrenadorFragment extends Fragment implements AlumnosS
                     .commit();
         }
     }
+    */
+
+
+    @Override
+    public void onAlumnoClick(AlumnoCardStatsDTO alumno) {
+
+        Bundle args = new Bundle();
+        args.putString("usuario", alumno.getUsuario());
+        args.putString("nombre", alumno.getNombreCompleto());
+        args.putString("foto", alumno.getFotoPerfil());
+
+        NavHostFragment.findNavController(this)
+                .navigate(R.id.action_estadisticas_to_detalleAlumno, args);
+    }
+
+
 
     @Override
     public void onResume() {
