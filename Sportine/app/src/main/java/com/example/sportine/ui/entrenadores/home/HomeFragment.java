@@ -95,13 +95,13 @@ public class HomeFragment extends Fragment {
         alumnosAdapter.setOnAlumnoClickListener(alumno -> {
 
             Bundle args = new Bundle();
-            args.putString("usuario", alumno.getUsuario());
-            args.putString("nombre",
+            args.putString("arg_usuario", alumno.getUsuario());
+            args.putString("arg_nombre",
                     alumno.getNombre() + " " +
                             (alumno.getApellidos() != null ? alumno.getApellidos() : ""));
-            args.putString("foto", alumno.getFotoPerfil());
-            args.putString("deporte", alumno.getDeporte());
-            args.putString("actividad", alumno.getDescripcionActividad());
+            args.putString("arg_foto", alumno.getFotoPerfil());
+            args.putString("arg_deporte", alumno.getDeporte());
+            args.putString("arg_actividad", alumno.getDescripcionActividad());
 
             NavHostFragment.findNavController(this)
                     .navigate(R.id.asignarEntrenamientoFragment, args);
