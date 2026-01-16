@@ -408,53 +408,64 @@ public class StatisticsAlumnoServiceImpl implements StatisticsAlumnoService {
     private Map<String, Integer> calcularRachas(String username) {
         List<ProgresoEntrenamiento> progresos = progresoRepository.findCompletadosOrderByFecha(username);
 
-        int rachaActual = 0;
-        int mejorRacha = 0;
-        int rachaTemp = 0;
-
         if (progresos.isEmpty()) {
             return Map.of("actual", 0, "mejor", 0);
         }
 
-        LocalDate fechaAnterior = null;
+        // 1. Ordenar de forma DESCENDENTE (más reciente primero)
+        List<LocalDate> fechas = progresos.stream()
+                .map(p -> p.getFechaFinalizacion().toLocalDate())
+                .distinct() // Eliminar duplicados del mismo día
+                .sorted(Collections.reverseOrder()) // DESCENDENTE
+                .collect(Collectors.toList());
+
         LocalDate hoy = LocalDate.now();
-        boolean rachaActiva = false;
+        int rachaActual = 0;
+        int mejorRacha = 0;
 
-        for (ProgresoEntrenamiento progreso : progresos) {
-            LocalDate fecha = progreso.getFechaFinalizacion().toLocalDate();
+        // 2. Validar si la racha está "viva" (el entrenamiento más reciente es hoy o ayer)
+        LocalDate fechaMasReciente = fechas.get(0);
+        long diasDesdeUltimo = ChronoUnit.DAYS.between(fechaMasReciente, hoy);
+        boolean rachaViva = (diasDesdeUltimo <= 1);
 
-            if (fechaAnterior == null) {
-                rachaTemp = 1;
-                if (fecha.equals(hoy) || fecha.equals(hoy.minusDays(1))) {
-                    rachaActiva = true;
-                }
-            } else {
-                long diasDiferencia = ChronoUnit.DAYS.between(fecha, fechaAnterior);
+        // 3. Calcular la racha actual (si está viva)
+        if (rachaViva) {
+            rachaActual = 1; // Contar el primer día
 
-                if (diasDiferencia == 1) {
-                    rachaTemp++;
+            for (int i = 1; i < fechas.size(); i++) {
+                LocalDate fechaActual = fechas.get(i);
+                LocalDate fechaAnterior = fechas.get(i - 1);
+
+                long diferencia = ChronoUnit.DAYS.between(fechaActual, fechaAnterior);
+
+                if (diferencia == 1) {
+                    rachaActual++;
                 } else {
-                    mejorRacha = Math.max(mejorRacha, rachaTemp);
-                    rachaTemp = 1;
-                    if (fecha.equals(hoy) || fecha.equals(hoy.minusDays(1))) {
-                        rachaActiva = true;
-                    } else {
-                        rachaActiva = false;
-                    }
+                    break; // Se rompió la racha
                 }
             }
-
-            fechaAnterior = fecha;
         }
 
-        mejorRacha = Math.max(mejorRacha, rachaTemp);
+        // 4. Calcular la mejor racha histórica
+        int rachaTemp = 1;
+        mejorRacha = 1;
 
-        if (rachaActiva && fechaAnterior != null) {
-            long diasDesdeUltimo = ChronoUnit.DAYS.between(fechaAnterior, hoy);
-            if (diasDesdeUltimo <= 1) {
-                rachaActual = rachaTemp;
+        for (int i = 1; i < fechas.size(); i++) {
+            LocalDate fechaActual = fechas.get(i);
+            LocalDate fechaAnterior = fechas.get(i - 1);
+
+            long diferencia = ChronoUnit.DAYS.between(fechaActual, fechaAnterior);
+
+            if (diferencia == 1) {
+                rachaTemp++;
+                mejorRacha = Math.max(mejorRacha, rachaTemp);
+            } else {
+                rachaTemp = 1;
             }
         }
+
+        // La racha actual también puede ser la mejor racha
+        mejorRacha = Math.max(mejorRacha, rachaActual);
 
         return Map.of("actual", rachaActual, "mejor", mejorRacha);
     }
