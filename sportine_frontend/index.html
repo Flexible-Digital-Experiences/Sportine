@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sportine – Tu entrenamiento, tu progreso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/base/variables.css" />
+  <link rel="stylesheet" href="css/pages/landing.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">
+        <img src="assets/img/logo/logo-sportine-login.png" alt="Sportine" height="56" />
+    </a>
+    <div class="nav-links">
+      <a href="#features">Funciones</a>
+      <a href="#roles">¿Para quién?</a>
+      <a href="pages/auth/login.html" class="btn-outline">Iniciar sesión</a>
+      <a href="pages/auth/registro.html" class="btn-primary">Registrarse</a>
+    </div>
+    <button class="nav-toggle" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+      <div class="grid-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Plataforma deportiva inteligente
+      </div>
+      <h1 class="hero-title">
+        Tu entrenamiento.<br/>
+        <span class="highlight">Tu progreso.</span>
+      </h1>
+      <p class="hero-subtitle">
+        Conecta con entrenadores certificados, registra tus sesiones y visualiza tu evolución. Todo en un solo lugar.
+      </p>
+      <div class="hero-cta">
+        <a href="/pages/auth/registro.html" class="btn-primary btn-lg">
+          Empezar gratis
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <a href="#roles" class="btn-ghost">Ver cómo funciona</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">+1.2K</span>
+          <span class="stat-label">Atletas</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">+340</span>
+          <span class="stat-label">Entrenadores</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num">98%</span>
+          <span class="stat-label">Satisfacción</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="phone-mockup">
+        <div class="phone-screen">
+          <div class="app-header">
+            <div class="app-avatar"></div>
+            <div>
+              <div class="app-greeting">Buen día, Carlos 👋</div>
+              <div class="app-sub">Tu sesión de hoy</div>
+            </div>
+          </div>
+          <div class="app-card workout">
+            <div class="workout-icon">🏋️</div>
+            <div>
+              <div class="workout-name">Fuerza – Tren Superior</div>
+              <div class="workout-meta">45 min · 6 ejercicios</div>
+            </div>
+            <span class="workout-badge">Hoy</span>
+          </div>
+          <div class="app-progress-section">
+            <div class="progress-title">Progreso semanal</div>
+            <div class="progress-bars">
+              <div class="pbar-row">
+                <span>Lun</span><div class="pbar"><div class="pbar-fill" style="width:90%"></div></div>
+              </div>
+              <div class="pbar-row">
+                <span>Mar</span><div class="pbar"><div class="pbar-fill" style="width:65%"></div></div>
+              </div>
+              <div class="pbar-row">
+                <span>Mié</span><div class="pbar"><div class="pbar-fill" style="width:80%"></div></div>
+              </div>
+              <div class="pbar-row">
+                <span>Jue</span><div class="pbar"><div class="pbar-fill pbar-orange" style="width:45%"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="app-bottom-nav">
+            <div class="bnav-item active">🏠</div>
+            <div class="bnav-item">🔍</div>
+            <div class="bnav-item">📊</div>
+            <div class="bnav-item">👤</div>
+          </div>
+        </div>
+      </div>
+      <div class="float-card card-streak">
+        <span>🔥</span>
+        <div>
+          <div class="fc-num">12 días</div>
+          <div class="fc-label">Racha activa</div>
+        </div>
+      </div>
+      <div class="float-card card-coach">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=trainer" alt="Entrenador" class="coach-avatar" />
+        <div>
+          <div class="fc-num">María López</div>
+          <div class="fc-label">Tu entrenadora ⭐ 4.9</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="section-header">
+      <p class="section-tag">Funcionalidades</p>
+      <h2>Todo lo que necesitas para <span class="highlight">rendir al máximo</span></h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card feature-main">
+        <div class="feature-icon" style="background:var(--azul-claro);color:var(--azul)">📋</div>
+        <h3>Planes personalizados</h3>
+        <p>Tu entrenador diseña rutinas adaptadas a tus objetivos y nivel actual.</p>
+        <div class="feature-tag">Personalización</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--naranja-claro);color:var(--naranja)">📊</div>
+        <h3>Estadísticas en tiempo real</h3>
+        <p>Visualiza tu progreso con gráficas claras y métricas detalladas.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--teal-claro);color:var(--teal)">💬</div>
+        <h3>Comunicación directa</h3>
+        <p>Solicita sesiones, envía feedback y mantén contacto con tu coach.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--azul-claro);color:var(--azul)">🔔</div>
+        <h3>Recordatorios inteligentes</h3>
+        <p>Nunca olvides una sesión. Notificaciones en el momento justo.</p>
+      </div>
+      <div class="feature-card feature-wide">
+        <div class="feature-icon" style="background:var(--naranja-claro);color:var(--naranja)">🤝</div>
+        <h3>Red de entrenadores verificados</h3>
+        <p>Encuentra y conecta con entrenadores certificados según tu deporte, ubicación y disponibilidad.</p>
+        <a href="pages/auth/registro.html" class="feature-link">Explorar entrenadores →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROLES -->
+  <section class="roles" id="roles">
+    <div class="section-header">
+      <p class="section-tag">¿Para quién es Sportine?</p>
+      <h2>Una plataforma, <span class="highlight">dos experiencias</span></h2>
+    </div>
+    <div class="roles-grid">
+      <div class="role-card role-alumno">
+        <div class="role-icon">🏃</div>
+        <h3>Soy Alumno</h3>
+        <p>Quiero entrenar con guía profesional y ver mi evolución.</p>
+        <ul class="role-list">
+          <li>✓ Busca y contrata entrenadores</li>
+          <li>✓ Sigue tus rutinas asignadas</li>
+          <li>✓ Ve tus estadísticas y progreso</li>
+          <li>✓ Conecta con otros atletas</li>
+        </ul>
+        <a href="pages/auth/registro.html?rol=alumno" class="btn-primary">Empezar como alumno</a>
+      </div>
+      <div class="role-card role-entrenador">
+        <div class="role-icon">🎯</div>
+        <h3>Soy Entrenador</h3>
+        <p>Quiero gestionar mis alumnos y hacer crecer mi negocio.</p>
+        <ul class="role-list">
+          <li>✓ Gestiona tu cartera de alumnos</li>
+          <li>✓ Crea y asigna rutinas</li>
+          <li>✓ Acepta solicitudes de sesión</li>
+          <li>✓ Visualiza el progreso de cada alumno</li>
+        </ul>
+        <a href="pages/auth/registro.html?rol=entrenador" class="btn-outline-dark">Empezar como entrenador</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="cta-final">
+    <div class="cta-blob"></div>
+    <div class="cta-content">
+      <h2>¿Listo para transformar<br/>tu entrenamiento?</h2>
+      <p>Únete gratis. Sin tarjeta de crédito. Sin compromisos.</p>
+      <a href="pages/auth/registro.html" class="btn-primary btn-lg">Crear cuenta gratis</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/img/logo/logo-sportine-login.png" alt="Sportine" height="56" />
+        </a>
+      <div class="footer-links">
+        <a href="#">Privacidad</a>
+        <a href="#">Términos</a>
+        <a href="#">Contacto</a>
+      </div>
+      <p class="footer-copy">© 2025 Sportine. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="js/pages/landing.js"></script>
+</body>
+</html>

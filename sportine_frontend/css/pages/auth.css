@@ -1,0 +1,272 @@
+@import url('../base/variables.css');
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--fuente-body);
+  background: var(--fondo);
+  color: var(--texto);
+  display: flex;
+}
+
+/* ---- LAYOUT ---- */
+.auth-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* ---- PANEL IZQUIERDO ---- */
+.auth-panel {
+  width: 42%;
+  background: linear-gradient(145deg, #0b1f33 0%, #1a3a55 50%, #0f2a42 100%);
+  padding: 36px 44px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+.auth-panel--teal {
+  background: linear-gradient(145deg, #062a28 0%, #00635a 50%, #003d39 100%);
+}
+
+
+.auth-panel .nav-logo img {
+  filter: brightness(0) invert(1);
+}
+
+.auth-logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; position: relative; z-index: 2;
+}
+.logo-mark {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--azul), var(--teal));
+  color: #fff; font-family: var(--fuente-display); font-weight: 800;
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.logo-text {
+  font-family: var(--fuente-display); font-weight: 700; font-size: 1.15rem;
+  color: rgba(255,255,255,0.92);
+}
+
+.panel-content {
+  flex: 1; display: flex; flex-direction: column;
+  justify-content: center; position: relative; z-index: 2;
+}
+.panel-blob {
+  position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.15;
+  pointer-events: none;
+}
+.blob-1 { width: 400px; height: 400px; background: var(--azul); top: -100px; right: -100px; }
+.blob-2 { width: 300px; height: 300px; background: var(--teal); bottom: -50px; left: -80px; }
+
+.panel-title {
+  font-family: var(--fuente-display); font-size: 1.7rem; font-weight: 800;
+  color: #fff; line-height: 1.2; margin-bottom: 12px;
+}
+.panel-sub {
+  color: rgba(255,255,255,0.6); font-size: 0.9rem; line-height: 1.6;
+}
+
+/* Ilustración login */
+.panel-illustration { margin-bottom: 32px; }
+.ill-card {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px; padding: 16px 20px;
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(10px);
+}
+.ill-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--azul), var(--teal)); flex-shrink: 0;
+}
+.ill-name { color: #fff; font-weight: 700; font-size: 0.9rem; margin-bottom: 3px; }
+.ill-role { color: rgba(255,255,255,0.55); font-size: 0.78rem; }
+.ill-stats {
+  display: flex; gap: 0;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px; overflow: hidden;
+}
+.ill-stat {
+  flex: 1; text-align: center; padding: 14px 8px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  display: flex; flex-direction: column; gap: 3px;
+}
+.ill-stat:last-child { border-right: none; }
+.ill-num { color: #fff; font-family: var(--fuente-display); font-weight: 800; font-size: 1.1rem; }
+.ill-label { color: rgba(255,255,255,0.5); font-size: 0.7rem; }
+
+/* Pasos registro */
+.panel-steps {
+  display: flex; align-items: center; gap: 0; margin-bottom: 32px;
+}
+.step {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.step-num {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.5); font-weight: 700; font-size: 0.85rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.step-done .step-num { background: var(--teal); border-color: var(--teal); color: #fff; }
+.step-active .step-num { background: var(--azul); border-color: var(--azul); color: #fff; }
+.step-label { font-size: 0.7rem; color: rgba(255,255,255,0.45); white-space: nowrap; }
+.step-done .step-label, .step-active .step-label { color: rgba(255,255,255,0.8); }
+.step-line { flex: 1; height: 1.5px; background: rgba(255,255,255,0.12); margin: 0 8px 18px; }
+
+/* Beneficios */
+.panel-benefits {
+  display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px;
+}
+.benefit {
+  color: rgba(255,255,255,0.75); font-size: 0.88rem;
+  display: flex; align-items: center; gap: 10px;
+}
+.benefit span { color: var(--teal); font-weight: 700; }
+
+/* ---- FORMULARIO ---- */
+.auth-form-side {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  padding: 40px 48px; background: #fff;
+  overflow-y: auto;
+}
+.auth-form-container { width: 100%; max-width: 420px; }
+
+.auth-header { margin-bottom: 28px; }
+.auth-header h1 {
+  font-family: var(--fuente-display); font-size: 1.8rem; font-weight: 800;
+  margin-bottom: 6px;
+}
+.auth-header p { color: var(--texto-secundario); font-size: 0.93rem; }
+
+/* Role selector login */
+.auth-social-hint { margin-bottom: 24px; }
+.auth-social-hint span { font-size: 0.82rem; color: var(--texto-secundario); margin-bottom: 10px; display: block; }
+.role-pills { display: flex; gap: 10px; }
+.role-pill {
+  padding: 8px 20px; border-radius: 50px;
+  border: 1.5px solid var(--borde); background: none;
+  font-family: var(--fuente-body); font-weight: 600; font-size: 0.88rem;
+  color: var(--texto-secundario); cursor: pointer;
+  transition: all var(--transicion);
+}
+.role-pill.active { border-color: var(--azul); background: var(--azul-claro); color: var(--azul); }
+
+/* Role cards registro */
+.role-selector { margin-bottom: 24px; }
+.role-selector-label { font-size: 0.82rem; color: var(--texto-secundario); margin-bottom: 10px; font-weight: 600; }
+.role-cards { display: flex; gap: 12px; }
+.role-card-btn {
+  flex: 1; padding: 16px 12px; border-radius: 14px;
+  border: 1.5px solid var(--borde); background: none; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  transition: all var(--transicion);
+}
+.role-card-btn.active { border-color: var(--azul); background: var(--azul-claro); }
+.role-card-icon { font-size: 1.6rem; }
+.role-card-name { font-family: var(--fuente-display); font-weight: 700; font-size: 0.88rem; color: var(--texto); }
+.role-card-desc { font-size: 0.75rem; color: var(--texto-secundario); }
+.role-card-btn.active .role-card-name { color: var(--azul); }
+
+/* Form groups */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-group { margin-bottom: 18px; }
+.form-group label {
+  display: block; font-size: 0.82rem; font-weight: 600;
+  color: var(--texto); margin-bottom: 7px;
+}
+.label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
+.label-row label { margin-bottom: 0; }
+.forgot-link { font-size: 0.8rem; color: var(--azul); text-decoration: none; font-weight: 600; }
+.forgot-link:hover { text-decoration: underline; }
+
+.input-wrap {
+  position: relative; display: flex; align-items: center;
+}
+.input-wrap input {
+  width: 100%; padding: 11px 42px 11px 40px;
+  border: 1.5px solid var(--borde); border-radius: var(--borde-radio-sm);
+  font-family: var(--fuente-body); font-size: 0.93rem; color: var(--texto);
+  background: var(--fondo); outline: none;
+  transition: border-color var(--transicion), box-shadow var(--transicion);
+}
+.input-wrap input:focus {
+  border-color: var(--azul);
+  box-shadow: 0 0 0 3px rgba(30,161,219,0.12);
+  background: #fff;
+}
+.input-wrap input::placeholder { color: #bbb; }
+.input-icon {
+  position: absolute; left: 12px; width: 18px; height: 18px;
+  color: var(--texto-secundario); pointer-events: none;
+}
+.toggle-pass {
+  position: absolute; right: 12px;
+  background: none; border: none; cursor: pointer; padding: 0;
+  color: var(--texto-secundario);
+}
+.toggle-pass svg { width: 18px; height: 18px; display: block; }
+.toggle-pass:hover { color: var(--azul); }
+
+.field-hint { font-size: 0.77rem; color: var(--texto-secundario); margin-top: 4px; display: block; }
+.field-hint.error { color: #ef4444; }
+.field-hint.success { color: var(--teal); }
+
+/* Password strength */
+.password-strength {
+  height: 4px; border-radius: 50px; background: var(--borde);
+  margin-top: 8px; overflow: hidden;
+}
+.strength-fill { height: 100%; border-radius: 50px; width: 0%; transition: width 0.4s ease, background 0.4s ease; }
+.strength-label { font-size: 0.75rem; margin-top: 4px; display: block; }
+.strength-weak { background: #ef4444; }
+.strength-medium { background: var(--naranja); }
+.strength-strong { background: var(--teal); }
+
+/* Checkbox */
+.checkbox-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-bottom: 22px; cursor: pointer;
+}
+.checkbox-row input { margin-top: 3px; accent-color: var(--azul); flex-shrink: 0; }
+.checkbox-row span { font-size: 0.83rem; color: var(--texto-secundario); line-height: 1.5; }
+.checkbox-row a { color: var(--azul); text-decoration: none; font-weight: 600; }
+
+/* Error */
+.error-msg {
+  background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c;
+  border-radius: 8px; padding: 10px 14px; font-size: 0.84rem;
+  margin-bottom: 16px;
+}
+
+/* Submit button */
+.btn-submit {
+  width: 100%; padding: 13px;
+  background: var(--azul); color: #fff;
+  border: none; border-radius: 50px; cursor: pointer;
+  font-family: var(--fuente-display); font-weight: 700; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background var(--transicion), transform var(--transicion), box-shadow var(--transicion);
+  box-shadow: 0 4px 18px rgba(30,161,219,0.30);
+  margin-bottom: 20px;
+}
+.btn-submit:hover { background: var(--azul-oscuro); transform: translateY(-1px); box-shadow: 0 8px 28px rgba(30,161,219,0.38); }
+.btn-submit:active { transform: translateY(0); }
+.btn-spinner svg { width: 18px; height: 18px; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.auth-switch { text-align: center; font-size: 0.88rem; color: var(--texto-secundario); }
+.auth-switch a { color: var(--azul); font-weight: 600; text-decoration: none; }
+.auth-switch a:hover { text-decoration: underline; }
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 900px) {
+  .auth-panel { display: none; }
+  .auth-form-side { padding: 32px 24px; }
+}
+@media (max-width: 480px) {
+  .form-row { grid-template-columns: 1fr; }
+  .auth-form-side { padding: 24px 16px; }
+}

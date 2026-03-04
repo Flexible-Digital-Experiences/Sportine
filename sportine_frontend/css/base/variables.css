@@ -1,0 +1,43 @@
+:root {
+  /* Paleta principal */
+  --azul: #1ea1db;
+  --azul-oscuro: #1585b8;
+  --azul-claro: #e8f6fd;
+  --naranja: #f89a02;
+  --naranja-claro: #fff4e0;
+  --teal: #00A896;
+  --teal-claro: #e0f5f3;
+
+  /* Fondos */
+  --fondo: #F8F9FA;
+  --fondo-card: #ffffff;
+  --fondo-oscuro: #0f1923;
+
+  /* Texto */
+  --texto: #1A1A1A;
+  --texto-secundario: #6B7280;
+  --texto-claro: #ffffff;
+
+  /* UI */
+  --borde: #E5E7EB;
+  --borde-radio: 14px;
+  --borde-radio-sm: 8px;
+  --borde-radio-lg: 24px;
+  --sombra: 0 4px 24px rgba(30,161,219,0.10);
+  --sombra-card: 0 2px 16px rgba(0,0,0,0.07);
+
+  /* Tipografía */
+  --fuente-display: 'Sora', sans-serif;
+  --fuente-body: 'DM Sans', sans-serif;
+
+  /* Espaciado */
+  --espacio-xs: 4px;
+  --espacio-sm: 8px;
+  --espacio-md: 16px;
+  --espacio-lg: 24px;
+  --espacio-xl: 40px;
+  --espacio-2xl: 64px;
+
+  /* Transiciones */
+  --transicion: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Iniciar sesión – Sportine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/base/variables.css" />
+  <link rel="stylesheet" href="../../css/pages/auth.css" />
+</head>
+<body>
+
+  <div class="auth-layout">
+
+    <!-- PANEL IZQUIERDO (decorativo) -->
+    <div class="auth-panel">
+      <a href="../../index.html" class="nav-logo">
+            <img src="../../assets/img/logo/logo-sportine-login.png" alt="Sportine" height="56" />
+      </a>
+      <div class="panel-content">
+        <div class="panel-blob blob-1"></div>
+        <div class="panel-blob blob-2"></div>
+        <div class="panel-illustration">
+          <div class="ill-card">
+            <div class="ill-avatar"></div>
+            <div>
+              <div class="ill-name">Carlos R.</div>
+              <div class="ill-role">Alumno activo · 🔥 23 días</div>
+            </div>
+          </div>
+          <div class="ill-stats">
+            <div class="ill-stat">
+              <span class="ill-num">147</span>
+              <span class="ill-label">Sesiones</span>
+            </div>
+            <div class="ill-stat">
+              <span class="ill-num">89%</span>
+              <span class="ill-label">Asistencia</span>
+            </div>
+            <div class="ill-stat">
+              <span class="ill-num">+12kg</span>
+              <span class="ill-label">Progreso</span>
+            </div>
+          </div>
+        </div>
+        <h2 class="panel-title">Tu progreso, siempre contigo</h2>
+        <p class="panel-sub">Accede a tus rutinas, estadísticas y entrenadores desde cualquier lugar.</p>
+      </div>
+    </div>
+
+    <!-- PANEL DERECHO (formulario) -->
+    <div class="auth-form-side">
+      <div class="auth-form-container">
+        <div class="auth-header">
+          <h1>Bienvenido de vuelta</h1>
+          <p>Ingresa tus credenciales para continuar</p>
+        </div>
+
+        <div class="auth-social-hint">
+          <span>Inicia sesión como</span>
+          <div class="role-pills">
+            <button class="role-pill active" data-role="alumno">🏃 Alumno</button>
+            <button class="role-pill" data-role="entrenador">🎯 Entrenador</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Correo electrónico</label>
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
+            <input type="email" id="email" placeholder="nombre@correo.com" autocomplete="email" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <label for="password">Contraseña</label>
+            <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+          </div>
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input type="password" id="password" placeholder="Tu contraseña" autocomplete="current-password" />
+            <button class="toggle-pass" type="button" aria-label="Mostrar contraseña">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="error-msg" class="error-msg" hidden>
+          Correo o contraseña incorrectos. Intenta de nuevo.
+        </div>
+
+        <button class="btn-submit" id="btn-login">
+          <span class="btn-text">Iniciar sesión</span>
+          <span class="btn-spinner" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          </span>
+        </button>
+
+        <p class="auth-switch">
+          ¿No tienes cuenta? <a href="registro.html">Regístrate gratis</a>
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../../js/core/auth.js"></script>
+  <script src="../../js/pages/login.js"></script>
+</body>
+</html>
