@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sportine – Buscar Amigo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/base/variables.css" />
+  <link rel="stylesheet" href="../../css/pages/home.css" />
+  <link rel="stylesheet" href="../../css/pages/alumno.css" />
+</head>
+<body>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><a href="../../index.html" class="logo-link"><div class="logo-mark">S</div><span class="logo-text">Sportine</span></a></div>
+  <nav class="sidebar-nav">
+    <a href="home.html" class="nav-item"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span class="nav-label">Home</span></a>
+    <a href="buscar.html" class="nav-item"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span><span class="nav-label">Buscar entrenador</span></a>
+    <a href="estadisticas.html" class="nav-item"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">Estadísticas</span></a>
+    <a href="social.html" class="nav-item active"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">Social</span></a>
+    <a href="perfil.html" class="nav-item"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span class="nav-label">Perfil</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="user-chip-avatar">C</div>
+      <div class="user-chip-info"><span class="user-chip-name">Carlos Ramírez</span><span class="user-chip-role">Alumno</span></div>
+    </div>
+  </div>
+</aside>
+
+<main class="main-content">
+  <header class="topbar">
+    <button class="topbar-menu" id="topbar-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <div class="topbar-logo"><div class="logo-mark">S</div><span class="logo-text">Sportine</span></div>
+    <div class="topbar-avatar">C</div>
+  </header>
+
+  <!-- Toolbar con volver -->
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+    <button onclick="history.back()" style="width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid #E5E7EB;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.06)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.5" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    </button>
+    <h1 style="font-family:Sora,sans-serif;font-weight:800;font-size:1.3rem">Buscar Amigo</h1>
+  </div>
+
+  <!-- Search -->
+  <div class="search-wrap" style="margin-bottom:20px">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" class="search-input" id="amigo-search" placeholder="Buscar por nombre de usuario..." autocomplete="off" />
+  </div>
+
+  <!-- Resultados -->
+  <div id="amigos-resultados"></div>
+</main>
+
+<nav class="bottom-nav">
+  <a href="home.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></a>
+  <a href="buscar.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><span>Buscar</span></a>
+  <a href="estadisticas.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span>Stats</span></a>
+  <a href="social.html" class="bn-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Social</span></a>
+  <a href="perfil.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Perfil</span></a>
+</nav>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<script>
+var MOCK_USUARIOS = [
+  { id:1, nombre:'Juan Pérez',     username:'@juan_p',    iniciales:'JP', deporte:'⚽ Fútbol',    agregado:false },
+  { id:2, nombre:'Ana Torres',     username:'@ana_t',     iniciales:'AT', deporte:'🏊 Natación',  agregado:true  },
+  { id:3, nombre:'Luis Martínez',  username:'@luis_m',    iniciales:'LM', deporte:'🏋️ Pesas',    agregado:false },
+  { id:4, nombre:'Sofía Gómez',    username:'@sofia_g',   iniciales:'SG', deporte:'🚴 Ciclismo', agregado:false },
+  { id:5, nombre:'Miguel Ángel',   username:'@miguel_a',  iniciales:'MA', deporte:'🏃 Atletismo', agregado:false },
+];
+
+var colores = ['#16a34a','#0284c7','#7c3aed','#c2410c','#d97706'];
+
+function render(lista) {
+  var cont = document.getElementById('amigos-resultados');
+  if (!lista.length) {
+    cont.innerHTML = '<div class="empty-search"><div class="empty-search-icon">👤</div><p class="empty-search-title">No se encontraron usuarios</p><p class="empty-search-sub">Intenta con otro nombre</p></div>';
+    return;
+  }
+  cont.innerHTML = lista.map(function(u, i) {
+    var color = colores[i % colores.length];
+    return '<div style="display:flex;align-items:center;gap:14px;padding:14px;background:#fff;border-radius:14px;border:1px solid #E5E7EB;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04)">'
+      + '<div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,' + color + ',' + color + '99);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:700;color:#fff;font-size:0.9rem;flex-shrink:0">' + u.iniciales + '</div>'
+      + '<div style="flex:1;min-width:0">'
+      + '<div style="font-weight:700;font-size:0.95rem;color:#1A1A1A">' + u.nombre + '</div>'
+      + '<div style="font-size:0.78rem;color:#9CA3AF">' + u.username + ' · ' + u.deporte + '</div>'
+      + '</div>'
+      + '<button onclick="toggleAmigo(' + u.id + ')" style="padding:7px 16px;border-radius:50px;border:' + (u.agregado ? 'none' : '1.5px solid #1ea1db') + ';background:' + (u.agregado ? '#F3F4F6' : '#fff') + ';color:' + (u.agregado ? '#9CA3AF' : '#1ea1db') + ';font-family:\'DM Sans\',sans-serif;font-weight:700;font-size:0.8rem;cursor:pointer;flex-shrink:0">'
+      + (u.agregado ? '✓ Agregado' : 'Agregar') + '</button>'
+      + '</div>';
+  }).join('');
+}
+
+window.toggleAmigo = function(id) {
+  var u = MOCK_USUARIOS.find(function(x) { return x.id === id; });
+  if (u) { u.agregado = !u.agregado; filtrar(); }
+};
+
+function filtrar() {
+  var q = document.getElementById('amigo-search').value.toLowerCase().trim();
+  render(q ? MOCK_USUARIOS.filter(function(u) { return u.nombre.toLowerCase().includes(q) || u.username.toLowerCase().includes(q); }) : MOCK_USUARIOS);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  render(MOCK_USUARIOS);
+  document.getElementById('amigo-search').addEventListener('input', filtrar);
+  document.getElementById('topbar-menu').addEventListener('click', function() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebar-overlay').classList.add('visible');
+    document.body.style.overflow = 'hidden';
+  });
+  document.getElementById('sidebar-overlay').addEventListener('click', function() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('visible');
+    document.body.style.overflow = '';
+  });
+});
+</script>
+</body>
+</html>

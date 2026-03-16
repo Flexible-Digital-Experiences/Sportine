@@ -1,0 +1,248 @@
+/* ============================================================
+   entrenador.css  —  Sportine · Páginas del Entrenador
+   Complementa alumno.css con componentes específicos del rol
+============================================================ */
+
+/* ============================================================
+   SOLICITUD CARD (item_solicitud_alumno.xml)
+============================================================ */
+.solicitud-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid var(--divider, #E5E7EB);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  margin-bottom: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  animation: slideUp 0.3s ease both;
+  position: relative;
+}
+.solicitud-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,0.09); }
+.solicitud-card.selected { border-color: #2196F3; box-shadow: 0 0 0 2px rgba(33,150,243,0.2); }
+
+/* Barra de color superior */
+.sol-color-bar {
+  height: 4px;
+  background: #2196F3;
+  width: 100%;
+}
+
+.sol-body { padding: 16px; }
+
+.sol-header {
+  display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px;
+}
+.sol-checkbox {
+  width: 22px; height: 22px; border-radius: 6px;
+  border: 2px solid #2196F3; background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; cursor: pointer; transition: background 0.15s;
+  margin-top: 2px;
+}
+.sol-checkbox.checked { background: #2196F3; }
+.sol-checkbox.checked::after { content:'✓'; color:#fff; font-size:0.8rem; font-weight:700; }
+
+.sol-avatar {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: linear-gradient(135deg, #3B82F6, #06B6D4);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Sora', sans-serif; font-weight: 700;
+  font-size: 1.2rem; color: #fff; flex-shrink: 0;
+  border: 2px solid #E5E7EB;
+}
+.sol-info { flex: 1; min-width: 0; }
+.sol-nombre {
+  font-family: 'Sora', sans-serif; font-weight: 700;
+  font-size: 1rem; color: #1A1A1A; margin-bottom: 4px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sol-chips-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.sol-chip-edad {
+  background: #2196F3; color: #fff;
+  padding: 3px 10px; border-radius: 50px;
+  font-size: 0.72rem; font-weight: 700;
+}
+.sol-chip-tiempo { font-size: 0.75rem; color: #9CA3AF; }
+
+/* Descripción / motivo */
+.sol-motivo {
+  background: #F8F9FA; border-radius: 12px; padding: 14px;
+}
+.sol-motivo-label {
+  font-size: 0.72rem; font-weight: 700; color: #2196F3;
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;
+}
+.sol-motivo-text {
+  font-size: 0.88rem; color: #424242; line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical; overflow: hidden;
+}
+.sol-ver-mas {
+  font-size: 0.8rem; color: #2196F3; font-weight: 700;
+  background: none; border: none; cursor: pointer;
+  padding: 4px 0; display: none;
+}
+
+/* Botón ver alumnos */
+.btn-ver-alumnos {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 16px; border-radius: 50px;
+  background: none; border: 1.5px solid var(--azul, #1ea1db);
+  color: var(--azul, #1ea1db); font-family: 'DM Sans', sans-serif;
+  font-weight: 700; font-size: 0.85rem; cursor: pointer;
+  transition: all 0.16s;
+}
+.btn-ver-alumnos:hover { background: var(--azul-claro, #E8F4FD); }
+.btn-ver-alumnos svg { width: 16px; height: 16px; }
+
+/* Bottom bar aceptar/rechazar */
+.sol-bottom-bar {
+  position: sticky; bottom: 80px;
+  background: #fff; border: 1px solid var(--divider, #E5E7EB);
+  border-radius: 16px; padding: 14px 16px;
+  display: flex; gap: 12px;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  margin-top: 16px;
+}
+@media (max-width: 768px) { .sol-bottom-bar { bottom: 72px; } }
+
+.sol-btn {
+  flex: 1; height: 50px; border-radius: 12px; border: none;
+  font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.9rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  gap: 8px; transition: all 0.16s;
+}
+.sol-btn svg { width: 18px; height: 18px; }
+.sol-reject {
+  background: #fff; border: 2px solid #EF4444; color: #EF4444;
+}
+.sol-reject:hover { background: #FEF2F2; }
+.sol-accept {
+  background: #2196F3; color: #fff;
+  box-shadow: 0 4px 14px rgba(33,150,243,0.35);
+}
+.sol-accept:hover { background: #1976D2; }
+
+/* ============================================================
+   STATS ALUMNO CARD (item_alumno_stats_card.xml)
+============================================================ */
+.alumno-stats-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--divider, #E5E7EB);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  margin-bottom: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  animation: slideUp 0.3s ease both;
+}
+.alumno-stats-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.09); }
+
+.asc-header { display: flex; align-items: center; gap: 14px; padding: 16px; }
+.asc-avatar-wrap { position: relative; flex-shrink: 0; }
+.asc-avatar {
+  width: 56px; height: 56px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Sora', sans-serif; font-weight: 700;
+  font-size: 1.1rem; color: #fff;
+}
+.asc-online {
+  position: absolute; bottom: 1px; right: 1px;
+  width: 13px; height: 13px; border-radius: 50%;
+  background: #10B981; border: 2px solid #fff;
+}
+.asc-online.off { background: #D1D5DB; }
+.asc-info { flex: 1; min-width: 0; }
+.asc-nombre {
+  font-family: 'Sora', sans-serif; font-weight: 700;
+  font-size: 0.97rem; color: #1A1A1A; margin-bottom: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.asc-deporte { font-size: 0.8rem; color: #6B7280; margin-bottom: 3px; }
+.asc-actividad { font-size: 0.75rem; color: #9CA3AF; }
+.asc-badge {
+  padding: 4px 10px; border-radius: 50px;
+  font-size: 0.7rem; font-weight: 700; color: #fff;
+  text-transform: uppercase; flex-shrink: 0;
+}
+.asc-badge.alto   { background: #4CAF50; }
+.asc-badge.medio  { background: #F59E0B; }
+.asc-badge.bajo   { background: #9CA3AF; }
+
+.asc-divider { height: 1px; background: #F3F4F6; margin: 0 16px; }
+
+.asc-metrics {
+  display: flex; padding: 14px 0;
+}
+.asc-metric {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 3px;
+}
+.asc-metric-num {
+  font-family: 'Sora', sans-serif; font-weight: 800;
+  font-size: 1.2rem; color: #1A1A1A;
+}
+.asc-metric-num.amber { color: #F59E0B; }
+.asc-metric-num.green { color: #10B981; }
+.asc-metric-label { font-size: 0.7rem; color: #9CA3AF; }
+
+/* ============================================================
+   ENTRENADOR PERFIL (fragment_entrenador_perfil.xml)
+============================================================ */
+.entre-perfil-top {
+  display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start;
+}
+.entre-avatar-col { display: flex; flex-direction: column; align-items: center; gap: 14px; flex-shrink: 0; }
+.entre-avatar-ring {
+  width: 110px; height: 110px; border-radius: 50%;
+  background: linear-gradient(135deg, #1ea1db, #00A896);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Sora', sans-serif; font-weight: 800; font-size: 2.2rem; color: #fff;
+  border: 3px solid #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+.entre-counter-pill {
+  display: flex; flex-direction: column; align-items: center;
+  background: #fff; border: 1px solid #E5E7EB; border-radius: 12px;
+  padding: 8px 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.entre-counter-num { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.2rem; }
+.entre-counter-num.orange { color: #FF9800; }
+.entre-counter-num.green  { color: #4CAF50; }
+.entre-counter-label { font-size: 0.68rem; color: #6B7280; font-weight: 700; margin-top: 1px; }
+
+.entre-bio-card {
+  flex: 1; background: #fff; border: 1px solid #E5E7EB;
+  border-radius: 14px; padding: 16px; min-width: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.entre-bio-name { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 8px; }
+.entre-bio-desc { font-size: 0.85rem; color: #6B7280; line-height: 1.5; }
+
+/* Detalles de clases card */
+.clases-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.clases-field { background: #F9FAFB; border-radius: 10px; padding: 12px; }
+.clases-field-label { font-size: 0.68rem; font-weight: 700; color: #9CA3AF; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 4px; }
+.clases-field-value { font-size: 0.93rem; color: #1A1A1A; font-weight: 600; }
+.clases-field-value.dinero { font-size: 1.1rem; color: #059669; }
+
+/* Botones entrenador */
+.btn-outline {
+  width: 100%; height: 52px;
+  background: #fff; color: var(--naranja, #f89a02);
+  border: 2px solid var(--naranja, #f89a02);
+  border-radius: 16px;
+  font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.95rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-bottom: 12px; transition: all 0.16s;
+}
+.btn-outline:hover { background: #FFF7ED; }
+
+.btn-green {
+  background: #056D22; color: #fff;
+  box-shadow: 0 4px 14px rgba(5,109,34,0.25);
+}
+.btn-green:hover { background: #044D18; }

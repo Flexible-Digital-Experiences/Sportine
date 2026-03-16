@@ -9,12 +9,38 @@
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../../css/base/variables.css" />
   <link rel="stylesheet" href="../../css/pages/auth.css" />
+
+  <!-- Estilos SOLO para los select nuevos, usando las mismas clases de auth.css -->
+  <style>
+    .input-wrap select {
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+      padding-left: 2.4rem;
+      height: 100%;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .input-wrap .select-arrow {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: #9CA3AF;
+    }
+  </style>
 </head>
 <body>
 
   <div class="auth-layout">
 
-    <!-- PANEL IZQUIERDO -->
+    <!-- PANEL IZQUIERDO — sin cambios -->
     <div class="auth-panel auth-panel--teal">
       <a href="../../index.html" class="nav-logo">
             <img src="../../assets/img/logo/logo-sportine-login.png" alt="Sportine" height="56" />
@@ -41,23 +67,23 @@
     </div>
 
     <!-- PANEL DERECHO -->
-    <div class="auth-form-side">
+    <div class="auth-form-side" style="align-items:flex-start;padding-top:40px;padding-bottom:40px;">
       <div class="auth-form-container">
         <div class="auth-header">
           <h1>Crear cuenta</h1>
           <p>Configura tu perfil en menos de 2 minutos</p>
         </div>
 
-        <!-- ROL -->
+        <!-- ROL — data-role ahora en MAYÚSCULAS para coincidir con el backend -->
         <div class="role-selector">
           <p class="role-selector-label">¿Cuál es tu rol?</p>
           <div class="role-cards">
-            <button class="role-card-btn active" data-role="alumno">
+            <button class="role-card-btn active" data-role="ALUMNO">
               <span class="role-card-icon">🏃</span>
               <span class="role-card-name">Alumno</span>
               <span class="role-card-desc">Quiero entrenar</span>
             </button>
-            <button class="role-card-btn" data-role="entrenador">
+            <button class="role-card-btn" data-role="ENTRENADOR">
               <span class="role-card-icon">🎯</span>
               <span class="role-card-name">Entrenador</span>
               <span class="role-card-desc">Quiero enseñar</span>
@@ -65,6 +91,7 @@
           </div>
         </div>
 
+        <!-- Nombre + Apellido — sin cambios -->
         <div class="form-row">
           <div class="form-group">
             <label for="nombre">Nombre</label>
@@ -82,6 +109,31 @@
           </div>
         </div>
 
+        <!-- ▼ NUEVO: Sexo -->
+        <div class="form-group">
+          <label for="sexo">Sexo</label>
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M12 12v8M9 18h6"/></svg>
+            <select id="sexo">
+              <option value="" disabled selected>Selecciona</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Femenino">Femenino</option>
+              <option value="Prefiero no decir">Prefiero no decir</option>
+            </select>
+            <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+
+        <!-- ▼ NUEVO: Nombre de usuario -->
+        <div class="form-group">
+          <label for="username">Nombre de usuario</label>
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <input type="text" id="username" placeholder="@tu_usuario" autocomplete="username" />
+          </div>
+        </div>
+
+        <!-- Correo — sin cambios -->
         <div class="form-group">
           <label for="reg-email">Correo electrónico</label>
           <div class="input-wrap">
@@ -91,6 +143,7 @@
           <span class="field-hint" id="email-hint"></span>
         </div>
 
+        <!-- Contraseña — sin cambios -->
         <div class="form-group">
           <label for="reg-password">Contraseña</label>
           <div class="input-wrap">
@@ -106,6 +159,7 @@
           <span class="strength-label" id="strength-label"></span>
         </div>
 
+        <!-- Confirmar contraseña — sin cambios -->
         <div class="form-group">
           <label for="confirm-password">Confirmar contraseña</label>
           <div class="input-wrap">
@@ -115,6 +169,44 @@
           <span class="field-hint" id="confirm-hint"></span>
         </div>
 
+        <!-- ▼ NUEVO: Estado + Ciudad en fila -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="estado">Estado</label>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <select id="estado">
+                <option value="" disabled selected>Tu estado</option>
+                <option>Aguascalientes</option><option>Baja California</option>
+                <option>Baja California Sur</option><option>Campeche</option>
+                <option>Chiapas</option><option>Chihuahua</option>
+                <option>Ciudad de México</option><option>Coahuila</option>
+                <option>Colima</option><option>Durango</option>
+                <option>Guanajuato</option><option>Guerrero</option>
+                <option>Hidalgo</option><option>Jalisco</option>
+                <option>Estado de México</option><option>Michoacán</option>
+                <option>Morelos</option><option>Nayarit</option>
+                <option>Nuevo León</option><option>Oaxaca</option>
+                <option>Puebla</option><option>Querétaro</option>
+                <option>Quintana Roo</option><option>San Luis Potosí</option>
+                <option>Sinaloa</option><option>Sonora</option>
+                <option>Tabasco</option><option>Tamaulipas</option>
+                <option>Tlaxcala</option><option>Veracruz</option>
+                <option>Yucatán</option><option>Zacatecas</option>
+              </select>
+              <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="ciudad">Ciudad</label>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              <input type="text" id="ciudad" placeholder="Tu ciudad" autocomplete="address-level2" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Terms — sin cambios -->
         <label class="checkbox-row">
           <input type="checkbox" id="terms" />
           <span>Acepto los <a href="#">Términos de servicio</a> y la <a href="#">Política de privacidad</a></span>
@@ -122,6 +214,7 @@
 
         <div id="reg-error-msg" class="error-msg" hidden></div>
 
+        <!-- Botón — sin cambios -->
         <button class="btn-submit" id="btn-register">
           <span class="btn-text">Crear cuenta</span>
           <span class="btn-spinner" hidden>

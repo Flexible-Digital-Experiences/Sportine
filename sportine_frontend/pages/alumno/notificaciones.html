@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sportine – Notificaciones</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../css/base/variables.css" />
+  <link rel="stylesheet" href="../../css/pages/home.css" />
+  <link rel="stylesheet" href="../../css/pages/alumno.css" />
+</head>
+<body>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><a href="../../index.html" class="logo-link"><div class="logo-mark">S</div><span class="logo-text">Sportine</span></a></div>
+  <nav class="sidebar-nav">
+    <a href="home.html" class="nav-item"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span class="nav-label">Home</span></a>
+    <a href="buscar.html" class="nav-item"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span><span class="nav-label">Buscar entrenador</span></a>
+    <a href="estadisticas.html" class="nav-item"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">Estadísticas</span></a>
+    <a href="social.html" class="nav-item active"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">Social</span></a>
+    <a href="perfil.html" class="nav-item"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span class="nav-label">Perfil</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="user-chip-avatar">C</div>
+      <div class="user-chip-info"><span class="user-chip-name">Carlos Ramírez</span><span class="user-chip-role">Alumno</span></div>
+    </div>
+  </div>
+</aside>
+
+<main class="main-content">
+  <header class="topbar">
+    <button class="topbar-menu" id="topbar-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <div class="topbar-logo"><div class="logo-mark">S</div><span class="logo-text">Sportine</span></div>
+    <div class="topbar-avatar">C</div>
+  </header>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <button onclick="history.back()" style="width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid #E5E7EB;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.06)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.5" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      </button>
+      <h1 style="font-family:Sora,sans-serif;font-weight:800;font-size:1.3rem">Notificaciones</h1>
+    </div>
+    <button id="btn-marcar-todas" style="background:none;border:none;color:#1ea1db;font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.82rem;cursor:pointer">Marcar todas como leídas</button>
+  </div>
+
+  <div id="notif-lista"></div>
+</main>
+
+<nav class="bottom-nav">
+  <a href="home.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></a>
+  <a href="buscar.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><span>Buscar</span></a>
+  <a href="estadisticas.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span>Stats</span></a>
+  <a href="social.html" class="bn-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Social</span></a>
+  <a href="perfil.html" class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Perfil</span></a>
+</nav>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<script>
+var NOTIFS = [
+  { id:1, tipo:'like',      icono:'❤️',  color:'#EF4444', iniciales:'JP', usuario:'Juan Pérez',    texto:'le dio me gusta a tu publicación.',      tiempo:'Hace 2 min',  leida:false },
+  { id:2, tipo:'comentario',icono:'💬',  color:'#3B82F6', iniciales:'ML', usuario:'María López',   texto:'comentó en tu publicación: "¡Así se hace!"', tiempo:'Hace 10 min', leida:false },
+  { id:3, tipo:'solicitud', icono:'✅',  color:'#22c55e', iniciales:'ML', usuario:'María López',   texto:'aceptó tu solicitud de entrenamiento.',   tiempo:'Hace 1 h',   leida:false },
+  { id:4, tipo:'logro',     icono:'🏆',  color:'#F59E0B', iniciales:'CR', usuario:'Tú',            texto:'desbloqueaste el logro "Primera semana completa".', tiempo:'Hace 3 h', leida:true  },
+  { id:5, tipo:'like',      icono:'❤️',  color:'#EF4444', iniciales:'AT', usuario:'Ana Torres',    texto:'le dio me gusta a tu publicación.',      tiempo:'Hace 5 h',   leida:true  },
+  { id:6, tipo:'amigo',     icono:'👤',  color:'#8B5CF6', iniciales:'SG', usuario:'Sofía Gómez',   texto:'comenzó a seguirte.',                    tiempo:'Ayer',       leida:true  },
+];
+
+function render() {
+  var lista = document.getElementById('notif-lista');
+  var noLeidas = NOTIFS.filter(function(n) { return !n.leida; });
+
+  if (!NOTIFS.length) {
+    lista.innerHTML = '<div class="empty-search"><div class="empty-search-icon">🔔</div><p class="empty-search-title">Sin notificaciones</p><p class="empty-search-sub">Aquí aparecerán tus notificaciones</p></div>';
+    return;
+  }
+
+  // Agrupa: No leídas primero, luego leídas
+  var grupos = [
+    { label: noLeidas.length ? 'Nuevas' : null, items: noLeidas },
+    { label: 'Anteriores', items: NOTIFS.filter(function(n) { return n.leida; }) },
+  ];
+
+  lista.innerHTML = grupos.map(function(g) {
+    if (!g.items.length) return '';
+    var header = g.label ? '<p style="font-size:0.75rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.07em;margin:0 0 10px">' + g.label + '</p>' : '';
+    return header + g.items.map(function(n) {
+      return '<div onclick="marcarLeida(' + n.id + ')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:' + (n.leida ? '#fff' : '#EFF6FF') + ';border-radius:14px;border:1px solid ' + (n.leida ? '#E5E7EB' : '#BFDBFE') + ';margin-bottom:8px;cursor:pointer;transition:background 0.15s">'
+        + '<div style="position:relative;flex-shrink:0">'
+        + '<div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1ea1db,#00A896);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:700;font-size:0.85rem;color:#fff">' + n.iniciales + '</div>'
+        + '<div style="position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;border-radius:50%;background:' + n.color + ';display:flex;align-items:center;justify-content:center;font-size:0.6rem;border:2px solid #fff">' + n.icono + '</div>'
+        + '</div>'
+        + '<div style="flex:1;min-width:0">'
+        + '<div style="font-size:0.88rem;color:#1A1A1A;line-height:1.4"><strong>' + n.usuario + '</strong> ' + n.texto + '</div>'
+        + '<div style="font-size:0.75rem;color:#9CA3AF;margin-top:3px">' + n.tiempo + '</div>'
+        + '</div>'
+        + (!n.leida ? '<div style="width:9px;height:9px;border-radius:50%;background:#1ea1db;flex-shrink:0"></div>' : '')
+        + '</div>';
+    }).join('');
+  }).join('<div style="height:14px"></div>');
+}
+
+window.marcarLeida = function(id) {
+  var n = NOTIFS.find(function(x) { return x.id === id; });
+  if (n && !n.leida) { n.leida = true; render(); }
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+  render();
+
+  document.getElementById('btn-marcar-todas').addEventListener('click', function() {
+    NOTIFS.forEach(function(n) { n.leida = true; });
+    render();
+  });
+
+  document.getElementById('topbar-menu').addEventListener('click', function() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebar-overlay').classList.add('visible');
+    document.body.style.overflow = 'hidden';
+  });
+  document.getElementById('sidebar-overlay').addEventListener('click', function() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('visible');
+    document.body.style.overflow = '';
+  });
+});
+</script>
+</body>
+</html>

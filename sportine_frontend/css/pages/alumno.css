@@ -1,0 +1,461 @@
+/* ============================================================
+   alumno.css  —  Sportine · Páginas del Alumno
+   Base fiel al diseño Android + mejoras web moderadas
+   Importa variables.css y home.css para reutilizar
+============================================================ */
+
+/* ── Variables locales (complementan variables.css) ── */
+:root {
+  --verde-activo:  #20BF55;
+  --azul-card:     #3B82F6;
+  --azul-claro2:   #EFF6FF;
+  --amber:         #F59E0B;
+  --amber-claro:   #FFFBEB;
+  --green-claro:   #F0FDF4;
+  --green-600:     #16A34A;
+  --red-claro:     #FEF2F2;
+  --red-600:       #DC2626;
+  --label-color:   #9CA3AF;
+  --divider:       #E5E7EB;
+  --card-radius:   16px;
+  --card-shadow:   0 2px 12px rgba(0,0,0,0.06);
+  --card-shadow-hover: 0 6px 24px rgba(0,0,0,0.1);
+}
+
+/* ============================================================
+   LAYOUT BASE (mismo que home)
+============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--fuente-body, 'DM Sans', sans-serif);
+  background: #FAFAFA;
+  color: #1A1A1A;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar — idéntico a home.css, no se repite aquí */
+/* Se reutiliza la clase .sidebar, .main-content, .bottom-nav, etc. */
+
+/* ============================================================
+   PAGE HEADER (títulos grandes como Android)
+============================================================ */
+.page-header {
+  margin-bottom: 20px;
+}
+.page-title {
+  font-family: var(--fuente-display, 'Sora', sans-serif);
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  font-weight: 800;
+  color: #1A1A1A;
+  margin-bottom: 4px;
+}
+.page-divider {
+  height: 1px;
+  background: var(--divider);
+  margin-top: 14px;
+}
+
+/* ============================================================
+   SEARCH BAR (Android SearchView → web input)
+============================================================ */
+.search-wrap {
+  position: relative;
+  margin-bottom: 20px;
+}
+.search-input {
+  width: 100%;
+  padding: 12px 16px 12px 44px;
+  border: 1.5px solid var(--divider);
+  border-radius: 50px;
+  background: #fff;
+  font-family: var(--fuente-body, 'DM Sans', sans-serif);
+  font-size: 0.9rem;
+  color: #1A1A1A;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.search-input:focus {
+  border-color: var(--azul-card);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+}
+.search-input::placeholder { color: #9CA3AF; }
+.search-icon {
+  position: absolute; left: 16px; top: 50%;
+  transform: translateY(-50%);
+  width: 18px; height: 18px;
+  color: #9CA3AF;
+  pointer-events: none;
+}
+
+/* ============================================================
+   SECTION LABEL (uppercase label como Android)
+============================================================ */
+.section-label {
+  font-family: var(--fuente-display, 'Sora', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--label-color);
+  margin-bottom: 12px;
+}
+.section-title-lg {
+  font-family: var(--fuente-display, 'Sora', sans-serif);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #1A1A1A;
+  margin-bottom: 14px;
+}
+
+/* ============================================================
+   CARD BASE (MaterialCardView → web)
+============================================================ */
+.sp-card {
+  background: #fff;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--divider);
+  box-shadow: var(--card-shadow);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.sp-card:hover { transform: translateY(-2px); box-shadow: var(--card-shadow-hover); }
+.sp-card.clickable { cursor: pointer; }
+
+/* ============================================================
+   ENTRENADOR CARD (item_alumno_buscar_calentrenador.xml)
+============================================================ */
+.entrenador-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.ec-avatar-wrap {
+  width: 72px; height: 72px; flex-shrink: 0;
+  border-radius: 50%; overflow: hidden;
+  border: 2px solid var(--divider);
+  background: var(--azul-claro2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--fuente-display, 'Sora', sans-serif);
+  font-weight: 700; font-size: 1.3rem; color: var(--azul-card);
+}
+.ec-avatar-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.ec-info { flex: 1; min-width: 0; }
+.ec-nombre {
+  font-family: var(--fuente-display, 'Sora', sans-serif);
+  font-weight: 700; font-size: 1rem; color: #111827;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+.ec-stars {
+  display: flex; align-items: center; gap: 5px; margin-bottom: 5px;
+}
+.stars { color: #FCD34D; font-size: 0.8rem; letter-spacing: 1px; }
+.ec-rating-val { font-size: 0.8rem; font-weight: 700; color: #6B7280; }
+.ec-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.ec-chip-small {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: #F5F5F5; padding: 3px 9px; border-radius: 50px;
+  font-size: 0.72rem; color: #6B7280; font-weight: 600;
+}
+.ec-disponible {
+  background: var(--green-claro); color: var(--green-600);
+  font-size: 0.7rem; font-weight: 700;
+  padding: 2px 9px; border-radius: 50px;
+}
+/* Indicador lateral (acento verde/amarillo) */
+.ec-indicator {
+  width: 4px; align-self: stretch; border-radius: 4px;
+  background: var(--verde-activo); flex-shrink: 0;
+}
+.ec-indicator.amarillo { background: var(--amber); }
+.ec-indicator.rojo { background: var(--red-600); }
+
+/* Estado vacío de búsqueda */
+.empty-search {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 48px 24px; gap: 10px; text-align: center;
+  background: #fff; border-radius: var(--card-radius);
+  border: 1px dashed var(--divider);
+}
+.empty-search-icon { font-size: 3rem; }
+.empty-search-title { font-family: var(--fuente-display, 'Sora', sans-serif); font-weight: 700; font-size: 1rem; }
+.empty-search-sub { font-size: 0.85rem; color: #6B7280; }
+
+/* ============================================================
+   STATS CARDS (fragment_alumno_estadisticas.xml → grid 2x2)
+============================================================ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.stat-card {
+  background: #fff;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--divider);
+  box-shadow: var(--card-shadow);
+  padding: 20px 16px;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px; text-align: center;
+  animation: slideUp 0.35s ease both;
+}
+.stat-card-label { font-size: 0.82rem; color: #6B7280; font-weight: 500; }
+.stat-card-num {
+  font-family: var(--fuente-display, 'Sora', sans-serif);
+  font-size: 2rem; font-weight: 800; color: #1A1A1A;
+  line-height: 1;
+}
+.stat-card-num.amber  { color: var(--amber); }
+.stat-card-num.green  { color: var(--green-600); }
+.stat-card-sub { font-size: 0.72rem; color: #9CA3AF; }
+
+/* Chart containers */
+.chart-card {
+  background: #fff;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--divider);
+  box-shadow: var(--card-shadow);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.chart-card canvas { width: 100% !important; }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   SOCIAL FEED (fragment_alumno_social.xml)
+============================================================ */
+.create-post-trigger {
+  background: #fff;
+  border: 1px solid var(--divider);
+  border-radius: var(--card-radius);
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer; margin-bottom: 16px;
+  transition: border-color 0.16s, box-shadow 0.16s;
+  box-shadow: var(--card-shadow);
+}
+.create-post-trigger:hover { border-color: var(--azul-card); box-shadow: 0 2px 12px rgba(59,130,246,0.1); }
+.cpt-hint { flex: 1; font-size: 0.9rem; color: #9CA3AF; }
+.cpt-camera { width: 22px; height: 22px; color: #9CA3AF; }
+
+.post-card {
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid var(--divider);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-bottom: 14px;
+  overflow: hidden;
+  animation: slideUp 0.3s ease both;
+}
+.post-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 16px 10px;
+}
+.post-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--azul, #1ea1db), var(--teal, #00A896));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--fuente-display, 'Sora', sans-serif);
+  font-weight: 700; font-size: 0.85rem; color: #fff; flex-shrink: 0;
+}
+.post-username { font-weight: 700; font-size: 0.95rem; color: #111827; }
+.post-time { font-size: 0.75rem; color: #9CA3AF; margin-left: auto; }
+
+.post-description {
+  padding: 0 16px 12px;
+  font-size: 0.9rem; line-height: 1.5; color: #1A1A1A;
+}
+.post-image {
+  width: 100%; aspect-ratio: 4/3; object-fit: cover;
+  background: var(--divider);
+}
+.post-actions {
+  display: flex; align-items: center; gap: 4px;
+  padding: 10px 12px 12px;
+}
+.post-action-btn {
+  display: flex; align-items: center; gap: 5px;
+  background: none; border: none; cursor: pointer;
+  color: #6B7280; font-size: 0.85rem; font-weight: 600;
+  padding: 6px 10px; border-radius: 8px;
+  transition: background 0.15s, color 0.15s;
+}
+.post-action-btn:hover { background: #F5F5F5; }
+.post-action-btn.liked { color: #EF4444; }
+.post-action-btn svg { width: 18px; height: 18px; }
+.post-spacer { flex: 1; }
+
+/* Achievement card */
+.achievement-card {
+  background: linear-gradient(135deg, var(--verde-activo) 0%, #01BAEF 100%);
+  border-radius: 20px; color: #fff;
+  padding: 24px 20px; margin-bottom: 14px;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 10px;
+  box-shadow: 0 4px 20px rgba(32,191,85,0.3);
+  animation: slideUp 0.3s ease both;
+}
+.ach-header { display: flex; align-items: center; gap: 10px; align-self: flex-start; }
+.ach-avatar { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-weight: 700; }
+.ach-username { font-weight: 700; font-size: 0.9rem; }
+.ach-trophy { font-size: 3rem; }
+.ach-text { font-family: var(--fuente-display, 'Sora', sans-serif); font-weight: 700; font-size: 1rem; line-height: 1.3; }
+.ach-actions { display: flex; align-items: center; gap: 8px; align-self: flex-start; }
+.ach-like-btn { background: rgba(255,255,255,0.2); border: none; color: #fff; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.ach-like-btn svg { width: 18px; height: 18px; }
+.ach-likes { font-weight: 700; font-size: 0.95rem; }
+
+/* Social top bar */
+.social-topbar {
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px; position: relative;
+}
+.social-title {
+  font-family: var(--fuente-display, 'Sora', sans-serif);
+  font-weight: 800; font-size: 1.1rem; letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.social-actions { position: absolute; display: flex; gap: 4px; }
+.social-actions.left { left: 0; }
+.social-actions.right { right: 0; }
+.social-icon-btn {
+  background: none; border: none; cursor: pointer;
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #6B7280; transition: background 0.15s;
+}
+.social-icon-btn:hover { background: #F5F5F5; }
+.social-icon-btn svg { width: 20px; height: 20px; }
+
+/* ============================================================
+   PERFIL (fragment_alumno_perfil.xml)
+============================================================ */
+.perfil-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px;
+}
+.perfil-header-title {
+  font-family: var(--fuente-display, 'Sora', sans-serif);
+  font-size: 1.4rem; font-weight: 800;
+}
+.settings-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: #fff; border: 1px solid var(--divider);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: var(--teal, #00A896); transition: box-shadow 0.16s;
+}
+.settings-btn:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+.settings-btn svg { width: 20px; height: 20px; }
+
+.perfil-avatar-section {
+  display: flex; justify-content: center; margin-bottom: 12px;
+}
+.perfil-avatar-ring {
+  width: 120px; height: 120px; border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  background: linear-gradient(135deg, var(--azul, #1ea1db), var(--teal, #00A896));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--fuente-display, 'Sora', sans-serif);
+  font-weight: 800; font-size: 2.5rem; color: #fff;
+  position: relative;
+}
+.perfil-avatar-ring img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+
+.perfil-name-section { text-align: center; margin-bottom: 6px; }
+.perfil-name {
+  font-family: var(--fuente-display, 'Sora', sans-serif);
+  font-size: 1.6rem; font-weight: 800; margin-bottom: 4px;
+}
+.perfil-tagline { font-size: 0.85rem; color: #6B7280; margin-bottom: 20px; }
+
+/* Floating badges (amigos / entrenadores) — posición relativa a card */
+.perfil-badges-row {
+  display: flex; justify-content: flex-end; gap: 10px;
+  margin-bottom: 20px;
+}
+.perfil-badge-pill {
+  background: #fff; border: 1px solid var(--divider);
+  border-radius: var(--card-radius);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  padding: 10px 16px;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.perfil-badge-num {
+  font-family: var(--fuente-display, 'Sora', sans-serif);
+  font-weight: 800; font-size: 1.2rem;
+}
+.perfil-badge-num.green  { color: #4CAF50; }
+.perfil-badge-num.orange { color: var(--naranja, #f89a02); }
+.perfil-badge-label { font-size: 0.7rem; color: #6B7280; font-weight: 700; }
+
+/* Deportes chips */
+.deportes-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.deporte-chip {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  width: 72px; padding: 10px 8px;
+  background: #fff; border: 1px solid var(--divider);
+  border-radius: 14px; box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  transition: transform 0.16s;
+}
+.deporte-chip:hover { transform: translateY(-2px); }
+.deporte-chip-icon { font-size: 1.6rem; }
+.deporte-chip-label { font-size: 0.68rem; color: #6B7280; font-weight: 600; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+
+/* Info field rows (fondo_campos_perfil style) */
+.info-field {
+  background: #F9FAFB;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.info-field-label {
+  font-size: 0.68rem; font-weight: 700;
+  color: #9CA3AF; letter-spacing: 0.05em;
+  text-transform: uppercase; margin-bottom: 4px;
+}
+.info-field-value { font-size: 0.93rem; color: #1A1A1A; font-weight: 500; }
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* Primary & Secondary Buttons */
+.btn-primary {
+  width: 100%; height: 52px;
+  background: var(--teal, #00A896); color: #fff;
+  border: none; border-radius: var(--card-radius);
+  font-family: var(--fuente-body, 'DM Sans', sans-serif);
+  font-weight: 700; font-size: 0.95rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(0,168,150,0.28);
+  transition: background 0.16s, transform 0.16s;
+}
+.btn-primary:hover { background: #008f7e; transform: translateY(-1px); }
+.btn-danger {
+  background: #EF5350; color: #fff;
+  box-shadow: 0 4px 16px rgba(239,83,80,0.25);
+}
+.btn-danger:hover { background: #d32f2f; }
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media (max-width: 768px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .info-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+  .stats-grid { gap: 8px; }
+  .stat-card-num { font-size: 1.6rem; }
+  .entrenador-card { gap: 10px; padding: 12px; }
+  .ec-avatar-wrap { width: 58px; height: 58px; font-size: 1.1rem; }
+}
