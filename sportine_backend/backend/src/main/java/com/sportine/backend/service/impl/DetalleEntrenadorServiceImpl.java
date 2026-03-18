@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -180,52 +181,64 @@ public class DetalleEntrenadorServiceImpl implements DetalleEntrenadorService {
      * Método auxiliar para obtener el estado de relación entre alumno y entrenador.
      */
     private EstadoRelacionDTO obtenerEstadoRelacionDTO(String usuarioEntrenador, String usuarioAlumno) {
-        // Buscar si existe alguna relación
-        var relacionOpt = detalleEntrenadorRepository.obtenerEstadoRelacion(
-                usuarioEntrenador, usuarioAlumno);
+        List<Map<String, Object>> relaciones = detalleEntrenadorRepository
+                .obtenerRelaciones(usuarioEntrenador, usuarioAlumno);
 
-        log.info("Verificando relación - isPresent: {}", relacionOpt.isPresent());
+        log.info("Relaciones encontradas: {}", relaciones.size());
 
-        if (!relacionOpt.isPresent()) {
-            // NO HAY RELACIÓN
-            log.info("No existe relación entre Alumno {} y Entrenador {}",
-                    usuarioAlumno, usuarioEntrenador);
-            return new EstadoRelacionDTO(false, null, null, null, false);
+        if (relaciones.isEmpty()) {
+            return new EstadoRelacionDTO(false, null, null, null, false, null, new ArrayList<>());
         }
 
-        // SÍ HAY RELACIÓN - Extraer datos
-        Map<String, Object> relacionData = relacionOpt.get();
-        log.info("Datos de relación encontrados: {}", relacionData);
+        List<EstadoRelacionDTO.RelacionDeporteDTO> listaRelaciones = new ArrayList<>();
+        for (Map<String, Object> rel : relaciones) {
+            Integer idDeporte = rel.get("idDeporte") != null
+                    ? ((Number) rel.get("idDeporte")).intValue() : null;
+            Integer idRelacion = rel.get("idRelacion") != null
+                    ? ((Number) rel.get("idRelacion")).intValue() : null;
+            String nombreDeporte = (String) rel.get("nombreDeporte");
+            String status = (String) rel.get("statusRelacion");
+            String statusSuscripcion = rel.get("statusSuscripcion") != null
+                    ? (String) rel.get("statusSuscripcion") : "";
 
-        String statusRelacion = (String) relacionData.get("statusRelacion");
-
-        // Verificar si el status es null (significa que la query devolvió fila vacía)
-        if (statusRelacion == null) {
-            log.info("Status de relación es NULL - No hay relación real entre {} y {}",
-                    usuarioAlumno, usuarioEntrenador);
-            return new EstadoRelacionDTO(false, null, null, null, false);
-        }
-
-        Integer idDeporte = null;
-        Object idDeporteObj = relacionData.get("idDeporte");
-        if (idDeporteObj != null) {
-            if (idDeporteObj instanceof Integer) {
-                idDeporte = (Integer) idDeporteObj;
-            } else if (idDeporteObj instanceof Number) {
-                idDeporte = ((Number) idDeporteObj).intValue();
+            LocalDate finMensualidad = null;
+            Object finObj = rel.get("finMensualidad");
+            if (finObj != null) {
+                if (finObj instanceof LocalDate) {
+                    finMensualidad = (LocalDate) finObj;
+                } else if (finObj instanceof java.sql.Date) {
+                    finMensualidad = ((java.sql.Date) finObj).toLocalDate();
+                }
             }
+
+            EstadoRelacionDTO.RelacionDeporteDTO dto = new EstadoRelacionDTO.RelacionDeporteDTO(
+                    idRelacion, idDeporte, nombreDeporte, status, finMensualidad, statusSuscripcion);
+            listaRelaciones.add(dto);
         }
 
-        String nombreDeporte = (String) relacionData.get("nombreDeporte");
+        // La relación más relevante es la primera (ORDER BY id_relacion DESC)
+        Map<String, Object> primera = relaciones.get(0);
+        String statusPrincipal = (String) primera.get("statusRelacion");
+        Integer idDeportePrincipal = primera.get("idDeporte") != null
+                ? ((Number) primera.get("idDeporte")).intValue() : null;
+        String nombreDeportePrincipal = (String) primera.get("nombreDeporte");
 
-        // Verificar si ya calificó (convertir Long a Boolean)
-        Long countCalificacion = detalleEntrenadorRepository.verificarSiYaCalifico(
-                usuarioAlumno, usuarioEntrenador);
+        LocalDate finPrincipal = null;
+        Object finObj = primera.get("finMensualidad");
+        if (finObj instanceof java.sql.Date) {
+            finPrincipal = ((java.sql.Date) finObj).toLocalDate();
+        } else if (finObj instanceof LocalDate) {
+            finPrincipal = (LocalDate) finObj;
+        }
+
+        Long countCalificacion = detalleEntrenadorRepository
+                .verificarSiYaCalifico(usuarioAlumno, usuarioEntrenador);
         Boolean yaCalificado = countCalificacion != null && countCalificacion > 0;
 
-        log.info("Relación ACTIVA encontrada: Alumno {} - Entrenador {} | Estado: {} | Deporte: {} | Ya calificó: {}",
-                usuarioAlumno, usuarioEntrenador, statusRelacion, nombreDeporte, yaCalificado);
+        log.info("Relación ACTIVA encontrada: Alumno {} - Entrenador {} | Estado: {} | Deportes: {}",
+                usuarioAlumno, usuarioEntrenador, statusPrincipal, listaRelaciones.size());
 
-        return new EstadoRelacionDTO(true, statusRelacion, idDeporte, nombreDeporte, yaCalificado);
+        return new EstadoRelacionDTO(true, statusPrincipal, idDeportePrincipal,
+                nombreDeportePrincipal, yaCalificado, finPrincipal, listaRelaciones);
     }
 }

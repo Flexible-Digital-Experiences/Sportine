@@ -14,8 +14,8 @@ public interface BuscarEntrenadorDeporteRepository extends JpaRepository<Usuario
 
     /**
      * Buscar entrenadores por deporte específico Y mismo estado
-     * Se usa cuando el usuario busca por un deporte (fut, basket, etc.)
-     * INCLUYE FILTRO DE LÍMITE DE ALUMNOS - Solo muestra entrenadores con disponibilidad
+     * FILTRO PAYPAL: Solo muestra entrenadores con onboarding_status = 'completed'
+     * FILTRO LÍMITE: Solo muestra entrenadores con disponibilidad
      */
     @Query(value = """
         SELECT
@@ -38,6 +38,7 @@ public interface BuscarEntrenadorDeporteRepository extends JpaRepository<Usuario
         WHERE r.rol = 'entrenador'
           AND d.nombre_deporte = :deporte
           AND u.id_estado = :idEstado
+          AND ie.onboarding_status = 'completed'
         GROUP BY u.usuario, u.nombre, u.apellidos, ie.foto_perfil, ie.limite_alumnos
         ORDER BY ratingPromedio DESC, u.nombre ASC
         """, nativeQuery = true)

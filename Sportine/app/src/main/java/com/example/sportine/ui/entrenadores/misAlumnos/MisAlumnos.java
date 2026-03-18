@@ -24,6 +24,7 @@ import com.example.sportine.data.ApiService;
 import com.example.sportine.data.RetrofitClient;
 import com.example.sportine.models.AlumnoEntrenadorDTO;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,13 +40,14 @@ public class MisAlumnos extends Fragment {
     private boolean mostrandoPendientes = false;
 
     // Views
-    private ImageButton btnBack;  // ✅ AGREGADO
+    private ImageButton btnBack;
     private RecyclerView recyclerAlumnos;
     private LinearLayout layoutEmptyState;
     private LottieAnimationView imagenNoEncontrado;
     private TextView textoError;
     private MaterialButton btnFiltroPendientes;
-
+    private MaterialCardView cardBannerPayPal;
+    private MaterialButton btnBannerConectarPayPal;
     // Adapter
     private MisAlumnosAdapter alumnosAdapter;
 
@@ -76,17 +78,19 @@ public class MisAlumnos extends Fragment {
         setupListeners();
 
         cargarAlumnos();
-
+        verificarEstadoPayPalYMostrarBanner();
         return view;
     }
 
     private void initViews(View view) {
-        btnBack = view.findViewById(R.id.btn_back);  // ✅ AGREGADO
+        btnBack = view.findViewById(R.id.btn_back);
         recyclerAlumnos = view.findViewById(R.id.recycler_entrenadores);
         layoutEmptyState = view.findViewById(R.id.layout_empty_state);
         imagenNoEncontrado = view.findViewById(R.id.imagen_noenco);
         textoError = view.findViewById(R.id.texto_err);
         btnFiltroPendientes = view.findViewById(R.id.btn_filtro_pendientes);
+        cardBannerPayPal = view.findViewById(R.id.cardBannerPayPal);
+        btnBannerConectarPayPal = view.findViewById(R.id.btnBannerConectarPayPal);
     }
 
     private void setupRecyclerView() {
@@ -102,12 +106,16 @@ public class MisAlumnos extends Fragment {
     }
 
     private void setupListeners() {
-        // ✅ AGREGADO: Listener del botón back
         btnBack.setOnClickListener(v -> {
             NavHostFragment.findNavController(this).navigateUp();
         });
 
         btnFiltroPendientes.setOnClickListener(v -> toggleFiltro());
+
+        if (btnBannerConectarPayPal != null) {
+          btnBannerConectarPayPal.setOnClickListener(v -> NavHostFragment.findNavController(this).navigate(R.id.action_misAlumnos_to_onboardingPayPal)
+          );
+        }
     }
 
     private void cargarAlumnos() {
@@ -122,14 +130,12 @@ public class MisAlumnos extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     List<AlumnoEntrenadorDTO> todosLosDatos = response.body();
 
-                    // ✅ FILTRAR: Excluir finalizados y separar pendientes
                     todosLosAlumnos = new ArrayList<>();
                     alumnosPendientes = new ArrayList<>();
 
                     for (AlumnoEntrenadorDTO alumno : todosLosDatos) {
                         String status = alumno.getStatusRelacion();
 
-                        // ✅ Ignorar finalizados
                         if (!"finalizado".equalsIgnoreCase(status)) {
                             todosLosAlumnos.add(alumno);
 
@@ -199,4 +205,32 @@ public class MisAlumnos extends Fragment {
             textoError.setText("No se encontraron alumnos");
         }
     }
+    private void verificarEstadoPayPalYMostrarBanner() {
+        if (usuarioEntrenador.isEmpty() || cardBannerPayPal == null) return;
+
+        apiService.verificarEntrenadorPuedeRecibirPagos(usuarioEntrenador)
+                .enqueue(new Callback<com.example.sportine.models.payment.PaymentApiModels.PuedeRecibirPagosResponse>() {
+                    @Override
+                    public void onResponse(
+                            Call<com.example.sportine.models.payment.PaymentApiModels.PuedeRecibirPagosResponse> call,
+                            Response<com.example.sportine.models.payment.PaymentApiModels.PuedeRecibirPagosResponse> response) {
+
+                        if (!isAdded()) return;
+
+                        boolean puedeRecibir = false;
+                        if (response.isSuccessful() && response.body() != null) {
+                            puedeRecibir = response.body().isPuedeRecibirPagos();
+                        }
+                        cardBannerPayPal.setVisibility(puedeRecibir ? View.GONE : View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onFailure(
+                            Call<com.example.sportine.models.payment.PaymentApiModels.PuedeRecibirPagosResponse> call,
+                            Throwable t) {
+                        if (cardBannerPayPal != null) cardBannerPayPal.setVisibility(View.GONE);
+                    }
+                });
+    }
+
 }

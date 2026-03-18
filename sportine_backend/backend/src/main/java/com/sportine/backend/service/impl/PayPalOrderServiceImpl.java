@@ -86,7 +86,7 @@ public class PayPalOrderServiceImpl implements PayPalOrderService {
 
     @Override
     public Map<String, String> crearOrdenMultiparty(String usuarioEstudiante, String usuarioEntrenador,
-                                                    Integer idDeporte, Double montoTotal) {
+                                                    Integer idDeporte, Double montoTotal, String returnUrl, String cancelUrl) {
         try {
             log.info("Creando orden multiparty: Estudiante={}, Entrenador={}, Monto={}",
                     usuarioEstudiante, usuarioEntrenador, montoTotal);
@@ -165,8 +165,8 @@ public class PayPalOrderServiceImpl implements PayPalOrderService {
             appContext.addProperty("landing_page", "BILLING");
             appContext.addProperty("shipping_preference", "NO_SHIPPING");
             appContext.addProperty("user_action", "PAY_NOW");
-            appContext.addProperty("return_url", sportineBaseUrl + "/api/v2/estudiante/pago/success");
-            appContext.addProperty("cancel_url", sportineBaseUrl + "/api/v2/estudiante/pago/cancel");
+            appContext.addProperty("return_url", returnUrl);
+            appContext.addProperty("cancel_url", cancelUrl);
             requestBody.add("application_context", appContext);
 
             // Hacer llamada a PayPal
@@ -302,10 +302,6 @@ public class PayPalOrderServiceImpl implements PayPalOrderService {
             AlumnoSuscripcionEntrenador suscripcion = suscripcionRepository.findById(idSuscripcion)
                     .orElseThrow(() -> new RuntimeException("Suscripción no encontrada"));
 
-            // Verificar que tenga vault_id
-            if (suscripcion.getVaultId() == null) {
-                throw new RuntimeException("La suscripción no tiene un payment token guardado");
-            }
 
             // Obtener merchant del entrenador
             InformacionEntrenador entrenador = entrenadorRepository.findByUsuario(suscripcion.getUsuarioEntrenador())
@@ -354,10 +350,7 @@ public class PayPalOrderServiceImpl implements PayPalOrderService {
             JsonObject paymentSource = new JsonObject();
             JsonObject paypalPayment = new JsonObject();
             JsonObject vaultId = new JsonObject();
-            vaultId.addProperty("id", suscripcion.getVaultId());
             paypalPayment.add("vault_id", vaultId);
-            paymentSource.add("paypal", paypalPayment);
-            requestBody.add("payment_source", paymentSource);
 
             // Hacer llamada
             HttpHeaders headers = new HttpHeaders();

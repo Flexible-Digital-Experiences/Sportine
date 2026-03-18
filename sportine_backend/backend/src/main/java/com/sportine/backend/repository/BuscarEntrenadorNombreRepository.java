@@ -14,8 +14,8 @@ public interface BuscarEntrenadorNombreRepository extends JpaRepository<Usuario,
 
     /**
      * Buscar entrenadores por nombre (SIN filtro de estado)
-     * Se usa cuando el usuario busca por nombre
-     * INCLUYE FILTRO DE LÍMITE DE ALUMNOS - Solo muestra entrenadores con disponibilidad
+     * FILTRO PAYPAL: Solo muestra entrenadores con onboarding_status = 'completed'
+     * FILTRO LÍMITE: Solo muestra entrenadores con disponibilidad
      */
     @Query(value = """
         SELECT
@@ -34,6 +34,7 @@ public interface BuscarEntrenadorNombreRepository extends JpaRepository<Usuario,
             AND ea.status_relacion = 'activo'
         WHERE r.rol = 'entrenador'
           AND (:query IS NULL OR LOWER(CONCAT(u.nombre, ' ', u.apellidos)) LIKE LOWER(CONCAT('%', :query, '%')))
+          AND ie.onboarding_status = 'completed'
         GROUP BY u.usuario, u.nombre, u.apellidos, ie.foto_perfil, ie.limite_alumnos
         ORDER BY ratingPromedio DESC, u.nombre ASC
         """, nativeQuery = true)
@@ -41,8 +42,8 @@ public interface BuscarEntrenadorNombreRepository extends JpaRepository<Usuario,
 
     /**
      * Buscar mejores entrenadores del mismo estado (carga inicial)
-     * Se usa cuando el usuario entra a la pantalla sin buscar nada
-     * INCLUYE FILTRO DE LÍMITE DE ALUMNOS - Solo muestra entrenadores con disponibilidad
+     * FILTRO PAYPAL: Solo muestra entrenadores con onboarding_status = 'completed'
+     * FILTRO LÍMITE: Solo muestra entrenadores con disponibilidad
      */
     @Query(value = """
         SELECT
@@ -61,6 +62,7 @@ public interface BuscarEntrenadorNombreRepository extends JpaRepository<Usuario,
             AND ea.status_relacion = 'activo'
         WHERE r.rol = 'entrenador'
           AND u.id_estado = :idEstado
+          AND ie.onboarding_status = 'completed'
         GROUP BY u.usuario, u.nombre, u.apellidos, ie.foto_perfil, ie.limite_alumnos
         HAVING COUNT(DISTINCT ea.usuario_alumno) < ie.limite_alumnos
         ORDER BY ratingPromedio DESC, u.nombre ASC

@@ -3,6 +3,7 @@ package com.sportine.backend.service.impl;
 import com.sportine.backend.model.AlumnoSuscripcionEntrenador;
 import com.sportine.backend.model.InformacionEntrenador;
 import com.sportine.backend.repository.AlumnoSuscripcionRepository;
+import com.sportine.backend.repository.EntrenadorAlumnoRepository;
 import com.sportine.backend.repository.InformacionEntrenadorRepository;
 import com.sportine.backend.service.PayPalOrderService;
 import com.sportine.backend.service.SuscripcionAlumnoEntrenadorService;
@@ -26,13 +27,15 @@ public class SuscripcionAlumnoEntrenadorServiceImpl implements SuscripcionAlumno
     private final AlumnoSuscripcionRepository suscripcionRepository;
     private final InformacionEntrenadorRepository entrenadorRepository;
     private final PayPalOrderService paypalOrderService;
+    private final EntrenadorAlumnoRepository entrenadorAlumnoRepository;
 
     @Value("${sportine.comision-porcentaje:10.00}")
     private Double comisionPorcentaje;
 
     @Override
     @Transactional
-    public Map<String, String> crearSuscripcion(String usuarioEstudiante, String usuarioEntrenador, Integer idDeporte) {
+    public Map<String, String> crearSuscripcion(String usuarioEstudiante, String usuarioEntrenador,
+                                                Integer idDeporte, String returnUrl, String cancelUrl) {
         try {
             log.info("Creando suscripción: Estudiante={}, Entrenador={}, Deporte={}",
                     usuarioEstudiante, usuarioEntrenador, idDeporte);
@@ -59,7 +62,20 @@ public class SuscripcionAlumnoEntrenadorServiceImpl implements SuscripcionAlumno
                     .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
             BigDecimal montoEntrenador = montoTotal.subtract(comision);
 
-            // Crear suscripción en estado pending
+            // Crear orden en PayPal PRIMERO para obtener el order_id
+            Map<String, String> paypalResponse = paypalOrderService.crearOrdenMultiparty(
+                    usuarioEstudiante,
+                    usuarioEntrenador,
+                    idDeporte,
+                    costoMensualidad,
+                    returnUrl,
+                    cancelUrl
+            );
+
+            String orderId = paypalResponse.get("order_id");
+            log.info("✅ Orden PayPal creada: {}", orderId);
+
+            // Guardar suscripción en BD con el order_id ya disponible
             AlumnoSuscripcionEntrenador suscripcion = new AlumnoSuscripcionEntrenador();
             suscripcion.setUsuarioEstudiante(usuarioEstudiante);
             suscripcion.setUsuarioEntrenador(usuarioEntrenador);
@@ -70,22 +86,10 @@ public class SuscripcionAlumnoEntrenadorServiceImpl implements SuscripcionAlumno
             suscripcion.setPorcentajeComision(new BigDecimal(comisionPorcentaje));
             suscripcion.setMoneda("MXN");
             suscripcion.setStatusSuscripcion(AlumnoSuscripcionEntrenador.StatusSuscripcion.pending);
+            suscripcion.setSubscriptionId(orderId);
 
-            AlumnoSuscripcionEntrenador suscripcionGuardada = suscripcionRepository.save(suscripcion);
-
-            log.info("✅ Suscripción creada con ID: {}", suscripcionGuardada.getIdSuscripcion());
-
-            // Crear orden de pago en PayPal
-            Map<String, String> paypalResponse = paypalOrderService.crearOrdenMultiparty(
-                    usuarioEstudiante,
-                    usuarioEntrenador,
-                    idDeporte,
-                    costoMensualidad
-            );
-
-            // Guardar order_id en la suscripción
-            suscripcionGuardada.setSubscriptionId(paypalResponse.get("order_id"));
-            suscripcionRepository.save(suscripcionGuardada);
+            suscripcionRepository.save(suscripcion);
+            log.info("✅ Suscripción guardada en BD con order_id: {}", orderId);
 
             return paypalResponse;
 
@@ -103,7 +107,7 @@ public class SuscripcionAlumnoEntrenadorServiceImpl implements SuscripcionAlumno
 
             // Buscar suscripción por order_id
             AlumnoSuscripcionEntrenador suscripcion = suscripcionRepository.findBySubscriptionId(orderId)
-                    .orElseThrow(() -> new RuntimeException("Suscripción no encontrada"));
+                    .orElseThrow(() -> new RuntimeException("Suscripción no encontrada para order_id: " + orderId));
 
             // Verificar que la orden fue capturada exitosamente
             Map<String, Object> orderDetails = paypalOrderService.obtenerDetallesOrden(orderId);
@@ -117,17 +121,19 @@ public class SuscripcionAlumnoEntrenadorServiceImpl implements SuscripcionAlumno
             suscripcion.setStatusSuscripcion(AlumnoSuscripcionEntrenador.StatusSuscripcion.active);
             suscripcion.setFechaInicioSuscripcion(LocalDate.now());
             suscripcion.setFechaProximoPago(LocalDate.now().plusMonths(1));
-            suscripcion.setIntentosFallidos(0);
-
-            // Guardar vault_id si se proporcionó
-            if (vaultId != null) {
-                suscripcion.setVaultId(vaultId);
-                suscripcion.setPaymentSourceType("PAYPAL");
-            }
 
             AlumnoSuscripcionEntrenador suscripcionActivada = suscripcionRepository.save(suscripcion);
-
             log.info("✅ Suscripción activada - ID: {}", suscripcionActivada.getIdSuscripcion());
+
+            // Actualizar relación en Entrenador_Alumno a 'activo'
+            entrenadorAlumnoRepository.actualizarEstadoRelacion(
+                    suscripcion.getUsuarioEntrenador(),
+                    suscripcion.getUsuarioEstudiante(),
+                    suscripcion.getIdDeporte(),
+                    "activo"
+            );
+            log.info("✅ Relación actualizada a activo: {} -> {}",
+                    suscripcion.getUsuarioEstudiante(), suscripcion.getUsuarioEntrenador());
 
             return suscripcionActivada;
 
@@ -146,14 +152,16 @@ public class SuscripcionAlumnoEntrenadorServiceImpl implements SuscripcionAlumno
             AlumnoSuscripcionEntrenador suscripcion = suscripcionRepository.findById(idSuscripcion)
                     .orElseThrow(() -> new RuntimeException("Suscripción no encontrada"));
 
+            // Cancelar pero mantener activa hasta fecha_proximo_pago
+            // El scheduler la marcará como expired cuando venza el periodo
             suscripcion.setStatusSuscripcion(AlumnoSuscripcionEntrenador.StatusSuscripcion.cancelled);
             suscripcion.setFechaCancelacion(LocalDate.now());
             suscripcion.setMotivoCancelacion(motivo);
-            suscripcion.setFechaFinSuscripcion(LocalDate.now());
+            // fecha_fin_suscripcion = fecha_proximo_pago (el alumno tiene servicio hasta esa fecha)
+            suscripcion.setFechaFinSuscripcion(suscripcion.getFechaProximoPago());
 
             suscripcionRepository.save(suscripcion);
-
-            log.info("✅ Suscripción cancelada");
+            log.info("✅ Suscripción cancelada - servicio activo hasta: {}", suscripcion.getFechaProximoPago());
 
         } catch (Exception e) {
             log.error("Error cancelando suscripción: {}", e.getMessage(), e);
@@ -179,6 +187,7 @@ public class SuscripcionAlumnoEntrenadorServiceImpl implements SuscripcionAlumno
         return suscripciones.stream()
                 .anyMatch(s -> s.getUsuarioEntrenador().equals(usuarioEntrenador)
                         && s.getIdDeporte().equals(idDeporte)
-                        && s.getStatusSuscripcion() == AlumnoSuscripcionEntrenador.StatusSuscripcion.active);
+                        && (s.getStatusSuscripcion() == AlumnoSuscripcionEntrenador.StatusSuscripcion.active
+                        || s.getStatusSuscripcion() == AlumnoSuscripcionEntrenador.StatusSuscripcion.pending));
     }
 }

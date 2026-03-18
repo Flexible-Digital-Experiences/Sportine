@@ -72,6 +72,9 @@
         <action
             android:id="@+id/action_configuracionentre_to_modificar"
             app:destination="@id/modificarDatosEntrenadorFragment" />
+        <action
+            android:id="@+id/action_configuracionentre_to_onboardingPayPal"
+            app:destination="@id/onboardingPayPalFragment" />
     </fragment>
 
     <fragment
@@ -147,6 +150,9 @@
         <action
             android:id="@+id/action_misAlumnos_to_infoAlumno"
             app:destination="@id/infoAlumno" />
+        <action
+            android:id="@+id/action_misAlumnos_to_onboardingPayPal"
+            app:destination="@id/onboardingPayPalFragment" />
     </fragment>
 
     <fragment
@@ -154,4 +160,10 @@
         android:name="com.example.sportine.ui.entrenadores.alumno.InfoAlumno"
         android:label="fragment_info_alumno"
         tools:layout="@layout/fragment_info_alumno" />
+
+    <fragment
+        android:id="@+id/onboardingPayPalFragment"
+        android:name="com.example.sportine.ui.entrenadores.paypal.OnboardingPayPalFragment"
+        android:label="Pagos con PayPal"
+        tools:layout="@layout/fragment_onboarding_pay_pal" />
 </navigation>

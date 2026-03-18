@@ -27,7 +27,6 @@ import com.example.sportine.data.RetrofitClient;
 import com.example.sportine.models.AlumnoDetalleEntrenadorDTO;
 import com.example.sportine.models.MisAlumnosResponseDTO;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.chip.Chip;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +59,6 @@ public class InfoAlumno extends Fragment {
     // Spinners
     private Spinner spinnerDeportes;
     private Spinner spinnerNivel;
-    private Spinner spinnerEstado;
 
     // Info del deporte seleccionado
     private TextView textFechaInicio;
@@ -79,7 +77,6 @@ public class InfoAlumno extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_info_alumno, container, false);
 
-        // Obtener usuario del alumno desde arguments
         if (getArguments() != null) {
             usuarioAlumno = getArguments().getString("usuarioAlumno");
         }
@@ -90,7 +87,6 @@ public class InfoAlumno extends Fragment {
             return view;
         }
 
-        // Obtener usuario del entrenador desde SharedPreferences
         SharedPreferences prefs = requireContext().getSharedPreferences("SportinePrefs", Context.MODE_PRIVATE);
         usuarioEntrenador = prefs.getString("USER_USERNAME", "");
 
@@ -122,7 +118,6 @@ public class InfoAlumno extends Fragment {
 
         spinnerDeportes = view.findViewById(R.id.spinner_deportes);
         spinnerNivel = view.findViewById(R.id.spinner_nivel);
-        spinnerEstado = view.findViewById(R.id.spinner_estado);
 
         textFechaInicio = view.findViewById(R.id.text_fecha_inicio);
         textFinMensualidad = view.findViewById(R.id.text_fin_mensualidad);
@@ -136,7 +131,6 @@ public class InfoAlumno extends Fragment {
     private void setupListeners() {
         btnBack.setOnClickListener(v -> NavHostFragment.findNavController(this).navigateUp());
 
-        // Listener para cuando cambia el deporte seleccionado
         spinnerDeportes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -158,14 +152,14 @@ public class InfoAlumno extends Fragment {
         if (!isAdded()) return;
 
         apiService.obtenerDetalleAlumno(usuarioEntrenador, usuarioAlumno)
-                .enqueue(new Callback<AlumnoDetalleEntrenadorDTO>() {  // ← SIN wrapper
+                .enqueue(new Callback<AlumnoDetalleEntrenadorDTO>() {
                     @Override
                     public void onResponse(Call<AlumnoDetalleEntrenadorDTO> call,
                                            Response<AlumnoDetalleEntrenadorDTO> response) {
                         if (!isAdded()) return;
 
                         if (response.isSuccessful() && response.body() != null) {
-                            alumnoDetalle = response.body();  // ← Directamente, sin .getData()
+                            alumnoDetalle = response.body();
                             mostrarDatosAlumno();
                         } else {
                             Toast.makeText(getContext(),
@@ -185,7 +179,6 @@ public class InfoAlumno extends Fragment {
     }
 
     private void mostrarDatosAlumno() {
-        // Foto de perfil
         if (alumnoDetalle.getFotoPerfil() != null && !alumnoDetalle.getFotoPerfil().isEmpty()) {
             Glide.with(this)
                     .load(alumnoDetalle.getFotoPerfil())
@@ -195,12 +188,10 @@ public class InfoAlumno extends Fragment {
                     .into(imagePerfil);
         }
 
-        // Datos básicos
         textNombre.setText(alumnoDetalle.getNombreCompleto());
         textEdad.setText(alumnoDetalle.getEdad() + " años");
         textUbicacion.setText("📍 " + alumnoDetalle.getCiudad());
 
-        // Datos físicos
         if (alumnoDetalle.getEstatura() != null) {
             textEstatura.setText(String.format("%.2f m", alumnoDetalle.getEstatura()));
         } else {
@@ -213,20 +204,16 @@ public class InfoAlumno extends Fragment {
             textPeso.setText("No especificado");
         }
 
-        // Datos de salud
         textLesiones.setText(alumnoDetalle.getLesiones() != null && !alumnoDetalle.getLesiones().isEmpty()
                 ? alumnoDetalle.getLesiones() : "Ninguna");
         textPadecimientos.setText(alumnoDetalle.getPadecimientos() != null && !alumnoDetalle.getPadecimientos().isEmpty()
                 ? alumnoDetalle.getPadecimientos() : "Ninguno");
 
-        // Configurar spinners
         if (alumnoDetalle.getDeportes() != null && !alumnoDetalle.getDeportes().isEmpty()) {
             layoutDatosDeporte.setVisibility(View.VISIBLE);
             layoutSinDeportes.setVisibility(View.GONE);
-
             configurarSpinnerDeportes();
             configurarSpinnerNivel();
-            configurarSpinnerEstado();
         } else {
             layoutDatosDeporte.setVisibility(View.GONE);
             layoutSinDeportes.setVisibility(View.VISIBLE);
@@ -259,21 +246,9 @@ public class InfoAlumno extends Fragment {
         spinnerNivel.setAdapter(adapter);
     }
 
-    private void configurarSpinnerEstado() {
-        List<String> estados = Arrays.asList("activo", "pendiente", "finalizado");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                estados
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerEstado.setAdapter(adapter);
-    }
-
     private void mostrarDatosDeporte() {
         if (deporteSeleccionado == null) return;
 
-        // Seleccionar nivel actual
         String nivelActual = deporteSeleccionado.getNivel();
         if (nivelActual != null) {
             int posNivel = Arrays.asList("Principiante", "Intermedio", "Avanzado").indexOf(nivelActual);
@@ -282,33 +257,16 @@ public class InfoAlumno extends Fragment {
             }
         }
 
-        // Seleccionar estado actual
-        String estadoActual = deporteSeleccionado.getEstadoRelacion();
-        if (estadoActual != null) {
-            int posEstado = Arrays.asList("activo", "pendiente", "finalizado").indexOf(estadoActual);
-            if (posEstado >= 0) {
-                spinnerEstado.setSelection(posEstado);
-            }
-        }
-
-        // Mostrar fechas
         textFechaInicio.setText("📅 Inicio: " + deporteSeleccionado.getFechaInicio());
         textFinMensualidad.setText("📅 Vence: " + deporteSeleccionado.getFinMensualidad());
-
     }
 
-
-    // ✅ MÉTODO HELPER: Convertir nombre de nivel a ID
     private Integer obtenerIdNivel(String nombreNivel) {
         switch (nombreNivel) {
-            case "Principiante":
-                return 1;
-            case "Intermedio":
-                return 2;
-            case "Avanzado":
-                return 3;
-            default:
-                return 1; // Por defecto Principiante
+            case "Principiante": return 1;
+            case "Intermedio": return 2;
+            case "Avanzado": return 3;
+            default: return 1;
         }
     }
 
@@ -316,64 +274,30 @@ public class InfoAlumno extends Fragment {
         if (deporteSeleccionado == null) return;
 
         String nivelSeleccionado = spinnerNivel.getSelectedItem().toString();
-        String estadoSeleccionado = spinnerEstado.getSelectedItem().toString();
-
         boolean cambioNivel = !nivelSeleccionado.equals(deporteSeleccionado.getNivel());
-        boolean cambioEstado = !estadoSeleccionado.equals(deporteSeleccionado.getEstadoRelacion());
 
-        if (!cambioNivel && !cambioEstado) {
+        if (!cambioNivel) {
             Toast.makeText(getContext(), "No hay cambios para guardar", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Actualizar nivel si cambió
-        if (cambioNivel) {
-            Integer idNivel = obtenerIdNivel(nivelSeleccionado);
-            actualizarNivel(deporteSeleccionado.getIdDeporte(), idNivel, cambioEstado, estadoSeleccionado);
-        } else if (cambioEstado) {
-            actualizarEstado(deporteSeleccionado.getIdDeporte(), estadoSeleccionado);
-        }
+        Integer idNivel = obtenerIdNivel(nivelSeleccionado);
+        actualizarNivel(deporteSeleccionado.getIdDeporte(), idNivel);
     }
 
-    private void actualizarNivel(Integer idDeporte, Integer nuevoNivel, boolean tambienEstado, String nuevoEstado) {
+    private void actualizarNivel(Integer idDeporte, Integer nuevoNivel) {
         apiService.actualizarNivelAlumno(usuarioEntrenador, usuarioAlumno, idDeporte, nuevoNivel)
                 .enqueue(new Callback<MisAlumnosResponseDTO<String>>() {
                     @Override
-                    public void onResponse(Call<MisAlumnosResponseDTO<String>> call, Response<MisAlumnosResponseDTO<String>> response) {
+                    public void onResponse(Call<MisAlumnosResponseDTO<String>> call,
+                                           Response<MisAlumnosResponseDTO<String>> response) {
                         if (!isAdded()) return;
 
                         if (response.isSuccessful()) {
-                            if (tambienEstado) {
-                                actualizarEstado(idDeporte, nuevoEstado);
-                            } else {
-                                Toast.makeText(getContext(), "Nivel actualizado", Toast.LENGTH_SHORT).show();
-                                cargarDetalleAlumno();
-                            }
-                        } else {
-                            Toast.makeText(getContext(), "Error al actualizar nivel", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<MisAlumnosResponseDTO<String>> call, Throwable t) {
-                        if (!isAdded()) return;
-                        Toast.makeText(getContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void actualizarEstado(Integer idDeporte, String nuevoEstado) {
-        apiService.actualizarEstadoRelacion(usuarioEntrenador, usuarioAlumno, idDeporte, nuevoEstado)
-                .enqueue(new Callback<MisAlumnosResponseDTO<String>>() {
-                    @Override
-                    public void onResponse(Call<MisAlumnosResponseDTO<String>> call, Response<MisAlumnosResponseDTO<String>> response) {
-                        if (!isAdded()) return;
-
-                        if (response.isSuccessful()) {
-                            Toast.makeText(getContext(), "Cambios guardados exitosamente", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Nivel actualizado", Toast.LENGTH_SHORT).show();
                             cargarDetalleAlumno();
                         } else {
-                            Toast.makeText(getContext(), "Error al actualizar estado", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Error al actualizar nivel", Toast.LENGTH_SHORT).show();
                         }
                     }
 

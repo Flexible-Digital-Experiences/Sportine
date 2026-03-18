@@ -29,10 +29,14 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
 
                 // Rutas PÚBLICAS (Login y Registro)
-                .requestMatchers("/api/usuarios/login", "/api/usuarios/registrar").permitAll()
+                .requestMatchers("/api/usuarios/login", "/api/usuarios/registrar",  "/api/v2/entrenador/paypal/verificar-onboarding",
+                        "/api/v2/estudiante/suscripcion/pago/success",
+                        "/api/v2/estudiante/suscripcion/pago/cancel").permitAll()
 
-                // ✅ NUEVO: Permitir actualización de foto de perfil (con autenticación)
+
+
                 .requestMatchers(HttpMethod.POST, "/api/alumnos/*/actualizar-foto").authenticated()
+
 
                 // ¡TODAS LAS DEMÁS (incluyendo tu /api/social/**)
                 .requestMatchers("/api/entrenador/**").permitAll()

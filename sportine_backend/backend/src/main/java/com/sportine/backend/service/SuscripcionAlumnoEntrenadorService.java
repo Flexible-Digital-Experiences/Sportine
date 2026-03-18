@@ -18,7 +18,7 @@ public interface SuscripcionAlumnoEntrenadorService {
      * @param idDeporte ID del deporte
      * @return Map con order_id y approval_url
      */
-    Map<String, String> crearSuscripcion(String usuarioEstudiante, String usuarioEntrenador, Integer idDeporte);
+    Map<String, String> crearSuscripcion(String usuarioEstudiante, String usuarioEntrenador, Integer idDeporte, String returnUrl, String cancelUr);
 
     /**
      * Confirmar suscripción después de que el estudiante apruebe el pago

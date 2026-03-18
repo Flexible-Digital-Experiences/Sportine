@@ -25,26 +25,6 @@ public interface AlumnoSuscripcionRepository extends JpaRepository<AlumnoSuscrip
     );
 
     /**
-     * Buscar suscripciones activas con fallos recientes (últimas 48 horas)
-     */
-    @Query("SELECT e FROM AlumnoSuscripcionEntrenador e " +
-            "WHERE e.statusSuscripcion = 'active' " +
-            "AND e.intentosFallidos > 0 " +
-            "AND e.intentosFallidos < 3 " +
-            "AND e.fechaProximoPago >= :fechaDesde")
-    List<AlumnoSuscripcionEntrenador> findActivasConFallosRecientes(
-            @Param("fechaDesde") LocalDate fechaDesde
-    );
-
-    /**
-     * Buscar suscripciones con 3 o más fallos consecutivos
-     */
-    @Query("SELECT e FROM AlumnoSuscripcionEntrenador e " +
-            "WHERE e.statusSuscripcion = 'active' " +
-            "AND e.intentosFallidos >= 3")
-    List<AlumnoSuscripcionEntrenador> findActivasConFallosContinuos();
-
-    /**
      * Marcar como expiradas las que ya pasaron su fecha de fin
      */
     @Query("UPDATE AlumnoSuscripcionEntrenador e " +
@@ -68,4 +48,11 @@ public interface AlumnoSuscripcionRepository extends JpaRepository<AlumnoSuscrip
      * Buscar suscripciones de un entrenador
      */
     List<AlumnoSuscripcionEntrenador> findByUsuarioEntrenador(String usuarioEntrenador);
+
+    @Query("SELECT e FROM AlumnoSuscripcionEntrenador e " +
+            "WHERE e.statusSuscripcion = 'cancelled' " +
+            "AND e.fechaProximoPago < :hoy")
+    List<AlumnoSuscripcionEntrenador> findCanceladasConPeriodoVencido(
+            @Param("hoy") LocalDate hoy
+    );
 }

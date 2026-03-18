@@ -51,5 +51,10 @@ public interface PayPalPlatformPartnerService {
      * @param merchantId merchant ID del entrenador
      * @return detalles del merchant
      */
+
     Map<String, Object> obtenerDetallesMerchant(String merchantId);
+
+    Map<String, Object> verificarYCompletarPorTrackingId(String usuario);
+
+
 }
