@@ -610,5 +610,3 @@ INSERT INTO Deporte (nombre_deporte) VALUES
 
 -- NIVELES
 INSERT INTO Nivel (nombre_nivel) VALUES ('Principiante'), ('Intermedio'), ('Avanzado');
-
-select*from Usuario;

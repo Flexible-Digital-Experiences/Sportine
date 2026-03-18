@@ -3,13 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -24,7 +21,6 @@
         android:theme="@style/Theme.Sportine"
         tools:targetApi="31">
 
-        <!-- Splash como launcher -->
         <activity
             android:name=".SplashActivity"
             android:exported="true"
@@ -43,22 +39,45 @@
             android:name=".ui.usuarios.registro.RegistroActivity"
             android:exported="false" />
 
-        <!-- MainActivity maneja el deep link de PayPal -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="Sportine"
             android:launchMode="singleTop">
+
+            <!-- Deep link pago exitoso -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
-                <!-- URL de retorno de PayPal -->
                 <data
                     android:scheme="sportine"
-                    android:host="payment" />
+                    android:host="payment"
+                    android:pathPrefix="/success" />
             </intent-filter>
+
+            <!-- Deep link pago cancelado -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="sportine"
+                    android:host="payment"
+                    android:pathPrefix="/cancel" />
+            </intent-filter>
+
+            <!-- Deep link onboarding -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="sportine"
+                    android:host="onboarding"
+                    android:pathPrefix="/success" />
+            </intent-filter>
+
         </activity>
 
     </application>

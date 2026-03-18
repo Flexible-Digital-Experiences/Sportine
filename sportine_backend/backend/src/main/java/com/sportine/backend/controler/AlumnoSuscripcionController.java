@@ -7,6 +7,7 @@ import com.sportine.backend.service.PayPalOrderService;
 import com.sportine.backend.service.SuscripcionAlumnoEntrenadorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,21 +26,22 @@ public class AlumnoSuscripcionController {
     private final PayPalOrderService paypalOrderService;
     private final HistorialPagosService historialPagosService;
 
-    /**
-     * Endpoint 1: Crear suscripción (primer pago)
-     * Android llama esto cuando el estudiante quiere contratar a un entrenador
-     */
+    @Value("${sportine.base-url}")
+    private String sportineBaseUrl;
+
     @PostMapping("/crear")
     public ResponseEntity<Map<String, Object>> crearSuscripcion(
             @RequestParam String usuarioEstudiante,
             @RequestParam String usuarioEntrenador,
             @RequestParam Integer idDeporte) {
 
+        String returnUrl = sportineBaseUrl + "/api/v2/estudiante/suscripcion/pago/success";
+        String cancelUrl = sportineBaseUrl + "/api/v2/estudiante/suscripcion/pago/cancel";
+
         try {
             log.info("Creando suscripción: Estudiante={}, Entrenador={}, Deporte={}",
                     usuarioEstudiante, usuarioEntrenador, idDeporte);
 
-            // Verificar que no exista ya una suscripción activa
             if (suscripcionService.tieneSuscripcionActiva(usuarioEstudiante, usuarioEntrenador, idDeporte)) {
                 Map<String, Object> errorResponse = new HashMap<>();
                 errorResponse.put("success", false);
@@ -47,9 +49,8 @@ public class AlumnoSuscripcionController {
                 return ResponseEntity.status(400).body(errorResponse);
             }
 
-            // Crear suscripción y obtener approval URL
             Map<String, String> paypalResponse = suscripcionService.crearSuscripcion(
-                    usuarioEstudiante, usuarioEntrenador, idDeporte);
+                    usuarioEstudiante, usuarioEntrenador, idDeporte, returnUrl, cancelUrl);
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
@@ -70,10 +71,6 @@ public class AlumnoSuscripcionController {
         }
     }
 
-    /**
-     * Endpoint 2: Confirmar suscripción después de que el estudiante apruebe en PayPal
-     * Android llama esto después de que PayPal redirige de vuelta
-     */
     @PostMapping("/confirmar")
     public ResponseEntity<Map<String, Object>> confirmarSuscripcion(
             @RequestParam String orderId,
@@ -82,7 +79,6 @@ public class AlumnoSuscripcionController {
         try {
             log.info("Confirmando suscripción - Order ID: {}", orderId);
 
-            // Capturar el pago primero
             Map<String, Object> captureDetails = paypalOrderService.capturarOrden(orderId);
             String captureStatus = (String) captureDetails.get("capture_status");
 
@@ -90,7 +86,6 @@ public class AlumnoSuscripcionController {
                 throw new RuntimeException("El pago no fue completado. Estado: " + captureStatus);
             }
 
-            // Confirmar y activar suscripción
             AlumnoSuscripcionEntrenador suscripcion =
                     suscripcionService.confirmarSuscripcion(orderId, vaultId);
 
@@ -116,9 +111,6 @@ public class AlumnoSuscripcionController {
         }
     }
 
-    /**
-     * Endpoint 3: Cancelar suscripción
-     */
     @PostMapping("/cancelar")
     public ResponseEntity<Map<String, Object>> cancelarSuscripcion(
             @RequestParam Integer idSuscripcion,
@@ -147,9 +139,6 @@ public class AlumnoSuscripcionController {
         }
     }
 
-    /**
-     * Endpoint 4: Obtener suscripciones del estudiante
-     */
     @GetMapping("/mis-suscripciones")
     public ResponseEntity<Map<String, Object>> obtenerMisSuscripciones(
             @RequestParam String usuarioEstudiante) {
@@ -158,7 +147,6 @@ public class AlumnoSuscripcionController {
             List<AlumnoSuscripcionEntrenador> suscripciones =
                     suscripcionService.obtenerSuscripcionesEstudiante(usuarioEstudiante);
 
-            // Convertir a formato simple para el frontend
             List<Map<String, Object>> suscripcionesDTO = suscripciones.stream()
                     .map(s -> {
                         Map<String, Object> dto = new HashMap<>();
@@ -191,9 +179,6 @@ public class AlumnoSuscripcionController {
         }
     }
 
-    /**
-     * Endpoint 5: Obtener estudiantes suscritos de un entrenador
-     */
     @GetMapping("/estudiantes-suscritos")
     public ResponseEntity<Map<String, Object>> obtenerEstudiantesSuscritos(
             @RequestParam String usuarioEntrenador) {
@@ -202,7 +187,6 @@ public class AlumnoSuscripcionController {
             List<AlumnoSuscripcionEntrenador> suscripciones =
                     suscripcionService.obtenerSuscripcionesEntrenador(usuarioEntrenador);
 
-            // Filtrar solo las activas
             List<Map<String, Object>> estudiantesDTO = suscripciones.stream()
                     .filter(s -> s.getStatusSuscripcion() == AlumnoSuscripcionEntrenador.StatusSuscripcion.active)
                     .map(s -> {
@@ -235,9 +219,6 @@ public class AlumnoSuscripcionController {
         }
     }
 
-    /**
-     * Endpoint 6: Obtener historial de pagos de una suscripción
-     */
     @GetMapping("/historial-pagos")
     public ResponseEntity<Map<String, Object>> obtenerHistorialPagos(
             @RequestParam Integer idSuscripcion) {
@@ -276,9 +257,6 @@ public class AlumnoSuscripcionController {
         }
     }
 
-    /**
-     * Endpoint 7: Verificar estado de suscripción
-     */
     @GetMapping("/estado")
     public ResponseEntity<Map<String, Object>> verificarEstado(
             @RequestParam Integer idSuscripcion) {
@@ -297,11 +275,6 @@ public class AlumnoSuscripcionController {
             response.put("status", suscripcion.getStatusSuscripcion());
             response.put("fecha_proximo_pago", suscripcion.getFechaProximoPago());
             response.put("monto_mensual", suscripcion.getMontoTotal());
-            response.put("intentos_fallidos", suscripcion.getIntentosFallidos());
-
-            // Calcular si está en riesgo de cancelación
-            boolean enRiesgo = suscripcion.getIntentosFallidos() != null && suscripcion.getIntentosFallidos() >= 2;
-            response.put("en_riesgo_cancelacion", enRiesgo);
 
             return ResponseEntity.ok(response);
 
@@ -316,34 +289,68 @@ public class AlumnoSuscripcionController {
         }
     }
 
-    /**
-     * Endpoint 8: Callback de éxito después del pago
-     * PayPal redirige aquí después de que el estudiante aprueba
-     */
     @GetMapping("/pago/success")
-    public ResponseEntity<String> pagoSuccess(
-            @RequestParam(required = false) String token) {
+    public ResponseEntity<Void> pagoSuccess(
+            @RequestParam(required = false) String token,
+            @RequestParam(required = false) String PayerID) {
 
-        log.info("Callback de pago exitoso - Token: {}", token);
-
-        // Aquí puedes redirigir al usuario a tu app con deep link
-        // return ResponseEntity.status(302).header("Location", "sportine://payment/success?token=" + token).build();
-
-        return ResponseEntity.ok("Pago procesado exitosamente. Puedes cerrar esta ventana.");
+        log.info("Callback de pago exitoso - Token: {}, PayerID: {}", token, PayerID);
+        return ResponseEntity.status(302)
+                .header("Location", "sportine://payment/success?token=" + token + "&PayerID=" + PayerID)
+                .header("ngrok-skip-browser-warning", "true")
+                .build();
     }
 
-    /**
-     * Endpoint 9: Callback de cancelación
-     * PayPal redirige aquí si el estudiante cancela
-     */
     @GetMapping("/pago/cancel")
-    public ResponseEntity<String> pagoCancel(
+    public ResponseEntity<Void> pagoCancel(
             @RequestParam(required = false) String token) {
 
         log.warn("Callback de pago cancelado - Token: {}", token);
+        return ResponseEntity.status(302)
+                .header("Location", "sportine://payment/cancel")
+                .header("ngrok-skip-browser-warning", "true")
+                .build();
+    }
 
-        // return ResponseEntity.status(302).header("Location", "sportine://payment/cancel").build();
+    @PostMapping("/cancelar-por-usuario")
+    public ResponseEntity<Map<String, Object>> cancelarPorUsuario(
+            @RequestParam String usuarioEstudiante,
+            @RequestParam String usuarioEntrenador,
+            @RequestParam Integer idDeporte,
+            @RequestParam(required = false) String motivo) {
 
-        return ResponseEntity.ok("Pago cancelado. Puedes cerrar esta ventana.");
+        try {
+            log.info("Cancelando suscripción: Estudiante={}, Entrenador={}",
+                    usuarioEstudiante, usuarioEntrenador);
+
+            List<AlumnoSuscripcionEntrenador> suscripciones =
+                    suscripcionService.obtenerSuscripcionesEstudiante(usuarioEstudiante);
+
+            AlumnoSuscripcionEntrenador suscripcion = suscripciones.stream()
+                    .filter(s -> s.getUsuarioEntrenador().equals(usuarioEntrenador)
+                            && s.getIdDeporte().equals(idDeporte)
+                            && s.getStatusSuscripcion() == AlumnoSuscripcionEntrenador.StatusSuscripcion.active)
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("No tienes una suscripción activa con este entrenador"));
+
+            String motivoCancelacion = motivo != null ? motivo : "Cancelada por el estudiante";
+            suscripcionService.cancelarSuscripcion(suscripcion.getIdSuscripcion(), motivoCancelacion);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Suscripción cancelada. Tu acceso continúa hasta " +
+                    suscripcion.getFechaProximoPago());
+            response.put("fecha_fin", suscripcion.getFechaProximoPago());
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            log.error("Error cancelando suscripción: {}", e.getMessage(), e);
+
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(500).body(errorResponse);
+        }
     }
 }

@@ -128,7 +128,7 @@ public class PayPalPlatformPartnerServiceImpl implements PayPalPlatformPartnerSe
 
             // Partner config override (URLs de retorno)
             JsonObject partnerConfig = new JsonObject();
-            partnerConfig.addProperty("return_url", sportineBaseUrl + "/api/v2/entrenador/paypal/onboarding/success");
+            partnerConfig.addProperty("return_url", "sportine://onboarding/success");
             partnerConfig.addProperty("return_url_description", "Regresa a Sportine después de conectar PayPal");
             partnerConfig.addProperty("action_renewal_url", sportineBaseUrl + "/api/v2/entrenador/paypal/onboarding/action-required");
             requestBody.add("partner_config_override", partnerConfig);
@@ -263,14 +263,116 @@ public class PayPalPlatformPartnerServiceImpl implements PayPalPlatformPartnerSe
     }
 
     @Override
+    public Map<String, Object> verificarYCompletarPorTrackingId(String usuario) {
+        try {
+            log.info("Verificando onboarding por tracking_id para: {}", usuario);
+
+            // Buscar entrenador y su tracking_id
+            InformacionEntrenador entrenador = entrenadorRepository.findByUsuario(usuario)
+                    .orElseThrow(() -> new RuntimeException("Entrenador no encontrado"));
+
+            String trackingId = entrenador.getTrackingId();
+            if (trackingId == null || trackingId.isEmpty()) {
+                throw new RuntimeException("El entrenador no tiene tracking_id. Debe iniciar onboarding primero.");
+            }
+
+            log.info("Consultando PayPal con tracking_id: {}", trackingId);
+
+            String accessToken = getAccessToken();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + accessToken);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<String> request = new HttpEntity<>(headers);
+
+            // API de PayPal que permite buscar por tracking_id
+            String url = getBaseUrl() + "/v1/customer/partners/" + partnerMerchantId
+                    + "/merchant-integrations?tracking_id=" + trackingId;
+
+            log.info("Llamando a: {}", url);
+
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    request,
+                    String.class
+            );
+
+            log.info("Respuesta de PayPal: {}", response.getBody());
+
+            JsonObject jsonResponse = gson.fromJson(response.getBody(), JsonObject.class);
+
+            // PayPal devuelve { "merchant_id": "...", "tracking_id": "...",
+            //                   "payments_receivable": true/false,
+            //                   "primary_email_confirmed": true/false }
+            if (!jsonResponse.has("merchant_id")) {
+                Map<String, Object> result = new HashMap<>();
+                result.put("completado", false);
+                result.put("mensaje", "PayPal aún no tiene datos para este entrenador. Intenta de nuevo en unos minutos.");
+                return result;
+            }
+
+            String merchantId        = jsonResponse.get("merchant_id").getAsString();
+            boolean paymentsReceivable = jsonResponse.has("payments_receivable")
+                    && jsonResponse.get("payments_receivable").getAsBoolean();
+            boolean emailConfirmed   = jsonResponse.has("primary_email_confirmed")
+                    && jsonResponse.get("primary_email_confirmed").getAsBoolean();
+
+            // Extraer merchant_id_in_paypal si existe (puede llamarse "payer_id" en algunos responses)
+            String merchantIdInPaypal = merchantId; // fallback
+            if (jsonResponse.has("payer_id")) {
+                merchantIdInPaypal = jsonResponse.get("payer_id").getAsString();
+            }
+
+            log.info("merchant_id: {}, payments_receivable: {}, email_confirmed: {}",
+                    merchantId, paymentsReceivable, emailConfirmed);
+
+            // Actualizar BD con los datos de PayPal
+            entrenador.setMerchantId(merchantId);
+            entrenador.setMerchantIdInPaypal(merchantIdInPaypal);
+            entrenador.setPaypalEmailConfirmed(emailConfirmed ? "true" : "false");
+            entrenador.setOnboardingStatus(InformacionEntrenador.OnboardingStatus.completed);
+            entrenador.setFechaOnboarding(LocalDate.now());
+            entrenador.setPermissionsGranted("{\"PAYMENT\": true, \"REFUND\": true, \"PARTNER_FEE\": true}");
+            entrenadorRepository.save(entrenador);
+
+            log.info("✅ Onboarding completado y guardado en BD para: {}", usuario);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("completado", true);
+            result.put("merchant_id", merchantId);
+            result.put("payments_receivable", paymentsReceivable);
+            result.put("email_confirmed", emailConfirmed);
+            result.put("mensaje", "¡Cuenta PayPal conectada exitosamente!");
+            return result;
+
+        } catch (org.springframework.web.client.HttpClientErrorException e) {
+            // 404 = PayPal aún no registró al merchant (onboarding no completado)
+            if (e.getStatusCode().value() == 404) {
+                log.warn("PayPal devolvió 404 - onboarding no completado aún para: {}", usuario);
+                Map<String, Object> result = new HashMap<>();
+                result.put("completado", false);
+                result.put("mensaje", "Aún no completaste el proceso en PayPal. Asegúrate de haber terminado todos los pasos.");
+                return result;
+            }
+            log.error("Error HTTP consultando PayPal: {} - {}", e.getStatusCode(), e.getMessage());
+            throw new RuntimeException("Error consultando PayPal: " + e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Error verificando onboarding por tracking_id: {}", e.getMessage(), e);
+            throw new RuntimeException("Error al verificar onboarding", e);
+        }
+    }
+
+    @Override
     public boolean puedeRecibirPagos(String usuario) {
         try {
             InformacionEntrenador entrenador = entrenadorRepository.findByUsuario(usuario)
                     .orElseThrow(() -> new RuntimeException("Entrenador no encontrado"));
 
             return entrenador.getOnboardingStatus() == InformacionEntrenador.OnboardingStatus.completed
-                    && entrenador.getMerchantId() != null
-                    && "true".equals(entrenador.getPaypalEmailConfirmed());
+                    && entrenador.getMerchantId() != null;
+            // En producción agregar: && "true".equals(entrenador.getPaypalEmailConfirmed())
 
         } catch (Exception e) {
             log.error("Error verificando si puede recibir pagos: {}", e.getMessage());

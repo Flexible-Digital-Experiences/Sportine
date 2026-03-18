@@ -49,61 +49,54 @@ public class EntrenadorPayPalController {
         }
     }
 
-    /**
-     * Endpoint 2: Callback después del onboarding
-     * PayPal redirige aquí después de que el entrenador completa el proceso
-     *
-     * URL: /api/v2/entrenador/paypal/onboarding/success?merchantId=XXX&merchantIdInPayPal=YYY&...
-     */
     @GetMapping("/onboarding/success")
     public ResponseEntity<Map<String, Object>> onboardingSuccess(
             @RequestParam(required = false) String merchantId,
             @RequestParam(required = false) String merchantIdInPayPal,
             @RequestParam(required = false) String permissionsGranted,
             @RequestParam(required = false) String consentStatus,
-            @RequestParam(required = false) String productIntentId,
             @RequestParam(required = false) String isEmailConfirmed,
-            @RequestParam(required = false) String accountStatus) {
+            @RequestParam(required = false) String accountStatus,
+            @RequestHeader(value = "User-Agent", defaultValue = "") String userAgent) {
 
         try {
-            log.info("========================================");
-            log.info("Callback de onboarding recibido");
-            log.info("merchantId: {}", merchantId);
-            log.info("merchantIdInPayPal: {}", merchantIdInPayPal);
-            log.info("permissionsGranted: {}", permissionsGranted);
-            log.info("isEmailConfirmed: {}", isEmailConfirmed);
-            log.info("========================================");
+            log.info("Callback de onboarding recibido - merchantId: {}, userAgent: {}", merchantId, userAgent);
 
             if (merchantId == null || merchantIdInPayPal == null) {
                 throw new RuntimeException("Faltan parámetros requeridos del onboarding");
             }
 
-            // Verificar onboarding con PayPal
+            // Verificar y completar onboarding
             Map<String, Object> detalles = paypalPartnerService.verificarOnboarding(merchantId, null);
             String trackingId = (String) detalles.get("tracking_id");
 
-            // Completar onboarding en nuestra BD
             boolean emailConfirmed = "true".equalsIgnoreCase(isEmailConfirmed);
             paypalPartnerService.completarOnboarding(merchantId, merchantIdInPayPal, trackingId, emailConfirmed);
 
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "¡Onboarding completado exitosamente! Ya puedes recibir pagos de tus estudiantes.");
-            response.put("merchant_id", merchantId);
-            response.put("puede_recibir_pagos", detalles.get("payments_receivable"));
+            // Detectar si viene desde Android o web
+            boolean esAndroid = userAgent.toLowerCase().contains("android");
 
-            // Aquí podrías redirigir al usuario a una página de éxito en tu app
-            // return ResponseEntity.status(302).header("Location", "sportine://onboarding/success").build();
-
-            return ResponseEntity.ok(response);
+            if (esAndroid) {
+                // Redirigir a deep link de la app
+                log.info("Redirigiendo a app Android via deep link");
+                return ResponseEntity.status(302)
+                        .header("Location", "sportine://onboarding/success")
+                        .build();
+            } else {
+                // Redirigir a página web (cuando exista), por ahora JSON
+                log.info("Redirigiendo a web");
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", true);
+                response.put("message", "¡Onboarding completado exitosamente!");
+                response.put("merchant_id", merchantId);
+                return ResponseEntity.ok(response);
+            }
 
         } catch (Exception e) {
             log.error("Error en callback de onboarding: {}", e.getMessage(), e);
-
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
             errorResponse.put("message", "Error completando onboarding: " + e.getMessage());
-
             return ResponseEntity.status(500).body(errorResponse);
         }
     }
@@ -185,5 +178,42 @@ public class EntrenadorPayPalController {
         response.put("merchant_id", merchantId);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/verificar-onboarding")
+    public ResponseEntity<Map<String, Object>> verificarOnboarding(
+            @RequestParam String usuario) {
+
+        try {
+            log.info("Verificando onboarding manualmente para: {}", usuario);
+
+            Map<String, Object> resultado = paypalPartnerService
+                    .verificarYCompletarPorTrackingId(usuario);
+
+            boolean completado = Boolean.TRUE.equals(resultado.get("completado"));
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("completado", completado);
+            response.put("puede_recibir_pagos", completado);
+            response.put("message", resultado.get("mensaje"));
+
+            if (completado) {
+                response.put("merchant_id", resultado.get("merchant_id"));
+            }
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            log.error("Error verificando onboarding: {}", e.getMessage());
+
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("completado", false);
+            errorResponse.put("puede_recibir_pagos", false);
+            errorResponse.put("message", "Error al verificar: " + e.getMessage());
+
+            return ResponseEntity.status(500).body(errorResponse);
+        }
     }
 }

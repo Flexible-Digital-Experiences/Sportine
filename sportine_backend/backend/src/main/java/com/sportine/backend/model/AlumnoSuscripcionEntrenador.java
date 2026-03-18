@@ -70,16 +70,6 @@ public class AlumnoSuscripcionEntrenador {
     @Column(name = "motivo_cancelacion", columnDefinition = "TEXT")
     private String motivoCancelacion;
 
-    // Campos para Vault
-    @Column(name = "vault_id")
-    private String vaultId;
-
-    @Column(name = "payment_source_type", length = 50)
-    private String paymentSourceType;
-
-    @Column(name = "intentos_fallidos")
-    private Integer intentosFallidos = 0;
-
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 

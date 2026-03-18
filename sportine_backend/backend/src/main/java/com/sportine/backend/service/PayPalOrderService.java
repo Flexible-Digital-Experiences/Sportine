@@ -17,7 +17,7 @@ public interface PayPalOrderService {
      * @return Map con order_id y approval_url
      */
     Map<String, String> crearOrdenMultiparty(String usuarioEstudiante, String usuarioEntrenador,
-                                             Integer idDeporte, Double montoTotal);
+                                             Integer idDeporte, Double montoTotal, String returnUrl, String cancelUrl);
 
     /**
      * Capturar una orden ya aprobada por el usuario

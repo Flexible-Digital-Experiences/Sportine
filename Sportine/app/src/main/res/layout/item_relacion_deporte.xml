@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="3dp"
+    app:strokeWidth="0dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Fila superior: ícono + nombre + chip -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Ícono con fondo de color -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_icono_deporte"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#3B82F6">
+
+                <ImageView
+                    android:id="@+id/iv_icono_deporte"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_deporte_default"
+                    app:tint="#FFFFFF" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Nombre y status -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="14dp">
+
+                <TextView
+                    android:id="@+id/tv_nombre_deporte"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fútbol"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1A2E" />
+
+                <TextView
+                    android:id="@+id/tv_status_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Entrenamiento activo"
+                    android:textSize="12sp"
+                    android:layout_marginTop="2dp"
+                    android:textColor="#6B7280" />
+
+            </LinearLayout>
+
+            <!-- Chip de estado -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_estado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Activo"
+                android:textSize="11sp"
+                android:textColor="#FFFFFF"
+                app:chipBackgroundColor="#10B981"
+                app:chipCornerRadius="20dp"
+                app:chipStrokeWidth="0dp"
+                android:clickable="false"
+                android:focusable="false" />
+
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="#F0F0F5" />
+
+        <!-- Fecha de vencimiento -->
+        <LinearLayout
+            android:id="@+id/layout_fecha_vencimiento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_clock"
+                app:tint="#6B7280" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vence el "
+                android:textSize="13sp"
+                android:textColor="#6B7280"
+                android:layout_marginStart="6dp" />
+
+            <TextView
+                android:id="@+id/tv_fecha_vencimiento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="17 de Abril, 2026"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E" />
+
+        </LinearLayout>
+
+        <!-- Botones -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <!-- Botón pagar (solo pendientes) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_pagar_deporte"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:text="Pagar"
+                android:textSize="13sp"
+                android:visibility="gone"
+                app:cornerRadius="12dp"
+                app:backgroundTint="#10B981" />
+
+            <!-- Botón cancelar -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancelar_deporte"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:text="Cancelar suscripción"
+                android:textSize="13sp"
+                app:cornerRadius="12dp"
+                app:backgroundTint="#FEE2E2"
+                android:textColor="#DC2626"
+                app:strokeColor="#FECACA"
+                app:strokeWidth="1dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

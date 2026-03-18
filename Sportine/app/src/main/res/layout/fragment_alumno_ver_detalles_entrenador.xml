@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:paddingBottom="24dp">
 
-        <!-- Botón de regresar -->
         <ImageButton
             android:id="@+id/btn_back"
             android:layout_width="48dp"
@@ -27,7 +26,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:tint="#1A1A1A" />
 
-        <!-- Imagen de perfil -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/image_perfil"
             android:layout_width="100dp"
@@ -42,22 +40,20 @@
             app:strokeWidth="3dp"
             tools:src="@tools:sample/avatars" />
 
-        <!-- Nombre del entrenador -->
         <TextView
             android:id="@+id/text_nombre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-medium"
-            tools:text="Carlos Martínez"
             android:textColor="#1A1A1A"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_perfil" />
+            app:layout_constraintTop_toBottomOf="@id/image_perfil"
+            tools:text="Carlos Martínez" />
 
-        <!-- Calificación -->
         <LinearLayout
             android:id="@+id/layout_rating"
             android:layout_width="wrap_content"
@@ -87,33 +83,32 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                tools:text="4.5"
                 android:textColor="#1A1A1A"
                 android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="4.5" />
 
             <TextView
                 android:id="@+id/text_num_resenas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                tools:text="(10)"
                 android:textColor="#6B7280"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                tools:text="(10)" />
         </LinearLayout>
 
-        <!-- Ubicación -->
         <TextView
             android:id="@+id/text_ubicacion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            tools:text="Monterrey, Nuevo León"
             android:textColor="#6B7280"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_rating" />
+            app:layout_constraintTop_toBottomOf="@id/layout_rating"
+            tools:text="Monterrey, Nuevo León" />
 
         <!-- Tarjeta: Acerca de mí -->
         <com.google.android.material.card.MaterialCardView
@@ -151,9 +146,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:lineSpacingExtra="4dp"
-                    tools:text="Entrenador profesional con 8 años de experiencia..."
                     android:textColor="#4B5563"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:text="Entrenador profesional con 8 años de experiencia..." />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -187,22 +182,21 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <!-- RecyclerView de deportes -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_deportes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:clipToPadding="false"
-                    android:orientation="horizontal"
                     android:nestedScrollingEnabled="false"
+                    android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:itemCount="3"
                     tools:listitem="@layout/item_alumno_deporte_card" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Tarjeta: Lo que mis clientes dicen -->
+        <!-- Tarjeta: Reseñas -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_resenas"
             android:layout_width="0dp"
@@ -226,8 +220,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="0dp"
@@ -239,21 +233,19 @@
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
-                    <!-- Botón "Ver todas" -->
                     <TextView
                         android:id="@+id/btn_ver_todas"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:padding="8dp"
                         android:text="Ver todas"
                         android:textColor="#3B82F6"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:padding="8dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:visibility="gone" />
                 </LinearLayout>
 
-                <!-- RecyclerView de reseñas (limitado a 3) -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_resenas"
                     android:layout_width="match_parent"
@@ -264,7 +256,6 @@
                     tools:itemCount="2"
                     tools:listitem="@layout/item_alumno_resenaentre" />
 
-                <!-- Mensaje cuando no hay reseñas -->
                 <TextView
                     android:id="@+id/text_sin_resenas"
                     android:layout_width="match_parent"
@@ -278,9 +269,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ============================================
-             LAYOUT NO DISPONIBLE
-             ============================================ -->
+        <!-- LAYOUT NO DISPONIBLE -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_no_disponible"
             android:layout_width="0dp"
@@ -299,42 +288,39 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:padding="24dp"
-                android:gravity="center">
+                android:padding="24dp">
 
-                <!-- Icono -->
                 <ImageView
                     android:layout_width="80dp"
                     android:layout_height="80dp"
+                    android:layout_marginBottom="16dp"
                     android:src="@drawable/stop"
-                    app:tint="#DC2626"
-                    android:layout_marginBottom="16dp" />
+                    app:tint="#DC2626" />
 
-                <!-- Título -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:text="No puedes solicitar este entrenador"
+                    android:textAlignment="center"
                     android:textColor="#991B1B"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textAlignment="center"
-                    android:layout_marginBottom="8dp" />
+                    android:textStyle="bold" />
 
-                <!-- Descripción -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:lineSpacingExtra="4dp"
                     android:text="Ya tienes entrenadores activos en todos los deportes que este coach ofrece."
-                    android:textColor="#7F1D1D"
-                    android:textSize="14sp"
                     android:textAlignment="center"
-                    android:lineSpacingExtra="4dp" />
+                    android:textColor="#7F1D1D"
+                    android:textSize="14sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Barra inferior con precio y botones -->
+        <!-- Sección inferior -->
         <LinearLayout
             android:id="@+id/layout_bottom_bar"
             android:layout_width="0dp"
@@ -343,8 +329,8 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="16dp"
-            android:paddingBottom="100dp"
             android:orientation="vertical"
+            android:paddingBottom="100dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/card_no_disponible">
@@ -354,16 +340,16 @@
                 android:id="@+id/layout_precio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:gravity="center"
+                android:orientation="vertical"
                 android:paddingBottom="16dp">
 
                 <TextView
+                    android:id="@+id/texto_costo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Costo mensual"
                     android:textColor="#6B7280"
-                    android:id="@+id/texto_costo"
                     android:textSize="14sp" />
 
                 <TextView
@@ -371,15 +357,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    tools:text="$800 MXN"
                     android:textColor="#1A1A1A"
                     android:textSize="24sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="$800 MXN" />
             </LinearLayout>
 
-            <!-- ============================================
-                 LAYOUT SIN RELACIÓN
-                 ============================================ -->
+            <!-- LAYOUT SIN RELACIÓN -->
             <LinearLayout
                 android:id="@+id/layout_sin_relacion"
                 android:layout_width="match_parent"
@@ -397,94 +381,36 @@
             </LinearLayout>
 
             <!-- ============================================
-                 LAYOUT PENDIENTE (Solicitud aceptada CON deportes disponibles)
+                 RECYCLER DE DEPORTES
+                 Visible cuando hay relación activa o pendiente
                  ============================================ -->
-            <LinearLayout
-                android:id="@+id/layout_pendiente"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_relaciones"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:background="#FFF9E6"
-                android:visibility="visible">
+                android:layout_marginBottom="12dp"
+                android:nestedScrollingEnabled="false"
+                android:visibility="gone" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Solicitud aceptada"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#059669"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="¡Excelente! El entrenador aceptó tu solicitud. Paga para iniciar tu entrenamiento."
-                    android:textSize="14sp"
-                    android:layout_marginBottom="16dp" />
-
-                <!-- Botones de contacto -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:weightSum="2">
-
-                    <!-- Botón de WhatsApp -->
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_pagar"
-                        android:layout_width="0dp"
-                        android:layout_height="56dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="8dp"
-                        android:text="Pagar"
-                        android:textSize="14sp"
-                        app:cornerRadius="12dp"
-                        app:iconGravity="textStart"
-                        app:iconPadding="8dp"
-                        android:backgroundTint="#25D366" />
-
-                </LinearLayout>
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_solicitar_mas_deportes_pendiente"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_marginTop="12dp"
-                    android:text="Solicitar otro deporte"
-                    android:textSize="15sp"
-                    app:backgroundTint="#2563EB"
-                    app:cornerRadius="12dp"
-                    app:icon="@drawable/ic_add"
-                    app:iconGravity="textStart"
-                    app:iconTint="#FFFFFF"
-                    android:visibility="gone" />
-
-            </LinearLayout>
-
-            <!-- ============================================
-                 LAYOUT ACTIVO (Ya es su entrenador)
-                 ============================================ -->
+            <!-- LAYOUT ACTIVO -->
             <LinearLayout
                 android:id="@+id/layout_activo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#DCFCE7"
                 android:orientation="vertical"
                 android:padding="16dp"
-                android:background="#DCFCE7"
                 android:visibility="gone">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
                     android:text="Entrenamiento activo"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#059669"
-                    android:layout_gravity="center"
                     android:textAlignment="center"
-                    android:layout_marginBottom="16dp" />
+                    android:textColor="#059669"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_calificar_activo"
@@ -493,7 +419,6 @@
                     android:text="⭐ Calificar entrenador"
                     app:cornerRadius="12dp" />
 
-                <!-- Después del botón "Calificar entrenador", ANTES de cerrar el LinearLayout -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_solicitar_mas_deportes_activo"
                     android:layout_width="match_parent"
@@ -501,45 +426,43 @@
                     android:layout_marginTop="12dp"
                     android:text="Solicitar otro deporte"
                     android:textSize="15sp"
+                    android:visibility="gone"
                     app:backgroundTint="#2563EB"
                     app:cornerRadius="12dp"
                     app:icon="@drawable/ic_add"
                     app:iconGravity="textStart"
-                    app:iconTint="#FFFFFF"
-                    android:visibility="gone" />
+                    app:iconTint="#FFFFFF" />
 
             </LinearLayout>
 
-            <!-- ============================================
-                 LAYOUT FINALIZADO (Relación terminada)
-                 ============================================ -->
+            <!-- LAYOUT FINALIZADO -->
             <LinearLayout
                 android:id="@+id/layout_finalizado"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#E0F2FE"
                 android:orientation="vertical"
                 android:padding="16dp"
-                android:background="#E0F2FE"
                 android:visibility="gone">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
                     android:text="Entrenamiento finalizado"
                     android:textAlignment="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
                     android:textColor="#0284C7"
-                    android:layout_marginBottom="16dp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_solicitar_nuevamente"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:text="Solicitar nuevamente"
-                    app:cornerRadius="12dp"
+                    android:layout_marginBottom="12dp"
                     android:backgroundTint="#3F51B5"
-                    android:layout_marginBottom="12dp" />
+                    android:text="Solicitar nuevamente"
+                    app:cornerRadius="12dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_calificar_finalizado"
@@ -550,47 +473,44 @@
 
             </LinearLayout>
 
-            <!-- ============================================
-                 LAYOUT ESPERANDO RESPUESTA (Solicitudes pendientes)
-                 ============================================ -->
+            <!-- LAYOUT ESPERANDO RESPUESTA -->
             <LinearLayout
                 android:id="@+id/layout_esperando_respuesta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#FEF3C7"
                 android:orientation="vertical"
                 android:padding="16dp"
-                android:background="#FEF3C7"
                 android:visibility="gone">
 
                 <ImageView
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/ic_clock"
-                    app:tint="#F59E0B"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_marginBottom="12dp"
+                    android:src="@drawable/ic_clock"
+                    app:tint="#F59E0B" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
                     android:text="Solicitudes en revisión"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#D97706"
                     android:textAlignment="center"
-                    android:layout_marginBottom="12dp" />
+                    android:textColor="#D97706"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="El entrenador está revisando tus solicitudes. Te notificaremos cuando responda."
-                    android:textSize="14sp"
-                    android:textColor="#92400E"
-                    android:textAlignment="center"
+                    android:layout_marginBottom="16dp"
                     android:lineSpacingExtra="4dp"
-                    android:layout_marginBottom="16dp" />
+                    android:text="El entrenador está revisando tus solicitudes. Te notificaremos cuando responda."
+                    android:textAlignment="center"
+                    android:textColor="#92400E"
+                    android:textSize="14sp" />
 
-                <!-- RecyclerView de solicitudes pendientes -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_solicitudes_pendientes"
                     android:layout_width="match_parent"
@@ -598,6 +518,20 @@
                     android:nestedScrollingEnabled="false" />
 
             </LinearLayout>
+
+            <!-- btn_pagar oculto — solo para evitar crash en el fragment -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_pagar"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone" />
+
+            <!-- btn_solicitar_mas_deportes_pendiente oculto — mantenido para el fragment -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_solicitar_mas_deportes_pendiente"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone" />
 
         </LinearLayout>
 

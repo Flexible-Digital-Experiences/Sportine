@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -25,36 +24,22 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Obtenemos el BottomNavigationView
         BottomNavigationView navView = binding.navView;
 
-        // Obtenemos el NavController
         NavController navController = Navigation.findNavController(
                 this,
                 R.id.nav_host_fragment_activity_main
         );
 
-        // --- LÓGICA DE ROL ---
-
-        // 1. Leemos el rol guardado en SharedPreferences
         SharedPreferences prefs = getSharedPreferences("SportinePrefs", MODE_PRIVATE);
-        String rol = prefs.getString("USER_ROL","alumno");
+        String rol = prefs.getString("USER_ROL", "alumno");
 
-        // 2. Declaramos la configuración fuera del if/else
         AppBarConfiguration appBarConfiguration;
 
-        // 3. Configuramos según el rol
         if (rol.equals("entrenador")) {
-            // === CONFIGURACIÓN PARA ENTRENADOR ===
-
-            // Cambiar el menú del BottomNavigationView
             navView.getMenu().clear();
             navView.inflateMenu(R.menu.menu_entrenador);
-
-            // Establecer el nav graph de entrenador
             navController.setGraph(R.navigation.entrenador_navigation);
-
-            // Configurar los destinos principales para entrenador
             appBarConfiguration = new AppBarConfiguration.Builder(
                     R.id.navigation_home_entrenador,
                     R.id.navigation_stats_entrenador,
@@ -62,18 +47,10 @@ public class MainActivity extends AppCompatActivity {
                     R.id.navigation_solicitudes_entrenador,
                     R.id.navigation_social_entrenador
             ).build();
-
         } else {
-            // === CONFIGURACIÓN PARA ALUMNO ===
-
-            // Cambiar el menú del BottomNavigationView
             navView.getMenu().clear();
             navView.inflateMenu(R.menu.bottom_nav_menu);
-
-            // Establecer el nav graph de alumno
             navController.setGraph(R.navigation.mobile_navigation);
-
-            // Configurar los destinos principales para alumno
             appBarConfiguration = new AppBarConfiguration.Builder(
                     R.id.navigation_home,
                     R.id.navigation_notifications,
@@ -84,19 +61,15 @@ public class MainActivity extends AppCompatActivity {
             ).build();
         }
 
-        // --- FIN DE LA LÓGICA DE ROL ---
-
-        // Conectar la navegación con el BottomNavigationView
         NavigationUI.setupWithNavController(navView, navController);
 
-        // --- MANEJAR DEEP LINK AL CREAR ---
         handleDeepLink(getIntent());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        setIntent(intent); // IMPORTANTE: Actualizar el intent actual
+        setIntent(intent);
         Log.d(TAG, "onNewIntent llamado");
         handleDeepLink(intent);
     }
@@ -105,46 +78,60 @@ public class MainActivity extends AppCompatActivity {
         Uri data = intent.getData();
 
         Log.d(TAG, "=== DEEP LINK EN MAINACTIVITY ===");
-        Log.d(TAG, "Intent: " + intent);
         Log.d(TAG, "URI: " + data);
 
-        if (data != null) {
-            String scheme = data.getScheme();
-            String host = data.getHost();
-            String path = data.getLastPathSegment();
-
-            Log.d(TAG, "Scheme: " + scheme);
-            Log.d(TAG, "Host: " + host);
-            Log.d(TAG, "Path: " + path);
-
-            if ("sportine".equals(scheme) && "payment".equals(host)) {
-                // Guardar en SharedPreferences para que el Fragment lo lea
-                SharedPreferences prefs = getSharedPreferences("SportinePrefs", MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
-
-                if ("success".equals(path)) {
-                    Log.d(TAG, "✅ PAGO EXITOSO - Guardando flag");
-                    editor.putBoolean("payment_success", true);
-                    editor.putLong("payment_timestamp", System.currentTimeMillis());
-                    editor.apply();
-
-                    Log.d(TAG, "✅ Flags guardados en SharedPreferences");
-
-                } else if ("cancel".equals(path)) {
-                    Log.d(TAG, "❌ PAGO CANCELADO - Guardando flag");
-                    editor.putBoolean("payment_cancelled", true);
-                    editor.apply();
-                }
-
-                // Limpiar el URI del intent para que no se procese de nuevo
-                intent.setData(null);
-
-                Log.d(TAG, "✅ Deep link procesado, URI limpiado");
-            } else {
-                Log.d(TAG, "⚠️ Deep link no coincide con sportine://payment");
-            }
-        } else {
+        if (data == null) {
             Log.d(TAG, "No hay URI en el Intent");
+            return;
         }
+
+        String scheme = data.getScheme();
+        String host = data.getHost();
+        String path = data.getLastPathSegment();
+
+        Log.d(TAG, "Scheme: " + scheme + ", Host: " + host + ", Path: " + path);
+
+        if (!"sportine".equals(scheme)) {
+            Log.d(TAG, "Scheme no reconocido: " + scheme);
+            return;
+        }
+
+        SharedPreferences prefs = getSharedPreferences("SportinePrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        // ── DEEP LINK DE PAGO ─────────────────────────────────────────────────
+        if ("payment".equals(host)) {
+            if ("success".equals(path)) {
+                String token = data.getQueryParameter("token");
+                String payerId = data.getQueryParameter("PayerID");
+                Log.d(TAG, "✅ PAGO EXITOSO - Token: " + token + ", PayerID: " + payerId);
+                editor.putBoolean("payment_success", true);
+                editor.putString("payment_token", token);
+                editor.putString("payment_payer_id", payerId);
+                editor.putLong("payment_timestamp", System.currentTimeMillis());
+                editor.apply();
+                Log.d(TAG, "✅ Flags de pago guardados en SharedPreferences");
+            } else if ("cancel".equals(path)) {
+                Log.d(TAG, "❌ PAGO CANCELADO");
+                editor.putBoolean("payment_cancelled", true);
+                editor.putLong("payment_timestamp", System.currentTimeMillis());
+                editor.apply();
+            }
+
+            // ── DEEP LINK DE ONBOARDING ───────────────────────────────────────────
+        } else if ("onboarding".equals(host)) {
+            if ("success".equals(path)) {
+                Log.d(TAG, "✅ ONBOARDING COMPLETADO - Guardando flag");
+                editor.putBoolean("onboarding_success", true);
+                editor.putLong("onboarding_timestamp", System.currentTimeMillis());
+                editor.apply();
+                Log.d(TAG, "✅ Flag de onboarding guardado");
+            }
+
+        } else {
+            Log.d(TAG, "⚠️ Host no reconocido: " + host);
+        }
+
+        intent.setData(null);
     }
 }

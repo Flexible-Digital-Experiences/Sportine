@@ -14,28 +14,28 @@ import java.util.Optional;
 public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, String> {
 
     @Query(value = """
-        SELECT 
-            u.usuario as usuario,
-            u.nombre as nombre,
-            u.apellidos as apellidos,
-            u.ciudad as ciudad,
-            e.estado as estado,
-            u.correo as correo,
-            ie.foto_perfil as fotoPerfil,
-            ie.descripcion_perfil as descripcionPerfil,
-            ie.costo_mensualidad as costoMensualidad,
-            ie.limite_alumnos AS limiteAlumnos,
-            COUNT(DISTINCT ea.usuario_alumno) AS alumnosActuales
-        FROM Usuario u
-        LEFT JOIN Estado e ON u.id_estado = e.id_estado
-        LEFT JOIN Informacion_Entrenador ie ON u.usuario = ie.usuario
-        LEFT JOIN Entrenador_Alumno ea ON u.usuario = ea.usuario_entrenador 
-            AND ea.status_relacion = 'activo'
-        WHERE u.usuario = :usuario
-        GROUP BY u.usuario, u.nombre, u.apellidos, u.ciudad, e.estado, 
-                 ie.foto_perfil, ie.descripcion_perfil, ie.costo_mensualidad, 
-                 ie.limite_alumnos, ie.correo, ie.telefono
-        """, nativeQuery = true)
+    SELECT 
+        u.usuario as usuario,
+        u.nombre as nombre,
+        u.apellidos as apellidos,
+        u.ciudad as ciudad,
+        e.estado as estado,
+        u.correo as correo,
+        ie.foto_perfil as fotoPerfil,
+        ie.descripcion_perfil as descripcionPerfil,
+        ie.costo_mensualidad as costoMensualidad,
+        ie.limite_alumnos AS limiteAlumnos,
+        COUNT(DISTINCT ea.usuario_alumno) AS alumnosActuales
+    FROM Usuario u
+    LEFT JOIN Estado e ON u.id_estado = e.id_estado
+    LEFT JOIN Informacion_Entrenador ie ON u.usuario = ie.usuario
+    LEFT JOIN Entrenador_Alumno ea ON u.usuario = ea.usuario_entrenador 
+        AND ea.status_relacion = 'activo'
+    WHERE u.usuario = :usuario
+    GROUP BY u.usuario, u.nombre, u.apellidos, u.ciudad, e.estado, u.correo,
+             ie.foto_perfil, ie.descripcion_perfil, ie.costo_mensualidad, 
+             ie.limite_alumnos
+    """, nativeQuery = true)
     Optional<Map<String, Object>> obtenerDatosEntrenador(@Param("usuario") String usuario);
 
     @Query(value = """
@@ -104,5 +104,30 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
     Long verificarSiYaCalifico(
             @Param("usuarioAlumno") String usuarioAlumno,
             @Param("usuarioEntrenador") String usuarioEntrenador
+    );
+
+    @Query(value = """
+    SELECT 
+        ea.id_relacion as idRelacion,
+        ea.status_relacion as statusRelacion,
+        ea.id_deporte as idDeporte,
+        d.nombre_deporte as nombreDeporte,
+        ea.fin_mensualidad as finMensualidad,
+        COALESCE(ase.status_suscripcion, '') as statusSuscripcion
+    FROM Entrenador_Alumno ea
+    INNER JOIN Deporte d ON ea.id_deporte = d.id_deporte
+    LEFT JOIN Estudiante_Suscripcion_Entrenador ase 
+        ON ase.usuario_estudiante = :usuarioAlumno
+        AND ase.usuario_entrenador = :usuarioEntrenador
+        AND ase.id_deporte = ea.id_deporte
+        AND ase.status_suscripcion IN ('active', 'cancelled')
+    WHERE ea.usuario_entrenador = :usuarioEntrenador
+      AND ea.usuario_alumno = :usuarioAlumno
+      AND ea.status_relacion IN ('pendiente', 'activo')
+    ORDER BY ea.id_relacion DESC
+    """, nativeQuery = true)
+    List<Map<String, Object>> obtenerRelaciones(
+            @Param("usuarioEntrenador") String usuarioEntrenador,
+            @Param("usuarioAlumno") String usuarioAlumno
     );
 }

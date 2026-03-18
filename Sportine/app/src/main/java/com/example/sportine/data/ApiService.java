@@ -402,4 +402,52 @@ public interface ApiService {
             @Path("username") String username,
             @Path("nombreDeporte") String nombreDeporte
     );
+
+
+    /**
+     * Crear suscripción y obtener approval_url de PayPal
+     * POST /api/v2/estudiante/suscripcion/crear
+     */
+    @POST("api/v2/estudiante/suscripcion/crear")
+    Call<com.example.sportine.models.payment.PaymentApiModels.CrearSuscripcionResponse> crearSuscripcion(
+            @Query("usuarioEstudiante") String usuarioEstudiante,
+            @Query("usuarioEntrenador") String usuarioEntrenador,
+            @Query("idDeporte") Integer idDeporte
+    );
+
+    /**
+     * Confirmar suscripción después de que PayPal redirige de vuelta
+     * POST /api/v2/estudiante/suscripcion/confirmar
+     */
+    @POST("api/v2/estudiante/suscripcion/confirmar")
+    Call<com.example.sportine.models.payment.PaymentApiModels.ConfirmarSuscripcionResponse> confirmarSuscripcion(
+            @Query("orderId") String orderId,
+            @Query("vaultId") String vaultId
+    );
+
+    /**
+     * Verificar si el entrenador puede recibir pagos (onboarding completado)
+     * GET /api/v2/entrenador/paypal/puede-recibir-pagos
+     */
+    @GET("api/v2/entrenador/paypal/puede-recibir-pagos")
+    Call<com.example.sportine.models.payment.PaymentApiModels.PuedeRecibirPagosResponse> verificarEntrenadorPuedeRecibirPagos(
+            @Query("usuario") String usuarioEntrenador
+    );
+
+    // ---- 1. Iniciar onboarding PayPal del entrenador ----
+    @POST("api/v2/entrenador/paypal/onboarding/iniciar")
+    Call<Map<String, Object>> iniciarOnboardingPayPal(
+            @Query("usuario") String usuario
+    );
+
+    @GET("api/v2/entrenador/paypal/verificar-onboarding")
+    Call<Map<String, Object>> verificarOnboardingManual(@Query("usuario") String usuario);
+
+    @POST("api/v2/estudiante/suscripcion/cancelar-por-usuario")
+    Call<Map<String, Object>> cancelarSuscripcionPorUsuario(
+            @Query("usuarioEstudiante") String usuarioEstudiante,
+            @Query("usuarioEntrenador") String usuarioEntrenador,
+            @Query("idDeporte") Integer idDeporte,
+            @Query("motivo") String motivo
+    );
 }

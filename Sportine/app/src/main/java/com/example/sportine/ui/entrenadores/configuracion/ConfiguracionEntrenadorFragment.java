@@ -72,7 +72,9 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
 
     // Botones
     private MaterialButton btnModificar;
-    private MaterialButton btnCerrarSesion; // ✅ NUEVO
+    private MaterialButton btnCerrarSesion;
+    private MaterialButton btnConectarPayPal;
+
 
     // API Service
     private ApiService apiService;
@@ -163,6 +165,7 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
         tvCiudad = view.findViewById(R.id.tvCiudad);
         tvCorreo = view.findViewById(R.id.tvCorreo);
         tvPassword = view.findViewById(R.id.tvPassword);
+        btnConectarPayPal = view.findViewById(R.id.btnConectarPayPalConfig);
 
         // Detalles de Clases
         tvCostoMensualidad = view.findViewById(R.id.tvCostoMensualidad);
@@ -193,6 +196,14 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
             Navigation.findNavController(v)
                     .navigate(R.id.action_configuracionentre_to_modificar);
         });
+
+        //Paypal
+        if (btnConectarPayPal != null) {
+            btnConectarPayPal.setOnClickListener(v -> {
+                Navigation.findNavController(v)
+                        .navigate(R.id.action_configuracionentre_to_onboardingPayPal);
+            });
+        }
 
         // Botón editar foto
         btnEditarFoto.setOnClickListener(v -> verificarPermisoYAbrirGaleria());

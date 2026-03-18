@@ -72,4 +72,5 @@ dependencies {
     implementation ("com.google.android.material:material:1.11.0")
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.squareup.picasso:picasso:2.8")
+    implementation("androidx.browser:browser:1.8.0")
 }
