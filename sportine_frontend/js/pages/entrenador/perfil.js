@@ -22,18 +22,83 @@ function renderPerfil() {
     var el = document.getElementById(id); if (el) el.textContent = p.iniciales;
   });
   var fullName = p.nombre + ' ' + p.apellido;
-  document.getElementById('sidebar-name').textContent  = fullName;
-  document.getElementById('perfil-name').textContent   = fullName;
-  document.getElementById('perfil-username').textContent = p.username;
-  document.getElementById('badge-alumnos').textContent    = p.alumnos;
-  document.getElementById('badge-resenas').textContent    = p.resenas;
-  document.getElementById('badge-calificacion').textContent = p.calificacion.toFixed(1) + ' ⭐';
-  document.getElementById('info-descripcion').textContent = p.descripcion;
-  document.getElementById('info-precio').textContent    = p.precio;
-  document.getElementById('info-modalidad').textContent = p.modalidad;
-  document.getElementById('info-experiencia').textContent = p.experiencia;
-  document.getElementById('info-correo').textContent    = p.correo;
-  document.getElementById('info-ciudad').textContent    = p.ciudad;
+
+  // Sidebar + topbar name
+  var sidebarName = document.getElementById('sidebar-name');
+  if (sidebarName) sidebarName.textContent = fullName;
+
+  // Perfil header elements (these IDs exist in entrenador/perfil.html)
+  var perfilName = document.getElementById('perfil-name');
+  if (perfilName) perfilName.textContent = fullName;
+
+  var perfilUsername = document.getElementById('perfil-username');
+  if (perfilUsername) perfilUsername.textContent = p.username;
+
+  var badgeAlumnos = document.getElementById('badge-alumnos');
+  if (badgeAlumnos) badgeAlumnos.textContent = p.alumnos;
+
+  var badgeResenas = document.getElementById('badge-resenas');
+  if (badgeResenas) badgeResenas.textContent = p.resenas;
+
+  var badgeCalif = document.getElementById('badge-calificacion');
+  if (badgeCalif) badgeCalif.textContent = p.calificacion.toFixed(1) + ' ⭐';
+
+  var infoDesc = document.getElementById('info-descripcion');
+  if (infoDesc) infoDesc.textContent = p.descripcion;
+
+  var infoPrecio = document.getElementById('info-precio');
+  if (infoPrecio) infoPrecio.textContent = p.precio;
+
+  var infoModal = document.getElementById('info-modalidad');
+  if (infoModal) infoModal.textContent = p.modalidad;
+
+  var infoExp = document.getElementById('info-experiencia');
+  if (infoExp) infoExp.textContent = p.experiencia;
+
+  var infoCorreo = document.getElementById('info-correo');
+  if (infoCorreo) infoCorreo.textContent = p.correo;
+
+  var infoCiudad = document.getElementById('info-ciudad');
+  if (infoCiudad) infoCiudad.textContent = p.ciudad;
+
+  // Entrenador-specific elements (entre-avatar-ring, entre-bio, etc.)
+  var entreAvatar = document.getElementById('entre-avatar');
+  if (entreAvatar) entreAvatar.textContent = p.iniciales;
+
+  var enBioNombre = document.getElementById('entre-bio-nombre');
+  if (enBioNombre) enBioNombre.textContent = 'Hola, ' + p.nombre;
+
+  var enBioDesc = document.getElementById('entre-bio-desc');
+  if (enBioDesc) enBioDesc.textContent = p.descripcion;
+
+  var counterAlumnos = document.getElementById('counter-alumnos');
+  if (counterAlumnos) counterAlumnos.textContent = p.alumnos;
+
+  // Detalles de clases
+  var clasesCosto = document.getElementById('clases-costo');
+  if (clasesCosto) clasesCosto.textContent = p.precio;
+
+  var clasesInscritos = document.getElementById('clases-inscritos');
+  if (clasesInscritos) clasesInscritos.textContent = p.alumnos;
+
+  var clasesDinero = document.getElementById('clases-dinero');
+  if (clasesDinero) {
+    var precioNum = parseInt(p.precio.replace(/\D/g, '')) || 350;
+    clasesDinero.textContent = '$' + (precioNum * p.alumnos).toLocaleString() + ' MXN / mes';
+  }
+
+  // Info fields (from perfil.html static IDs)
+  var infoNombre = document.getElementById('info-nombre');
+  if (infoNombre) infoNombre.textContent = p.nombre;
+
+  var infoApellido = document.getElementById('info-apellido');
+  if (infoApellido) infoApellido.textContent = p.apellido;
+
+  var infoUsername = document.getElementById('info-username');
+  if (infoUsername) infoUsername.textContent = p.username;
+
+  var infoEstado = document.getElementById('info-estado');
+  if (infoEstado) infoEstado.textContent = p.estado;
 
   var dc = document.getElementById('deportes-container');
   if (dc) dc.innerHTML = p.deportes.map(function(d) {
@@ -118,7 +183,6 @@ function showConfigMenu() {
 window.openVerDetalles = function() {
   var p = MOCK_PERFIL;
   var html = backBtn()
-    // Avatar y nombre
     + '<div style="text-align:center;padding:8px 0 24px">'
     + '<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#1ea1db,#00A896);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:700;font-size:1.6rem;color:#fff;margin:0 auto 12px">' + p.iniciales + '</div>'
     + '<div style="font-family:Sora,sans-serif;font-weight:800;font-size:1.1rem">' + (p.nombre + ' ' + p.apellido) + '</div>'
@@ -127,13 +191,11 @@ window.openVerDetalles = function() {
     + '<span style="background:#EBF8FF;color:#1ea1db;padding:4px 14px;border-radius:50px;font-size:0.75rem;font-weight:700">⭐ ' + p.calificacion.toFixed(1) + ' / 5</span>'
     + '<span style="background:#F0FFF4;color:#00A896;padding:4px 14px;border-radius:50px;font-size:0.75rem;font-weight:700">' + p.experiencia + ' de experiencia</span>'
     + '</div></div>'
-    // Stats del entrenador
     + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px">'
     + detalleStatBox('Alumnos', p.alumnos, '#1ea1db')
     + detalleStatBox('Reseñas', p.resenas, '#f89a02')
     + detalleStatBox('Calif.', p.calificacion.toFixed(1) + '⭐', '#00A896')
     + '</div>'
-    // Sección Información
     + '<p style="font-size:0.72rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px">INFORMACIÓN PERSONAL</p>'
     + detalleRow('Correo',    p.correo)
     + detalleRow('Teléfono',  p.telefono)
@@ -143,7 +205,6 @@ window.openVerDetalles = function() {
     + '<p style="font-size:0.72rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.07em;margin:16px 0 10px">DESCRIPCIÓN</p>'
     + '<div style="background:#F9FAFB;border-radius:12px;padding:14px;margin-bottom:20px">'
     + '<p style="font-size:0.88rem;color:#424242;line-height:1.65">' + p.descripcion + '</p></div>'
-    // Deportes
     + '<p style="font-size:0.72rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px">DEPORTES QUE IMPARTE</p>'
     + '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">'
     + p.deportes.map(function(d) {
@@ -314,7 +375,6 @@ window.openPremium = function() {
 };
 
 window.suscribirPremium = function() {
-  // Demo: activar premium
   MOCK_PERFIL.isPremium = true;
   renderPerfil();
   setConfigContent('¡Bienvenido a Premium!',
@@ -328,7 +388,7 @@ window.suscribirPremium = function() {
   // TODO: POST /api/entrenador/premium/suscribir
 };
 
-/* ── Cerrar sesión ── */
+/* ── Cerrar sesión — EXPOSED para onclick en drawer ── */
 window.confirmarLogout = function() {
   setConfigContent('Cerrar sesión', '<div style="text-align:center;padding:20px 0">'
     + '<div style="font-size:3rem;margin-bottom:12px">🚪</div>'
@@ -340,26 +400,57 @@ window.confirmarLogout = function() {
 };
 
 window.doLogout = function() {
-  localStorage.removeItem('sp_token'); localStorage.removeItem('sp_rol');
+  localStorage.removeItem('sp_token');
+  localStorage.removeItem('sp_rol');
   window.location.href = '../../pages/auth/login.html';
 };
 
-window.showConfigMenu = showConfigMenu;
-window.openConfig     = openConfig;
-window.closeConfig    = closeConfig;
+/* ── Expose all functions used in onclick attributes or externally ── */
+window.showConfigMenu     = showConfigMenu;
+window.openConfig         = openConfig;
+window.closeConfig        = closeConfig;
+
+/* ── LOGOUT directo desde sidebar (btn-logout) ── */
+function handleLogout() {
+  localStorage.removeItem('sp_token');
+  localStorage.removeItem('sp_rol');
+  window.location.href = '../../pages/auth/login.html';
+}
 
 /* ── Init ── */
 document.addEventListener('DOMContentLoaded', function() {
   renderPerfil();
   buildConfigDrawer();
 
-  document.getElementById('btn-settings').addEventListener('click', openConfig);
+  // FIX 2: Conectar botón de ajustes (ranura de configuración)
+  var btnSettings = document.getElementById('btn-settings');
+  if (btnSettings) btnSettings.addEventListener('click', openConfig);
 
+  // Banner premium
   var btnPremium = document.getElementById('btn-premium-banner');
   if (btnPremium) btnPremium.addEventListener('click', function() {
     openConfig(); setTimeout(window.openPremium, 60);
   });
 
+  // FIX 3a: Botón "Completar tus datos" → abre config → va a Detalles de clases
+  var btnCompletar = document.getElementById('btn-completar');
+  if (btnCompletar) btnCompletar.addEventListener('click', function() {
+    openConfig();
+    setTimeout(window.openDetallesClases, 60);
+  });
+
+  // FIX 3b: Botón "Gestionar deportes" → abre config → va a Gestionar deportes
+  var btnGestionar = document.getElementById('btn-gestionar');
+  if (btnGestionar) btnGestionar.addEventListener('click', function() {
+    openConfig();
+    setTimeout(window.openGestionarDeportes, 60);
+  });
+
+  // FIX 1: Logout desde sidebar — listener directo, sin depender del drawer
+  var btnLogout = document.getElementById('btn-logout');
+  if (btnLogout) btnLogout.addEventListener('click', handleLogout);
+
+  // Sidebar mobile
   document.getElementById('topbar-menu').addEventListener('click', function() {
     document.getElementById('sidebar').classList.add('open');
     document.getElementById('sidebar-overlay').classList.add('visible');
@@ -370,19 +461,17 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('sidebar-overlay').classList.remove('visible');
     document.body.style.overflow = '';
   });
+
+  // Nav links
   document.querySelectorAll('[data-section]').forEach(function(el) {
     el.addEventListener('click', function(e) {
       var sec = el.dataset.section;
       if (sec === 'perfil') return;
       e.preventDefault();
-      if (sec === 'home')         window.location.href = 'home.html';
-      else if (sec === 'solicitudes') window.location.href = 'solicitudes.html';
+      if (sec === 'home')              window.location.href = 'home.html';
+      else if (sec === 'solicitudes')  window.location.href = 'solicitudes.html';
       else if (sec === 'estadisticas') window.location.href = 'estadisticas.html';
-      else if (sec === 'social')  window.location.href = 'social.html';
+      else if (sec === 'social')       window.location.href = 'social.html';
     });
-  });
-  document.getElementById('btn-logout').addEventListener('click', function() {
-    localStorage.removeItem('sp_token'); localStorage.removeItem('sp_rol');
-    window.location.href = '../../pages/auth/login.html';
   });
 });
