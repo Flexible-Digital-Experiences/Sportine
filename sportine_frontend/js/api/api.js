@@ -148,6 +148,168 @@ const Api = {
     return _handleResponse(response);
   },
 
+  // ============================================================
+  //   MÓDULO: SOCIAL (Amigos y Seguidores)
+  //   Endpoints de: SeguidoresController.java
+  // ============================================================
+
+  // ── BUSCAR AMIGOS ───────────────────────────────────────────
+  //
+  // Endpoint: GET /api/social/amigos/buscar?q=...
+  // Requiere token JWT
+  //
+  async buscarUsuarios(query) {
+    const response = await fetch(`${BASE_URL}/api/social/amigos/buscar?q=${encodeURIComponent(query)}`, {
+      method: 'GET',
+      headers: _getHeaders(true),
+    });
+    return _handleResponse(response);
+  },
+
+  // ── AGREGAR/QUITAR AMIGO (TOGGLE) ───────────────────────────
+  //
+  // Endpoint: POST /api/social/seguir/{usuarioObjetivo}
+  // Requiere token JWT
+  //
+  async toggleAmigo(username) {
+    const response = await fetch(`${BASE_URL}/api/social/seguir/${username}`, {
+      method: 'POST',
+      headers: _getHeaders(true),
+    });
+    return _handleResponse(response);
+  },
+
+  // ── OBTENER MIS AMIGOS ──────────────────────────────────────
+  //
+  // Endpoint: GET /api/social/amigos
+  // Requiere token JWT
+  //
+  async obtenerMisAmigos() {
+    const response = await fetch(`${BASE_URL}/api/social/amigos`, {
+      method: 'GET',
+      headers: _getHeaders(true),
+    });
+    return _handleResponse(response);
+  },
+
+  // ============================================================
+  //   MÓDULO: NOTIFICACIONES
+  //   Endpoints de: NotificacionController.java
+  // ============================================================
+
+  // Obtener la lista
+  async obtenerNotificaciones() {
+    const response = await fetch(`${BASE_URL}/api/notificaciones`, {
+      method: 'GET',
+      headers: _getHeaders(true),
+    });
+    return _handleResponse(response);
+  },
+
+  // Marcar una como leída
+  async marcarNotificacionLeida(id) {
+    const response = await fetch(`${BASE_URL}/api/notificaciones/${id}/leer`, {
+      method: 'PUT',
+      headers: _getHeaders(true),
+    });
+    // El servidor no retorna JSON aquí (devuelve 200 OK vacío)
+    if (!response.ok) throw new Error("Error al marcar como leída");
+  },
+
+  // ============================================================
+  //   MÓDULO: FEED Y PUBLICACIONES
+  //   Endpoints de: SocialController.java
+  // ============================================================
+
+  // ── OBTENER EL MURO ─────────────────────────────────────────
+  async obtenerFeed() {
+    const response = await fetch(`${BASE_URL}/api/social/feed`, {
+      method: 'GET',
+      headers: _getHeaders(true),
+    });
+    return _handleResponse(response);
+  },
+
+  // ── CREAR NUEVA PUBLICACIÓN CON IMAGEN ──────────────────────
+  async crearPublicacion(texto, imagenFile) {
+    const formData = new FormData();
+    const dto = { descripcion: texto };
+    
+    // Parte 1: DTO JSON en "data"
+    formData.append('data', new Blob([JSON.stringify(dto)], { type: 'application/json' }));
+    
+    // Parte 2: Archivo en "file"
+    if (imagenFile) {
+      formData.append('file', imagenFile);
+    }
+    
+    const token = Session.getToken();
+    
+    const response = await fetch(`${BASE_URL}/api/social/post`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }, // fetch maneja el Content-Type multipart
+      body: formData
+    });
+    return _handleResponse(response);
+  },
+
+  // ── DAR LIKE A UN POST ──────────────────────────────────────
+  async darLike(id) {
+    const response = await fetch(`${BASE_URL}/api/social/post/${id}/like`, {
+      method: 'POST',
+      headers: _getHeaders(true),
+    });
+    if (!response.ok) throw new Error("Error al dar like");
+  },
+
+  // ── QUITAR LIKE A UN POST ───────────────────────────────────
+  async quitarLike(id) {
+    const response = await fetch(`${BASE_URL}/api/social/post/${id}/like`, {
+      method: 'DELETE',
+      headers: _getHeaders(true),
+    });
+    if (!response.ok) throw new Error("Error al quitar like");
+  },
+
+  // ── OBTENER COMENTARIOS ─────────────────────────────────────
+  async obtenerComentarios(postId) {
+    const response = await fetch(`${BASE_URL}/api/social/post/${postId}/comentarios`, {
+      method: 'GET',
+      headers: _getHeaders(true),
+    });
+    return _handleResponse(response);
+  },
+
+  // ── ENVIAR COMENTARIO ───────────────────────────────────────
+  async enviarComentario(postId, texto) {
+    const response = await fetch(`${BASE_URL}/api/social/post/${postId}/comentarios`, {
+      method: 'POST',
+      headers: _getHeaders(true),
+      body: JSON.stringify({ texto: texto })
+    });
+    // El servidor no retorna JSON, devuelve 200 vacío
+    if (!response.ok) throw new Error("Error al enviar comentario");
+  },
+
+  // ── ACTUALIZAR POST ─────────────────────────────────────────
+  async actualizarPublicacion(postId, nuevoTexto) {
+    const response = await fetch(`${BASE_URL}/api/social/post/${postId}`, {
+      method: 'PUT',
+      headers: _getHeaders(true),
+      body: JSON.stringify({ descripcion: nuevoTexto })
+    });
+    return _handleResponse(response);
+  },
+
+  // ── ELIMINAR POST ───────────────────────────────────────────
+  async eliminarPublicacion(postId) {
+    const response = await fetch(`${BASE_URL}/api/social/post/${postId}`, {
+      method: 'DELETE',
+      headers: _getHeaders(true),
+    });
+    if (!response.ok) throw new Error("Error al eliminar");
+  }
+
 };
 
 

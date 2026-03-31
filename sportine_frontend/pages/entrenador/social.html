@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="../../css/pages/home.css" />
   <link rel="stylesheet" href="../../css/pages/alumno.css" />
   <link rel="stylesheet" href="../../css/pages/entrenador.css" />
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </head>
 <body>
 
@@ -52,17 +53,17 @@
 
     <div class="social-topbar">
       <div class="social-actions left">
-        <button class="social-icon-btn" id="btn-ver-amigos">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <button class="social-icon-btn" id="btn-ver-amigos" onclick="window.location.href='../alumno/mis-contactos.html'" title="Mis contactos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
         </button>
       </div>
       <span class="social-title">Social</span>
       <div class="social-actions right">
-        <button class="social-icon-btn" id="btn-notificaciones">
+        <button class="social-icon-btn" id="btn-notificaciones" onclick="window.location.href='../alumno/notificaciones.html'" title="Notificaciones">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         </button>
-        <button class="social-icon-btn" id="btn-buscar-amigo">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="23" y2="12"/><line x1="23" y1="8" x2="19" y2="12"/></svg>
+        <button class="social-icon-btn" id="btn-buscar-amigo" onclick="window.location.href='../alumno/buscar-amigo.html'" title="Buscar gente">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>
         </button>
       </div>
     </div>
@@ -81,8 +82,21 @@
           <span style="font-family:'Sora',sans-serif;font-weight:800;font-size:1rem;text-transform:uppercase;letter-spacing:0.04em">NUEVA PUBLICACIÓN</span>
           <button id="modal-close" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:#6B7280">✕</button>
         </div>
-        <textarea id="modal-texto" placeholder="Comparte tu logro, entrenamiento..." style="width:100%;height:110px;border:1.5px solid #E5E7EB;border-radius:12px;padding:12px;font-family:'DM Sans',sans-serif;font-size:0.9rem;resize:none;outline:none"></textarea>
-        <button id="modal-publicar" style="width:100%;height:48px;background:#f89a02;color:#fff;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.95rem;cursor:pointer;margin-top:16px">PUBLICAR</button>
+        <textarea id="modal-texto" placeholder="Comparte tu logro, entrenamiento..." style="width:100%;height:110px;border:1.5px solid #E5E7EB;border-radius:12px;padding:12px;font-family:'DM Sans',sans-serif;font-size:0.9rem;resize:none;outline:none;margin-bottom:12px"></textarea>
+        
+        <!-- Input & Preview Section -->
+        <input type="file" id="modal-file" accept="image/*" style="display:none">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom: 16px;">
+          <button id="btn-modal-camara" style="width:40px;height:40px;border-radius:50%;background:#F3F4F6;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#1ea1db;" title="Añadir foto">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </button>
+          <div id="modal-preview-container" style="display:none; position:relative;">
+            <img id="modal-preview-img" src="" alt="preview" style="height:60px; border-radius:8px; object-fit:cover;">
+            <button id="btn-remove-photo" style="position:absolute;top:-6px;right:-6px;background:#EF4444;color:white;border:none;border-radius:50%;width:20px;height:20px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+          </div>
+        </div>
+
+        <button id="modal-publicar" style="width:100%;height:48px;background:#f89a02;color:#fff;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.95rem;cursor:pointer;">PUBLICAR</button>
       </div>
     </div>
   </main>
@@ -96,6 +110,11 @@
   </nav>
 
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  
+  <!-- 1. Primero siempre las APIs y Core (Regla estricta) -->
+  <script src="../../js/api/api.js"></script>
+  
+  <!-- 2. Por último, tu documento de acciones para esta página en específico -->
   <script src="../../js/pages/entrenador/social.js"></script>
 </body>
 </html>
