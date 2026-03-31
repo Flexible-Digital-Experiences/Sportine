@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sportine – Buscar Amigo</title>
+  <title>Sportine – Mis Contactos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -83,22 +83,11 @@
           <polyline points="12 19 5 12 12 5" />
         </svg>
       </button>
-      <h1 style="font-family:Sora,sans-serif;font-weight:800;font-size:1.3rem">Buscar Amigo</h1>
-    </div>
-
-    <!-- Search -->
-    <div class="search-wrap" style="margin-bottom:20px">
-      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round">
-        <circle cx="11" cy="11" r="8" />
-        <path d="m21 21-4.35-4.35" />
-      </svg>
-      <input type="text" class="search-input" id="amigo-search" placeholder="Buscar por nombre de usuario..."
-        autocomplete="off" />
+      <h1 style="font-family:Sora,sans-serif;font-weight:800;font-size:1.3rem">Mis Contactos</h1>
     </div>
 
     <!-- Resultados -->
-    <div id="amigos-resultados"></div>
+    <div id="contactos-resultados"></div>
   </main>
 
   <nav class="bottom-nav">
@@ -131,13 +120,14 @@
         <circle cx="12" cy="7" r="4" />
       </svg><span>Perfil</span></a>
   </nav>
+  
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
   <!-- 1. Primero siempre las APIs y Core (Regla estricta) -->
   <script src="../../js/api/api.js"></script>
 
   <!-- 2. Por último, tu documento de acciones para esta página en específico -->
-  <script src="../../js/pages/alumno/buscar-amigo.js"></script>
+  <script src="../../js/pages/alumno/mis-contactos.js"></script>
 </body>
 
 </html>

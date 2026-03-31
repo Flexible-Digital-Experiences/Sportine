@@ -22,4 +22,10 @@ public class NotificacionController {
         String miUsuario = principal.getName();
         return ResponseEntity.ok(notificacionService.obtenerMisNotificaciones(miUsuario));
     }
+
+    @PutMapping("/{id}/leer")
+    public ResponseEntity<Void> marcarLeida(@PathVariable Integer id, Principal principal) {
+        notificacionService.marcarComoLeida(id);
+        return ResponseEntity.ok().build();
+    }
 }

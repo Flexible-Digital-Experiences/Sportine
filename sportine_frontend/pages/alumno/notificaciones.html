@@ -58,74 +58,10 @@
 </nav>
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-<script>
-var NOTIFS = [
-  { id:1, tipo:'like',      icono:'❤️',  color:'#EF4444', iniciales:'JP', usuario:'Juan Pérez',    texto:'le dio me gusta a tu publicación.',      tiempo:'Hace 2 min',  leida:false },
-  { id:2, tipo:'comentario',icono:'💬',  color:'#3B82F6', iniciales:'ML', usuario:'María López',   texto:'comentó en tu publicación: "¡Así se hace!"', tiempo:'Hace 10 min', leida:false },
-  { id:3, tipo:'solicitud', icono:'✅',  color:'#22c55e', iniciales:'ML', usuario:'María López',   texto:'aceptó tu solicitud de entrenamiento.',   tiempo:'Hace 1 h',   leida:false },
-  { id:4, tipo:'logro',     icono:'🏆',  color:'#F59E0B', iniciales:'CR', usuario:'Tú',            texto:'desbloqueaste el logro "Primera semana completa".', tiempo:'Hace 3 h', leida:true  },
-  { id:5, tipo:'like',      icono:'❤️',  color:'#EF4444', iniciales:'AT', usuario:'Ana Torres',    texto:'le dio me gusta a tu publicación.',      tiempo:'Hace 5 h',   leida:true  },
-  { id:6, tipo:'amigo',     icono:'👤',  color:'#8B5CF6', iniciales:'SG', usuario:'Sofía Gómez',   texto:'comenzó a seguirte.',                    tiempo:'Ayer',       leida:true  },
-];
+<!-- 1. Primero siempre las APIs y Core (Regla estricta) -->
+<script src="../../js/api/api.js"></script>
 
-function render() {
-  var lista = document.getElementById('notif-lista');
-  var noLeidas = NOTIFS.filter(function(n) { return !n.leida; });
-
-  if (!NOTIFS.length) {
-    lista.innerHTML = '<div class="empty-search"><div class="empty-search-icon">🔔</div><p class="empty-search-title">Sin notificaciones</p><p class="empty-search-sub">Aquí aparecerán tus notificaciones</p></div>';
-    return;
-  }
-
-  // Agrupa: No leídas primero, luego leídas
-  var grupos = [
-    { label: noLeidas.length ? 'Nuevas' : null, items: noLeidas },
-    { label: 'Anteriores', items: NOTIFS.filter(function(n) { return n.leida; }) },
-  ];
-
-  lista.innerHTML = grupos.map(function(g) {
-    if (!g.items.length) return '';
-    var header = g.label ? '<p style="font-size:0.75rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.07em;margin:0 0 10px">' + g.label + '</p>' : '';
-    return header + g.items.map(function(n) {
-      return '<div onclick="marcarLeida(' + n.id + ')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:' + (n.leida ? '#fff' : '#EFF6FF') + ';border-radius:14px;border:1px solid ' + (n.leida ? '#E5E7EB' : '#BFDBFE') + ';margin-bottom:8px;cursor:pointer;transition:background 0.15s">'
-        + '<div style="position:relative;flex-shrink:0">'
-        + '<div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1ea1db,#00A896);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:700;font-size:0.85rem;color:#fff">' + n.iniciales + '</div>'
-        + '<div style="position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;border-radius:50%;background:' + n.color + ';display:flex;align-items:center;justify-content:center;font-size:0.6rem;border:2px solid #fff">' + n.icono + '</div>'
-        + '</div>'
-        + '<div style="flex:1;min-width:0">'
-        + '<div style="font-size:0.88rem;color:#1A1A1A;line-height:1.4"><strong>' + n.usuario + '</strong> ' + n.texto + '</div>'
-        + '<div style="font-size:0.75rem;color:#9CA3AF;margin-top:3px">' + n.tiempo + '</div>'
-        + '</div>'
-        + (!n.leida ? '<div style="width:9px;height:9px;border-radius:50%;background:#1ea1db;flex-shrink:0"></div>' : '')
-        + '</div>';
-    }).join('');
-  }).join('<div style="height:14px"></div>');
-}
-
-window.marcarLeida = function(id) {
-  var n = NOTIFS.find(function(x) { return x.id === id; });
-  if (n && !n.leida) { n.leida = true; render(); }
-};
-
-document.addEventListener('DOMContentLoaded', function() {
-  render();
-
-  document.getElementById('btn-marcar-todas').addEventListener('click', function() {
-    NOTIFS.forEach(function(n) { n.leida = true; });
-    render();
-  });
-
-  document.getElementById('topbar-menu').addEventListener('click', function() {
-    document.getElementById('sidebar').classList.add('open');
-    document.getElementById('sidebar-overlay').classList.add('visible');
-    document.body.style.overflow = 'hidden';
-  });
-  document.getElementById('sidebar-overlay').addEventListener('click', function() {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebar-overlay').classList.remove('visible');
-    document.body.style.overflow = '';
-  });
-});
-</script>
+<!-- 2. Por último, tu documento de acciones para esta página en específico -->
+<script src="../../js/pages/alumno/notificaciones.js"></script>
 </body>
 </html>
