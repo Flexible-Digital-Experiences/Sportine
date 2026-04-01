@@ -59,23 +59,27 @@
     </div>
 
     <!-- Top: Avatar + contadores + bio -->
-    <div class="entre-perfil-top">
-      <div class="entre-avatar-col">
-        <div class="entre-avatar-ring" id="entre-avatar">M</div>
-        <div class="entre-counter-pill">
-          <span class="entre-counter-num orange" id="counter-alumnos">12</span>
-          <span class="entre-counter-label">Alumnos</span>
-        </div>
-        <div class="entre-counter-pill">
-          <span class="entre-counter-num green" id="counter-amigos">58</span>
-          <span class="entre-counter-label">Amigos</span>
-        </div>
-      </div>
-      <div class="entre-bio-card">
-        <div class="entre-bio-name" id="entre-bio-nombre">Hola, María</div>
-        <div class="entre-bio-desc" id="entre-bio-desc">Entrenadora profesional con 8 años de experiencia en natación y atletismo. Me especializo en adultos jóvenes que buscan mejorar su rendimiento y estilo de vida.</div>
-      </div>
+    <div class="entre-perfil-top" style="flex-direction:column; gap:12px;">
+  <!-- Fila superior: avatar + bio -->
+    <div class="entre-perfil-top-row">
+    <div class="entre-avatar-ring" id="entre-avatar">M</div>
+    <div class="entre-bio-card" style="max-height:110px; overflow:hidden;">
+      <div class="entre-bio-name" id="entre-bio-nombre">Hola, María</div>
+      <div class="entre-bio-desc" id="entre-bio-desc" style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">Entrenadora profesional...</div>
     </div>
+  </div>
+  <!-- Fila inferior: pills al 100% del ancho -->
+  <div style="display:flex; gap:10px; width:100%;">
+    <div class="entre-counter-pill" style="flex:1; text-align:center;">
+      <span class="entre-counter-num orange" id="counter-alumnos">0</span>
+      <span class="entre-counter-label">Alumnos</span>
+    </div>
+    <div class="entre-counter-pill" style="flex:1; text-align:center;">
+      <span class="entre-counter-num green" id="counter-amigos">0</span>
+      <span class="entre-counter-label">Amigos</span>
+    </div>
+  </div>
+</div>
 
     <!-- Deportes que imparte -->
     <div class="sp-card" style="padding:20px;margin-bottom:18px">
@@ -128,6 +132,8 @@
   </nav>
 
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <script src="../../js/api/api.js"></script>
   <script src="../../js/pages/entrenador/perfil.js"></script>
+</body>
 </body>
 </html>
