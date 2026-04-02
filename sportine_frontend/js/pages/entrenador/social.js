@@ -257,6 +257,21 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
+  // Actualizar nombre en sidebar/topbar desde sesión
+  var nombreCompleto = (Session.getNombre() || '') + ' ' + (localStorage.getItem('sp_apellidos') || '');
+
+  var sidebarName = document.getElementById('sidebar-name');
+  if (sidebarName) sidebarName.textContent = nombreCompleto.trim();
+
+  var sidebarAvatar = document.getElementById('sidebar-avatar');
+  if (sidebarAvatar) sidebarAvatar.textContent = nombreCompleto.trim().substring(0, 2).toUpperCase();
+
+  var topbarAvatar = document.getElementById('topbar-avatar');
+  if (topbarAvatar) topbarAvatar.textContent = nombreCompleto.trim().substring(0, 2).toUpperCase();
+
+  var cptAvatar = document.getElementById('cpt-avatar');
+  if (cptAvatar) cptAvatar.textContent = nombreCompleto.trim().substring(0, 2).toUpperCase();
+
   async function verificarNotificacionesActivas() {
       try {
           const list = await Api.obtenerNotificaciones();

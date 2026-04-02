@@ -438,6 +438,101 @@ const Api = {
     return _handleResponse(response);
   },
 
+  // ── ACTUALIZAR DATOS DE USUARIO ────────────────────────────
+  //
+  // Endpoint: PUT /api/usuarios/{usuario}/actualizar
+  // Requiere token JWT.
+  //
+  // Body (ActualizarUsuarioDTO):
+  //   { nombre, apellidos, sexo, estado, ciudad, correo }
+  //   (todos opcionales, solo se actualizan los que vienen)
+  //
+  async actualizarDatosUsuario(usuario, datos) {
+    const response = await fetch(`${BASE_URL}/api/usuarios/${usuario}/actualizar`, {
+      method: 'PUT',
+      headers: _getHeaders(true),
+      body: JSON.stringify(datos),
+    });
+    return _handleResponse(response);
+  },
+
+  // ============================================================
+  //   MÓDULO: PERFIL ALUMNO
+  //   Endpoints de: AlumnoController.java
+  // ============================================================
+
+  // ── OBTENER PERFIL ALUMNO ──────────────────────────────────
+  //
+  // Endpoint: GET /api/alumnos/perfil/{usuario}
+  // Requiere token JWT.
+  //
+  // Respuesta (PerfilAlumnoResponseDTO):
+  //   { usuario, nombre, apellidos, sexo, estado, correo,
+  //     ciudad, estatura, peso, lesiones, padecimientos,
+  //     fotoPerfil, fechaNacimiento, edad, deportes[],
+  //     totalAmigos, totalEntrenadores }
+  //
+  async obtenerPerfilAlumno(usuario) {
+    const response = await fetch(`${BASE_URL}/api/alumnos/perfil/${usuario}`, {
+      method: 'GET',
+      headers: _getHeaders(true),
+    });
+    return _handleResponse(response);
+  },
+
+  // ── ACTUALIZAR DATOS FÍSICOS ALUMNO ───────────────────────
+  //
+  // Endpoint: PUT /api/alumnos/perfil/{usuario}
+  // Requiere token JWT.
+  //
+  // Body (PerfilAlumnoDTO):
+  //   { estatura, peso, lesiones, padecimientos }
+  //
+  async actualizarDatosFisicosAlumno(usuario, datos) {
+    const response = await fetch(`${BASE_URL}/api/alumnos/perfil/${usuario}`, {
+      method: 'PUT',
+      headers: _getHeaders(true),
+      body: JSON.stringify(datos),
+    });
+    return _handleResponse(response);
+  },
+
+  // ── ACTUALIZAR DATOS PERSONALES ALUMNO ────────────────────
+  //
+  // Endpoint: PUT /api/alumnos/{usuario}/actualizar-datos
+  // Requiere token JWT.
+  //
+  // Body (ActualizarDatosAlumnoDTO):
+  //   { nombre, apellidos, correo, ciudad, sexo, etc. }
+  //
+  async actualizarDatosAlumno(usuario, datos) {
+    const response = await fetch(`${BASE_URL}/api/alumnos/${usuario}/actualizar-datos`, {
+      method: 'PUT',
+      headers: _getHeaders(true),
+      body: JSON.stringify(datos),
+    });
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.mensaje || data.message || 'Error al actualizar datos');
+    }
+  },
+
+  // ── ACTUALIZAR FOTO PERFIL ALUMNO ─────────────────────────
+  //
+  // Endpoint: POST /api/alumnos/{usuario}/actualizar-foto
+  // Requiere token JWT. Envía multipart con "foto"
+  //
+  async actualizarFotoPerfilAlumno(usuario, file) {
+    const formData = new FormData();
+    formData.append('foto', file);
+    const response = await fetch(`${BASE_URL}/api/alumnos/${usuario}/actualizar-foto`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${Session.getToken()}` },
+      body: formData,
+    });
+    return _handleResponse(response);
+  },
+
 };
 
 

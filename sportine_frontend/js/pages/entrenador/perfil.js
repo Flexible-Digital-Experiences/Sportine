@@ -296,31 +296,42 @@ function field(label, id, val, type) {
 
 // ✅ INTEGRADO: Ahora hace PUT real al backend
 window.guardarPerfil = function() {
-  var usuario = Session.getUsuario();
-  var btn = document.getElementById('btn-guardar-perfil');
+  var usuario  = Session.getUsuario();
+  var btn      = document.getElementById('btn-guardar-perfil');
 
-  var datos = {
-    correo:           document.getElementById('ed-correo').value.trim()      || null,
-    descripcionPerfil:document.getElementById('ed-descripcion').value.trim() || null,
-  };
-
-  // Si los campos de nombre/ciudad cambiaron, los actualizamos en PERFIL_ACTUAL
-  // (el backend solo acepta correo, descripción y precio en este DTO)
-  var nuevoNombre    = document.getElementById('ed-nombre').value.trim();
-  var nuevosApellidos= document.getElementById('ed-apellidos').value.trim();
-  var nuevaCiudad    = document.getElementById('ed-ciudad').value.trim();
+  var nuevoNombre     = document.getElementById('ed-nombre').value.trim();
+  var nuevosApellidos = document.getElementById('ed-apellidos').value.trim();
+  var nuevaCiudad     = document.getElementById('ed-ciudad').value.trim();
+  var nuevoCorreo     = document.getElementById('ed-correo').value.trim();
+  var nuevaDesc       = document.getElementById('ed-descripcion').value.trim();
 
   if (btn) { btn.disabled = true; btn.textContent = 'Guardando…'; }
 
-  Api.actualizarPerfilEntrenador(usuario, datos)
-    .then(function(perfilActualizado) {
-      // ✅ Actualizar PERFIL_ACTUAL con la respuesta del servidor
-      PERFIL_ACTUAL = perfilActualizado;
-      // Campos que el backend no maneja aún (nombre, ciudad) los aplicamos localmente
-      if (nuevoNombre)     PERFIL_ACTUAL.nombre   = nuevoNombre;
-      if (nuevosApellidos) PERFIL_ACTUAL.apellidos = nuevosApellidos;
-      if (nuevaCiudad)     PERFIL_ACTUAL.ciudad    = nuevaCiudad;
+  // ── Llamada 1: actualizar nombre, apellidos, ciudad, correo ──
+  var datosUsuario = {
+    nombre:    nuevoNombre     || null,
+    apellidos: nuevosApellidos || null,
+    ciudad:    nuevaCiudad     || null,
+    correo:    nuevoCorreo     || null,
+  };
 
+  // ── Llamada 2: actualizar descripción ──
+  var datosEntrenador = {
+    descripcionPerfil: nuevaDesc || null,
+    correo:            nuevoCorreo || null,
+  };
+
+  // Ejecutar ambas en paralelo
+  Promise.all([
+    Api.actualizarDatosUsuario(usuario, datosUsuario),
+    Api.actualizarPerfilEntrenador(usuario, datosEntrenador),
+  ])
+    .then(function() {
+      // Recargar perfil completo desde el backend
+      return Api.obtenerPerfilEntrenador(usuario);
+    })
+    .then(function(perfilActualizado) {
+      PERFIL_ACTUAL = perfilActualizado;
       renderPerfil(PERFIL_ACTUAL);
       mostrarMensajeDrawer('✅ Perfil actualizado correctamente', false);
       if (btn) { btn.disabled = false; btn.textContent = 'Guardar cambios'; }
@@ -663,10 +674,19 @@ function initFotoPerfilUI() {
 
     Api.actualizarFotoPerfilEntrenador(usuario, file)
       .then(function(perfilActualizado) {
-        PERFIL_ACTUAL = perfilActualizado;
-        imgPreview.src = perfilActualizado.fotoPerfil;
-        mostrarToast('✅ Foto actualizada correctamente');
-      })
+      PERFIL_ACTUAL = perfilActualizado;
+      imgPreview.src = perfilActualizado.fotoPerfil;
+      imgPreview.style.display = 'block';
+
+      // Ocultar las iniciales del texto
+      avatarRing.childNodes.forEach(function(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          node.textContent = '';
+        }
+      });
+
+      mostrarToast('✅ Foto actualizada correctamente');
+    })
       .catch(function(err) {
         imgPreview.src = (PERFIL_ACTUAL && PERFIL_ACTUAL.fotoPerfil) || '';
         imgPreview.style.display = (PERFIL_ACTUAL && PERFIL_ACTUAL.fotoPerfil) ? 'block' : 'none';
