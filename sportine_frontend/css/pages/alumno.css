@@ -381,8 +381,12 @@ body {
 
 /* Floating badges (amigos / entrenadores) — posición relativa a card */
 .perfil-badges-row {
-  display: flex; justify-content: flex-end; gap: 10px;
+  display: flex; justify-content: center; gap: 10px;
   margin-bottom: 20px;
+}
+.perfil-badge-pill {
+  flex: 1;
+  text-align: center;
 }
 .perfil-badge-pill {
   background: #fff; border: 1px solid var(--divider);

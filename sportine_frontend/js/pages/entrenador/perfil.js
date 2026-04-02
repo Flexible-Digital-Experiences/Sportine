@@ -3,113 +3,152 @@
    Perfil entrenador + Config drawer + Banner Premium
 ============================================================ */
 
-var MOCK_PERFIL = {
-  nombre:'María', apellido:'López', username:'@maria_coach',
-  correo:'maria@sportine.com', telefono:'+52 55 1234 5678',
-  estado:'Ciudad de México', ciudad:'CDMX',
-  iniciales:'ML', inicioActividad:'Enero 2022',
-  alumnos:4, resenas:23, calificacion:4.8, experiencia:'4 años',
-  descripcion:'Entrenadora certificada especializada en natación y resistencia cardiovascular. Me apasiona ver el progreso de mis alumnos cada semana.',
-  deportes:[{emoji:'🏊',nombre:'Natación'},{emoji:'🏃',nombre:'Cardio'},{emoji:'🚴',nombre:'Ciclismo'}],
-  precio:'$350 / sesión', modalidad:'Presencial y en línea',
-  isPremium: false,
-};
+// ✅ INTEGRADO: Ya no usamos mock. El perfil se carga desde el
+// backend en init() y se guarda aquí para que el drawer pueda
+// leerlo sin hacer otra petición al servidor.
+var PERFIL_ACTUAL = null;
+
+/* ── Helpers de UI ── */
+
+// Muestra un mensaje de error o éxito temporal dentro del drawer
+function mostrarMensajeDrawer(texto, esError) {
+  var existing = document.getElementById('drawer-msg');
+  if (existing) existing.remove();
+  var msg = document.createElement('div');
+  msg.id = 'drawer-msg';
+  msg.style.cssText = 'padding:10px 14px;border-radius:10px;font-size:0.85rem;font-weight:600;'
+    + 'margin-bottom:14px;text-align:center;'
+    + (esError
+      ? 'background:#FEE2E2;color:#B91C1C;'
+      : 'background:#D1FAE5;color:#065F46;');
+  msg.textContent = texto;
+  var body = document.getElementById('cfg-body');
+  if (body) body.insertBefore(msg, body.firstChild);
+}
+
+/* ── Iniciales desde nombre completo ── */
+function calcularIniciales(nombre, apellidos) {
+  var n = (nombre || '').trim()[0] || '';
+  var a = (apellidos || '').trim()[0] || '';
+  return (n + a).toUpperCase();
+}
 
 /* ── Render ── */
-function renderPerfil() {
-  var p = MOCK_PERFIL;
-  ['perfil-avatar','sidebar-avatar','topbar-avatar'].forEach(function(id) {
-    var el = document.getElementById(id); if (el) el.textContent = p.iniciales;
-  });
-  var fullName = p.nombre + ' ' + p.apellido;
+// ✅ INTEGRADO: Ahora recibe el objeto del backend directamente.
+// Los campos del DTO son: usuario, nombre, apellidos, sexo,
+// estado, ciudad, correo, costoMensualidad, limiteAlumnos,
+// descripcionPerfil, fotoPerfil, deportes[], totalAlumnos, totalAmigos
+function renderPerfil(p) {
+  var iniciales = calcularIniciales(p.nombre, p.apellidos);
+  var fullName  = (p.nombre || '') + ' ' + (p.apellidos || '');
+  var username  = '@' + (p.usuario || '');
+  var precio    = p.costoMensualidad ? '$' + p.costoMensualidad + ' / mes' : 'No definido';
 
-  // Sidebar + topbar name
+  ['perfil-avatar', 'sidebar-avatar', 'topbar-avatar', 'entre-avatar'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = iniciales;
+  });
+
   var sidebarName = document.getElementById('sidebar-name');
   if (sidebarName) sidebarName.textContent = fullName;
 
-  // Perfil header elements (these IDs exist in entrenador/perfil.html)
   var perfilName = document.getElementById('perfil-name');
   if (perfilName) perfilName.textContent = fullName;
 
   var perfilUsername = document.getElementById('perfil-username');
-  if (perfilUsername) perfilUsername.textContent = p.username;
+  if (perfilUsername) perfilUsername.textContent = username;
 
   var badgeAlumnos = document.getElementById('badge-alumnos');
-  if (badgeAlumnos) badgeAlumnos.textContent = p.alumnos;
+  if (badgeAlumnos) badgeAlumnos.textContent = p.totalAlumnos || 0;
 
   var badgeResenas = document.getElementById('badge-resenas');
-  if (badgeResenas) badgeResenas.textContent = p.resenas;
+  if (badgeResenas) badgeResenas.textContent = p.totalAmigos || 0;
 
+  // ✅ El backend no devuelve calificación en este endpoint todavía,
+  // se deja en guión hasta que se integre el módulo de reseñas
   var badgeCalif = document.getElementById('badge-calificacion');
-  if (badgeCalif) badgeCalif.textContent = p.calificacion.toFixed(1) + ' ⭐';
+  if (badgeCalif) badgeCalif.textContent = '— ⭐';
 
   var infoDesc = document.getElementById('info-descripcion');
-  if (infoDesc) infoDesc.textContent = p.descripcion;
+  if (infoDesc) infoDesc.textContent = p.descripcionPerfil || '';
 
   var infoPrecio = document.getElementById('info-precio');
-  if (infoPrecio) infoPrecio.textContent = p.precio;
-
-  var infoModal = document.getElementById('info-modalidad');
-  if (infoModal) infoModal.textContent = p.modalidad;
-
-  var infoExp = document.getElementById('info-experiencia');
-  if (infoExp) infoExp.textContent = p.experiencia;
+  if (infoPrecio) infoPrecio.textContent = precio;
 
   var infoCorreo = document.getElementById('info-correo');
-  if (infoCorreo) infoCorreo.textContent = p.correo;
+  if (infoCorreo) infoCorreo.textContent = p.correo || '';
 
   var infoCiudad = document.getElementById('info-ciudad');
-  if (infoCiudad) infoCiudad.textContent = p.ciudad;
-
-  // Entrenador-specific elements (entre-avatar-ring, entre-bio, etc.)
-  var entreAvatar = document.getElementById('entre-avatar');
-  if (entreAvatar) entreAvatar.textContent = p.iniciales;
-
-  var enBioNombre = document.getElementById('entre-bio-nombre');
-  if (enBioNombre) enBioNombre.textContent = 'Hola, ' + p.nombre;
-
-  var enBioDesc = document.getElementById('entre-bio-desc');
-  if (enBioDesc) enBioDesc.textContent = p.descripcion;
-
-  var counterAlumnos = document.getElementById('counter-alumnos');
-  if (counterAlumnos) counterAlumnos.textContent = p.alumnos;
-
-  // Detalles de clases
-  var clasesCosto = document.getElementById('clases-costo');
-  if (clasesCosto) clasesCosto.textContent = p.precio;
-
-  var clasesInscritos = document.getElementById('clases-inscritos');
-  if (clasesInscritos) clasesInscritos.textContent = p.alumnos;
-
-  var clasesDinero = document.getElementById('clases-dinero');
-  if (clasesDinero) {
-    var precioNum = parseInt(p.precio.replace(/\D/g, '')) || 350;
-    clasesDinero.textContent = '$' + (precioNum * p.alumnos).toLocaleString() + ' MXN / mes';
-  }
-
-  // Info fields (from perfil.html static IDs)
-  var infoNombre = document.getElementById('info-nombre');
-  if (infoNombre) infoNombre.textContent = p.nombre;
-
-  var infoApellido = document.getElementById('info-apellido');
-  if (infoApellido) infoApellido.textContent = p.apellido;
-
-  var infoUsername = document.getElementById('info-username');
-  if (infoUsername) infoUsername.textContent = p.username;
+  if (infoCiudad) infoCiudad.textContent = p.ciudad || '';
 
   var infoEstado = document.getElementById('info-estado');
-  if (infoEstado) infoEstado.textContent = p.estado;
+  if (infoEstado) infoEstado.textContent = p.estado || '';
+
+  var infoSexo = document.getElementById('info-sexo');
+  if (infoSexo) infoSexo.textContent = p.sexo || '';
+
+  var infoNombre = document.getElementById('info-nombre');
+  if (infoNombre) infoNombre.textContent = p.nombre || '';
+
+  var infoApellido = document.getElementById('info-apellido');
+  if (infoApellido) infoApellido.textContent = p.apellidos || '';
+
+  var infoUsername = document.getElementById('info-username');
+  if (infoUsername) infoUsername.textContent = username;
+
+  var enBioNombre = document.getElementById('entre-bio-nombre');
+  if (enBioNombre) enBioNombre.textContent = 'Hola, ' + (p.nombre || '');
+
+  var enBioDesc = document.getElementById('entre-bio-desc');
+  if (enBioDesc) enBioDesc.textContent = p.descripcionPerfil || '';
+
+  var counterAlumnos = document.getElementById('counter-alumnos');
+  if (counterAlumnos) counterAlumnos.textContent = p.totalAlumnos || 0;
+
+  var clasesCosto = document.getElementById('clases-costo');
+  if (clasesCosto) clasesCosto.textContent = precio;
+
+  var clasesInscritos = document.getElementById('clases-inscritos');
+  if (clasesInscritos) clasesInscritos.textContent = p.totalAlumnos || 0;
+
+  var clasesDinero = document.getElementById('clases-dinero');
+  if (clasesDinero && p.costoMensualidad) {
+    clasesDinero.textContent = '$' + (p.costoMensualidad * (p.totalAlumnos || 0)).toLocaleString() + ' MXN / mes';
+  }
+
+  // ✅ Deportes: el backend devuelve array de strings (nombres),
+  // como no tenemos emojis del backend usamos un mapa local
+  var EMOJI_MAP = {
+    'Natación':'🏊','Cardio':'🏃','Ciclismo':'🚴','Fútbol':'⚽',
+    'Pesas':'🏋️','Tenis':'🎾','Básquetbol':'🏀','Boxeo':'🥊',
+    'Atletismo':'🏅','Basketball':'🏀',
+  };
+  var deportes = (p.deportes || []).map(function(nombre) {
+    return { emoji: EMOJI_MAP[nombre] || '🏅', nombre: nombre };
+  });
 
   var dc = document.getElementById('deportes-container');
-  if (dc) dc.innerHTML = p.deportes.map(function(d) {
-    return '<div class="deporte-chip"><span class="deporte-chip-icon">' + d.emoji + '</span><span class="deporte-chip-label">' + d.nombre + '</span></div>';
+  if (dc) dc.innerHTML = deportes.map(function(d) {
+    return '<div class="deporte-chip"><span class="deporte-chip-icon">' + d.emoji + '</span>'
+      + '<span class="deporte-chip-label">' + d.nombre + '</span></div>';
   }).join('');
 
-  // Banner premium
+  // Banner premium (sin cambios, lógica local por ahora)
   var bannerEl = document.getElementById('premium-banner');
-  if (bannerEl) bannerEl.style.display = p.isPremium ? 'none' : 'flex';
+  if (bannerEl) bannerEl.style.display = 'flex';
   var premiumBadge = document.getElementById('premium-badge');
-  if (premiumBadge) premiumBadge.style.display = p.isPremium ? 'flex' : 'none';
+  if (premiumBadge) premiumBadge.style.display = 'none';
+
+  // Mostrar foto de Cloudinary si existe
+  var avatarRing = document.getElementById('entre-avatar');
+  if (avatarRing) {
+    var imgExistente = avatarRing.querySelector('.entre-avatar-img');
+    if (p.fotoPerfil && imgExistente) {
+      imgExistente.src = p.fotoPerfil;
+      imgExistente.style.display = 'block';
+    }
+  }
+
 }
 
 /* ── Config Drawer ── */
@@ -181,34 +220,40 @@ function showConfigMenu() {
 
 /* ── Ver detalles del perfil ── */
 window.openVerDetalles = function() {
-  var p = MOCK_PERFIL;
+  // ✅ INTEGRADO: Usa PERFIL_ACTUAL en lugar de MOCK_PERFIL
+  var p = PERFIL_ACTUAL;
+  if (!p) return;
+  var iniciales = calcularIniciales(p.nombre, p.apellidos);
+  var precio = p.costoMensualidad ? '$' + p.costoMensualidad + ' / mes' : 'No definido';
+  var EMOJI_MAP = {
+    'Natación':'🏊','Cardio':'🏃','Ciclismo':'🚴','Fútbol':'⚽',
+    'Pesas':'🏋️','Tenis':'🎾','Básquetbol':'🏀','Boxeo':'🥊',
+    'Atletismo':'🏅','Basketball':'🏀',
+  };
+
   var html = backBtn()
     + '<div style="text-align:center;padding:8px 0 24px">'
-    + '<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#1ea1db,#00A896);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:700;font-size:1.6rem;color:#fff;margin:0 auto 12px">' + p.iniciales + '</div>'
-    + '<div style="font-family:Sora,sans-serif;font-weight:800;font-size:1.1rem">' + (p.nombre + ' ' + p.apellido) + '</div>'
-    + '<div style="font-size:0.82rem;color:#6B7280;margin-top:3px">' + p.username + '</div>'
-    + '<div style="display:flex;gap:10px;justify-content:center;margin-top:12px">'
-    + '<span style="background:#EBF8FF;color:#1ea1db;padding:4px 14px;border-radius:50px;font-size:0.75rem;font-weight:700">⭐ ' + p.calificacion.toFixed(1) + ' / 5</span>'
-    + '<span style="background:#F0FFF4;color:#00A896;padding:4px 14px;border-radius:50px;font-size:0.75rem;font-weight:700">' + p.experiencia + ' de experiencia</span>'
-    + '</div></div>'
-    + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px">'
-    + detalleStatBox('Alumnos', p.alumnos, '#1ea1db')
-    + detalleStatBox('Reseñas', p.resenas, '#f89a02')
-    + detalleStatBox('Calif.', p.calificacion.toFixed(1) + '⭐', '#00A896')
+    + '<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#1ea1db,#00A896);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:700;font-size:1.6rem;color:#fff;margin:0 auto 12px">' + iniciales + '</div>'
+    + '<div style="font-family:Sora,sans-serif;font-weight:800;font-size:1.1rem">' + (p.nombre + ' ' + p.apellidos) + '</div>'
+    + '<div style="font-size:0.82rem;color:#6B7280;margin-top:3px">@' + p.usuario + '</div>'
+    + '</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">'
+    + detalleStatBox('Alumnos', p.totalAlumnos || 0, '#1ea1db')
+    + detalleStatBox('Amigos',  p.totalAmigos  || 0, '#00A896')
     + '</div>'
     + '<p style="font-size:0.72rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px">INFORMACIÓN PERSONAL</p>'
-    + detalleRow('Correo',    p.correo)
-    + detalleRow('Teléfono',  p.telefono)
-    + detalleRow('Ciudad',    p.ciudad + ', ' + p.estado)
-    + detalleRow('Modalidad', p.modalidad)
-    + detalleRow('Precio',    p.precio)
+    + detalleRow('Correo',  p.correo  || '—')
+    + detalleRow('Ciudad',  (p.ciudad || '—') + ', ' + (p.estado || ''))
+    + detalleRow('Precio',  precio)
+    + detalleRow('Límite de alumnos', p.limiteAlumnos || '—')
     + '<p style="font-size:0.72rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.07em;margin:16px 0 10px">DESCRIPCIÓN</p>'
     + '<div style="background:#F9FAFB;border-radius:12px;padding:14px;margin-bottom:20px">'
-    + '<p style="font-size:0.88rem;color:#424242;line-height:1.65">' + p.descripcion + '</p></div>'
+    + '<p style="font-size:0.88rem;color:#424242;line-height:1.65">' + (p.descripcionPerfil || 'Sin descripción.') + '</p></div>'
     + '<p style="font-size:0.72rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px">DEPORTES QUE IMPARTE</p>'
     + '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">'
-    + p.deportes.map(function(d) {
-        return '<span style="background:#EBF8FF;color:#1ea1db;padding:6px 14px;border-radius:50px;font-size:0.82rem;font-weight:600">' + d.emoji + ' ' + d.nombre + '</span>';
+    + (p.deportes || []).map(function(nombre) {
+        return '<span style="background:#EBF8FF;color:#1ea1db;padding:6px 14px;border-radius:50px;font-size:0.82rem;font-weight:600">'
+          + (EMOJI_MAP[nombre] || '🏅') + ' ' + nombre + '</span>';
       }).join('')
     + '</div>'
     + '<button onclick="openEditPerfil()" style="width:100%;height:50px;background:#1ea1db;color:#fff;border:none;border-radius:12px;font-family:\'DM Sans\',sans-serif;font-weight:700;font-size:0.95rem;cursor:pointer">Editar información</button>';
@@ -229,16 +274,18 @@ function detalleRow(label, val) {
 
 /* ── Modificar perfil ── */
 window.openEditPerfil = function() {
-  var p = MOCK_PERFIL;
+  // ✅ INTEGRADO: Usa PERFIL_ACTUAL
+  var p = PERFIL_ACTUAL;
+  if (!p) return;
   var html = backBtn()
-    + field('Nombre',      'ed-nombre',   p.nombre,   'text')
-    + field('Apellido',    'ed-apellido', p.apellido, 'text')
-    + field('Correo',      'ed-correo',   p.correo,   'email')
-    + field('Teléfono',    'ed-telefono', p.telefono, 'tel')
-    + field('Ciudad',      'ed-ciudad',   p.ciudad,   'text')
+    + field('Nombre',      'ed-nombre',      p.nombre      || '', 'text')
+    + field('Apellidos',   'ed-apellidos',   p.apellidos   || '', 'text')
+    + field('Correo',      'ed-correo',      p.correo      || '', 'email')
+    + field('Ciudad',      'ed-ciudad',      p.ciudad      || '', 'text')
     + '<div style="margin-bottom:14px"><label style="font-size:0.75rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;display:block;margin-bottom:5px">Descripción</label>'
-    + '<textarea id="ed-descripcion" rows="3" style="width:100%;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 14px;font-family:\'DM Sans\',sans-serif;font-size:0.88rem;outline:none;resize:vertical">' + p.descripcion + '</textarea></div>'
-    + '<button onclick="guardarPerfil()" style="width:100%;height:50px;background:#00A896;color:#fff;border:none;border-radius:12px;font-family:\'DM Sans\',sans-serif;font-weight:700;font-size:0.95rem;cursor:pointer">Guardar cambios</button>';
+    + '<textarea id="ed-descripcion" rows="3" style="width:100%;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 14px;font-family:\'DM Sans\',sans-serif;font-size:0.88rem;outline:none;resize:vertical">' + (p.descripcionPerfil || '') + '</textarea></div>'
+    + '<div id="edit-msg"></div>'
+    + '<button onclick="guardarPerfil()" id="btn-guardar-perfil" style="width:100%;height:50px;background:#00A896;color:#fff;border:none;border-radius:12px;font-family:\'DM Sans\',sans-serif;font-weight:700;font-size:0.95rem;cursor:pointer">Guardar cambios</button>';
   setConfigContent('Modificar perfil', html);
 };
 
@@ -247,78 +294,185 @@ function field(label, id, val, type) {
     + '<input id="' + id + '" type="' + type + '" value="' + val + '" style="width:100%;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 14px;font-family:\'DM Sans\',sans-serif;font-size:0.9rem;outline:none"></div>';
 }
 
+// ✅ INTEGRADO: Ahora hace PUT real al backend
 window.guardarPerfil = function() {
-  MOCK_PERFIL.nombre      = document.getElementById('ed-nombre').value   || MOCK_PERFIL.nombre;
-  MOCK_PERFIL.apellido    = document.getElementById('ed-apellido').value || MOCK_PERFIL.apellido;
-  MOCK_PERFIL.correo      = document.getElementById('ed-correo').value   || MOCK_PERFIL.correo;
-  MOCK_PERFIL.telefono    = document.getElementById('ed-telefono').value || MOCK_PERFIL.telefono;
-  MOCK_PERFIL.ciudad      = document.getElementById('ed-ciudad').value   || MOCK_PERFIL.ciudad;
-  MOCK_PERFIL.descripcion = document.getElementById('ed-descripcion').value || MOCK_PERFIL.descripcion;
-  renderPerfil(); closeConfig();
-  // TODO: PUT /api/entrenador/perfil
+  var usuario  = Session.getUsuario();
+  var btn      = document.getElementById('btn-guardar-perfil');
+
+  var nuevoNombre     = document.getElementById('ed-nombre').value.trim();
+  var nuevosApellidos = document.getElementById('ed-apellidos').value.trim();
+  var nuevaCiudad     = document.getElementById('ed-ciudad').value.trim();
+  var nuevoCorreo     = document.getElementById('ed-correo').value.trim();
+  var nuevaDesc       = document.getElementById('ed-descripcion').value.trim();
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Guardando…'; }
+
+  // ── Llamada 1: actualizar nombre, apellidos, ciudad, correo ──
+  var datosUsuario = {
+    nombre:    nuevoNombre     || null,
+    apellidos: nuevosApellidos || null,
+    ciudad:    nuevaCiudad     || null,
+    correo:    nuevoCorreo     || null,
+  };
+
+  // ── Llamada 2: actualizar descripción ──
+  var datosEntrenador = {
+    descripcionPerfil: nuevaDesc || null,
+    correo:            nuevoCorreo || null,
+  };
+
+  // Ejecutar ambas en paralelo
+  Promise.all([
+    Api.actualizarDatosUsuario(usuario, datosUsuario),
+    Api.actualizarPerfilEntrenador(usuario, datosEntrenador),
+  ])
+    .then(function() {
+      // Recargar perfil completo desde el backend
+      return Api.obtenerPerfilEntrenador(usuario);
+    })
+    .then(function(perfilActualizado) {
+      PERFIL_ACTUAL = perfilActualizado;
+      renderPerfil(PERFIL_ACTUAL);
+      mostrarMensajeDrawer('✅ Perfil actualizado correctamente', false);
+      if (btn) { btn.disabled = false; btn.textContent = 'Guardar cambios'; }
+    })
+    .catch(function(err) {
+      mostrarMensajeDrawer('❌ ' + (err.message || 'Error al guardar'), true);
+      if (btn) { btn.disabled = false; btn.textContent = 'Guardar cambios'; }
+    });
 };
 
 /* ── Gestionar deportes ── */
+// ✅ INTEGRADO: La lista base se construye con los deportes actuales del backend.
+// Al guardar, compara el estado anterior con el nuevo y hace
+// POST por cada deporte agregado y DELETE por cada uno eliminado.
 window.openGestionarDeportes = function() {
   var TODOS = [
-    {emoji:'🏊',nombre:'Natación'},{emoji:'🏃',nombre:'Cardio'},{emoji:'🚴',nombre:'Ciclismo'},
-    {emoji:'⚽',nombre:'Fútbol'},{emoji:'🏋️',nombre:'Pesas'},{emoji:'🎾',nombre:'Tenis'},
+    {emoji:'🏊',nombre:'Natación'}, {emoji:'🏃',nombre:'Cardio'},
+    {emoji:'🚴',nombre:'Ciclismo'}, {emoji:'⚽',nombre:'Fútbol'},
+    {emoji:'🏋️',nombre:'Pesas'},   {emoji:'🎾',nombre:'Tenis'},
     {emoji:'🏀',nombre:'Básquetbol'},{emoji:'🥊',nombre:'Boxeo'},
+    {emoji:'🏅',nombre:'Atletismo'},
   ];
-  var activos = MOCK_PERFIL.deportes.map(function(d) { return d.nombre; });
+
+  // ✅ Los deportes activos vienen de PERFIL_ACTUAL (strings del backend)
+  var activos = (PERFIL_ACTUAL && PERFIL_ACTUAL.deportes) ? PERFIL_ACTUAL.deportes : [];
+
   var html = backBtn()
     + '<p style="font-size:0.82rem;color:#6B7280;margin-bottom:14px">Selecciona los deportes que impartes como entrenador:</p>'
     + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">'
     + TODOS.map(function(d) {
       var on = activos.indexOf(d.nombre) !== -1;
-      return '<button onclick="toggleDeporte(this,\'' + d.nombre + '\',\'' + d.emoji + '\')" data-active="' + on + '" style="padding:12px;border-radius:12px;border:2px solid ' + (on?'#1ea1db':'#E5E7EB') + ';background:' + (on?'#EBF8FF':'#fff') + ';cursor:pointer;display:flex;align-items:center;gap:8px;font-family:\'DM Sans\',sans-serif;font-size:0.88rem;font-weight:600;color:' + (on?'#1ea1db':'#1A1A1A') + '">'
+      return '<button onclick="toggleDeporte(this,\'' + d.nombre + '\')" data-active="' + on + '" style="padding:12px;border-radius:12px;border:2px solid ' + (on?'#1ea1db':'#E5E7EB') + ';background:' + (on?'#EBF8FF':'#fff') + ';cursor:pointer;display:flex;align-items:center;gap:8px;font-family:\'DM Sans\',sans-serif;font-size:0.88rem;font-weight:600;color:' + (on?'#1ea1db':'#1A1A1A') + '">'
         + '<span>' + d.emoji + '</span><span>' + d.nombre + '</span>'
         + (on ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1ea1db" stroke-width="2.5" stroke-linecap="round" style="margin-left:auto"><polyline points="20 6 9 17 4 12"/></svg>' : '')
         + '</button>';
     }).join('') + '</div>'
-    + '<button onclick="guardarDeportes()" style="width:100%;height:50px;background:#00A896;color:#fff;border:none;border-radius:12px;font-family:\'DM Sans\',sans-serif;font-weight:700;font-size:0.95rem;cursor:pointer">Guardar deportes</button>';
+    + '<div id="deportes-msg"></div>'
+    + '<button onclick="guardarDeportes()" id="btn-guardar-deportes" style="width:100%;height:50px;background:#00A896;color:#fff;border:none;border-radius:12px;font-family:\'DM Sans\',sans-serif;font-weight:700;font-size:0.95rem;cursor:pointer">Guardar deportes</button>';
   setConfigContent('Gestionar deportes', html);
 };
 
-window.toggleDeporte = function(btn, nombre, emoji) {
+window.toggleDeporte = function(btn, nombre) {
   var on = btn.dataset.active === 'true';
-  btn.dataset.active = on ? 'false' : 'true';
-  btn.style.border    = on ? '2px solid #E5E7EB' : '2px solid #1ea1db';
+  btn.dataset.active   = on ? 'false' : 'true';
+  btn.style.border     = on ? '2px solid #E5E7EB' : '2px solid #1ea1db';
   btn.style.background = on ? '#fff' : '#EBF8FF';
   btn.style.color      = on ? '#1A1A1A' : '#1ea1db';
 };
 
+// ✅ INTEGRADO: Compara estado anterior vs nuevo y llama al
+// endpoint correcto por cada cambio (POST agregar / DELETE eliminar)
 window.guardarDeportes = function() {
-  var btns = document.querySelectorAll('#cfg-body [data-active]');
+  var usuario   = Session.getUsuario();
+  var anteriores = (PERFIL_ACTUAL && PERFIL_ACTUAL.deportes) ? PERFIL_ACTUAL.deportes.slice() : [];
+  var btn       = document.getElementById('btn-guardar-deportes');
+
+  // Leer selección actual del drawer
+  var btns   = document.querySelectorAll('#cfg-body [data-active]');
   var nuevos = [];
-  btns.forEach(function(btn) {
-    if (btn.dataset.active === 'true') {
-      var spans = btn.querySelectorAll('span');
-      if (spans.length >= 2) nuevos.push({ emoji:spans[0].textContent, nombre:spans[1].textContent });
+  btns.forEach(function(b) {
+    if (b.dataset.active === 'true') {
+      var spans = b.querySelectorAll('span');
+      if (spans.length >= 2) nuevos.push(spans[1].textContent.trim());
     }
   });
-  MOCK_PERFIL.deportes = nuevos;
-  renderPerfil(); closeConfig();
-  // TODO: PUT /api/entrenador/deportes { deportes: nuevos.map(d=>d.nombre) }
+
+  // Calcular diferencia
+  var agregar  = nuevos.filter(function(n) { return anteriores.indexOf(n) === -1; });
+  var eliminar = anteriores.filter(function(n) { return nuevos.indexOf(n) === -1; });
+
+  if (agregar.length === 0 && eliminar.length === 0) {
+    mostrarMensajeDrawer('Sin cambios que guardar', false);
+    return;
+  }
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Guardando…'; }
+
+  // Construir todas las promesas
+  var promesas = [];
+  agregar.forEach(function(nombre) {
+    promesas.push(Api.agregarDeporte(usuario, nombre));
+  });
+  eliminar.forEach(function(nombre) {
+    promesas.push(Api.eliminarDeporte(usuario, nombre));
+  });
+
+  Promise.all(promesas)
+    .then(function() {
+      // ✅ Recargar perfil completo desde el backend para tener el estado real
+      return Api.obtenerPerfilEntrenador(usuario);
+    })
+    .then(function(perfilActualizado) {
+      PERFIL_ACTUAL = perfilActualizado;
+      renderPerfil(PERFIL_ACTUAL);
+      mostrarMensajeDrawer('✅ Deportes actualizados', false);
+      if (btn) { btn.disabled = false; btn.textContent = 'Guardar deportes'; }
+    })
+    .catch(function(err) {
+      mostrarMensajeDrawer('❌ ' + (err.message || 'Error al guardar deportes'), true);
+      if (btn) { btn.disabled = false; btn.textContent = 'Guardar deportes'; }
+    });
 };
 
 /* ── Detalles de clases ── */
 window.openDetallesClases = function() {
-  var p = MOCK_PERFIL;
+  var p = PERFIL_ACTUAL;
+  if (!p) return;
   var html = backBtn()
-    + field('Precio por sesión', 'dc-precio',   p.precio,   'text')
-    + field('Modalidad',         'dc-modalidad', p.modalidad,'text')
-    + field('Experiencia',       'dc-exp',       p.experiencia,'text')
-    + '<button onclick="guardarClases()" style="width:100%;height:50px;background:#00A896;color:#fff;border:none;border-radius:12px;font-family:\'DM Sans\',sans-serif;font-weight:700;font-size:0.95rem;cursor:pointer">Guardar</button>';
+    + field('Costo mensual (MXN)', 'dc-costo', p.costoMensualidad || '', 'number')
+    + field('Límite de alumnos',   'dc-limite', p.limiteAlumnos   || '', 'number')
+    + '<div id="clases-msg"></div>'
+    + '<button onclick="guardarClases()" id="btn-guardar-clases" style="width:100%;height:50px;background:#00A896;color:#fff;border:none;border-radius:12px;font-family:\'DM Sans\',sans-serif;font-weight:700;font-size:0.95rem;cursor:pointer">Guardar</button>';
   setConfigContent('Detalles de clases', html);
 };
 
+// ✅ INTEGRADO: Guarda costo y límite vía PUT
 window.guardarClases = function() {
-  MOCK_PERFIL.precio     = document.getElementById('dc-precio').value   || MOCK_PERFIL.precio;
-  MOCK_PERFIL.modalidad  = document.getElementById('dc-modalidad').value || MOCK_PERFIL.modalidad;
-  MOCK_PERFIL.experiencia= document.getElementById('dc-exp').value      || MOCK_PERFIL.experiencia;
-  renderPerfil(); closeConfig();
-  // TODO: PUT /api/entrenador/clases
+  var usuario = Session.getUsuario();
+  var btn     = document.getElementById('btn-guardar-clases');
+
+  var costoStr  = document.getElementById('dc-costo').value.trim();
+  var limiteStr = document.getElementById('dc-limite').value.trim();
+
+  var datos = {
+    costoMensualidad: costoStr  ? parseInt(costoStr)  : null,
+    limiteAlumnos:    limiteStr ? parseInt(limiteStr) : null,
+  };
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Guardando…'; }
+
+  Api.actualizarPerfilEntrenador(usuario, datos)
+    .then(function(perfilActualizado) {
+      PERFIL_ACTUAL = perfilActualizado;
+      renderPerfil(PERFIL_ACTUAL);
+      mostrarMensajeDrawer('✅ Detalles de clases actualizados', false);
+      if (btn) { btn.disabled = false; btn.textContent = 'Guardar'; }
+    })
+    .catch(function(err) {
+      mostrarMensajeDrawer('❌ ' + (err.message || 'Error al guardar'), true);
+      if (btn) { btn.disabled = false; btn.textContent = 'Guardar'; }
+    });
 };
 
 /* ── Cambiar contraseña ── */
@@ -336,22 +490,36 @@ window.guardarPass = function() {
   var p0 = document.getElementById('pass-0').value;
   var p1 = document.getElementById('pass-1').value;
   var p2 = document.getElementById('pass-2').value;
-  if (!p0 || !p1 || !p2) { alert('Completa todos los campos.'); return; }
-  if (p1 !== p2) { alert('Las contraseñas no coinciden.'); return; }
-  closeConfig();
-  // TODO: PUT /api/auth/cambiarPassword
+
+  if (!p0 || !p1 || !p2) { mostrarMensajeDrawer('❌ Completa todos los campos.', true); return; }
+  if (p1 !== p2)          { mostrarMensajeDrawer('❌ Las contraseñas nuevas no coinciden.', true); return; }
+  if (p1.length < 6)      { mostrarMensajeDrawer('❌ La nueva contraseña debe tener al menos 6 caracteres.', true); return; }
+
+  var usuario = Session.getUsuario();
+  var btn = document.querySelector('#cfg-body button:last-child');
+  if (btn) { btn.disabled = true; btn.textContent = 'Guardando…'; }
+
+  Api.cambiarPassword(usuario, p0, p1)
+    .then(function() {
+      mostrarMensajeDrawer('✅ Contraseña actualizada correctamente', false);
+      if (btn) { btn.disabled = false; btn.textContent = 'Cambiar contraseña'; }
+      // Limpiar campos
+      document.getElementById('pass-0').value = '';
+      document.getElementById('pass-1').value = '';
+      document.getElementById('pass-2').value = '';
+    })
+    .catch(function(err) {
+      mostrarMensajeDrawer('❌ ' + (err.message || 'Error al cambiar contraseña'), true);
+      if (btn) { btn.disabled = false; btn.textContent = 'Cambiar contraseña'; }
+    });
 };
 
 /* ── Premium ── */
 window.openPremium = function() {
-  if (MOCK_PERFIL.isPremium) { alert('¡Ya eres usuario Premium! 👑'); return; }
   var beneficios = [
-    '✅ Alumnos ilimitados',
-    '✅ Estadísticas avanzadas y reportes',
-    '✅ Videollamadas integradas',
-    '✅ Soporte prioritario 24/7',
-    '✅ Perfil destacado en búsquedas',
-    '✅ Certificado de entrenador verificado',
+    '✅ Alumnos ilimitados','✅ Estadísticas avanzadas y reportes',
+    '✅ Videollamadas integradas','✅ Soporte prioritario 24/7',
+    '✅ Perfil destacado en búsquedas','✅ Certificado de entrenador verificado',
   ];
   var html = backBtn()
     + '<div style="background:linear-gradient(135deg,#f89a02,#FF6B35);border-radius:18px;padding:24px;text-align:center;margin-bottom:20px">'
@@ -375,8 +543,6 @@ window.openPremium = function() {
 };
 
 window.suscribirPremium = function() {
-  MOCK_PERFIL.isPremium = true;
-  renderPerfil();
   setConfigContent('¡Bienvenido a Premium!',
     '<div style="text-align:center;padding:30px 0">'
     + '<div style="font-size:4rem;margin-bottom:16px">👑</div>'
@@ -385,10 +551,10 @@ window.suscribirPremium = function() {
     + '<button onclick="closeConfig()" style="width:100%;height:50px;background:linear-gradient(135deg,#f89a02,#FF6B35);color:#fff;border:none;border-radius:12px;font-family:\'DM Sans\',sans-serif;font-weight:700;font-size:0.95rem;cursor:pointer">¡Genial! 🎉</button>'
     + '</div>'
   );
-  // TODO: POST /api/entrenador/premium/suscribir
+  // TODO: POST /api/entrenador/premium/suscribir (pendiente de endpoint)
 };
 
-/* ── Cerrar sesión — EXPOSED para onclick en drawer ── */
+/* ── Cerrar sesión ── */
 window.confirmarLogout = function() {
   setConfigContent('Cerrar sesión', '<div style="text-align:center;padding:20px 0">'
     + '<div style="font-size:3rem;margin-bottom:12px">🚪</div>'
@@ -400,57 +566,186 @@ window.confirmarLogout = function() {
 };
 
 window.doLogout = function() {
-  localStorage.removeItem('sp_token');
-  localStorage.removeItem('sp_rol');
+  Session.cerrar();   // ✅ Usa Session.cerrar() en lugar de removeItem manual
   window.location.href = '../../pages/auth/login.html';
 };
 
-/* ── Expose all functions used in onclick attributes or externally ── */
-window.showConfigMenu     = showConfigMenu;
-window.openConfig         = openConfig;
-window.closeConfig        = closeConfig;
+window.showConfigMenu = showConfigMenu;
+window.openConfig     = openConfig;
+window.closeConfig    = closeConfig;
 
-/* ── LOGOUT directo desde sidebar (btn-logout) ── */
+/* ── Logout directo desde sidebar ── */
 function handleLogout() {
-  localStorage.removeItem('sp_token');
-  localStorage.removeItem('sp_rol');
+  Session.cerrar();
   window.location.href = '../../pages/auth/login.html';
 }
 
-/* ── Init ── */
-document.addEventListener('DOMContentLoaded', function() {
-  renderPerfil();
-  buildConfigDrawer();
+function mostrarToast(texto, esError) {
+  var existing = document.getElementById('sp-toast');
+  if (existing) existing.remove();
 
-  // FIX 2: Conectar botón de ajustes (ranura de configuración)
+  var toast = document.createElement('div');
+  toast.id = 'sp-toast';
+  toast.textContent = texto;
+  toast.style.cssText = [
+    'position:fixed; bottom:90px; left:50%; transform:translateX(-50%);',
+    'background:' + (esError ? '#EF4444' : '#1A1A1A') + ';',
+    'color:#fff; padding:10px 20px; border-radius:50px;',
+    'font-family:"DM Sans",sans-serif; font-size:0.85rem; font-weight:600;',
+    'z-index:9999; white-space:nowrap;',
+    'box-shadow:0 4px 16px rgba(0,0,0,0.2);',
+  ].join('');
+  document.body.appendChild(toast);
+
+  setTimeout(function() {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity 0.3s';
+    setTimeout(function() { toast.remove(); }, 300);
+  }, 3000);
+}
+
+function initFotoPerfilUI() {
+  var avatarRing = document.getElementById('entre-avatar');
+  if (!avatarRing) return;
+
+  var style = document.createElement('style');
+  style.textContent = [
+    '.entre-avatar-ring { position:relative; cursor:pointer; overflow:hidden; }',
+    '.entre-avatar-ring:hover .foto-overlay { opacity:1; }',
+    '.foto-overlay {',
+    '  position:absolute; inset:0; border-radius:50%;',
+    '  background:rgba(0,0,0,0.45);',
+    '  display:flex; flex-direction:column; align-items:center; justify-content:center;',
+    '  opacity:0; transition:opacity 0.2s; pointer-events:none;',
+    '}',
+    '.foto-overlay svg { display:block; margin-bottom:3px; }',
+    '.foto-overlay span { font-size:0.6rem; font-weight:700; color:#fff; letter-spacing:0.03em; }',
+    '.entre-avatar-img {',
+    '  position:absolute; inset:0; width:100%; height:100%;',
+    '  object-fit:cover; border-radius:50%; display:none;',
+    '}',
+  ].join('');
+  document.head.appendChild(style);
+
+  var overlay = document.createElement('div');
+  overlay.className = 'foto-overlay';
+  overlay.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Cambiar</span>';
+  avatarRing.appendChild(overlay);
+
+  var imgPreview = document.createElement('img');
+  imgPreview.className = 'entre-avatar-img';
+  imgPreview.alt = 'Foto de perfil';
+  if (PERFIL_ACTUAL && PERFIL_ACTUAL.fotoPerfil) {
+    imgPreview.src = PERFIL_ACTUAL.fotoPerfil;
+    imgPreview.style.display = 'block';
+  }
+  avatarRing.appendChild(imgPreview);
+
+  var fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/png, image/jpeg, image/webp';
+  fileInput.style.display = 'none';
+  document.body.appendChild(fileInput);
+
+  avatarRing.addEventListener('click', function() {
+    fileInput.click();
+  });
+
+  fileInput.addEventListener('change', function() {
+    var file = fileInput.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      mostrarToast('La imagen no puede pesar más de 5MB', true);
+      return;
+    }
+
+    var usuario = Session.getUsuario();
+
+    // Preview inmediato mientras sube
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      imgPreview.src = e.target.result;
+      imgPreview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+
+    mostrarToast('⏳ Subiendo foto...');
+
+    Api.actualizarFotoPerfilEntrenador(usuario, file)
+      .then(function(perfilActualizado) {
+      PERFIL_ACTUAL = perfilActualizado;
+      imgPreview.src = perfilActualizado.fotoPerfil;
+      imgPreview.style.display = 'block';
+
+      // Ocultar las iniciales del texto
+      avatarRing.childNodes.forEach(function(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          node.textContent = '';
+        }
+      });
+
+      mostrarToast('✅ Foto actualizada correctamente');
+    })
+      .catch(function(err) {
+        imgPreview.src = (PERFIL_ACTUAL && PERFIL_ACTUAL.fotoPerfil) || '';
+        imgPreview.style.display = (PERFIL_ACTUAL && PERFIL_ACTUAL.fotoPerfil) ? 'block' : 'none';
+        mostrarToast('❌ ' + (err.message || 'Error al subir la foto'), true);
+      });
+
+    fileInput.value = '';
+  });
+}
+
+/* ── Init ── */
+// ✅ INTEGRADO: Carga el perfil real desde el backend al arrancar
+document.addEventListener('DOMContentLoaded', function() {
+
+  var usuario = Session.getUsuario();
+
+  // Protección: si no hay sesión, redirigir al login
+  if (!usuario || !Session.estaLogueado()) {
+    window.location.href = '../../pages/auth/login.html';
+    return;
+  }
+
+  // Cargar perfil desde el backend
+  Api.obtenerPerfilEntrenador(usuario)
+    .then(function(perfil) {
+      PERFIL_ACTUAL = perfil;
+      renderPerfil(PERFIL_ACTUAL);
+      buildConfigDrawer();
+      initFotoPerfilUI();
+    })
+    .catch(function(err) {
+      console.error('Error al cargar perfil:', err);
+      // Si falla, igual construimos el drawer para que el usuario
+      // pueda al menos cerrar sesión
+      buildConfigDrawer();
+    });
+
+  // Botones — mismos listeners de antes
   var btnSettings = document.getElementById('btn-settings');
   if (btnSettings) btnSettings.addEventListener('click', openConfig);
 
-  // Banner premium
   var btnPremium = document.getElementById('btn-premium-banner');
   if (btnPremium) btnPremium.addEventListener('click', function() {
     openConfig(); setTimeout(window.openPremium, 60);
   });
 
-  // FIX 3a: Botón "Completar tus datos" → abre config → va a Detalles de clases
   var btnCompletar = document.getElementById('btn-completar');
   if (btnCompletar) btnCompletar.addEventListener('click', function() {
-    openConfig();
-    setTimeout(window.openDetallesClases, 60);
+    openConfig(); setTimeout(window.openDetallesClases, 60);
   });
 
-  // FIX 3b: Botón "Gestionar deportes" → abre config → va a Gestionar deportes
   var btnGestionar = document.getElementById('btn-gestionar');
   if (btnGestionar) btnGestionar.addEventListener('click', function() {
-    openConfig();
-    setTimeout(window.openGestionarDeportes, 60);
+    openConfig(); setTimeout(window.openGestionarDeportes, 60);
   });
 
-  // FIX 1: Logout desde sidebar — listener directo, sin depender del drawer
   var btnLogout = document.getElementById('btn-logout');
   if (btnLogout) btnLogout.addEventListener('click', handleLogout);
 
-  // Sidebar mobile
   document.getElementById('topbar-menu').addEventListener('click', function() {
     document.getElementById('sidebar').classList.add('open');
     document.getElementById('sidebar-overlay').classList.add('visible');
@@ -462,7 +757,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.style.overflow = '';
   });
 
-  // Nav links
   document.querySelectorAll('[data-section]').forEach(function(el) {
     el.addEventListener('click', function(e) {
       var sec = el.dataset.section;

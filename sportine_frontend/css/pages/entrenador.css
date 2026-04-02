@@ -192,9 +192,10 @@
    ENTRENADOR PERFIL (fragment_entrenador_perfil.xml)
 ============================================================ */
 .entre-perfil-top {
-  display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start;
+  display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;
 }
-.entre-avatar-col { display: flex; flex-direction: column; align-items: center; gap: 14px; flex-shrink: 0; }
+.entre-avatar-col { display: flex; flex-direction: column; align-items: center; gap: 14px; flex-shrink: 0; width: 110px; }
+.entre-perfil-top-row { display: flex; gap: 16px; align-items: flex-start; }
 .entre-avatar-ring {
   width: 110px; height: 110px; border-radius: 50%;
   background: linear-gradient(135deg, #1ea1db, #00A896);
@@ -216,6 +217,7 @@
   flex: 1; background: #fff; border: 1px solid #E5E7EB;
   border-radius: 14px; padding: 16px; min-width: 0;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  max-height: 110px; overflow: hidden;
 }
 .entre-bio-name { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 8px; }
 .entre-bio-desc { font-size: 0.85rem; color: #6B7280; line-height: 1.5; }
