@@ -591,5 +591,78 @@ const Session = {
     localStorage.removeItem('sp_apellidos');
     localStorage.removeItem('sp_rol');
   },
-
 };
+
+// ============================================================
+//   MÓDULO: HOME ALUMNO
+// ============================================================
+Object.assign(Api, {
+
+  // GET /api/alumnos/home/{usuario}
+  async obtenerHomeAlumno(usuario) {
+    const response = await fetch(`${BASE_URL}/api/alumnos/home/${usuario}`, {
+      method: 'GET',
+      headers: _getHeaders(true),
+    });
+    return _handleResponse(response);
+  },
+
+  // GET /api/alumno/entrenamientos/{id}
+  async obtenerDetalleEntrenamiento(idEntrenamiento) {
+    const response = await fetch(`${BASE_URL}/api/alumno/entrenamientos/${idEntrenamiento}`, {
+      method: 'GET',
+      headers: _getHeaders(true),
+    });
+    return _handleResponse(response);
+  },
+
+  // PUT /api/alumno/entrenamientos/ejercicio/{idAsignado}/estado?completado=true
+  async cambiarEstadoEjercicio(idAsignado, completado) {
+    const response = await fetch(
+      `${BASE_URL}/api/alumno/entrenamientos/ejercicio/${idAsignado}/estado?completado=${completado}`,
+      { method: 'PUT', headers: _getHeaders(true) }
+    );
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new Error(data.error || data.mensaje || 'Error al actualizar ejercicio');
+    }
+  },
+
+  // POST /api/alumno/entrenamientos/completar
+  async completarEntrenamiento(idEntrenamiento, opciones) {
+    const body = { idEntrenamiento, ...(opciones || {}) };
+    const response = await fetch(`${BASE_URL}/api/alumno/entrenamientos/completar`, {
+      method: 'POST',
+      headers: _getHeaders(true),
+      body: JSON.stringify(body),
+    });
+    return _handleResponse(response);
+  },
+
+  async obtenerHomeEntrenador() {
+    const response = await fetch(`${BASE_URL}/api/entrenador/home`, {
+      method: 'GET',
+      headers: _getHeaders(true),
+    });
+    return _handleResponse(response);
+  },
+  
+  async crearEntrenamientoEntrenador(datos) {
+    const response = await fetch(`${BASE_URL}/api/entrenador/entrenamientos`, {
+      method: 'POST',
+      headers: _getHeaders(true),
+      body: JSON.stringify(datos),
+    });
+    return _handleResponse(response);
+  },
+
+
+  // GET /api/entrenador/feedback
+  async obtenerFeedbackEntrenador() {
+    const response = await fetch(`${BASE_URL}/api/entrenador/feedback`, {
+      method: 'GET',
+      headers: _getHeaders(true),
+    });
+    return _handleResponse(response);
+  },
+});

@@ -9,6 +9,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../../css/base/variables.css" />
   <link rel="stylesheet" href="../../css/pages/home.css" />
+  <style>
+    .badge-progreso {
+      background: #fef3c7 !important;
+      color: #d97706 !important;
+    }
+  </style>
 </head>
 <body>
 
@@ -45,7 +51,6 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         </span>
         <span class="nav-label">Social</span>
-        <span class="nav-badge">3</span>
       </a>
       <a href="perfil.html" class="nav-item" data-section="perfil">
         <span class="nav-icon">
@@ -57,9 +62,9 @@
 
     <div class="sidebar-footer">
       <div class="user-chip">
-        <div class="user-chip-avatar" id="sidebar-avatar">C</div>
+        <div class="user-chip-avatar" id="sidebar-avatar"></div>
         <div class="user-chip-info">
-          <span class="user-chip-name" id="sidebar-name">Carlos Ramírez</span>
+          <span class="user-chip-name" id="sidebar-name"></span>
           <span class="user-chip-role">Alumno</span>
         </div>
         <button class="logout-btn" id="btn-logout" title="Cerrar sesión">
@@ -81,57 +86,20 @@
         <div class="logo-mark">S</div>
         <span class="logo-text">Sportine</span>
       </div>
-      <div class="topbar-avatar" id="topbar-avatar">C</div>
+      <div class="topbar-avatar" id="topbar-avatar"></div>
     </header>
 
     <!-- Greeting -->
     <section class="greeting-section">
       <div class="greeting-left">
         <div class="greeting-text">
-          <p class="greeting-sub" id="greeting-sub">Buenos días ☀️</p>
-          <h1 class="greeting-name" id="greeting-name">Carlos Ramírez</h1>
+          <p class="greeting-sub" id="greeting-sub"></p>
+          <h1 class="greeting-name" id="greeting-name"></h1>
         </div>
         <div class="date-pill">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          <span id="greeting-date">Jueves, 13 Mar 2025</span>
+          <span id="greeting-date"></span>
         </div>
-      </div>
-      <div class="greeting-stats">
-        <div class="mini-stat">
-          <span class="mini-stat-num">7</span>
-          <span class="mini-stat-label">🔥 Racha</span>
-        </div>
-        <div class="mini-stat-divider"></div>
-        <div class="mini-stat">
-          <span class="mini-stat-num">23</span>
-          <span class="mini-stat-label">Total</span>
-        </div>
-        <div class="mini-stat-divider"></div>
-        <div class="mini-stat">
-          <span class="mini-stat-num">3</span>
-          <span class="mini-stat-label">Este mes</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Progreso semanal -->
-    <section class="weekly-progress">
-      <div class="wp-header">
-        <span class="wp-title">Progreso semanal</span>
-        <span class="wp-detail">4 / 6 sesiones</span>
-      </div>
-      <div class="wp-bar-wrap">
-        <div class="wp-bar"><div class="wp-fill" style="width:66%"></div></div>
-        <span class="wp-pct">66%</span>
-      </div>
-      <div class="wp-days">
-        <div class="wp-day done"><span>L</span><div class="wp-dot"></div></div>
-        <div class="wp-day done"><span>M</span><div class="wp-dot"></div></div>
-        <div class="wp-day done"><span>M</span><div class="wp-dot"></div></div>
-        <div class="wp-day"><span>J</span><div class="wp-dot"></div></div>
-        <div class="wp-day done"><span>V</span><div class="wp-dot"></div></div>
-        <div class="wp-day rest"><span>S</span><div class="wp-dot"></div></div>
-        <div class="wp-day rest"><span>D</span><div class="wp-dot"></div></div>
       </div>
     </section>
 
@@ -139,7 +107,7 @@
     <section class="entrenamientos-section">
       <div class="section-header-row">
         <h2 class="section-title">Mis Entrenamientos</h2>
-        <span class="section-count" id="entreno-count">3 asignados</span>
+        <span class="section-count" id="entreno-count"></span>
       </div>
       <div class="entrenamientos-list" id="lista-entrenamientos">
         <!-- Generado por JS -->
@@ -173,7 +141,7 @@
   </nav>
 
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
-
+  <script src="../../js/api/api.js"></script>
   <script src="../../js/pages/alumno/home.js"></script>
 </body>
 </html>
