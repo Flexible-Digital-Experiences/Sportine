@@ -6,10 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
 
-/**
- * Entity que representa el progreso de un entrenamiento.
- * Registra cuándo empezó y terminó el alumno el entrenamiento.
- */
 @Entity
 @Table(name = "Progreso_Entrenamiento")
 @Data
@@ -26,10 +22,7 @@ public class ProgresoEntrenamiento {
     private Integer idEntrenamiento;
 
     @Column(name = "usuario")
-    private String usuario; // Alumno
-
-    @Column(name = "fecha_inicio")
-    private LocalDateTime fechaInicio;
+    private String usuario;
 
     @Column(name = "fecha_finalizacion")
     private LocalDateTime fechaFinalizacion;
@@ -37,12 +30,39 @@ public class ProgresoEntrenamiento {
     @Column(name = "completado")
     private Boolean completado;
 
-    // Relación con Entrenamiento
+    // ── Campos de Health Connect ──────────────────────────────────
+    @Column(name = "hc_sesion_id")
+    private String hcSesionId;
+
+    @Column(name = "hc_tipo_ejercicio")
+    private String hcTipoEjercicio;
+
+    @Column(name = "hc_duracion_activa_min")
+    private Integer hcDuracionActivaMin;
+
+    @Column(name = "hc_calorias_kcal")
+    private Integer hcCaloriasKcal;
+
+    @Column(name = "hc_pasos")
+    private Integer hcPasos;
+
+    @Column(name = "hc_distancia_metros")
+    private Float hcDistanciaMetros;
+
+    @Column(name = "hc_velocidad_promedio_ms")
+    private Float hcVelocidadPromedioMs;
+
+    @Column(name = "hc_fuente_datos")
+    private String hcFuenteDatos;
+
+    @Column(name = "hc_sincronizado_en")
+    private LocalDateTime hcSincronizadoEn;
+    // ─────────────────────────────────────────────────────────────
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_entrenamiento", insertable = false, updatable = false)
     private Entrenamiento entrenamiento;
 
-    // Relación con Usuario (alumno)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario", insertable = false, updatable = false)
     private Usuario alumno;

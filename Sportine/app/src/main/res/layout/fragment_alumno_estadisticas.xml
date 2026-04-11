@@ -2,369 +2,264 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAFAFA"
+    android:background="@color/colorPageBackground"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
+        android:paddingStart="@dimen/spacing_xlarge"
+        android:paddingEnd="@dimen/spacing_xlarge"
         android:paddingTop="16dp"
-        android:paddingBottom="120dp"
-        tools:context=".ui.usuarios.estadisticas.EstadisticasFragment">
+        android:paddingBottom="120dp">
 
-        <!-- Título de la página -->
         <TextView
             android:id="@+id/text_titulo_estadisticas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Estadísticas"
-            android:textSize="32sp"
+            android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="#1A1A1A"
+            android:textColor="@color/colorTextPrimary"
             android:fontFamily="sans-serif-medium"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <!-- Separador visual -->
-        <View
-            android:id="@+id/divider_titulo"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:background="#E5E7EB"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/text_titulo_estadisticas"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- =========================== -->
-        <!-- LAYOUT DE CONTENIDO -->
-        <!-- =========================== -->
         <LinearLayout
             android:id="@+id/layout_content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="24dp"
-            android:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@id/divider_titulo"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@id/text_titulo_estadisticas"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- SECCIÓN: Resumen General -->
+            <!-- ── Resumen General ──────────────────────────────────── -->
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Resumen General"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#1A1A1A"
-                android:layout_marginBottom="12dp" />
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Resumen General" android:textSize="18sp" android:textStyle="bold"
+                android:textColor="@color/colorTextPrimary" android:layout_marginBottom="12dp" />
 
-            <!-- Grid de Cards de Resumen -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="2"
-                android:baselineAligned="false">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:weightSum="3" android:baselineAligned="false">
 
-                <!-- Card: Total Entrenamientos -->
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="140dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="@android:color/white">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:gravity="center">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Total"
-                            android:textSize="14sp"
-                            android:textColor="#6B7280" />
-
-                        <TextView
-                            android:id="@+id/text_total_entrenamientos"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textSize="32sp"
-                            android:textStyle="bold"
-                            android:textColor="#1A1A1A"
-                            android:layout_marginTop="8dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Entrenamientos"
-                            android:textSize="12sp"
-                            android:textColor="#9CA3AF" />
+                    android:layout_width="0dp" android:layout_height="110dp" android:layout_weight="1"
+                    android:layout_marginEnd="6dp" app:cardCornerRadius="16dp" app:cardElevation="0dp"
+                    app:strokeWidth="1dp" app:strokeColor="@color/colorDivider" android:backgroundTint="@color/colorCardBackground">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="vertical" android:gravity="center" android:padding="8dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🏋️" android:textSize="22sp"/>
+                        <TextView android:id="@+id/text_total_entrenamientos" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="0" android:textSize="22sp"
+                            android:textStyle="bold" android:textColor="@color/colorTextPrimary" android:layout_marginTop="4dp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Total" android:textSize="11sp" android:textColor="@color/colorTextSecondary"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Card: Racha Actual -->
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="140dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="@android:color/white">
+                    android:layout_width="0dp" android:layout_height="110dp" android:layout_weight="1"
+                    android:layout_marginStart="3dp" android:layout_marginEnd="3dp"
+                    app:cardCornerRadius="16dp" app:cardElevation="0dp"
+                    app:strokeWidth="1dp" app:strokeColor="@color/colorDivider" android:backgroundTint="@color/colorCardBackground">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="vertical" android:gravity="center" android:padding="8dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔥" android:textSize="22sp"/>
+                        <TextView android:id="@+id/text_racha_actual" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="0 días" android:textSize="18sp"
+                            android:textStyle="bold" android:textColor="#F59E0B" android:layout_marginTop="4dp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Racha" android:textSize="11sp" android:textColor="@color/colorTextSecondary"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:gravity="center">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="🔥 Racha"
-                            android:textSize="14sp"
-                            android:textColor="#6B7280" />
-
-                        <TextView
-                            android:id="@+id/text_racha_actual"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0 días"
-                            android:textSize="32sp"
-                            android:textStyle="bold"
-                            android:textColor="#F59E0B"
-                            android:layout_marginTop="8dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Consecutivos"
-                            android:textSize="12sp"
-                            android:textColor="#9CA3AF" />
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp" android:layout_height="110dp" android:layout_weight="1"
+                    android:layout_marginStart="6dp" app:cardCornerRadius="16dp" app:cardElevation="0dp"
+                    app:strokeWidth="1dp" app:strokeColor="@color/colorDivider" android:backgroundTint="@color/colorCardBackground">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="vertical" android:gravity="center" android:padding="8dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📅" android:textSize="22sp"/>
+                        <TextView android:id="@+id/text_entrenamientos_mes" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="0" android:textSize="22sp"
+                            android:textStyle="bold" android:textColor="#10B981" android:layout_marginTop="4dp"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Este mes" android:textSize="11sp" android:textColor="@color/colorTextSecondary"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-            <!-- Segunda fila de cards -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="2"
-                android:layout_marginTop="16dp"
-                android:baselineAligned="false">
-
-                <!-- Card: Mes Actual -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="140dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="@android:color/white">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:gravity="center">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Este Mes"
-                            android:textSize="14sp"
-                            android:textColor="#6B7280" />
-
-                        <TextView
-                            android:id="@+id/text_entrenamientos_mes"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textSize="32sp"
-                            android:textStyle="bold"
-                            android:textColor="#10B981"
-                            android:layout_marginTop="8dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Completados"
-                            android:textSize="12sp"
-                            android:textColor="#9CA3AF" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Card: Tendencia -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="140dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="@android:color/white">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:gravity="center">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tendencia"
-                            android:textSize="14sp"
-                            android:textColor="#6B7280" />
-
-                        <TextView
-                            android:id="@+id/text_tendencia"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="→ Estable"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="#6B7280"
-                            android:layout_marginTop="8dp"
-                            android:gravity="center" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
-
-            <!-- SECCIÓN: Frecuencia de Entrenamientos -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Frecuencia de Entrenamientos"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#1A1A1A"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="12dp" />
-
-            <!-- Card con Gráfica de Barras -->
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                app:cardBackgroundColor="@android:color/white">
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" app:cardCornerRadius="12dp" app:cardElevation="0dp"
+                app:strokeWidth="1dp" app:strokeColor="@color/colorDivider" android:backgroundTint="@color/colorCardBackground">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:padding="14dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Tendencia:" android:textSize="14sp" android:textColor="@color/colorTextSecondary"/>
+                    <TextView android:id="@+id/text_tendencia" android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:layout_marginStart="8dp"
+                        android:text="→ Estable" android:textSize="14sp" android:textStyle="bold"
+                        android:textColor="@color/colorTextSecondary"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
+            <!-- ── Frecuencia ──────────────────────────────────────── -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Frecuencia de entrenamientos" android:textSize="18sp" android:textStyle="bold"
+                android:textColor="@color/colorTextPrimary" android:layout_marginTop="28dp" android:layout_marginBottom="12dp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp" app:cardElevation="0dp"
+                app:strokeWidth="1dp" app:strokeColor="@color/colorDivider" android:backgroundTint="@color/colorCardBackground">
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/chart_frecuencia"
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:padding="16dp" />
+                    android:layout_width="match_parent" android:layout_height="200dp" android:padding="12dp"/>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- SECCIÓN: Distribución por Deporte -->
-            <TextView
+            <!-- ── Estadísticas por deporte ───────────────────────── -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Estadísticas por deporte" android:textSize="18sp" android:textStyle="bold"
+                android:textColor="@color/colorTextPrimary" android:layout_marginTop="28dp" android:layout_marginBottom="12dp" />
+
+            <!-- Chips de deportes -->
+            <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:scrollbars="none" android:layout_marginBottom="12dp">
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group_deportes"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    app:singleSelection="true" app:selectionRequired="true"/>
+            </HorizontalScrollView>
+
+            <!-- Cards de carrera (3 fijas) -->
+            <LinearLayout android:id="@+id/layout_carrera"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:weightSum="3"
+                android:baselineAligned="false" android:visibility="gone"
+                android:layout_marginBottom="16dp">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp" android:layout_height="130dp" android:layout_weight="1"
+                    android:layout_marginEnd="6dp" app:cardCornerRadius="16dp" app:cardElevation="0dp"
+                    app:strokeWidth="2dp" app:strokeColor="@color/colorAccent" android:backgroundTint="@color/colorCardBackground">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="vertical" android:gravity="center" android:padding="8dp">
+                        <TextView android:id="@+id/card_emoji_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🏆" android:textSize="24sp"/>
+                        <TextView android:id="@+id/card_valor_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/colorAccent" android:layout_marginTop="4dp"/>
+                        <TextView android:id="@+id/card_titulo_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Métrica" android:textSize="10sp" android:textColor="@color/colorTextSecondary" android:gravity="center" android:maxLines="2"/>
+                        <TextView android:id="@+id/card_sub_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mejor: 0" android:textSize="10sp" android:textColor="@color/colorTextSecondary"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp" android:layout_height="130dp" android:layout_weight="1"
+                    android:layout_marginStart="3dp" android:layout_marginEnd="3dp"
+                    app:cardCornerRadius="16dp" app:cardElevation="0dp"
+                    app:strokeWidth="2dp" app:strokeColor="@color/colorAccent" android:backgroundTint="@color/colorCardBackground">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="vertical" android:gravity="center" android:padding="8dp">
+                        <TextView android:id="@+id/card_emoji_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🏆" android:textSize="24sp"/>
+                        <TextView android:id="@+id/card_valor_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/colorAccent" android:layout_marginTop="4dp"/>
+                        <TextView android:id="@+id/card_titulo_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Métrica" android:textSize="10sp" android:textColor="@color/colorTextSecondary" android:gravity="center" android:maxLines="2"/>
+                        <TextView android:id="@+id/card_sub_2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mejor: 0" android:textSize="10sp" android:textColor="@color/colorTextSecondary"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp" android:layout_height="130dp" android:layout_weight="1"
+                    android:layout_marginStart="6dp" app:cardCornerRadius="16dp" app:cardElevation="0dp"
+                    app:strokeWidth="2dp" app:strokeColor="@color/colorAccent" android:backgroundTint="@color/colorCardBackground">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:orientation="vertical" android:gravity="center" android:padding="8dp">
+                        <TextView android:id="@+id/card_emoji_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🏆" android:textSize="24sp"/>
+                        <TextView android:id="@+id/card_valor_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/colorAccent" android:layout_marginTop="4dp"/>
+                        <TextView android:id="@+id/card_titulo_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Métrica" android:textSize="10sp" android:textColor="@color/colorTextSecondary" android:gravity="center" android:maxLines="2"/>
+                        <TextView android:id="@+id/card_sub_3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mejor: 0" android:textSize="10sp" android:textColor="@color/colorTextSecondary"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- ✅ CHIP TOGGLE — Gráficas / Historial -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_vista"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Distribución por Deporte"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#1A1A1A"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                app:singleSelection="true"
+                app:selectionRequired="true">
 
-            <!-- Card con Gráfica de Pastel -->
-            <com.google.android.material.card.MaterialCardView
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_graficas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📊 Gráficas"
+                    android:textSize="13sp"
+                    app:chipBackgroundColor="@color/colorCardBackground"
+                    app:checkedIconVisible="false"
+                    android:checkable="true"
+                    android:checked="true"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_historial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📋 Historial"
+                    android:textSize="13sp"
+                    app:chipBackgroundColor="@color/colorCardBackground"
+                    app:checkedIconVisible="false"
+                    android:checkable="true"/>
+            </com.google.android.material.chip.ChipGroup>
+
+            <!-- ✅ SECCIÓN GRÁFICAS — dinámica -->
+            <LinearLayout
+                android:id="@+id/layout_graficas_deporte"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                app:cardBackgroundColor="@android:color/white">
+                android:orientation="vertical"
+                android:visibility="gone"/>
 
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/chart_deportes"
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:padding="16dp" />
-            </com.google.android.material.card.MaterialCardView>
+            <!-- ✅ SECCIÓN HISTORIAL — dinámica -->
+            <LinearLayout
+                android:id="@+id/layout_historial_deporte"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"/>
 
         </LinearLayout>
 
-        <!-- =========================== -->
-        <!-- LAYOUT DE CARGA -->
-        <!-- =========================== -->
-        <LinearLayout
-            android:id="@+id/layout_loading"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="48dp"
+        <!-- Loading -->
+        <LinearLayout android:id="@+id/layout_loading"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:orientation="vertical" android:gravity="center" android:padding="48dp"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/divider_titulo"
+            app:layout_constraintTop_toBottomOf="@id/text_titulo_estadisticas"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <ProgressBar
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:indeterminate="true" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cargando estadísticas..."
-                android:textSize="16sp"
-                android:textColor="#6B7280"
-                android:layout_marginTop="16dp" />
+            app:layout_constraintEnd_toEndOf="parent">
+            <ProgressBar android:layout_width="48dp" android:layout_height="48dp" android:indeterminate="true"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Cargando estadísticas..." android:textSize="14sp"
+                android:textColor="@color/colorTextSecondary" android:layout_marginTop="12dp"/>
         </LinearLayout>
 
-        <!-- =========================== -->
-        <!-- LAYOUT DE ERROR -->
-        <!-- =========================== -->
-        <LinearLayout
-            android:id="@+id/layout_error"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="48dp"
+        <!-- Error -->
+        <LinearLayout android:id="@+id/layout_error"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:orientation="vertical" android:gravity="center" android:padding="48dp"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/divider_titulo"
+            app:layout_constraintTop_toBottomOf="@id/text_titulo_estadisticas"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="❌"
-                android:textSize="48sp"
-                android:layout_marginBottom="16dp" />
-
-            <TextView
-                android:id="@+id/text_error"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Error al cargar estadísticas"
-                android:textSize="16sp"
-                android:textColor="#6B7280"
-                android:gravity="center" />
+            app:layout_constraintEnd_toEndOf="parent">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="❌" android:textSize="48sp"/>
+            <TextView android:id="@+id/text_error" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:text="Error al cargar" android:textSize="14sp"
+                android:textColor="@color/colorTextSecondary" android:gravity="center" android:layout_marginTop="12dp"/>
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

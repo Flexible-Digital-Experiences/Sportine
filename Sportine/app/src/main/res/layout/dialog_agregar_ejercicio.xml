@@ -31,7 +31,6 @@
             android:layout_height="wrap_content"
             android:hint="Tipo de Medida"
             android:layout_marginBottom="@dimen/spacing_medium">
-
             <AutoCompleteTextView
                 android:id="@+id/spinner_tipo_medida"
                 android:layout_width="match_parent"
@@ -49,7 +48,6 @@
             app:boxStrokeColor="@color/colorAccent"
             app:hintTextColor="@color/colorAccent"
             android:layout_marginBottom="@dimen/spacing_medium">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/input_nombre_ejercicio"
                 android:layout_width="match_parent"
@@ -62,8 +60,7 @@
             android:id="@+id/container_reps_peso"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="visible">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -163,6 +160,60 @@
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </LinearLayout>
+
+        <!-- ══ SWITCH: ¿Este ejercicio tiene métrica de exitosos? ══════════════ -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_large"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/colorDivider"
+            android:backgroundTint="@color/colorPageBackground">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="@dimen/spacing_medium">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="¿Tiene métrica de éxito?"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorTextPrimary"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Goles, tiros anotados, jabs conectados, regates exitosos, etc."
+                        android:textSize="12sp"
+                        android:textColor="@color/colorTextSecondary"
+                        android:lineSpacingExtra="2dp"/>
+                </LinearLayout>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_tiene_exitosos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_medium"
+                    android:checked="false"
+                    app:thumbTint="@color/colorAccent"
+                    app:trackTint="@color/colorAccent"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <!-- ═══════════════════════════════════════════════════════════════════ -->
 
         <LinearLayout
             android:layout_width="match_parent"

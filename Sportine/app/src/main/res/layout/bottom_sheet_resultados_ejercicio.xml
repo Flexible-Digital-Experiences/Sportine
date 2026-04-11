@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:paddingBottom="40dp">
+
+        <!-- Handle -->
+        <View
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:background="#E5E7EB" />
+
+        <!-- Número de serie -->
+        <TextView
+            android:id="@+id/tv_numero_serie_bs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#F3F4F6"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
+            android:textSize="12sp"
+            android:textColor="#6B7280"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp"
+            tools:text="Serie 1" />
+
+        <!-- Nombre del ejercicio -->
+        <TextView
+            android:id="@+id/tv_nombre_ejercicio_bs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#1A1A1A"
+            android:layout_marginBottom="4dp"
+            tools:text="Tiros libres" />
+
+        <!-- Valores esperados -->
+        <TextView
+            android:id="@+id/tv_valores_esperados_bs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="#6B7280"
+            android:layout_marginBottom="20dp"
+            tools:text="Esperado: 15 reps" />
+
+        <!-- ══ STATUS ═══════════════════════════════════════════════════ -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="¿Cómo te fue en esta serie?"
+            android:textSize="14sp"
+            android:textColor="#374151"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:singleSelection="true"
+            app:selectionRequired="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_completado"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✅ Completado"
+                android:checked="true" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_parcial"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⚡ Parcial" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_omitido"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⏭️ Omitido" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <!-- ══ SECCIÓN INTENTADOS ════════════════════════════════════════ -->
+        <LinearLayout
+            android:id="@+id/layout_intentados"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Lo que intentaste"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
+            <!-- REPS -->
+            <LinearLayout
+                android:id="@+id/layout_reps_resultado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Repeticiones"
+                    android:textSize="14sp"
+                    android:textColor="#374151" />
+
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_reps_menos"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="40dp" android:layout_height="40dp"
+                        android:text="−" android:textSize="20sp" android:padding="0dp"
+                        app:cornerRadius="20dp" />
+                    <TextView android:id="@+id/tv_reps_valor"
+                        android:layout_width="48dp" android:layout_height="wrap_content"
+                        android:gravity="center" android:textSize="20sp" android:textStyle="bold"
+                        android:textColor="#1A1A1A" tools:text="15" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_reps_mas"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="40dp" android:layout_height="40dp"
+                        android:text="+" android:textSize="20sp" android:padding="0dp"
+                        app:cornerRadius="20dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- PESO -->
+            <LinearLayout
+                android:id="@+id/layout_peso_resultado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Peso usado (kg)"
+                    android:textSize="14sp" android:textColor="#374151" />
+
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_peso_menos"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="40dp" android:layout_height="40dp"
+                        android:text="−" android:textSize="20sp" android:padding="0dp" app:cornerRadius="20dp" />
+                    <TextView android:id="@+id/tv_peso_valor"
+                        android:layout_width="56dp" android:layout_height="wrap_content"
+                        android:gravity="center" android:textSize="20sp" android:textStyle="bold"
+                        android:textColor="#1A1A1A" tools:text="50" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_peso_mas"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="40dp" android:layout_height="40dp"
+                        android:text="+" android:textSize="20sp" android:padding="0dp" app:cornerRadius="20dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- DURACIÓN -->
+            <LinearLayout
+                android:id="@+id/layout_duracion_resultado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Duración (min)"
+                    android:textSize="14sp" android:textColor="#374151" />
+
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_duracion_menos"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="40dp" android:layout_height="40dp"
+                        android:text="−" android:textSize="20sp" android:padding="0dp" app:cornerRadius="20dp" />
+                    <TextView android:id="@+id/tv_duracion_valor"
+                        android:layout_width="56dp" android:layout_height="wrap_content"
+                        android:gravity="center" android:textSize="20sp" android:textStyle="bold"
+                        android:textColor="#1A1A1A" tools:text="30" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_duracion_mas"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="40dp" android:layout_height="40dp"
+                        android:text="+" android:textSize="20sp" android:padding="0dp" app:cornerRadius="20dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- DISTANCIA -->
+            <LinearLayout
+                android:id="@+id/layout_distancia_resultado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Distancia (metros)"
+                    android:textSize="14sp" android:textColor="#374151" />
+
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_distancia_menos"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="40dp" android:layout_height="40dp"
+                        android:text="−" android:textSize="20sp" android:padding="0dp" app:cornerRadius="20dp" />
+                    <TextView android:id="@+id/tv_distancia_valor"
+                        android:layout_width="64dp" android:layout_height="wrap_content"
+                        android:gravity="center" android:textSize="20sp" android:textStyle="bold"
+                        android:textColor="#1A1A1A" tools:text="500" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_distancia_mas"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="40dp" android:layout_height="40dp"
+                        android:text="+" android:textSize="20sp" android:padding="0dp" app:cornerRadius="20dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- ══ SECCIÓN EXITOSOS ══════════════════════════════════════════
+             Visible en deportes de puntaje (fútbol, basket, boxeo, etc.)
+             Oculto en gimnasio y cardio puro
+             El agente n8n usa este valor para calcular métricas finales -->
+        <LinearLayout
+            android:id="@+id/layout_exitosos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#F0FDF4"
+            android:padding="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="¿Cuántos salieron bien?"
+                android:textSize="14sp"
+                android:textColor="#15803D"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Goles anotados, tiros que entraron, golpes que conectaron, etc."
+                android:textSize="12sp"
+                android:textColor="#6B7280"
+                android:layout_marginBottom="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Exitosos"
+                    android:textSize="14sp"
+                    android:textColor="#374151" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_exitosos_menos"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:text="−"
+                    android:textSize="20sp"
+                    android:padding="0dp"
+                    app:cornerRadius="20dp"
+                    app:strokeColor="#15803D" />
+
+                <TextView
+                    android:id="@+id/tv_exitosos_valor"
+                    android:layout_width="48dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="#15803D"
+                    tools:text="0" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_exitosos_mas"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:text="+"
+                    android:textSize="20sp"
+                    android:padding="0dp"
+                    app:cornerRadius="20dp"
+                    app:strokeColor="#15803D" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ══ MENSAJE OMITIDO ═══════════════════════════════════════════ -->
+        <TextView
+            android:id="@+id/tv_omitido_mensaje"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Esta serie se marcará como omitida."
+            android:textSize="14sp"
+            android:textColor="#9CA3AF"
+            android:gravity="center"
+            android:layout_marginVertical="16dp"
+            android:visibility="gone" />
+
+        <!-- ══ NOTAS ═════════════════════════════════════════════════════ -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Notas (opcional)"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            app:boxStrokeColor="@color/colorAccent"
+            app:hintTextColor="@color/colorAccent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_notas_bs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLines="3" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- ══ BOTONES ═══════════════════════════════════════════════════ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancelar_bs"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="Cancelar"
+                android:textColor="@color/colorTextSecondary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_guardar_bs"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="2"
+                android:text="Guardar serie"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                app:backgroundTint="@color/colorAccent"
+                app:cornerRadius="12dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

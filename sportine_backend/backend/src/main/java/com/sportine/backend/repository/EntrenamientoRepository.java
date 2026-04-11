@@ -1,6 +1,7 @@
 package com.sportine.backend.repository;
 
 import com.sportine.backend.model.Entrenamiento;
+import com.sportine.backend.model.ProgresoEntrenamiento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -100,4 +101,25 @@ public interface EntrenamientoRepository extends JpaRepository<Entrenamiento, In
             @Param("usuario") String usuario,
             @Param("usuarioEntrenador") String usuarioEntrenador
     );
+
+
+    @Query(value = """
+    SELECT e.id_entrenamiento
+    FROM Entrenamiento e
+    JOIN Progreso_Entrenamiento p ON e.id_entrenamiento = p.id_entrenamiento
+    WHERE e.usuario = :usuario
+      AND e.id_deporte = :idDeporte
+      AND e.estado_entrenamiento = 'finalizado'
+      AND p.completado = true
+    ORDER BY p.fecha_finalizacion DESC
+    LIMIT :limite
+    """, nativeQuery = true)
+    List<Integer> findUltimosFinalizadosByUsuarioAndDeporte(
+            @Param("usuario") String usuario,
+            @Param("idDeporte") Integer idDeporte,
+            @Param("limite") int limite);
+
+    List<ProgresoEntrenamiento> findByIdEntrenamientoAndUsuario(
+            Integer idEntrenamiento, String usuario);
 }
+

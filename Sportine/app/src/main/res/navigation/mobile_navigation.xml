@@ -170,7 +170,16 @@
         android:id="@+id/detallesEntrenamientoFragment"
         android:name="com.example.sportine.ui.usuarios.detallesentrenamiento.DetallesEntrenamientoFragment"
         android:label="Detalles Entrenamiento"
-        tools:layout="@layout/fragment_alumno_detalles_entrenamiento" />
+        tools:layout="@layout/fragment_alumno_detalles_entrenamiento">
+        <action
+            android:id="@+id/action_detalles_to_healthConnect"
+            app:destination="@id/healthConnectFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
     <fragment
         android:id="@+id/enviarSolicitud"
         android:name="com.example.sportine.ui.usuarios.enviarsolicitud.EnviarSolicitud"
@@ -194,5 +203,21 @@
         android:name="com.example.sportine.ui.entrenadores.estadisticas.EstadisticasEntrenadorFragment"
         android:label="Estadísticas"
         tools:layout="@layout/fragment_entrenador_estadisticas" />
+
+    <!-- Change android:argType to app:argType below -->
+    <fragment
+        android:id="@+id/healthConnectFragment"
+        android:name="com.example.sportine.ui.usuarios.healthconnect.HealthConnectFragment"
+        android:label="Health Connect"
+        tools:layout="@layout/fragment_health_connect">
+        <argument
+            android:name="id_entrenamiento"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="nombre_entrenamiento"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
 
 </navigation>

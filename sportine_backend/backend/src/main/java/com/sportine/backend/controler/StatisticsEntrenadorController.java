@@ -8,6 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import com.sportine.backend.dto.CarreraDeporteDTO;
+import com.sportine.backend.dto.DeporteAlumnoDTO;
+import com.sportine.backend.dto.HistorialEntrenamientoDTO;
+import com.sportine.backend.dto.MetricasUltimosDTO;
 
 import java.util.List;
 
@@ -194,6 +198,125 @@ public class StatisticsEntrenadorController {
 
         } catch (RuntimeException e) {
             log.error("Error al obtener feedback: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error inesperado: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Error interno del servidor"));
+        }
+    }
+    /**
+     * Deportes que el entrenador imparte a un alumno específico.
+     * Filtra por Entrenador_Alumno para que el entrenador solo vea
+     * los deportes que él le da a ese alumno.
+     *
+     * GET /api/entrenador/estadisticas/alumno/{usuarioAlumno}/deportes
+     */
+    @GetMapping("/alumno/{usuarioAlumno}/deportes")
+    public ResponseEntity<?> obtenerDeportesParaAlumno(
+            Authentication authentication,
+            @PathVariable String usuarioAlumno) {
+        try {
+            String usuarioEntrenador = authentication.getName();
+            log.info("GET /alumno/{}/deportes - Entrenador: {}", usuarioAlumno, usuarioEntrenador);
+
+            List<DeporteAlumnoDTO> deportes = statisticsEntrenadorService
+                    .obtenerDeportesEntrenadorParaAlumno(usuarioEntrenador, usuarioAlumno);
+
+            return ResponseEntity.ok(deportes);
+        } catch (RuntimeException e) {
+            log.error("Error al obtener deportes para alumno: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error inesperado: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Error interno del servidor"));
+        }
+    }
+
+    /**
+     * Carrera (3 cards) de un alumno en un deporte específico.
+     * El entrenador solo puede ver deportes que él imparte.
+     *
+     * GET /api/entrenador/estadisticas/alumno/{usuarioAlumno}/carrera/{idDeporte}
+     */
+    @GetMapping("/alumno/{usuarioAlumno}/carrera/{idDeporte}")
+    public ResponseEntity<?> obtenerCarreraAlumno(
+            Authentication authentication,
+            @PathVariable String usuarioAlumno,
+            @PathVariable Integer idDeporte) {
+        try {
+            String usuarioEntrenador = authentication.getName();
+            log.info("GET /alumno/{}/carrera/{} - Entrenador: {}", usuarioAlumno, idDeporte, usuarioEntrenador);
+
+            CarreraDeporteDTO carrera = statisticsEntrenadorService
+                    .obtenerCarreraAlumno(usuarioEntrenador, usuarioAlumno, idDeporte);
+
+            return ResponseEntity.ok(carrera);
+        } catch (RuntimeException e) {
+            log.error("Error al obtener carrera alumno: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error inesperado: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Error interno del servidor"));
+        }
+    }
+
+    /**
+     * Métricas (gráficas) de un alumno en un deporte específico.
+     *
+     * GET /api/entrenador/estadisticas/alumno/{usuarioAlumno}/metricas?idDeporte=&limite=
+     */
+    @GetMapping("/alumno/{usuarioAlumno}/metricas")
+    public ResponseEntity<?> obtenerMetricasAlumno(
+            Authentication authentication,
+            @PathVariable String usuarioAlumno,
+            @RequestParam Integer idDeporte,
+            @RequestParam(defaultValue = "5") int limite) {
+        try {
+            String usuarioEntrenador = authentication.getName();
+            log.info("GET /alumno/{}/metricas?idDeporte={} - Entrenador: {}", usuarioAlumno, idDeporte, usuarioEntrenador);
+
+            MetricasUltimosDTO metricas = statisticsEntrenadorService
+                    .obtenerMetricasAlumno(usuarioEntrenador, usuarioAlumno, idDeporte, limite);
+
+            return ResponseEntity.ok(metricas);
+        } catch (RuntimeException e) {
+            log.error("Error al obtener métricas alumno: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error inesperado: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Error interno del servidor"));
+        }
+    }
+
+    /**
+     * Historial de últimos entrenamientos de un alumno en un deporte.
+     *
+     * GET /api/entrenador/estadisticas/alumno/{usuarioAlumno}/historial/{idDeporte}?limite=5
+     */
+    @GetMapping("/alumno/{usuarioAlumno}/historial/{idDeporte}")
+    public ResponseEntity<?> obtenerHistorialAlumno(
+            Authentication authentication,
+            @PathVariable String usuarioAlumno,
+            @PathVariable Integer idDeporte,
+            @RequestParam(defaultValue = "5") int limite) {
+        try {
+            String usuarioEntrenador = authentication.getName();
+            log.info("GET /alumno/{}/historial/{} - Entrenador: {}", usuarioAlumno, idDeporte, usuarioEntrenador);
+
+            List<HistorialEntrenamientoDTO> historial = statisticsEntrenadorService
+                    .obtenerHistorialAlumno(usuarioEntrenador, usuarioAlumno, idDeporte, limite);
+
+            return ResponseEntity.ok(historial);
+        } catch (RuntimeException e) {
+            log.error("Error al obtener historial alumno: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {

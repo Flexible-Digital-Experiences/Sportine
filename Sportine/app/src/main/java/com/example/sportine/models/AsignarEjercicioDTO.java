@@ -1,36 +1,40 @@
 package com.example.sportine.models;
 
+import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class AsignarEjercicioDTO implements Serializable {
 
-    // Identificadores
     private Integer idAsignado;
     private Integer idEntrenamiento;
-
-    // Info Principal
     private String nombreEjercicio;
 
-    // Métricas de Fuerza (Gym)
+    // Métricas de Fuerza
     private Integer series;
     private Integer repeticiones;
-    private Float peso; // Backend usa Float, mejor coincidir
+    private Float peso;
 
-    // Métricas de Cardio (Running/Bici)
-    private Float distancia; // Backend usa Float
-    private Integer duracion; // minutos
+    // Métricas de Cardio
+    private Float distancia;
+    private Integer duracion;
 
-    // Estado y Notas
-    private String statusEjercicio; // "pendiente", "completado"
+    /**
+     * TRUE = el alumno debe reportar exitosos por serie
+     * (goles, tiros anotados, jabs conectados, regates exitosos, etc.)
+     * FALSE = no aplica (gym, cardio puro)
+     * Lo define el entrenador al crear el ejercicio.
+     */
+    @SerializedName("tiene_exitosos")
+    private boolean tieneExitosos = false;
+
+    // Estado
+    private String statusEjercicio;
     private boolean completado;
     private String notas;
 
-    // Constructor vacío (necesario para Gson/Retrofit)
     public AsignarEjercicioDTO() {}
 
-    // ==========================
-    // GETTERS Y SETTERS
-    // ==========================
+    // ── Getters y Setters ─────────────────────────────────────────────────────
 
     public Integer getIdAsignado() { return idAsignado; }
     public void setIdAsignado(Integer idAsignado) { this.idAsignado = idAsignado; }
@@ -56,6 +60,9 @@ public class AsignarEjercicioDTO implements Serializable {
     public Integer getDuracion() { return duracion; }
     public void setDuracion(Integer duracion) { this.duracion = duracion; }
 
+    public boolean isTieneExitosos() { return tieneExitosos; }
+    public void setTieneExitosos(boolean tieneExitosos) { this.tieneExitosos = tieneExitosos; }
+
     public String getStatusEjercicio() { return statusEjercicio; }
     public void setStatusEjercicio(String statusEjercicio) { this.statusEjercicio = statusEjercicio; }
 
@@ -65,7 +72,6 @@ public class AsignarEjercicioDTO implements Serializable {
     public String getNotas() { return notas; }
     public void setNotas(String notas) { this.notas = notas; }
 
-    // Helper visual para saber si es cardio (útil para el Adapter)
     public boolean esCardio() {
         return (distancia != null && distancia > 0) || (duracion != null && duracion > 0);
     }

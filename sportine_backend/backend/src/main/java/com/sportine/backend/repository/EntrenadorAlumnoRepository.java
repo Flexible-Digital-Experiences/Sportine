@@ -191,4 +191,11 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
             @Param("idDeporte") Integer idDeporte,
             @Param("nuevoEstado") String nuevoEstado
     );
+
+    List<EntrenadorAlumno> findByUsuarioEntrenadorAndUsuarioAlumnoAndStatusRelacion(
+            String usuarioEntrenador, String usuarioAlumno, String statusRelacion);
+
+    boolean existsByUsuarioEntrenadorAndUsuarioAlumnoAndIdDeporteAndStatusRelacion(
+            String usuarioEntrenador, String usuarioAlumno,
+            Integer idDeporte, String statusRelacion);
 }
