@@ -98,11 +98,9 @@ async function _cargarHome() {
 window._cargarHome = _cargarHome;
 
 function _renderHome(data) {
-  // Saludo desde el backend
   var greetingSub = document.getElementById('greeting-sub');
   if (greetingSub) greetingSub.textContent = getGreeting();
 
-  // Mensaje dinámico en el contador
   var lista   = data.alumnos || [];
   var countEl = document.getElementById('alumnos-count');
   if (countEl) {
@@ -110,14 +108,12 @@ function _renderHome(data) {
     countEl.textContent = lista.length + ' alumnos · ' + activos + ' activos';
   }
 
-  // Renderizar lista
   var container = document.getElementById('lista-alumnos');
   if (!container) return;
 
   if (lista.length === 0) {
     _renderEstadoVacio(container);
   } else {
-    // Guardar en variable global para que el modal de asignar pueda usarla
     window._alumnosData = lista;
     renderAlumnos(lista);
   }
@@ -181,10 +177,6 @@ function _mostrarErrorGeneral(mensaje) {
 }
 
 // ── Render lista de alumnos ───────────────────────────────────
-// Preserva exactamente la estructura CSS del hardcodeado:
-// .alumno-card, .ac-avatar-wrap, .ac-avatar, .ac-online-dot,
-// .ac-info, .ac-name, .ac-deporte, .ac-metrics, .ac-metric,
-// .ac-right, .ac-activity, .ac-indicator
 
 function renderAlumnos(lista) {
   var container = document.getElementById('lista-alumnos');
@@ -220,7 +212,6 @@ function renderAlumnos(lista) {
       + '</div>';
   }).join('');
 
-  // Click → abrir modal con datos de ese alumno
   container.querySelectorAll('.alumno-card').forEach(function(card) {
     card.addEventListener('click', function() {
       var idx    = parseInt(card.dataset.index);
@@ -231,8 +222,6 @@ function renderAlumnos(lista) {
 }
 
 // ── Modal detalle alumno ──────────────────────────────────────
-// Preserva la misma estructura del hardcodeado (mae-sheet)
-// pero adaptada a los campos de AlumnoProgresoDTO
 
 function _buildModal() {
   if (document.getElementById('modal-alumno-entre')) return;
@@ -265,7 +254,6 @@ function _closeMae() {
   setTimeout(function() { m.style.display = 'none'; }, 300);
 }
 
-// Exponer para que el botón "Asignar" del modal pueda llamarlo
 window.closeMae = _closeMae;
 
 function _abrirModalAlumno(alumno, idx) {
@@ -278,7 +266,6 @@ function _abrirModalAlumno(alumno, idx) {
 
   document.getElementById('mae-titulo').textContent = alumno.nombre + ' ' + (alumno.apellidos || '');
   document.getElementById('mae-body').innerHTML = [
-    // Info alumno
     '<div style="display:flex;align-items:center;gap:12px;padding:14px;background:#F9FAFB;border-radius:14px;margin-bottom:20px">',
     '<div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,' + color + ',' + color + '99);'
     +   'display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:700;color:#fff;font-size:1rem">'
@@ -289,7 +276,6 @@ function _abrirModalAlumno(alumno, idx) {
     '</div>',
     '</div>',
 
-    // Métricas de la semana
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">',
     '<div style="background:#f0fdf4;border-radius:12px;padding:14px;text-align:center">',
     '  <div style="font-family:Sora,sans-serif;font-weight:800;font-size:1.4rem;color:#16a34a">' + completados + '</div>',
@@ -301,7 +287,6 @@ function _abrirModalAlumno(alumno, idx) {
     '</div>',
     '</div>',
 
-    // Última actividad descriptiva
     alumno.descripcionActividad
       ? '<div style="padding:12px 14px;background:#F9FAFB;border-radius:12px;margin-bottom:20px;'
         +   'font-size:0.85rem;color:#374151;border-left:3px solid #1ea1db">'
@@ -309,7 +294,6 @@ function _abrirModalAlumno(alumno, idx) {
         + '</div>'
       : '',
 
-    // Botón asignar entrenamiento
     '<button onclick="window.openAsignar(\'' + (alumno.usuario || '') + '\')" style="width:100%;height:50px;background:#1ea1db;color:#fff;border:none;'
     +   'border-radius:14px;font-family:\'DM Sans\',sans-serif;font-weight:700;font-size:0.95rem;'
     +   'cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;'
@@ -327,22 +311,19 @@ function _abrirModalAlumno(alumno, idx) {
 }
 
 // ── Modal Asignar Entrenamiento ───────────────────────────────
-// Preservado exactamente del hardcodeado, solo cambia que
-// recibe usuarioAlumno (string) en lugar de id (number)
 
 var _ejCount = 0;
 
 window.openAsignar = function(usuarioAlumno) {
   _ejCount = 0;
 
-  // Buscar datos del alumno para mostrar en el header
   var alumno = (window._alumnosData || []).find(function(a) {
     return a.usuario === usuarioAlumno;
   });
   var idx       = alumno ? (window._alumnosData || []).indexOf(alumno) : 0;
   var color     = AVATAR_COLORS[idx % AVATAR_COLORS.length];
   var iniciales = alumno ? _iniciales(alumno.nombre, alumno.apellidos) : '?';
-  var nombreAlumno = alumno ? (alumno.nombre + ' ' + (alumno.apellidos || '')).trim() : usuarioAlumno;
+  var nombreAlumno  = alumno ? (alumno.nombre + ' ' + (alumno.apellidos || '')).trim() : usuarioAlumno;
   var deporteAlumno = alumno ? (_emojiDeporte(alumno.deporte) + ' ' + (alumno.deporte || '')) : '';
 
   document.getElementById('mae-titulo').textContent = 'Asignar Entrenamiento';
@@ -381,22 +362,20 @@ window.openAsignar = function(usuarioAlumno) {
     '<button type="button" id="btn-cancelar-asignacion" style="width:100%;height:40px;background:none;border:none;color:#9CA3AF;font-family:\'DM Sans\',sans-serif;cursor:pointer;margin-top:6px">Cancelar</button>',
   ].join('');
 
-  // Wire botones después de inyectar HTML
   document.getElementById('btn-add-ej').addEventListener('click', window.agregarEjercicio);
   document.getElementById('btn-guardar-asignacion').addEventListener('click', function() {
     guardarAsignacion(usuarioAlumno);
   });
   document.getElementById('btn-cancelar-asignacion').addEventListener('click', function() {
-    // Volver al detalle del alumno si existe
     if (alumno) _abrirModalAlumno(alumno, idx);
     else _closeMae();
   });
 
-  // Iniciar con un ejercicio vacío
   window.agregarEjercicio();
 };
 
-// ── Agregar ejercicio (preservado del hardcodeado) ────────────
+// ── Agregar ejercicio ─────────────────────────────────────────
+// ✅ CAMBIO: se agrega el toggle "Requiere exitosos" en el bloque de repeticiones
 
 window.agregarEjercicio = function() {
   var lista = document.getElementById('as-ejercicios-lista');
@@ -435,17 +414,34 @@ window.agregarEjercicio = function() {
     '  <input id="ej-nombre-' + idx + '" type="text" placeholder="Ej: Press de banca" style="width:100%;border:1.5px solid #E5E7EB;border-radius:12px;padding:11px 14px;font-family:sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box;color:#1A1A1A">',
     '</div>',
 
+    // ── Bloque repeticiones (con switch tieneExitosos al final) ──
     '<div id="ej-container-reps-' + idx + '">',
     '  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">',
-    ejMiniInput('Series',   'ej-series-'   + idx, 'number', '3',  '×'),
-    ejMiniInput('Reps',     'ej-reps-'     + idx, 'number', '12', null),
+    ejMiniInput('Series',   'ej-series-' + idx, 'number', '3',  '×'),
+    ejMiniInput('Reps',     'ej-reps-'   + idx, 'number', '12', null),
     '  </div>',
-    '  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">',
+    '  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">',
     ejMiniInput('Peso (kg)',      'ej-peso-'     + idx, 'number', 'Opcional', 'kg'),
     ejMiniInput('Duración (min)', 'ej-duracion-' + idx, 'number', 'Opcional', 'min'),
     '  </div>',
+    // ✅ NUEVO: toggle "Requiere reportar repeticiones exitosas"
+    '  <div style="display:flex;align-items:center;justify-content:space-between;'
+    +    'background:#f9fafb;border:1.5px solid #E5E7EB;border-radius:12px;padding:12px 14px;">',
+    '    <div>',
+    '      <div style="font-size:0.82rem;font-weight:700;color:#1A1A1A">Requiere repeticiones exitosas</div>',
+    '      <div style="font-size:0.72rem;color:#9CA3AF;margin-top:2px">El alumno reportará cuántas reps salieron bien</div>',
+    '    </div>',
+    '    <div id="ej-exitosos-' + idx + '" data-checked="false" onclick="window._toggleExitosos(' + idx + ')" style="'
+    +      'position:relative;width:44px;height:24px;flex-shrink:0;margin-left:12px;'
+    +      'background:#E5E7EB;border-radius:24px;transition:background 0.2s;cursor:pointer;">',
+    '      <span id="ej-exitosos-thumb-' + idx + '" style="'
+    +        'position:absolute;top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;'
+    +        'transition:left 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2)"></span>',
+    '    </div>',
+    '  </div>',
     '</div>',
 
+    // ── Bloque cardio ─────────────────────────────────────────
     '<div id="ej-container-cardio-' + idx + '" style="display:none">',
     '  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">',
     ejMiniInput('Distancia (m)', 'ej-distancia-' + idx, 'number', '500', 'm'),
@@ -457,13 +453,34 @@ window.agregarEjercicio = function() {
   lista.appendChild(div);
 };
 
+// ✅ Toggle switch sin checkbox nativo — estado en data-checked del div
+window._toggleExitosos = function(idx) {
+  var track = document.getElementById('ej-exitosos-' + idx);
+  var thumb = document.getElementById('ej-exitosos-thumb-' + idx);
+  if (!track || !thumb) return;
+  var nuevoValor = track.dataset.checked !== 'true';
+  track.dataset.checked  = String(nuevoValor);
+  track.setAttribute('data-checked', String(nuevoValor)); // doble escritura por si dataset falla
+  track.style.background = nuevoValor ? '#1ea1db' : '#E5E7EB';
+  thumb.style.left       = nuevoValor ? '22px'   : '2px';
+  console.log('[exitosos ' + idx + '] data-checked ahora =', track.getAttribute('data-checked'));
+};
+
 window.onTipoMedidaChange = function(idx) {
-  var sel    = document.getElementById('ej-tipo-'            + idx);
-  var reps   = document.getElementById('ej-container-reps-'  + idx);
+  var sel    = document.getElementById('ej-tipo-'             + idx);
+  var reps   = document.getElementById('ej-container-reps-'   + idx);
   var cardio = document.getElementById('ej-container-cardio-' + idx);
   if (!sel || !reps || !cardio) return;
-  reps.style.display   = sel.value === 'reps' ? '' : 'none';
-  cardio.style.display = sel.value === 'reps' ? 'none' : '';
+  var esReps = sel.value === 'reps';
+  reps.style.display   = esReps ? '' : 'none';
+  cardio.style.display = esReps ? 'none' : '';
+  // Resetear el switch si cambia a cardio
+  if (!esReps) {
+    var track = document.getElementById('ej-exitosos-' + idx);
+    var thumb = document.getElementById('ej-exitosos-thumb-' + idx);
+    if (track) { track.dataset.checked = 'false'; track.style.background = '#E5E7EB'; }
+    if (thumb) thumb.style.left = '2px';
+  }
 };
 
 window.eliminarEjercicio = function(idx) {
@@ -482,6 +499,7 @@ function ejMiniInput(label, id, type, placeholder, suffix) {
 }
 
 // ── Guardar asignación → backend ──────────────────────────────
+// ✅ CAMBIO: leer tieneExitosos del checkbox de cada ejercicio de tipo reps
 
 async function guardarAsignacion(usuarioAlumno) {
   var titulo   = (document.getElementById('as-titulo')   || {}).value?.trim();
@@ -489,13 +507,11 @@ async function guardarAsignacion(usuarioAlumno) {
   var fecha    = (document.getElementById('as-fecha')    || {}).value;
   var hora     = (document.getElementById('as-hora')     || {}).value;
 
-  // Validaciones antes de llegar al backend
   if (!titulo)   { _mostrarToast('El título es obligatorio', 'warning'); return; }
   if (!objetivo) { _mostrarToast('El objetivo es obligatorio', 'warning'); return; }
   if (!fecha)    { _mostrarToast('La fecha es obligatoria', 'warning'); return; }
   if (!hora)     { _mostrarToast('La hora es obligatoria', 'warning'); return; }
 
-  // Recolectar ejercicios
   var ejercicios = [];
   for (var i = 0; i < _ejCount; i++) {
     var nombreEl = document.getElementById('ej-nombre-' + i);
@@ -508,19 +524,25 @@ async function guardarAsignacion(usuarioAlumno) {
     var ej = { nombreEjercicio: nombre };
 
     if (tipo === 'reps') {
-      var sEl = document.getElementById('ej-series-'   + i);
-      var rEl = document.getElementById('ej-reps-'     + i);
-      var pEl = document.getElementById('ej-peso-'     + i);
-      var dEl = document.getElementById('ej-duracion-' + i);
-      if (sEl && sEl.value) ej.series       = parseInt(sEl.value);
-      if (rEl && rEl.value) ej.repeticiones = parseInt(rEl.value);
-      if (pEl && pEl.value) ej.peso         = parseFloat(pEl.value);  // Float
-      if (dEl && dEl.value) ej.duracion     = parseInt(dEl.value);    // Integer
+      var sEl   = document.getElementById('ej-series-'   + i);
+      var rEl   = document.getElementById('ej-reps-'     + i);
+      var pEl   = document.getElementById('ej-peso-'     + i);
+      var dEl   = document.getElementById('ej-duracion-' + i);
+      var exEl  = document.getElementById('ej-exitosos-' + i);
+      console.log('[guardar ej ' + i + '] exEl =', exEl, '| data-checked =', exEl ? exEl.getAttribute('data-checked') : 'NO ENCONTRADO');
+
+      if (sEl  && sEl.value)  ej.series       = parseInt(sEl.value);
+      if (rEl  && rEl.value)  ej.repeticiones = parseInt(rEl.value);
+      if (pEl  && pEl.value)  ej.peso         = parseFloat(pEl.value);
+      if (dEl  && dEl.value)  ej.duracion     = parseInt(dEl.value);
+      ej.tiene_exitosos = exEl ? (exEl.dataset.checked === 'true' || exEl.getAttribute('data-checked') === 'true') : false;
+      delete ej.tieneExitosos;
     } else {
       var distEl   = document.getElementById('ej-distancia-' + i);
       var tiempoEl = document.getElementById('ej-tiempo-'    + i);
-      if (distEl   && distEl.value)   ej.distancia = parseFloat(distEl.value);  // Float
-      if (tiempoEl && tiempoEl.value) ej.duracion  = parseInt(tiempoEl.value);  // Integer
+      if (distEl   && distEl.value)   ej.distancia = parseFloat(distEl.value);
+      if (tiempoEl && tiempoEl.value) ej.duracion  = parseInt(tiempoEl.value);
+      ej.tiene_exitosos = false; // Cardio nunca tiene exitosos
     }
     ejercicios.push(ej);
   }
@@ -530,19 +552,22 @@ async function guardarAsignacion(usuarioAlumno) {
     return;
   }
 
+  var payload = {
+      usuarioAlumno:       usuarioAlumno,
+      tituloEntrenamiento: titulo,
+      objetivo:            objetivo,
+      fechaEntrenamiento:  fecha,
+      horaEntrenamiento:   hora + ':00',
+      dificultad:          (document.getElementById('as-dificultad') || {}).value || 'Medio',
+      ejercicios:          ejercicios,
+    };
+  console.log('[guardar] payload completo =', JSON.stringify(payload, null, 2));
+
   var btn = document.getElementById('btn-guardar-asignacion');
   if (btn) { btn.disabled = true; btn.textContent = 'Guardando...'; }
 
   try {
-    await Api.crearEntrenamientoEntrenador({
-      usuarioAlumno:       usuarioAlumno,
-      tituloEntrenamiento: titulo,          // ← nombre exacto del DTO
-      objetivo:            objetivo,
-      fechaEntrenamiento:  fecha,           // "2025-03-15" → LocalDate
-      horaEntrenamiento:   hora + ':00',    // "10:00" → "10:00:00" → LocalTime
-      dificultad:          (document.getElementById('as-dificultad') || {}).value || 'Medio',
-      ejercicios:          ejercicios,
-    });
+    await Api.crearEntrenamientoEntrenador(payload);
 
     _mostrarToast('✅ Entrenamiento asignado correctamente', 'success');
     _closeMae();
@@ -601,7 +626,6 @@ function _esc(str) {
     .replace(/"/g, '&quot;');
 }
 
-
 // ── Panel de feedback ─────────────────────────────────────────
 
 function _buildFeedbackPanel() {
@@ -647,7 +671,6 @@ async function _abrirFeedbackPanel() {
   var sheet = document.getElementById('panel-feedback-sheet');
   var body  = document.getElementById('panel-feedback-body');
 
-  // Mostrar spinner
   body.innerHTML =
     '<div style="text-align:center;padding:48px 24px">'
     + '<div style="width:36px;height:36px;border-radius:50%;border:3px solid #e5e7eb;'
@@ -661,7 +684,6 @@ async function _abrirFeedbackPanel() {
   try {
     var lista = await Api.obtenerFeedbackEntrenador();
     _renderFeedback(lista, body);
-    // Ocultar badge al abrir
     var badge = document.getElementById('feedback-badge');
     if (badge) badge.style.display = 'none';
     var badgeDesktop = document.getElementById('feedback-badge-desktop');
@@ -691,56 +713,28 @@ function _renderFeedback(lista, container) {
   }
 
   container.innerHTML = lista.map(function(f) {
-    var fechaTexto = _formatFeedbackFecha(f.fecha);
-
-    // Barra de cansancio
-    var barCansancio = _feedbackBar(f.nivelCansancio, 10, '#1ea1db');
-    // Barra de dificultad
+    var fechaTexto    = _formatFeedbackFecha(f.fecha);
+    var barCansancio  = _feedbackBar(f.nivelCansancio, 10, '#1ea1db');
     var barDificultad = _feedbackBar(f.dificultad, 10, '#f59e0b');
 
     return '<div style="background:#F9FAFB;border-radius:16px;padding:16px;margin-bottom:12px;border-left:4px solid #1ea1db">'
-
-      // Header: alumno + entrenamiento + fecha
       + '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">'
       +   '<div>'
-      +     '<div style="font-family:Sora,sans-serif;font-weight:700;font-size:0.92rem;color:#1A1A1A">'
-      +       _esc(f.nombreAlumno || '')
-      +     '</div>'
-      +     '<div style="font-size:0.78rem;color:#6B7280;margin-top:2px">'
-      +       '💪 ' + _esc(f.tituloEntrenamiento || '')
-      +     '</div>'
+      +     '<div style="font-family:Sora,sans-serif;font-weight:700;font-size:0.92rem;color:#1A1A1A">' + _esc(f.nombreAlumno || '') + '</div>'
+      +     '<div style="font-size:0.78rem;color:#6B7280;margin-top:2px">💪 ' + _esc(f.tituloEntrenamiento || '') + '</div>'
       +   '</div>'
       +   '<span style="font-size:0.72rem;color:#9CA3AF;white-space:nowrap;margin-left:8px">' + fechaTexto + '</span>'
       + '</div>'
-
-      // Métricas
       + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'
-      +   '<div>'
-      +     '<div style="font-size:0.72rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;margin-bottom:4px">Cansancio</div>'
-      +     barCansancio
-      +   '</div>'
-      +   '<div>'
-      +     '<div style="font-size:0.72rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;margin-bottom:4px">Dificultad percibida</div>'
-      +     barDificultad
-      +   '</div>'
+      +   '<div><div style="font-size:0.72rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;margin-bottom:4px">Cansancio</div>' + barCansancio + '</div>'
+      +   '<div><div style="font-size:0.72rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;margin-bottom:4px">Dificultad percibida</div>' + barDificultad + '</div>'
       + '</div>'
-
-      // Estado de ánimo
       + (f.estadoAnimo
-        ? '<div style="margin-bottom:10px">'
-          +   '<span style="background:#eff6ff;color:#1d4ed8;border-radius:20px;padding:3px 10px;font-size:0.75rem;font-weight:700">'
-          +     '😊 ' + _esc(f.estadoAnimo)
-          +   '</span>'
-          + '</div>'
-        : '')
-
-      // Comentarios
+          ? '<div style="margin-bottom:10px"><span style="background:#eff6ff;color:#1d4ed8;border-radius:20px;padding:3px 10px;font-size:0.75rem;font-weight:700">😊 ' + _esc(f.estadoAnimo) + '</span></div>'
+          : '')
       + (f.comentarios
-        ? '<div style="background:#fff;border-radius:10px;padding:10px 12px;font-size:0.83rem;color:#374151;line-height:1.5;border:1px solid #E5E7EB">'
-          +   '💬 ' + _esc(f.comentarios)
-          + '</div>'
-        : '')
-
+          ? '<div style="background:#fff;border-radius:10px;padding:10px 12px;font-size:0.83rem;color:#374151;line-height:1.5;border:1px solid #E5E7EB">💬 ' + _esc(f.comentarios) + '</div>'
+          : '')
       + '</div>';
   }).join('');
 }
@@ -760,7 +754,7 @@ function _formatFeedbackFecha(fechaISO) {
   var fecha = new Date(fechaISO);
   var ahora = new Date();
   var diff  = Math.floor((ahora - fecha) / (1000 * 60));
-  if (diff < 60)  return 'Hace ' + diff + ' min';
+  if (diff < 60)   return 'Hace ' + diff + ' min';
   if (diff < 1440) return 'Hace ' + Math.floor(diff / 60) + ' h';
   return fecha.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
 }
@@ -768,36 +762,24 @@ function _formatFeedbackFecha(fechaISO) {
 // ── Init ──────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', function() {
-  // 1. Verificar sesión
   if (!Session.estaLogueado()) {
     window.location.href = '../../pages/auth/login.html';
     return;
   }
 
-  // 2. Fecha y saludo estático
   document.getElementById('greeting-sub').textContent  = getGreeting();
   document.getElementById('greeting-date').textContent = formatDate();
 
-  // 3. Datos del usuario en topbar/sidebar
   _renderTopbar();
-
-  // 4. Construir modal
   _buildModal();
-
-  // 5. Cargar datos del backend
   _cargarHome();
 
-  // Campanita de feedback
   _buildFeedbackPanel();
-  // Campanita mobile (topbar)
   var btnBell = document.getElementById('btn-feedback-bell');
   if (btnBell) btnBell.addEventListener('click', _abrirFeedbackPanel);
-
-  // Campanita desktop (greeting section)
   var btnBellDesktop = document.getElementById('btn-feedback-bell-desktop');
   if (btnBellDesktop) btnBellDesktop.addEventListener('click', _abrirFeedbackPanel);
 
-  // Verificar si hay feedback nuevo al cargar (muestra el punto rojo)
   Api.obtenerFeedbackEntrenador().then(function(lista) {
     if (lista && lista.length > 0) {
       var badge = document.getElementById('feedback-badge');
@@ -807,7 +789,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }).catch(function() {});
 
-  // 6. Botón asignar → abre modal con el primer alumno disponible
   var btnAsignar = document.getElementById('btn-asignar');
   if (btnAsignar) {
     btnAsignar.addEventListener('click', function() {
@@ -816,7 +797,6 @@ document.addEventListener('DOMContentLoaded', function() {
         _mostrarToast('No tienes alumnos asignados aún', 'warning');
         return;
       }
-      // Abrir modal del primer alumno activo, o el primero de la lista
       var alumno = lista.find(function(a) { return a.activo; }) || lista[0];
       var idx    = lista.indexOf(alumno);
       _abrirModalAlumno(alumno, idx);
@@ -824,7 +804,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // 7. Sidebar mobile
   document.getElementById('topbar-menu').addEventListener('click', function() {
     document.getElementById('sidebar').classList.add('open');
     document.getElementById('sidebar-overlay').classList.add('visible');
@@ -836,7 +815,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.style.overflow = '';
   });
 
-  // 8. Nav lateral
   document.querySelectorAll('[data-section]').forEach(function(el) {
     el.addEventListener('click', function(e) {
       var sec = el.dataset.section;
@@ -849,7 +827,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // 9. Logout
   document.getElementById('btn-logout').addEventListener('click', function() {
     Session.cerrar();
     window.location.href = '../../pages/auth/login.html';
