@@ -131,5 +131,36 @@
                 tools:text="20kg"/>
         </LinearLayout>
 
+        <!-- Status del ejercicio (se muestra si ya tiene resultados) -->
+        <TextView
+            android:id="@+id/tv_status_ejercicio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/layout_metricas"
+            app:layout_constraintStart_toStartOf="@id/text_nombre_ejercicio"
+            tools:text="✅ Completado"
+            tools:visibility="visible" />
+
+        <!-- Botón llenar resultados -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_llenar_resultados"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginTop="10dp"
+            android:text="Llenar resultados"
+            android:textSize="12sp"
+            android:paddingHorizontal="12dp"
+            app:cornerRadius="18dp"
+            app:strokeColor="@color/colorAccent"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintTop_toBottomOf="@id/tv_status_ejercicio"
+            app:layout_constraintStart_toStartOf="@id/text_nombre_ejercicio"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

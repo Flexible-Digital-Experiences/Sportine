@@ -57,15 +57,41 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <TextView
-                android:id="@+id/text_nombre_ejercicio"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/colorTextPrimary"
-                android:fontFamily="sans-serif-medium"
-                tools:text="Sentadillas con peso" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/text_nombre_ejercicio"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorTextPrimary"
+                    android:fontFamily="sans-serif-medium"
+                    tools:text="Tiros de volea" />
+
+                <!-- Badge "⚽ Exitosos" visible solo si tieneExitosos=true -->
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_tiene_exitosos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="⚽ Éxitos"
+                    android:textSize="10sp"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:visibility="gone"
+                    app:chipBackgroundColor="#E8F5E9"
+                    app:chipStrokeColor="#4CAF50"
+                    app:chipStrokeWidth="1dp"
+                    android:textColor="#2E7D32"
+                    app:chipMinHeight="24dp"
+                    tools:visibility="visible"/>
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/layout_detalles"
@@ -82,14 +108,12 @@
                     android:gravity="center_vertical"
                     android:visibility="gone"
                     tools:visibility="visible">
-
                     <ImageView
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/ic_series"
                         app:tint="@color/colorTextSecondary"
                         android:contentDescription="Series" />
-
                     <TextView
                         android:id="@+id/text_series"
                         android:layout_width="wrap_content"
@@ -109,14 +133,12 @@
                     android:layout_marginStart="@dimen/spacing_medium"
                     android:visibility="gone"
                     tools:visibility="visible">
-
                     <ImageView
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/ic_repeticiones"
                         app:tint="@color/colorTextSecondary"
                         android:contentDescription="Repeticiones" />
-
                     <TextView
                         android:id="@+id/text_repeticiones"
                         android:layout_width="wrap_content"
@@ -141,16 +163,13 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:visibility="gone"
-                    tools:visibility="visible">
-
+                    android:visibility="gone">
                     <ImageView
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/ic_peso"
                         app:tint="@color/colorTextSecondary"
                         android:contentDescription="Peso" />
-
                     <TextView
                         android:id="@+id/text_peso"
                         android:layout_width="wrap_content"
@@ -168,16 +187,13 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:layout_marginStart="@dimen/spacing_medium"
-                    android:visibility="gone"
-                    tools:visibility="visible">
-
+                    android:visibility="gone">
                     <ImageView
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/ic_duracion"
                         app:tint="@color/colorTextSecondary"
                         android:contentDescription="Duración" />
-
                     <TextView
                         android:id="@+id/text_duracion"
                         android:layout_width="wrap_content"
@@ -195,16 +211,13 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:layout_marginStart="@dimen/spacing_medium"
-                    android:visibility="gone"
-                    tools:visibility="visible">
-
+                    android:visibility="gone">
                     <ImageView
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/ic_distancia"
                         app:tint="@color/colorTextSecondary"
                         android:contentDescription="Distancia" />
-
                     <TextView
                         android:id="@+id/text_distancia"
                         android:layout_width="wrap_content"
@@ -215,7 +228,6 @@
                         tools:text="5 km" />
                 </LinearLayout>
             </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout
@@ -225,15 +237,17 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"> <ImageButton
-            android:id="@+id/btn_editar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_edit"
-            android:contentDescription="Editar ejercicio"
-            app:tint="@color/colorTextSecondary"
-            android:visibility="gone" />
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageButton
+                android:id="@+id/btn_editar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_edit"
+                android:contentDescription="Editar ejercicio"
+                app:tint="@color/colorTextSecondary"
+                android:visibility="gone" />
 
             <ImageButton
                 android:id="@+id/btn_eliminar"

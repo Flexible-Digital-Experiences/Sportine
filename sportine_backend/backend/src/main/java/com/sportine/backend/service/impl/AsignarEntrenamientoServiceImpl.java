@@ -6,17 +6,21 @@ import com.sportine.backend.exception.AccesoNoAutorizadoException;
 import com.sportine.backend.exception.RecursoNoEncontradoException;
 import com.sportine.backend.model.EjerciciosAsignados;
 import com.sportine.backend.model.Entrenamiento;
+import com.sportine.backend.model.ResultadoSeriesEjercicio;
 import com.sportine.backend.model.Usuario;
 import com.sportine.backend.repository.EjerciciosAsignadosRepository;
 import com.sportine.backend.repository.EntrenamientoRepository;
+import com.sportine.backend.repository.ResultadoSeriesEjercicioRepository;
 import com.sportine.backend.repository.UsuarioRepository;
 import com.sportine.backend.service.AsignarEntrenamientoService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AsignarEntrenamientoServiceImpl implements AsignarEntrenamientoService {
@@ -24,61 +28,53 @@ public class AsignarEntrenamientoServiceImpl implements AsignarEntrenamientoServ
     private final EntrenamientoRepository entrenamientoRepository;
     private final EjerciciosAsignadosRepository ejerciciosAsignadosRepository;
     private final UsuarioRepository usuarioRepository;
+    private final ResultadoSeriesEjercicioRepository seriesRepository;
 
     @Override
     @Transactional
     public Integer crearEntrenamiento(CrearEntrenamientoRequestDTO request, String usernameEntrenador) {
-
-        // 1. Validar que el alumno exista
         usuarioRepository.findByUsuario(request.getUsuarioAlumno())
-                .orElseThrow(() -> new RecursoNoEncontradoException("Alumno no encontrado: " + request.getUsuarioAlumno()));
+                .orElseThrow(() -> new RecursoNoEncontradoException(
+                        "Alumno no encontrado: " + request.getUsuarioAlumno()));
 
-        // 2. Crear y Guardar el Entrenamiento (Cabecera)
         Entrenamiento entrenamiento = new Entrenamiento();
         entrenamiento.setUsuario(request.getUsuarioAlumno());
-        entrenamiento.setUsuarioEntrenador(usernameEntrenador); // Usamos el parámetro del método
-
-        // ✅ CORREGIDO: Usamos los getters exactos del DTO (Lombok)
+        entrenamiento.setUsuarioEntrenador(usernameEntrenador);
         entrenamiento.setTituloEntrenamiento(request.getTituloEntrenamiento());
         entrenamiento.setObjetivo(request.getObjetivo());
         entrenamiento.setDificultad(request.getDificultad());
         entrenamiento.setEstadoEntrenamiento(Entrenamiento.EstadoEntrenamiento.pendiente);
-
-        // ✅ CORREGIDO: Asignación directa (ya son LocalDate/Time en el DTO)
         entrenamiento.setFechaEntrenamiento(request.getFechaEntrenamiento());
         entrenamiento.setHoraEntrenamiento(request.getHoraEntrenamiento());
 
-        // Guardamos primero para obtener el ID
         Entrenamiento entrenamientoGuardado = entrenamientoRepository.save(entrenamiento);
-
-        // 3. Guardar los Ejercicios (Lista)
-        guardarEjercicios(request.getEjercicios(), entrenamientoGuardado.getIdEntrenamiento(), request.getUsuarioAlumno());
+        guardarEjercicios(request.getEjercicios(),
+                entrenamientoGuardado.getIdEntrenamiento(),
+                request.getUsuarioAlumno());
 
         return entrenamientoGuardado.getIdEntrenamiento();
     }
 
     @Override
     @Transactional
-    public void actualizarEntrenamiento(Integer idEntrenamiento, CrearEntrenamientoRequestDTO request, String usernameEntrenador) {
-        // 1. Buscar entrenamiento
+    public void actualizarEntrenamiento(Integer idEntrenamiento,
+                                        CrearEntrenamientoRequestDTO request,
+                                        String usernameEntrenador) {
         Entrenamiento entrenamiento = entrenamientoRepository.findById(idEntrenamiento)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Entrenamiento no encontrado"));
 
-        // 2. Validar que pertenezca al entrenador
         if (!entrenamiento.getUsuarioEntrenador().equals(usernameEntrenador)) {
-            throw new AccesoNoAutorizadoException("No tienes permiso para editar este entrenamiento");
+            throw new AccesoNoAutorizadoException(
+                    "No tienes permiso para editar este entrenamiento");
         }
 
-        // 3. Actualizar datos básicos
         entrenamiento.setTituloEntrenamiento(request.getTituloEntrenamiento());
         entrenamiento.setObjetivo(request.getObjetivo());
         entrenamiento.setDificultad(request.getDificultad());
         entrenamiento.setFechaEntrenamiento(request.getFechaEntrenamiento());
         entrenamiento.setHoraEntrenamiento(request.getHoraEntrenamiento());
-
         entrenamientoRepository.save(entrenamiento);
 
-        // 4. Actualizar ejercicios: Borrar anteriores y crear nuevos (Estrategia simple y segura)
         ejerciciosAsignadosRepository.deleteByIdEntrenamiento(idEntrenamiento);
         guardarEjercicios(request.getEjercicios(), idEntrenamiento, entrenamiento.getUsuario());
     }
@@ -86,41 +82,59 @@ public class AsignarEntrenamientoServiceImpl implements AsignarEntrenamientoServ
     @Override
     @Transactional
     public void eliminarEntrenamiento(Integer idEntrenamiento, String usernameEntrenador) {
-        // 1. Buscar entrenamiento
         Entrenamiento entrenamiento = entrenamientoRepository.findById(idEntrenamiento)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Entrenamiento no encontrado"));
 
-        // 2. Validar permisos
         if (!entrenamiento.getUsuarioEntrenador().equals(usernameEntrenador)) {
-            throw new AccesoNoAutorizadoException("No tienes permiso para eliminar este entrenamiento");
+            throw new AccesoNoAutorizadoException(
+                    "No tienes permiso para eliminar este entrenamiento");
         }
 
-        // 3. Eliminar primero los ejercicios (integridad referencial)
         ejerciciosAsignadosRepository.deleteByIdEntrenamiento(idEntrenamiento);
-
-        // 4. Eliminar el entrenamiento
         entrenamientoRepository.delete(entrenamiento);
     }
 
-    // Método auxiliar para no repetir código
-    private void guardarEjercicios(List<AsignarEjercicioDTO> ejercicios, Integer idEntrenamiento, String usuarioAlumno) {
-        if (ejercicios != null && !ejercicios.isEmpty()) {
-            for (AsignarEjercicioDTO dto : ejercicios) {
-                EjerciciosAsignados ejercicio = new EjerciciosAsignados();
+    private void guardarEjercicios(List<AsignarEjercicioDTO> ejercicios,
+                                   Integer idEntrenamiento,
+                                   String usuarioAlumno) {
+        if (ejercicios == null || ejercicios.isEmpty()) return;
 
-                ejercicio.setIdEntrenamiento(idEntrenamiento);
-                ejercicio.setUsuario(usuarioAlumno);
-                ejercicio.setNombreEjercicio(dto.getNombreEjercicio());
-                ejercicio.setStatusEjercicio(EjerciciosAsignados.StatusEjercicio.pendiente);
+        for (AsignarEjercicioDTO dto : ejercicios) {
+            EjerciciosAsignados ejercicio = new EjerciciosAsignados();
+            ejercicio.setIdEntrenamiento(idEntrenamiento);
+            ejercicio.setUsuario(usuarioAlumno);
+            ejercicio.setNombreEjercicio(dto.getNombreEjercicio());
+            ejercicio.setStatusEjercicio(EjerciciosAsignados.StatusEjercicio.pendiente);
+            ejercicio.setSeries(dto.getSeries());
+            ejercicio.setRepeticiones(dto.getRepeticiones());
+            ejercicio.setPeso(dto.getPeso());
+            ejercicio.setDistancia(dto.getDistancia());
+            ejercicio.setDuracion(dto.getDuracion());
+            // ✅ Propagar el flag de exitosos definido por el entrenador
+            ejercicio.setTieneExitosos(
+                    dto.getTieneExitosos() != null && dto.getTieneExitosos());
 
-                // Métricas
-                ejercicio.setSeries(dto.getSeries());
-                ejercicio.setRepeticiones(dto.getRepeticiones());
-                ejercicio.setPeso(dto.getPeso());
-                ejercicio.setDistancia(dto.getDistancia());
-                ejercicio.setDuracion(dto.getDuracion());
+            EjerciciosAsignados guardado = ejerciciosAsignadosRepository.save(ejercicio);
 
-                ejerciciosAsignadosRepository.save(ejercicio);
+            if (dto.getSeries() != null && dto.getSeries() > 0) {
+                for (int numSerie = 1; numSerie <= dto.getSeries(); numSerie++) {
+                    ResultadoSeriesEjercicio serie = new ResultadoSeriesEjercicio();
+                    serie.setIdAsignado(guardado.getIdAsignado());
+                    serie.setNumeroSerie(numSerie);
+                    serie.setRepsEsperadas(dto.getRepeticiones());
+                    serie.setPesoEsperado(dto.getPeso());
+                    if (dto.getDuracion() != null) {
+                        serie.setDuracionEsperadaSeg(dto.getDuracion() * 60);
+                    }
+                    if (dto.getDistancia() != null) {
+                        serie.setDistanciaEsperadaMetros(dto.getDistancia());
+                    }
+                    serie.setStatus(ResultadoSeriesEjercicio.StatusSerie.pendiente);
+                    seriesRepository.save(serie);
+                }
+                log.info("✅ Pre-generadas {} series para ejercicio '{}' (exitosos: {})",
+                        dto.getSeries(), dto.getNombreEjercicio(),
+                        ejercicio.getTieneExitosos());
             }
         }
     }

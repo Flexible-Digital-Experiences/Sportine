@@ -80,6 +80,7 @@ public class DetalleEntrenamientoServiceImpl implements DetalleEntrenamientoServ
         dto.setEspecialidadEntrenador("Entrenador de " + nombreDeporte);
         dto.setFotoEntrenador(infoEntrenador.getFotoPerfil());
         dto.setDeporteIcono(nombreDeporte);
+        dto.setIdDeporte(entrenamiento.getIdDeporte());
 
         // 7. Mapear Ejercicios
         List<AsignarEjercicioDTO> ejerciciosDTO = ejerciciosEntities.stream()
@@ -136,6 +137,7 @@ public class DetalleEntrenamientoServiceImpl implements DetalleEntrenamientoServ
         dto.setRepeticiones(e.getRepeticiones());
         dto.setPeso(e.getPeso());
         dto.setDistancia(e.getDistancia());
+        dto.setTieneExitosos(e.getTieneExitosos());
 
         // Duración
         if(e.getDuracion() != null) {

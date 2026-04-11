@@ -5,22 +5,29 @@ import com.example.sportine.models.AlumnoDetalleEntrenadorDTO;
 import com.example.sportine.models.AlumnoEntrenadorDTO;
 import com.example.sportine.models.CalificacionRequestDTO;
 import com.example.sportine.models.CalificacionResponseDTO;
+import com.example.sportine.models.CarreraDeporteDTO;
 import com.example.sportine.models.Comentario;
 import com.example.sportine.models.CompletarEntrenamientoRequestDTO;
+import com.example.sportine.models.DeporteAlumnoDTO;
 import com.example.sportine.models.DetalleEntrenamientoDTO;
 import com.example.sportine.models.DetalleEstadisticasAlumnoDTO;
 import com.example.sportine.models.EntrenadorCardDTO;
 import com.example.sportine.models.FeedbackPromedioDTO;
 import com.example.sportine.models.FormularioSolicitudDTO;
+import com.example.sportine.models.HistorialEntrenamientoDTO;
 import com.example.sportine.models.HomeAlumnoDTO;
 import com.example.sportine.models.HomeEntrenadorDTO;
 import com.example.sportine.models.InfoDeporteAlumnoDTO;
+import com.example.sportine.models.LogroDTO;
+import com.example.sportine.models.MetricasUltimosDTO;
 import com.example.sportine.models.MisAlumnosResponseDTO;
 import com.example.sportine.models.PerfilEntrenadorDTO;
+import com.example.sportine.models.PlantillaMetricaDTO;
 import com.example.sportine.models.Publicacion;
 import com.example.sportine.models.RespuestaRegistro;
 import com.example.sportine.models.RespuestaSolicitudRequestDTO;
 import com.example.sportine.models.RespuestaSolicitudResponseDTO;
+import com.example.sportine.models.ResultadoSerieRequest;
 import com.example.sportine.models.SolicitudEntrenadorDTO;
 import com.example.sportine.models.SolicitudEnviadaDTO;
 import com.example.sportine.models.SolicitudPendienteDTO;
@@ -450,4 +457,116 @@ public interface ApiService {
             @Query("idDeporte") Integer idDeporte,
             @Query("motivo") String motivo
     );
+
+    // ================================================================================
+    // ENDPOINTS HEALTH CONNECT (nuevos)
+    // ================================================================================
+
+    /**
+     * Sincronizar métricas de Health Connect con el backend.
+     * POST /api/alumno/actividad/progreso/health-connect
+     * Requiere JWT (AuthInterceptor lo agrega automáticamente)
+     */
+    @POST("/api/alumno/actividad/progreso/health-connect")
+    Call<Map<String, Object>> sincronizarHealthConnect(
+            @Body com.example.sportine.models.healthconnect.ProgresoHealthConnectRequest request
+    );
+
+    /**
+     * Registrar Health Connect como activo para el usuario.
+     * POST /api/alumno/actividad/conexiones/health-connect
+     */
+    @POST("/api/alumno/actividad/conexiones/health-connect")
+    Call<Map<String, Object>> registrarConexionHealthConnect();
+
+    /**
+     * Ver estado de todas las conexiones del usuario.
+     * GET /api/alumno/actividad/conexiones/estado
+     */
+    @GET("/api/alumno/actividad/conexiones/estado")
+    Call<Map<String, Object>> obtenerEstadoConexiones();
+
+    /**
+     * Desconectar una API externa.
+     * DELETE /api/alumno/actividad/conexiones/{proveedor}
+     */
+    @DELETE("/api/alumno/actividad/conexiones/{proveedor}")
+    Call<Map<String, Object>> desconectarApi(
+            @Path("proveedor") String proveedor
+    );
+
+    /**
+     * Obtener plantilla de métricas por deporte (público, sin JWT).
+     * GET /api/plantillas/deporte/{idDeporte}
+     */
+    @GET("/api/plantillas/deporte/{idDeporte}")
+    Call<Map<String, Object>> obtenerPlantillasDeporte(
+            @Path("idDeporte") Integer idDeporte);
+
+    @POST("/api/alumno/actividad/series/{idAsignado}")
+    Call<Map<String, Object>> guardarResultadoSerie(
+            @Path("idAsignado") Integer idAsignado,
+            @Body com.example.sportine.models.ResultadoSerieRequest request
+    );
+
+    @POST("alumno/actividad/series/{idAsignado}")
+    Call<Map<String, Object>> guardarResultadoSerie(
+            @Path("idAsignado") int idAsignado,
+            @Body ResultadoSerieRequest request
+    );
+
+    // ── Plantilla métricas del deporte (público, sin auth) ───────────────────
+    @GET("plantillas/deporte/{idDeporte}")
+    Call<List<PlantillaMetricaDTO>> getPlantillaMetricasDeporte(
+            @Path("idDeporte") int idDeporte
+    );
+
+    @GET("api/alumno/logros/pendientes")
+    Call<List<LogroDTO>> obtenerLogrosPendientes();
+
+    @POST("api/alumno/logros/marcar-vistos")
+    Call<Map<String, Object>> marcarLogrosVistos(@Body Map<String, List<Integer>> body);
+
+    @POST("api/alumno/logros/{id}/publicar")
+    Call<Map<String, Object>> publicarLogro(@Path("id") Integer idLogro);
+
+    @GET("api/alumno/estadisticas/carrera")
+    Call<CarreraDeporteDTO> obtenerCarreraDeporte(@Query("idDeporte") Integer idDeporte);
+
+    @GET("api/alumno/estadisticas/metricas-deporte")
+    Call<MetricasUltimosDTO> obtenerMetricasDeporte(@Query("idDeporte") Integer idDeporte,
+                                                    @Query("limite") int limite);
+
+    @GET("api/alumno/actividad/alumno-deportes")
+    Call<List<DeporteAlumnoDTO>> obtenerDeportesAlumno();
+
+    @GET("api/alumno/actividad/historial-deporte/{idDeporte}")
+    Call<List<HistorialEntrenamientoDTO>> obtenerHistorialDeporte(
+            @Path("idDeporte") Integer idDeporte,
+            @Query("limite") int limite);
+
+    // Deportes que el entrenador imparte a un alumno específico
+    @GET("api/entrenador/estadisticas/alumno/{usuario}/deportes")
+    Call<List<DeporteAlumnoDTO>> obtenerDeportesEntrenadorParaAlumno(
+            @Path("usuario") String usuarioAlumno);
+
+    // Carrera del alumno vista por el entrenador
+    @GET("api/entrenador/estadisticas/alumno/{usuario}/carrera/{idDeporte}")
+    Call<CarreraDeporteDTO> obtenerCarreraDeporteAlumno(
+            @Path("usuario") String usuarioAlumno,
+            @Path("idDeporte") Integer idDeporte);
+
+    // Métricas del alumno vista por el entrenador
+    @GET("api/entrenador/estadisticas/alumno/{usuario}/metricas")
+    Call<MetricasUltimosDTO> obtenerMetricasDeporteAlumno(
+            @Path("usuario") String usuarioAlumno,
+            @Query("idDeporte") Integer idDeporte,
+            @Query("limite") int limite);
+
+    // Historial del alumno visto por el entrenador
+    @GET("api/entrenador/estadisticas/alumno/{usuario}/historial/{idDeporte}")
+    Call<List<HistorialEntrenamientoDTO>> obtenerHistorialDeporteAlumno(
+            @Path("usuario") String usuarioAlumno,
+            @Path("idDeporte") Integer idDeporte,
+            @Query("limite") int limite);
 }

@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
-
+    id("org.jetbrains.kotlin.android")
 }
 
 android {
@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.sportine"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -29,7 +29,13 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+
     }
+
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+
     buildFeatures {
         viewBinding = true
     }
@@ -73,4 +79,7 @@ dependencies {
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.squareup.picasso:picasso:2.8")
     implementation("androidx.browser:browser:1.8.0")
+    // Health Connect SDK (Jetpack 1.1.0 - estable)
+    implementation("androidx.health.connect:connect-client:1.1.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.0")
 }

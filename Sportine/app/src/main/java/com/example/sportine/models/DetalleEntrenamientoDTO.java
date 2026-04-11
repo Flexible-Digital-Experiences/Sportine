@@ -34,5 +34,13 @@ public class DetalleEntrenamientoDTO {
     public List<AsignarEjercicioDTO> getEjercicios() { return ejercicios; }
     public String getDeporteIcono() {return deporteIcono;}
 
+    private Integer idDeporte;
+
+    // Getter
+    public Integer getIdDeporte() { return idDeporte; }
+
+    // Setter
+    public void setIdDeporte(Integer idDeporte) { this.idDeporte = idDeporte; }
+
     public void setDificultad(String dificultad) { this.dificultad = dificultad; }
 }

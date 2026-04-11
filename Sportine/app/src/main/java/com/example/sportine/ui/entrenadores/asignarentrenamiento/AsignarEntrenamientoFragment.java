@@ -251,27 +251,33 @@ public class AsignarEntrenamientoFragment extends Fragment {
     }
 
     // ✅ MÉTODO MEJORADO CON VALIDACIONES DE CAMPO
+    // ── Reemplaza SOLO este método en AsignarEntrenamientoFragment.java ─────────
     private void mostrarDialogoAgregarEjercicio() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_agregar_ejercicio, null);
+        View view = LayoutInflater.from(getContext())
+                .inflate(R.layout.dialog_agregar_ejercicio, null);
         builder.setView(view);
         AlertDialog dialog = builder.create();
-        if (dialog.getWindow() != null) dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        if (dialog.getWindow() != null)
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        AutoCompleteTextView spinnerTipo = view.findViewById(R.id.spinner_tipo_medida);
-        TextInputEditText etNombre = view.findViewById(R.id.input_nombre_ejercicio);
-        LinearLayout containerReps = view.findViewById(R.id.container_reps_peso);
-        LinearLayout containerCardio = view.findViewById(R.id.container_cardio);
-        TextInputEditText etSeries = view.findViewById(R.id.input_series);
-        TextInputEditText etReps = view.findViewById(R.id.input_reps);
-        TextInputEditText etPeso = view.findViewById(R.id.input_peso);
-        TextInputEditText etDistancia = view.findViewById(R.id.input_distancia);
-        TextInputEditText etTiempo = view.findViewById(R.id.input_tiempo);
-        Button btnAgregar = view.findViewById(R.id.btn_agregar);
+        AutoCompleteTextView spinnerTipo   = view.findViewById(R.id.spinner_tipo_medida);
+        TextInputEditText etNombre         = view.findViewById(R.id.input_nombre_ejercicio);
+        LinearLayout containerReps         = view.findViewById(R.id.container_reps_peso);
+        LinearLayout containerCardio       = view.findViewById(R.id.container_cardio);
+        TextInputEditText etSeries         = view.findViewById(R.id.input_series);
+        TextInputEditText etReps           = view.findViewById(R.id.input_reps);
+        TextInputEditText etPeso           = view.findViewById(R.id.input_peso);
+        TextInputEditText etDistancia      = view.findViewById(R.id.input_distancia);
+        TextInputEditText etTiempo         = view.findViewById(R.id.input_tiempo);
+        com.google.android.material.switchmaterial.SwitchMaterial switchExitosos =
+                view.findViewById(R.id.switch_tiene_exitosos);
+        Button btnAgregar  = view.findViewById(R.id.btn_agregar);
         Button btnCancelar = view.findViewById(R.id.btn_cancelar);
 
         String[] tipos = {"Repeticiones y Series", "Cardio / Tiempo"};
-        ArrayAdapter<String> adapterTipo = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, tipos);
+        ArrayAdapter<String> adapterTipo = new ArrayAdapter<>(
+                getContext(), android.R.layout.simple_dropdown_item_1line, tipos);
         spinnerTipo.setAdapter(adapterTipo);
         spinnerTipo.setText(tipos[0], false);
 
@@ -279,19 +285,20 @@ public class AsignarEntrenamientoFragment extends Fragment {
             boolean isCardio = "Cardio / Tiempo".equals(adapterTipo.getItem(position));
             containerReps.setVisibility(isCardio ? View.GONE : View.VISIBLE);
             containerCardio.setVisibility(isCardio ? View.VISIBLE : View.GONE);
+            // El switch de exitosos solo tiene sentido en ejercicios de repeticiones
+            switchExitosos.setVisibility(isCardio ? View.GONE : View.VISIBLE);
+            if (isCardio) switchExitosos.setChecked(false);
         });
 
         btnAgregar.setOnClickListener(v -> {
             String nombre = etNombre.getText().toString().trim();
 
-            // Limpiar errores previos
             etNombre.setError(null);
             etSeries.setError(null);
             etReps.setError(null);
             etDistancia.setError(null);
             etTiempo.setError(null);
 
-            // Validar Nombre
             if (nombre.isEmpty()) { etNombre.setError("Requerido"); return; }
             if (nombre.length() < 3) { etNombre.setError("Mínimo 3 caracteres"); return; }
 
@@ -299,11 +306,9 @@ public class AsignarEntrenamientoFragment extends Fragment {
             ejercicio.setNombreEjercicio(nombre);
             ejercicio.setStatusEjercicio("pendiente");
 
-            // Validaciones según tipo
             if (containerReps.getVisibility() == View.VISIBLE) {
-                // -- REPETICIONES Y SERIES --
                 Integer series = parseInteger(etSeries);
-                Integer reps = parseInteger(etReps);
+                Integer reps   = parseInteger(etReps);
 
                 if (series == null || series < 1) { etSeries.setError("Mínimo 1 serie"); return; }
                 if (reps == null || reps < 1) { etReps.setError("Mínimo 1 repetición"); return; }
@@ -311,20 +316,22 @@ public class AsignarEntrenamientoFragment extends Fragment {
                 ejercicio.setSeries(series);
                 ejercicio.setRepeticiones(reps);
                 ejercicio.setPeso(parseFloat(etPeso));
+                // ✅ Leer el estado del switch
+                ejercicio.setTieneExitosos(switchExitosos.isChecked());
 
             } else {
-                // -- CARDIO --
-                Float distancia = parseFloat(etDistancia); // El usuario escribe KM o M según tu UI
-                Integer duracion = parseInteger(etTiempo); // Minutos
+                Float distancia    = parseFloat(etDistancia);
+                Integer duracion   = parseInteger(etTiempo);
 
-                // Validación simple para que no envíen vacíos
                 if (distancia == null && duracion == null) {
-                    Toast.makeText(getContext(), "Ingresa distancia o tiempo", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Ingresa distancia o tiempo",
+                            Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 ejercicio.setDistancia(distancia);
                 ejercicio.setDuracion(duracion);
+                ejercicio.setTieneExitosos(false); // Cardio nunca tiene exitosos
             }
 
             adapter.agregarEjercicio(ejercicio);

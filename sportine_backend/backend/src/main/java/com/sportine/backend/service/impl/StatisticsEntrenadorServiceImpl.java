@@ -18,6 +18,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -32,6 +33,7 @@ public class StatisticsEntrenadorServiceImpl implements StatisticsEntrenadorServ
     private final UsuarioRepository usuarioRepository;
     private final InformacionAlumnoRepository informacionAlumnoRepository;
     private final StatisticsAlumnoService statisticsAlumnoService;
+    private final EstadisticasDeporteServiceImpl estadisticasDeporteService;
 
     @Override
     public List<AlumnoCardStatsDTO> obtenerResumenAlumnos(String usuarioEntrenador) {
@@ -315,5 +317,144 @@ public class StatisticsEntrenadorServiceImpl implements StatisticsEntrenadorServ
         }
 
         return Map.of("actual", rachaActual, "mejor", mejorRacha);
+    }
+
+    // ══════════════════════════════════════════════════════════════════════
+    // NUEVOS MÉTODOS — Estadísticas por deporte para el entrenador
+    // Agregar estos métodos al final de StatisticsEntrenadorServiceImpl,
+    // justo antes del último } de la clase.
+    // También agregar en los @RequiredArgsConstructor los repositorios nuevos:
+    //   private final EstadisticasDeporteServiceImpl estadisticasDeporteService;
+    //   private final EntrenamientoRepository entrenamientoRepository; (ya existe)
+    //   private final ProgresoEntrenamientoRepository progresoRepository; (ya existe)
+    // ══════════════════════════════════════════════════════════════════════
+
+    /**
+     * Devuelve solo los deportes que el entrenador imparte a este alumno.
+     * Consulta Entrenador_Alumno filtrando por entrenador + alumno + activo.
+     */
+    @Override
+    public List<DeporteAlumnoDTO> obtenerDeportesEntrenadorParaAlumno(
+            String usuarioEntrenador, String usuarioAlumno) {
+
+        log.info("Obteniendo deportes de {} para entrenador {}", usuarioAlumno, usuarioEntrenador);
+        validarRelacion(usuarioEntrenador, usuarioAlumno);
+
+        // Emojis por deporte
+        Map<String, String> emojis = Map.of(
+                "Fútbol",     "⚽",
+                "Basketball", "🏀",
+                "Natación",   "🏊",
+                "Running",    "🏃",
+                "Boxeo",      "🥊",
+                "Tenis",      "🎾",
+                "Gimnasio",   "💪",
+                "Ciclismo",   "🚴",
+                "Béisbol",    "⚾"
+        );
+
+        return entrenadorAlumnoRepository
+                .findByUsuarioEntrenadorAndUsuarioAlumnoAndStatusRelacion(
+                        usuarioEntrenador, usuarioAlumno, "activo")
+                .stream()
+                .filter(r -> r.getIdDeporte() != null)
+                .map(r -> deporteRepository.findById(r.getIdDeporte()).orElse(null))
+                .filter(Objects::nonNull)
+                .map(d -> new DeporteAlumnoDTO(
+                        d.getIdDeporte(),
+                        d.getNombreDeporte(),
+                        emojis.getOrDefault(d.getNombreDeporte(), "🏋️")))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Cards de carrera del alumno en un deporte específico.
+     * Valida que el entrenador tenga relación activa en ese deporte concreto.
+     */
+    @Override
+    public CarreraDeporteDTO obtenerCarreraAlumno(
+            String usuarioEntrenador, String usuarioAlumno, Integer idDeporte) {
+
+        log.info("Obteniendo carrera de {} en deporte {} para entrenador {}",
+                usuarioAlumno, idDeporte, usuarioEntrenador);
+        validarRelacionDeporte(usuarioEntrenador, usuarioAlumno, idDeporte);
+
+        // Reutiliza el mismo service que usa el alumno
+        return estadisticasDeporteService.obtenerCarreraDeporte(usuarioAlumno, idDeporte);
+    }
+
+    /**
+     * Métricas (gráficas) del alumno en un deporte.
+     */
+    @Override
+    public MetricasUltimosDTO obtenerMetricasAlumno(
+            String usuarioEntrenador, String usuarioAlumno, Integer idDeporte, int limite) {
+
+        log.info("Obteniendo métricas de {} en deporte {} para entrenador {}",
+                usuarioAlumno, idDeporte, usuarioEntrenador);
+        validarRelacionDeporte(usuarioEntrenador, usuarioAlumno, idDeporte);
+
+        return estadisticasDeporteService.obtenerMetricasUltimos(usuarioAlumno, idDeporte, limite);
+    }
+
+    /**
+     * Historial de entrenamientos del alumno en un deporte.
+     */
+    @Override
+    public List<HistorialEntrenamientoDTO> obtenerHistorialAlumno(
+            String usuarioEntrenador, String usuarioAlumno, Integer idDeporte, int limite) {
+
+        log.info("Obteniendo historial de {} en deporte {} para entrenador {}",
+                usuarioAlumno, idDeporte, usuarioEntrenador);
+        validarRelacionDeporte(usuarioEntrenador, usuarioAlumno, idDeporte);
+
+        List<Integer> ids = entrenamientoRepository
+                .findUltimosFinalizadosByUsuarioAndDeporte(usuarioAlumno, idDeporte, limite);
+
+        java.time.format.DateTimeFormatter fmt =
+                java.time.format.DateTimeFormatter.ofPattern("dd MMM", new java.util.Locale("es", "MX"));
+
+        List<HistorialEntrenamientoDTO> historial = new ArrayList<>();
+
+        for (Integer idEntrenamiento : ids) {
+            entrenamientoRepository.findById(idEntrenamiento).ifPresent(e -> {
+                progresoRepository
+                        .findByIdEntrenamientoAndUsuario(idEntrenamiento, usuarioAlumno)
+                        .stream().findFirst()
+                        .ifPresent(p -> {
+                            HistorialEntrenamientoDTO dto = new HistorialEntrenamientoDTO();
+                            dto.setIdEntrenamiento(idEntrenamiento);
+                            dto.setTitulo(e.getTituloEntrenamiento());
+                            dto.setFecha(e.getFechaEntrenamiento() != null
+                                    ? e.getFechaEntrenamiento().format(fmt) : "?");
+                            dto.setDificultad(e.getDificultad());
+                            dto.setDuracionMin(p.getHcDuracionActivaMin());
+                            dto.setCaloriasKcal(p.getHcCaloriasKcal());
+                            dto.setDistanciaMetros(p.getHcDistanciaMetros());
+                            dto.setPasos(p.getHcPasos());
+                            dto.setTieneHc(p.getHcFuenteDatos() != null);
+                            historial.add(dto);
+                        });
+            });
+        }
+
+        return historial;
+    }
+
+    /**
+     * Valida que el entrenador tenga relación activa con el alumno
+     * en el deporte específico — no solo relación genérica.
+     */
+    private void validarRelacionDeporte(
+            String usuarioEntrenador, String usuarioAlumno, Integer idDeporte) {
+
+        boolean tieneRelacion = entrenadorAlumnoRepository
+                .existsByUsuarioEntrenadorAndUsuarioAlumnoAndIdDeporteAndStatusRelacion(
+                        usuarioEntrenador, usuarioAlumno, idDeporte, "activo");
+
+        if (!tieneRelacion) {
+            throw new AccesoNoAutorizadoException(
+                    "No tienes permiso para ver las estadísticas de este alumno en este deporte");
+        }
     }
 }

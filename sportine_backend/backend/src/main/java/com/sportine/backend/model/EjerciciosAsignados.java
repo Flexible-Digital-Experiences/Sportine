@@ -5,10 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-/**
- * Entity que representa los ejercicios asignados.
- * Actualizado para soportar nombre manual y cardio (distancia/tiempo).
- */
 @Entity
 @Table(name = "Ejercicios_Asignados")
 @Data
@@ -27,32 +23,49 @@ public class EjerciciosAsignados {
     @Column(name = "usuario")
     private String usuario;
 
-    // ✅ NUEVO: Nombre manual del ejercicio (Reemplaza al catálogo)
     @Column(name = "nombre_ejercicio", nullable = false)
     private String nombreEjercicio;
-
-    // Métricas de Fuerza
-    @Column(name = "repeticiones")
-    private Integer repeticiones;
 
     @Column(name = "series")
     private Integer series;
 
-    @Column(name = "peso")
-    private Float peso; // kg
+    @Column(name = "repeticiones")
+    private Integer repeticiones;
 
-    // Métricas de Cardio (Nuevas)
+    @Column(name = "peso")
+    private Float peso;
+
     @Column(name = "duracion")
-    private Integer duracion; // minutos
+    private Integer duracion;
 
     @Column(name = "distancia")
-    private Float distancia; // km
+    private Float distancia;
+
+    /**
+     * Si TRUE, el alumno verá el campo "exitosos" en el bottom sheet
+     * (goles, tiros anotados, jabs conectados, regates exitosos, etc.)
+     * El entrenador lo activa al crear el ejercicio.
+     */
+    @Column(name = "tiene_exitosos", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonProperty("tiene_exitosos")
+    private Boolean tieneExitosos = false;
 
     @Column(name = "status_ejercicio")
     @Enumerated(EnumType.STRING)
-    private StatusEjercicio statusEjercicio;
+    private StatusEjercicio statusEjercicio = StatusEjercicio.pendiente;
 
-    // Relaciones
+    @Column(name = "valor_completado_reps")
+    private Integer valorCompletadoReps;
+
+    @Column(name = "valor_completado_duracion")
+    private Integer valorCompletadoDuracion;
+
+    @Column(name = "valor_completado_distancia")
+    private Float valorCompletadoDistancia;
+
+    @Column(name = "valor_completado_peso")
+    private Float valorCompletadoPeso;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_entrenamiento", insertable = false, updatable = false)
     private Entrenamiento entrenamiento;
@@ -62,8 +75,6 @@ public class EjerciciosAsignados {
     private Usuario usuarioEntity;
 
     public enum StatusEjercicio {
-        pendiente,
-        completado,
-        omitido
+        pendiente, completado, parcial, omitido
     }
 }

@@ -23,7 +23,7 @@ public class DetalleEntrenamientoDTO {
     private String hora; // String suele ser más fácil para formatear "10:30 AM", pero LocalTime también sirve
     private String estado; // pendiente, en_progreso, finalizado
     private String dificultad;
-
+    private Integer idDeporte;
     // Información del Entrenador
     private String nombreEntrenador;
     private String especialidadEntrenador; // O apellidos, según prefieras mostrar
