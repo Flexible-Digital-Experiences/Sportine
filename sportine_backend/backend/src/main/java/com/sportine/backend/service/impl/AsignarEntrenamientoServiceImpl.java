@@ -8,10 +8,7 @@ import com.sportine.backend.model.EjerciciosAsignados;
 import com.sportine.backend.model.Entrenamiento;
 import com.sportine.backend.model.ResultadoSeriesEjercicio;
 import com.sportine.backend.model.Usuario;
-import com.sportine.backend.repository.EjerciciosAsignadosRepository;
-import com.sportine.backend.repository.EntrenamientoRepository;
-import com.sportine.backend.repository.ResultadoSeriesEjercicioRepository;
-import com.sportine.backend.repository.UsuarioRepository;
+import com.sportine.backend.repository.*;
 import com.sportine.backend.service.AsignarEntrenamientoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +26,14 @@ public class AsignarEntrenamientoServiceImpl implements AsignarEntrenamientoServ
     private final EjerciciosAsignadosRepository ejerciciosAsignadosRepository;
     private final UsuarioRepository usuarioRepository;
     private final ResultadoSeriesEjercicioRepository seriesRepository;
+    private final EntrenadorAlumnoRepository entrenadorAlumnoRepository;
+
+    // ── CAMBIOS EN AsignarEntrenamientoServiceImpl.java ──────────────────────────
+//
+// 1. Agregar el repository en las dependencias de la clase:
+//    private final EntrenadorAlumnoRepository entrenadorAlumnoRepository;
+//
+// 2. Reemplazar SOLO el método crearEntrenamiento() con este:
 
     @Override
     @Transactional
@@ -37,9 +42,23 @@ public class AsignarEntrenamientoServiceImpl implements AsignarEntrenamientoServ
                 .orElseThrow(() -> new RecursoNoEncontradoException(
                         "Alumno no encontrado: " + request.getUsuarioAlumno()));
 
+        Integer idDeporte = entrenadorAlumnoRepository
+                .findByUsuarioEntrenadorAndUsuarioAlumnoAndStatusRelacion(
+                        usernameEntrenador,
+                        request.getUsuarioAlumno(),
+                        "activo")
+                .stream()
+                .findFirst()
+                .map(rel -> rel.getIdDeporte())
+                .orElse(null);
+
+        log.info("Creando entrenamiento - entrenador: {}, alumno: {}, idDeporte: {}",
+                usernameEntrenador, request.getUsuarioAlumno(), idDeporte);
+
         Entrenamiento entrenamiento = new Entrenamiento();
         entrenamiento.setUsuario(request.getUsuarioAlumno());
         entrenamiento.setUsuarioEntrenador(usernameEntrenador);
+        entrenamiento.setIdDeporte(idDeporte); // ✅ NUEVO
         entrenamiento.setTituloEntrenamiento(request.getTituloEntrenamiento());
         entrenamiento.setObjetivo(request.getObjetivo());
         entrenamiento.setDificultad(request.getDificultad());

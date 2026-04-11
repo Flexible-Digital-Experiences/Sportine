@@ -607,6 +607,19 @@ Object.assign(Api, {
     return _handleResponse(response);
   },
 
+
+ async guardarResultadoSerie(idAsignado, request) {
+  const response = await fetch(
+    `${BASE_URL}/api/alumno/actividad/series/${idAsignado}`,
+    {
+      method:  'POST',
+      headers: _getHeaders(true),
+      body:    JSON.stringify(request),
+    }
+  );
+  return _handleResponse(response);
+},
+
   // GET /api/alumno/entrenamientos/{id}
   async obtenerDetalleEntrenamiento(idEntrenamiento) {
     const response = await fetch(`${BASE_URL}/api/alumno/entrenamientos/${idEntrenamiento}`, {
