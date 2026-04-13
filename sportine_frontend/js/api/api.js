@@ -618,7 +618,7 @@ Object.assign(Api, {
     }
   );
   return _handleResponse(response);
-},
+  },
 
   // GET /api/alumno/entrenamientos/{id}
   async obtenerDetalleEntrenamiento(idEntrenamiento) {
@@ -677,5 +677,61 @@ Object.assign(Api, {
       headers: _getHeaders(true),
     });
     return _handleResponse(response);
+  },
+
+  async estadisticasOverview() {
+    const r = await fetch(`${BASE_URL}/api/alumno/estadisticas/overview`, { method: 'GET', headers: _getHeaders(true) });
+    return _handleResponse(r);
+  },
+
+  async estadisticasFrecuencia(period = 'MONTH') {
+    const r = await fetch(`${BASE_URL}/api/alumno/estadisticas/frequency?period=${period}`, { method: 'GET', headers: _getHeaders(true) });
+    return _handleResponse(r);
+  },
+
+  async estadisticasDeportes() {
+    const r = await fetch(`${BASE_URL}/api/alumno/estadisticas/sports-distribution`, { method: 'GET', headers: _getHeaders(true) });
+    return _handleResponse(r);
+  },
+
+  async estadisticasStreak() {
+    const r = await fetch(`${BASE_URL}/api/alumno/estadisticas/streak`, { method: 'GET', headers: _getHeaders(true) });
+    return _handleResponse(r);
+  },
+
+  async estadisticasFeedback() {
+    const r = await fetch(`${BASE_URL}/api/alumno/estadisticas/feedback`, { method: 'GET', headers: _getHeaders(true) });
+    return _handleResponse(r);
+  },
+
+  async alumnoDeportes() {
+    const r = await fetch(`${BASE_URL}/api/alumno/actividad/alumno-deportes`, { method: 'GET', headers: _getHeaders(true) });
+    return _handleResponse(r);
+  },
+
+  async entrenadorEstadisticasAlumnos() {
+    const r = await fetch(`${BASE_URL}/api/entrenador/estadisticas/alumnos`, { method: 'GET', headers: _getHeaders(true) });
+    return _handleResponse(r);
+  },
+
+  async entrenadorEstadisticasDetalleAlumno(usuarioAlumno) {
+    const r = await fetch(`${BASE_URL}/api/entrenador/estadisticas/alumno/${usuarioAlumno}`, { method: 'GET', headers: _getHeaders(true) });
+    return _handleResponse(r);
+  },
+
+  async entrenadorEstadisticasFrecuenciaAlumno(usuarioAlumno, period = 'MONTH') {
+    const r = await fetch(`${BASE_URL}/api/entrenador/estadisticas/alumno/${usuarioAlumno}/frequency?period=${period}`, { method: 'GET', headers: _getHeaders(true) });
+    return _handleResponse(r);
+  },
+
+
+  async entrenadorEstadisticasDeportesAlumno(usuarioAlumno) {
+    const r = await fetch(`${BASE_URL}/api/entrenador/estadisticas/alumno/${usuarioAlumno}/sports`, { method: 'GET', headers: _getHeaders(true) });
+    return _handleResponse(r);
+  },
+
+  async entrenadorEstadisticasFeedbackAlumno(usuarioAlumno) {
+      const r = await fetch(`${BASE_URL}/api/entrenador/estadisticas/alumno/${usuarioAlumno}/feedback`, { method: 'GET', headers: _getHeaders(true) });
+      return _handleResponse(r);
   },
 });
