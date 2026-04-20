@@ -80,6 +80,7 @@ async function _cargarHome() {
   } catch (err) {
     _mostrarErrorGeneral(err.message || 'No se pudo conectar con el servidor.');
   }
+  _consultarLogrosPendientes(); // ← fuera del try, siempre se ejecuta
 }
 
 function _renderHome(data) {
@@ -1087,6 +1088,195 @@ window._publicarLogro = async function() {
   }
 };
 
+// ══════════════════════════════════════════════════════════════
+// LOGROS: BottomSheet de logros pendientes
+// Equivalente a LogroBottomSheet.java en Android
+// ══════════════════════════════════════════════════════════════
+
+var _logros = [];
+var _logroIndice = 0;
+
+function _buildLogrosSheet() {
+  if (document.getElementById('bs-logros')) return;
+
+  var el = document.createElement('div');
+  el.id = 'bs-logros';
+  el.style.cssText = 'display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.55);align-items:flex-end;justify-content:center';
+
+  el.innerHTML =
+    '<div id="bs-logros-sheet" style="background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:640px;'
+    + 'max-height:85vh;overflow-y:auto;transform:translateY(100%);'
+    + 'transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);padding-bottom:36px">'
+
+    // Handle + header
+    + '<div style="padding:14px 20px 16px;border-bottom:1px solid #E5E7EB;text-align:center">'
+    +   '<div style="width:40px;height:4px;background:#E5E7EB;border-radius:4px;margin:0 auto 16px"></div>'
+    +   '<div id="bs-logros-badge" style="display:none;font-size:0.75rem;font-weight:700;color:#d97706;'
+    +     'background:#fff7ed;border-radius:50px;padding:4px 14px;display:inline-block;margin-bottom:12px"></div>'
+    +   '<div style="font-size:3.5rem;margin-bottom:4px">🏆</div>'
+    +   '<h2 style="font-family:\'Sora\',sans-serif;font-weight:800;font-size:1.1rem;color:#1A1A1A;margin:0 0 4px">¡Logro desbloqueado!</h2>'
+    +   '<div id="bs-logros-paginacion" style="font-size:0.78rem;color:#9CA3AF;margin-top:4px"></div>'
+    + '</div>'
+
+    // Mensaje del logro
+    + '<div style="padding:24px 24px 0">'
+    +   '<div id="bs-logros-mensaje" style="font-family:\'DM Sans\',sans-serif;font-size:0.95rem;color:#374151;'
+    +     'background:#F9FAFB;border-radius:14px;padding:16px;line-height:1.6;text-align:center;min-height:72px;'
+    +     'display:flex;align-items:center;justify-content:center"></div>'
+    + '</div>'
+
+    // Navegación entre logros (solo si hay varios)
+    + '<div id="bs-logros-nav" style="display:none;padding:16px 24px 0;display:flex;justify-content:center;gap:8px">'
+    +   '<button id="bs-logros-anterior" style="width:36px;height:36px;border-radius:50%;border:1.5px solid #E5E7EB;'
+    +     'background:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#6B7280">‹</button>'
+    +   '<button id="bs-logros-siguiente" style="width:36px;height:36px;border-radius:50%;border:1.5px solid #E5E7EB;'
+    +     'background:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#6B7280">›</button>'
+    + '</div>'
+
+    // Botones
+    + '<div style="padding:20px 24px 0;display:flex;flex-direction:column;gap:10px">'
+    +   '<button id="bs-logros-publicar" style="width:100%;height:50px;background:linear-gradient(135deg,#f59e0b,#d97706);'
+    +     'color:#fff;border:none;border-radius:14px;font-family:\'DM Sans\',sans-serif;font-weight:700;font-size:0.95rem;'
+    +     'cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">🏆 Publicar en el feed</button>'
+    +   '<button id="bs-logros-despues" style="width:100%;height:46px;background:#F3F4F6;color:#6B7280;border:none;'
+    +     'border-radius:14px;font-family:\'DM Sans\',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer">Guardar para después</button>'
+    + '</div>'
+
+    + '</div>';
+
+  document.body.appendChild(el);
+
+  el.addEventListener('click', function(e) { if (e.target === el) _cerrarLogrosSheet(); });
+  document.getElementById('bs-logros-publicar').addEventListener('click', _publicarLogroActual);
+  document.getElementById('bs-logros-despues').addEventListener('click', _guardarLogrosParaDespues);
+  document.getElementById('bs-logros-anterior').addEventListener('click', function() {
+    if (_logroIndice > 0) { _logroIndice--; _mostrarLogroActual(); }
+  });
+  document.getElementById('bs-logros-siguiente').addEventListener('click', function() {
+    if (_logroIndice < _logros.length - 1) { _logroIndice++; _mostrarLogroActual(); }
+  });
+}
+
+function _mostrarLogrosSheet(lista) {
+  _logros     = lista;
+  _logroIndice = 0;
+
+  var badge = document.getElementById('bs-logros-badge');
+  var nav   = document.getElementById('bs-logros-nav');
+
+  if (lista.length > 1) {
+    badge.style.display = 'inline-block';
+    badge.textContent   = '🎉 +' + lista.length + ' logros nuevos';
+    nav.style.display   = 'flex';
+  } else {
+    badge.style.display = 'none';
+    nav.style.display   = 'none';
+  }
+
+  _mostrarLogroActual();
+
+  var el    = document.getElementById('bs-logros');
+  var sheet = document.getElementById('bs-logros-sheet');
+  el.style.display = 'flex';
+  requestAnimationFrame(function() { sheet.style.transform = 'translateY(0)'; });
+}
+
+function _mostrarLogroActual() {
+  var logro   = _logros[_logroIndice];
+  var total   = _logros.length;
+  var pag     = document.getElementById('bs-logros-paginacion');
+  var mensaje = document.getElementById('bs-logros-mensaje');
+  var btnPub  = document.getElementById('bs-logros-publicar');
+  var btnAnt  = document.getElementById('bs-logros-anterior');
+  var btnSig  = document.getElementById('bs-logros-siguiente');
+
+  mensaje.textContent = logro.mensaje || '';
+
+  if (total > 1) {
+    pag.textContent = (_logroIndice + 1) + ' / ' + total;
+    btnAnt.disabled = _logroIndice === 0;
+    btnAnt.style.opacity = _logroIndice === 0 ? '0.4' : '1';
+    btnSig.disabled = _logroIndice === total - 1;
+    btnSig.style.opacity = _logroIndice === total - 1 ? '0.4' : '1';
+  } else {
+    pag.textContent = '';
+  }
+
+  // Si ya fue publicado, deshabilitar el botón
+  var yaPublicado = logro.publicado === true;
+  btnPub.disabled = yaPublicado;
+  btnPub.textContent = yaPublicado ? '✓ Ya publicado' : '🏆 Publicar en el feed';
+  btnPub.style.opacity = yaPublicado ? '0.5' : '1';
+  btnPub.style.cursor  = yaPublicado ? 'not-allowed' : 'pointer';
+}
+
+async function _publicarLogroActual() {
+  var logro  = _logros[_logroIndice];
+  var btnPub = document.getElementById('bs-logros-publicar');
+
+  btnPub.disabled     = true;
+  btnPub.textContent  = 'Publicando...';
+  btnPub.style.opacity = '0.7';
+
+  try {
+    await Api.publicarLogro(logro.idLogro);
+    logro.publicado = true;
+    _mostrarToast('🏆 ¡Logro publicado en el feed!', 'success');
+    _mostrarLogroActual();
+    // Pequeño delay para que el usuario vea el feedback, luego avanza o cierra
+    setTimeout(function() { _avanzarLogroOCerrar(); }, 800);
+  } catch (err) {
+    btnPub.disabled     = false;
+    btnPub.textContent  = '🏆 Publicar en el feed';
+    btnPub.style.opacity = '1';
+    _mostrarToast(err.message || 'No se pudo publicar el logro', 'error');
+  }
+}
+
+function _guardarLogrosParaDespues() {
+  _cerrarLogrosSheet();
+}
+
+function _avanzarLogroOCerrar() {
+  if (_logroIndice < _logros.length - 1) {
+    _logroIndice++;
+    _mostrarLogroActual();
+  } else {
+    // Solo marcar como vistos los que el usuario publicó
+    var publicados = _logros
+      .filter(function(l) { return l.publicado === true; })
+      .map(function(l) { return l.idLogro; });
+    if (publicados.length > 0) _marcarLogrosVistos(publicados);
+    _cerrarLogrosSheet();
+  }
+}
+
+function _cerrarLogrosSheet() {
+  var sheet = document.getElementById('bs-logros-sheet');
+  var el    = document.getElementById('bs-logros');
+  if (!sheet || !el) return;
+  sheet.style.transform = 'translateY(100%)';
+  setTimeout(function() { el.style.display = 'none'; }, 280);
+}
+
+function _marcarLogrosVistos(ids) {
+  if (!ids || ids.length === 0) return;
+  Api.marcarLogrosVistos({ ids: ids }).catch(function() {
+    // Silencioso — igual que en Android
+  });
+}
+
+async function _consultarLogrosPendientes() {
+  try {
+    var lista = await Api.obtenerLogrosPendientes();
+    if (lista && lista.length > 0) {
+      setTimeout(function() { _mostrarLogrosSheet(lista); }, 800);
+    }
+  } catch (e) {
+    // Silencioso — los logros no son críticos
+  }
+}
+
 // ── Init ─────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -1101,6 +1291,7 @@ document.addEventListener('DOMContentLoaded', function() {
   _renderTopbar();
   buildModal();
   _buildBottomSheet();
+  _buildLogrosSheet();           
   _cargarHome();
 
   document.getElementById('topbar-menu').addEventListener('click', function() {

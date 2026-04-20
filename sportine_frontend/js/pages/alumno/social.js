@@ -60,6 +60,97 @@ function renderFeed(listaPosts) {
         </div>`;
     }
 
+    if (post.tipo === 2) {
+  // Detectar tipo de logro por el mensaje para el color del gradiente
+  var mensajeLower = (post.descripcion || '').toLowerCase();
+  var gradiente = 'linear-gradient(160deg,#1d4ed8 0%,#0ea5e9 100%)'
+  return `
+    <div class="post-card" style="animation-delay:${delay}s;padding:0;overflow:hidden;border:none" data-id="${post.idPublicacion}">
+      <div style="background:${gradiente};border-radius:16px;padding:20px 20px 16px">
+
+        <!-- Header: avatar + nombre + tiempo -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.25);
+              display:flex;align-items:center;justify-content:center;
+              font-family:'Sora',sans-serif;font-weight:700;font-size:0.85rem;color:#fff;flex-shrink:0">
+              ${iniciales}
+            </div>
+            <div>
+              <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:0.9rem;color:#fff">${autor}</div>
+              <div style="font-size:0.72rem;color:rgba(255,255,255,0.7)">@${post.autorUsername}</div>
+            </div>
+          </div>
+          <span style="font-size:0.72rem;color:rgba(255,255,255,0.7)">${tiempoRelativo(post.fechaPublicacion)}</span>
+        </div>
+
+        <!-- Copa centrada -->
+        <div style="text-align:center;margin-bottom:16px">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.95)"
+            stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 21h8M12 17v4M12 17c-4 0-7-3-7-7V4h14v6c0 4-3 7-7 7z"/>
+            <path d="M5 8H2v1a4 4 0 0 0 3 3.87M19 8h3v1a4 4 0 0 1-3 3.87"/>
+          </svg>
+        </div>
+
+        <!-- Texto del logro -->
+        <p style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;color:#fff;
+          text-align:center;line-height:1.5;margin:0 0 20px">${post.descripcion}</p>
+
+        <!-- Likes izquierda -->
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <button class="post-action-btn like-btn ${post.likedByMe ? 'liked':''}"
+            onclick="toggleLike(this, ${post.idPublicacion}, ${post.likedByMe})"
+            data-likes="${post.totalLikes || 0}"
+            style="color:#fff;gap:6px">
+            <svg viewBox="0 0 24 24"
+              fill="${post.likedByMe ? '#fff' : 'none'}"
+              stroke="#fff" stroke-width="2" stroke-linecap="round" width="20" height="20">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            <span class="like-count" style="color:#fff;font-size:0.9rem;font-weight:700">${post.totalLikes || 0}</span>
+          </button>
+          <button class="post-action-btn comment-toggle-btn"
+            onclick="toggleComentarios(${post.idPublicacion})"
+            style="color:#fff;gap:6px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" width="20" height="20">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span style="font-size:0.82rem;color:#fff">Comentar</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Sección comentarios (fuera del gradiente) -->
+      <div id="comentarios-section-${post.idPublicacion}"
+        style="display:none;margin-top:0;padding:14px 16px;border-top:1px solid #F3F4F6">
+        <div id="lista-comentarios-${post.idPublicacion}"
+          style="max-height:300px;overflow-y:auto;overflow-x:hidden;margin-bottom:12px;padding-right:8px;">
+          <div style="text-align:center;color:#9CA3AF;font-size:0.8rem;padding:10px;">Cargando comentarios...</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#1ea1db,#00A896);
+            display:flex;align-items:center;justify-content:center;
+            font-family:'Sora',sans-serif;font-weight:700;font-size:0.7rem;color:#fff;flex-shrink:0">TÚ</div>
+          <input type="text" id="input-comentario-${post.idPublicacion}"
+            placeholder="Añade un comentario..."
+            style="flex:1;border:1.5px solid #E5E7EB;border-radius:50px;padding:7px 14px;
+              font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none"
+            onkeydown="if(event.key==='Enter') enviarNuevoComentario(${post.idPublicacion})"/>
+          <button onclick="enviarNuevoComentario(${post.idPublicacion})"
+            style="background:#1ea1db;border:none;border-radius:50%;width:34px;height:34px;
+              cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff"
+              stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
     return `
       <div class="post-card" style="animation-delay:${delay}s" data-id="${post.idPublicacion}">
         <div class="post-header">
@@ -114,7 +205,7 @@ function renderFeed(listaPosts) {
 async function cargarFeed() {
     try {
         const posts = await Api.obtenerFeed();
-        renderFeed(posts);
+        renderFeed((posts || []).reverse());
     } catch(e) {
         console.error("Fallo al traer el feed", e);
         document.getElementById('social-feed').innerHTML = '<p style="color:red;text-align:center;">Error al cargar el feed.</p>';
@@ -285,6 +376,18 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.href = '../auth/login.html';
     return;
   }
+var nombre        = Session.getNombre() || '';
+  var apellidos     = localStorage.getItem('sp_apellidos') || '';
+  var nombreCompleto = (nombre + ' ' + apellidos).trim();
+  var iniciales     = (((nombre)[0] || '') + ((apellidos)[0] || '')).toUpperCase() || 'U';
+  var sidebarName   = document.getElementById('sidebar-name');
+  var sidebarAvatar = document.getElementById('sidebar-avatar');
+  var topbarAvatar  = document.getElementById('topbar-avatar');
+  var cptAvatar     = document.getElementById('cpt-avatar');
+  if (sidebarName)   sidebarName.textContent  = nombreCompleto;
+  if (sidebarAvatar) sidebarAvatar.textContent = iniciales;
+  if (topbarAvatar)  topbarAvatar.textContent  = iniciales;
+  if (cptAvatar)     cptAvatar.textContent     = iniciales;
 
   async function verificarNotificacionesActivas() {
       try {

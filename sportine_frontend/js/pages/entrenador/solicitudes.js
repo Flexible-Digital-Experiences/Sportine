@@ -316,6 +316,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (av) av.textContent = inicia;
   if (ta) ta.textContent = inicia;
   if (sn) sn.textContent = nombreCompleto || getUsuario();
+  var _roleEl = document.querySelector('.user-chip-role');
+  if (_roleEl) _roleEl.textContent = (localStorage.getItem('sp_sexo') === 'Femenino') ? 'Entrenadora' : 'Entrenador';
 
   var container = document.getElementById('lista-solicitudes');
   var skelsHtml = [1,2,3].map(function() {

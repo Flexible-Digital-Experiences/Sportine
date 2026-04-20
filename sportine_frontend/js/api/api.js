@@ -611,4 +611,111 @@ Object.assign(Api, {
     });
     return _handleResponse(r);
   },
+  // ============================================================
+//   NUEVOS MÉTODOS PARA api.js — Estadísticas por deporte
+//   Agregar dentro del Object.assign(Api, { ... }) existente
+// ============================================================
+
+  // ── CARRERA POR DEPORTE ────────────────────────────────────
+  // GET /api/alumno/estadisticas/carrera?idDeporte=
+  // Devuelve CarreraDeporteDTO: { cards: [{ emoji, etiqueta, valorTotal, mejorSesion, unidad }] }
+  async estadisticasCarreraDeporte(idDeporte) {
+    const r = await fetch(
+      `${BASE_URL}/api/alumno/estadisticas/carrera?idDeporte=${idDeporte}`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(r);
+  },
+
+  // ── MÉTRICAS ÚLTIMOS N ENTRENAMIENTOS ─────────────────────
+  // GET /api/alumno/estadisticas/metricas-deporte?idDeporte=&limite=5
+  // Devuelve MetricasUltimosDTO: { graficas: [{ etiqueta, unidad, puntos: [{ fecha, valor, valorComparado }] }] }
+  async estadisticasMetricasDeporte(idDeporte, limite = 5) {
+    const r = await fetch(
+      `${BASE_URL}/api/alumno/estadisticas/metricas-deporte?idDeporte=${idDeporte}&limite=${limite}`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(r);
+  },
+
+  // ── HISTORIAL DE ENTRENAMIENTOS POR DEPORTE ───────────────
+  // GET /api/alumno/actividad/historial-deporte/{idDeporte}?limite=5
+  // Devuelve List<HistorialEntrenamientoDTO>: [{ titulo, fecha, duracionMin, caloriasKcal, distanciaMetros, tieneHc }]
+  async historialDeporte(idDeporte, limite = 5) {
+    const r = await fetch(
+      `${BASE_URL}/api/alumno/actividad/historial-deporte/${idDeporte}?limite=${limite}`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(r);
+  },
+  // ============================================================
+//   NUEVOS MÉTODOS PARA api.js — Estadísticas entrenador
+//   Agregar dentro del Object.assign(Api, { ... }) existente
+// ============================================================
+
+  // ── DEPORTES QUE EL ENTRENADOR IMPARTE A UN ALUMNO ────────
+  // GET /api/entrenador/estadisticas/alumno/{usuario}/deportes
+  // Devuelve: [{ id_deporte, nombre_deporte, emoji }]
+  async entrenadorDeportesParaAlumno(usuarioAlumno) {
+    const r = await fetch(
+      `${BASE_URL}/api/entrenador/estadisticas/alumno/${encodeURIComponent(usuarioAlumno)}/deportes`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(r);
+  },
+
+  // ── CARRERA DEL ALUMNO EN UN DEPORTE ──────────────────────
+  // GET /api/entrenador/estadisticas/alumno/{usuario}/carrera/{idDeporte}
+  // Devuelve CarreraDeporteDTO: { cards: [{ emoji, etiqueta, valor_total, mejor_sesion, unidad }] }
+  async entrenadorCarreraAlumno(usuarioAlumno, idDeporte) {
+    const r = await fetch(
+      `${BASE_URL}/api/entrenador/estadisticas/alumno/${encodeURIComponent(usuarioAlumno)}/carrera/${idDeporte}`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(r);
+  },
+
+  // ── MÉTRICAS (GRÁFICAS) DEL ALUMNO EN UN DEPORTE ──────────
+  // GET /api/entrenador/estadisticas/alumno/{usuario}/metricas?idDeporte=&limite=
+  // Devuelve MetricasUltimosDTO: { graficas: [{ etiqueta, unidad, puntos: [{ fecha, valor, valor_comparado }] }] }
+  async entrenadorMetricasAlumno(usuarioAlumno, idDeporte, limite = 5) {
+    const r = await fetch(
+      `${BASE_URL}/api/entrenador/estadisticas/alumno/${encodeURIComponent(usuarioAlumno)}/metricas?idDeporte=${idDeporte}&limite=${limite}`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(r);
+  },
+
+  // ── HISTORIAL DE ENTRENAMIENTOS DEL ALUMNO EN UN DEPORTE ──
+  // GET /api/entrenador/estadisticas/alumno/{usuario}/historial/{idDeporte}?limite=5
+  // Devuelve: [{ titulo, fecha, duracion_min, calorias_kcal, distancia_metros, tiene_hc }]
+  async entrenadorHistorialAlumno(usuarioAlumno, idDeporte, limite = 5) {
+    const r = await fetch(
+      `${BASE_URL}/api/entrenador/estadisticas/alumno/${encodeURIComponent(usuarioAlumno)}/historial/${idDeporte}?limite=${limite}`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(r);
+  },
+
+  // ── LOGROS ALUMNO ──────────────────────────────────────────
+  async obtenerLogrosPendientes() {
+    const r = await fetch(`${BASE_URL}/api/alumno/logros/pendientes`, {
+      method: 'GET', headers: _getHeaders(true),
+    });
+    return _handleResponse(r);
+  },
+
+  async publicarLogro(idLogro) {
+    const r = await fetch(`${BASE_URL}/api/alumno/logros/${idLogro}/publicar`, {
+      method: 'POST', headers: _getHeaders(true),
+    });
+    return _handleResponse(r);
+  },
+  async marcarLogrosVistos(body) {
+  const r = await fetch(`${BASE_URL}/api/alumno/logros/marcar-vistos`, {
+    method: 'POST', headers: _getHeaders(true),
+    body: JSON.stringify(body),
+  });
+  return _handleResponse(r);
+},
 });
