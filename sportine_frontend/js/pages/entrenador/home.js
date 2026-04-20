@@ -79,6 +79,9 @@ function _renderTopbar() {
   if (sidebarName)   sidebarName.textContent  = nombreCompleto || nombre;
   if (sidebarAvatar) sidebarAvatar.textContent = iniciales;
 
+  var _roleEl = document.querySelector('.user-chip-role');
+  if (_roleEl) _roleEl.textContent = (localStorage.getItem('sp_sexo') === 'Femenino') ? 'Entrenadora' : 'Entrenador';
+
   var topbarAvatar = document.getElementById('topbar-avatar');
   if (topbarAvatar) topbarAvatar.textContent = iniciales;
 }

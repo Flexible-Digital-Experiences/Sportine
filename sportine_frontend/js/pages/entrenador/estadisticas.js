@@ -351,6 +351,8 @@ document.addEventListener('DOMContentLoaded', async function() {
   // Sidebar nombre
   var sname = document.getElementById('sidebar-name');
   if (sname) sname.textContent = Session.getNombre() || '—';
+  var _roleEl = document.querySelector('.user-chip-role');
+  if (_roleEl) _roleEl.textContent = (localStorage.getItem('sp_sexo') === 'Femenino') ? 'Entrenadora' : 'Entrenador';
   var savatar = document.getElementById('sidebar-avatar');
   if (savatar) savatar.textContent = (Session.getNombre() || 'E')[0].toUpperCase();
   var tavatar = document.getElementById('topbar-avatar');

@@ -263,6 +263,9 @@ document.addEventListener('DOMContentLoaded', () => {
   var sidebarName = document.getElementById('sidebar-name');
   if (sidebarName) sidebarName.textContent = nombreCompleto.trim();
 
+  var _roleEl = document.querySelector('.user-chip-role');
+  if (_roleEl) _roleEl.textContent = (localStorage.getItem('sp_sexo') === 'Femenino') ? 'Entrenadora' : 'Entrenador';
+
   var sidebarAvatar = document.getElementById('sidebar-avatar');
   if (sidebarAvatar) sidebarAvatar.textContent = nombreCompleto.trim().substring(0, 2).toUpperCase();
 
