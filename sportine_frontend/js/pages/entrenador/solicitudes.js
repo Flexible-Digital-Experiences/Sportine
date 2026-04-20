@@ -167,6 +167,10 @@ function getSelected() { return MOCK_SOLICITUDES.filter(function(s) { return s.s
 document.addEventListener('DOMContentLoaded', function() {
   buildModal();
   renderSolicitudes();
+
+  var _roleEl = document.querySelector('.user-chip-role');
+  if (_roleEl) _roleEl.textContent = (localStorage.getItem('sp_sexo') === 'Femenino') ? 'Entrenadora' : 'Entrenador';
+  
   updateBadge();
 
   var btnA = document.getElementById('btn-aceptar');

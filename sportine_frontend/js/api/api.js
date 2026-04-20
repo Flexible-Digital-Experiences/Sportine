@@ -556,6 +556,7 @@ const Session = {
     localStorage.setItem('sp_nombre',   datosLogin.nombre);
     localStorage.setItem('sp_apellidos',datosLogin.apellidos);
     localStorage.setItem('sp_rol',      datosLogin.rol);
+    localStorage.setItem('sp_sexo',     datosLogin.sexo || 'Masculino');
   },
 
   // Lee el token guardado
@@ -590,6 +591,7 @@ const Session = {
     localStorage.removeItem('sp_nombre');
     localStorage.removeItem('sp_apellidos');
     localStorage.removeItem('sp_rol');
+    localStorage.removeItem('sp_sexo');
   },
 };
 
