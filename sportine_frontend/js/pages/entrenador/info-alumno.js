@@ -261,6 +261,8 @@ function setupUI() {
   });
   var sn = document.getElementById('sidebar-name');
   if (sn) sn.textContent = nombreCompleto || getUsuario();
+  var _roleEl = document.querySelector('.user-chip-role');
+  if (_roleEl) _roleEl.textContent = (localStorage.getItem('sp_sexo') === 'Femenino') ? 'Entrenadora' : 'Entrenador';
 
   var btnBack = document.getElementById('btn-back');
   if (btnBack) btnBack.addEventListener('click', function() { window.history.back(); });
