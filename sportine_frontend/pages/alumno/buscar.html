@@ -88,11 +88,9 @@
     <p class="section-title-lg" id="seccion-titulo">Entrenadores recomendados</p>
 
     <!-- Lista de entrenadores -->
-    <div id="lista-entrenadores">
-      <!-- Generado por JS -->
-    </div>
+    <div id="lista-entrenadores"></div>
 
-    <!-- Estado vacío -->
+    <!-- Estado vacío (fallback, el JS lo reemplaza) -->
     <div class="empty-search" id="empty-state" style="display:none">
       <div class="empty-search-icon">🔍</div>
       <p class="empty-search-title">No se encontraron entrenadores</p>
@@ -126,6 +124,9 @@
   </nav>
 
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- ✅ api.js PRIMERO, luego el script de la página -->
+  <script src="../../js/api/api.js"></script>
   <script src="../../js/pages/alumno/buscar.js"></script>
 </body>
 </html>

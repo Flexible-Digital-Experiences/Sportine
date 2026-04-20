@@ -3,6 +3,7 @@ package com.sportine.backend.controler;
 import com.sportine.backend.service.PayPalPlatformPartnerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,8 @@ import java.util.Map;
 public class EntrenadorPayPalController {
 
     private final PayPalPlatformPartnerService paypalPartnerService;
+    @Value("${sportine.frontend-url:http://localhost:5500}")
+    private String frontendUrl;
 
     /**
      * Endpoint 1: Iniciar onboarding
@@ -60,40 +63,46 @@ public class EntrenadorPayPalController {
             @RequestHeader(value = "User-Agent", defaultValue = "") String userAgent) {
 
         try {
-            log.info("Callback de onboarding recibido - merchantId: {}, userAgent: {}", merchantId, userAgent);
+            log.info("Callback de onboarding recibido - merchantId: {}", merchantId);
 
             if (merchantId == null || merchantIdInPayPal == null) {
                 throw new RuntimeException("Faltan parámetros requeridos del onboarding");
             }
 
-            // Verificar y completar onboarding
             Map<String, Object> detalles = paypalPartnerService.verificarOnboarding(merchantId, null);
             String trackingId = (String) detalles.get("tracking_id");
 
             boolean emailConfirmed = "true".equalsIgnoreCase(isEmailConfirmed);
             paypalPartnerService.completarOnboarding(merchantId, merchantIdInPayPal, trackingId, emailConfirmed);
 
-            // Detectar si viene desde Android o web
             boolean esAndroid = userAgent.toLowerCase().contains("android");
 
             if (esAndroid) {
-                // Redirigir a deep link de la app
                 log.info("Redirigiendo a app Android via deep link");
                 return ResponseEntity.status(302)
                         .header("Location", "sportine://onboarding/success")
                         .build();
             } else {
-                // Redirigir a página web (cuando exista), por ahora JSON
-                log.info("Redirigiendo a web");
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", true);
-                response.put("message", "¡Onboarding completado exitosamente!");
-                response.put("merchant_id", merchantId);
-                return ResponseEntity.ok(response);
+                // ✅ Igual que AlumnoSuscripcionController: redirect 302 al frontend web
+                String location = frontendUrl
+                        + "/pages/entrenador/onboarding-paypal.html?onboarding=success";
+                log.info("Redirigiendo a frontend web: {}", location);
+                return ResponseEntity.status(302)
+                        .header("Location", location)
+                        .build();
             }
 
         } catch (Exception e) {
             log.error("Error en callback de onboarding: {}", e.getMessage(), e);
+            // En error también redirigir al frontend, no devolver JSON
+            boolean esAndroid = userAgent.toLowerCase().contains("android");
+            if (!esAndroid) {
+                String location = frontendUrl
+                        + "/pages/entrenador/onboarding-paypal.html?onboarding=error";
+                return ResponseEntity.status(302)
+                        .header("Location", location)
+                        .build();
+            }
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
             errorResponse.put("message", "Error completando onboarding: " + e.getMessage());

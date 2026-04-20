@@ -14,8 +14,8 @@ public interface BuscarEntrenadorNombreRepository extends JpaRepository<Usuario,
 
     /**
      * Buscar entrenadores por nombre (SIN filtro de estado)
-     * FILTRO PAYPAL: Solo muestra entrenadores con onboarding_status = 'completed'
-     * FILTRO LÍMITE: Solo muestra entrenadores con disponibilidad
+     * Cuenta alumnos desde Entrenador_Alumno
+     * excluyendo finalizado
      */
     @Query(value = """
         SELECT
@@ -24,26 +24,28 @@ public interface BuscarEntrenadorNombreRepository extends JpaRepository<Usuario,
             ie.foto_perfil AS fotoPerfil,
             COALESCE(AVG(c.calificacion), 0.0) AS ratingPromedio,
             ie.limite_alumnos AS limiteAlumnos,
-            COUNT(DISTINCT ea.usuario_alumno) AS alumnosActuales
+            COUNT(DISTINCT ea.id_relacion) AS alumnosActuales
         FROM Usuario u
         INNER JOIN Usuario_Rol ur ON u.usuario = ur.usuario
         INNER JOIN Rol r ON ur.id_rol = r.id_rol
         LEFT JOIN Informacion_Entrenador ie ON u.usuario = ie.usuario
         LEFT JOIN Calificaciones c ON u.usuario = c.usuario_calificado
-        LEFT JOIN Entrenador_Alumno ea ON u.usuario = ea.usuario_entrenador 
-            AND ea.status_relacion = 'activo'
+        LEFT JOIN Entrenador_Alumno ea
+            ON u.usuario = ea.usuario_entrenador
+            AND ea.status_relacion != 'finalizado'
         WHERE r.rol = 'entrenador'
           AND (:query IS NULL OR LOWER(CONCAT(u.nombre, ' ', u.apellidos)) LIKE LOWER(CONCAT('%', :query, '%')))
           AND ie.onboarding_status = 'completed'
         GROUP BY u.usuario, u.nombre, u.apellidos, ie.foto_perfil, ie.limite_alumnos
+        HAVING COUNT(DISTINCT ea.id_relacion) < ie.limite_alumnos
         ORDER BY ratingPromedio DESC, u.nombre ASC
         """, nativeQuery = true)
     List<Map<String, Object>> buscarEntrenadores(@Param("query") String query);
 
     /**
      * Buscar mejores entrenadores del mismo estado (carga inicial)
-     * FILTRO PAYPAL: Solo muestra entrenadores con onboarding_status = 'completed'
-     * FILTRO LÍMITE: Solo muestra entrenadores con disponibilidad
+     * Cuenta alumnos desde Entrenador_Alumno
+     * excluyendo finalizado
      */
     @Query(value = """
         SELECT
@@ -52,19 +54,20 @@ public interface BuscarEntrenadorNombreRepository extends JpaRepository<Usuario,
             ie.foto_perfil AS fotoPerfil,
             COALESCE(AVG(c.calificacion), 0.0) AS ratingPromedio,
             ie.limite_alumnos AS limiteAlumnos,
-            COUNT(DISTINCT ea.usuario_alumno) AS alumnosActuales
+            COUNT(DISTINCT ea.id_relacion) AS alumnosActuales
         FROM Usuario u
         INNER JOIN Usuario_Rol ur ON u.usuario = ur.usuario
         INNER JOIN Rol r ON ur.id_rol = r.id_rol
         LEFT JOIN Informacion_Entrenador ie ON u.usuario = ie.usuario
         LEFT JOIN Calificaciones c ON u.usuario = c.usuario_calificado
-        LEFT JOIN Entrenador_Alumno ea ON u.usuario = ea.usuario_entrenador 
-            AND ea.status_relacion = 'activo'
+        LEFT JOIN Entrenador_Alumno ea
+            ON u.usuario = ea.usuario_entrenador
+            AND ea.status_relacion != 'finalizado'
         WHERE r.rol = 'entrenador'
           AND u.id_estado = :idEstado
           AND ie.onboarding_status = 'completed'
         GROUP BY u.usuario, u.nombre, u.apellidos, ie.foto_perfil, ie.limite_alumnos
-        HAVING COUNT(DISTINCT ea.usuario_alumno) < ie.limite_alumnos
+        HAVING COUNT(DISTINCT ea.id_relacion) < ie.limite_alumnos
         ORDER BY ratingPromedio DESC, u.nombre ASC
         LIMIT 20
         """, nativeQuery = true)

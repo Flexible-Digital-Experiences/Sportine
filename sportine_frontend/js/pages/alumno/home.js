@@ -1100,7 +1100,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   _renderTopbar();
   buildModal();
-  _buildBottomSheet(); // ✅ NUEVO
+  _buildBottomSheet();
   _cargarHome();
 
   document.getElementById('topbar-menu').addEventListener('click', function() {
