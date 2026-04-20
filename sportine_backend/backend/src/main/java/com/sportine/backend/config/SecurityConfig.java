@@ -9,10 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-// ── NUEVO IMPORT ─────────────────────────────────────────────
-// Necesitamos inyectar el CorsConfigurationSource que
-// definimos en CorsConfig.java
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
@@ -21,40 +17,43 @@ import org.springframework.web.cors.CorsConfigurationSource;
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
-
-    // ── NUEVO: inyectar el bean de CORS ──────────────────────
-    // Spring lo encuentra automáticamente porque está definido
-    // como @Bean en CorsConfig.java
     private final CorsConfigurationSource corsConfigurationSource;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        // 1. Deshabilitamos CSRF
+        // 1. CSRF deshabilitado (app stateless con JWT)
         http.csrf(csrf -> csrf.disable());
 
-        // 2. ── NUEVO: Habilitar CORS con nuestra configuración ──
-        //
-        // Esta línea le dice a Spring Security que use las reglas
-        // de CORS que definimos en CorsConfig.java.
-        //
-        // ¿Por qué hay que hacerlo aquí Y en CorsConfig?
-        // Spring Security tiene su propia capa de filtros que
-        // procesa las peticiones ANTES que el resto de Spring.
-        // Si solo defines CorsConfig pero no lo registras aquí,
-        // Spring Security rechaza las peticiones OPTIONS (preflight)
-        // antes de que lleguen a tu configuración de CORS.
-        //
+        // 2. CORS
         http.cors(cors -> cors.configurationSource(corsConfigurationSource));
 
-        // 3. Rutas públicas y privadas (sin cambios)
+        // 3. Rutas
         http.authorizeHttpRequests(auth -> auth
 
+                // ── Archivos estáticos (HTML, JS, CSS, imágenes) ──────────
+                // Spring Security los bloqueaba con 403 porque no traen JWT.
+                // PayPal redirige al navegador a /pages/alumno/ver-entrenador.html
+                // y sin esto el backend rechaza la petición antes de servirla.
+                .requestMatchers(
+                        "/pages/**",
+                        "/js/**",
+                        "/css/**",
+                        "/img/**",
+                        "/images/**",
+                        "/fonts/**",
+                        "/favicon.ico",
+                        "/",
+                        "/index.html"
+                ).permitAll()
+
+                // ── API pública ───────────────────────────────────────────
                 .requestMatchers(
                         "/api/usuarios/login",
                         "/api/usuarios/registrar",
-                        "/api/usuarios/estados",           // ← añadido: necesario para cargar el select de estados en registro
+                        "/api/usuarios/estados",
                         "/api/v2/entrenador/paypal/verificar-onboarding",
+                        // Callbacks de PayPal — llegan sin JWT (redirect del navegador)
                         "/api/v2/estudiante/suscripcion/pago/success",
                         "/api/v2/estudiante/suscripcion/pago/cancel"
                 ).permitAll()
@@ -66,12 +65,12 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
         );
 
-        // 4. Sesiones stateless (sin cambios)
+        // 4. Stateless
         http.sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
-        // 5. Filtro JWT (sin cambios)
+        // 5. Filtro JWT
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

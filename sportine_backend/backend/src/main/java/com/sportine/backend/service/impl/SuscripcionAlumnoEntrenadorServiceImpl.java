@@ -40,7 +40,6 @@ public class SuscripcionAlumnoEntrenadorServiceImpl implements SuscripcionAlumno
             log.info("Creando suscripción: Estudiante={}, Entrenador={}, Deporte={}",
                     usuarioEstudiante, usuarioEntrenador, idDeporte);
 
-            // Verificar que el entrenador existe y está onboarded
             InformacionEntrenador entrenador = entrenadorRepository.findByUsuario(usuarioEntrenador)
                     .orElseThrow(() -> new RuntimeException("Entrenador no encontrado"));
 
@@ -48,21 +47,17 @@ public class SuscripcionAlumnoEntrenadorServiceImpl implements SuscripcionAlumno
                 throw new RuntimeException("El entrenador no puede recibir pagos aún");
             }
 
-            // Verificar que no existe ya una suscripción activa
             if (tieneSuscripcionActiva(usuarioEstudiante, usuarioEntrenador, idDeporte)) {
                 throw new RuntimeException("Ya existe una suscripción activa con este entrenador");
             }
 
-            // Obtener costo de mensualidad
             Double costoMensualidad = entrenador.getCostoMensualidad().doubleValue();
 
-            // Calcular montos
             BigDecimal montoTotal = new BigDecimal(costoMensualidad).setScale(2, RoundingMode.HALF_UP);
             BigDecimal comision = montoTotal.multiply(new BigDecimal(comisionPorcentaje))
                     .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
             BigDecimal montoEntrenador = montoTotal.subtract(comision);
 
-            // Crear orden en PayPal PRIMERO para obtener el order_id
             Map<String, String> paypalResponse = paypalOrderService.crearOrdenMultiparty(
                     usuarioEstudiante,
                     usuarioEntrenador,
@@ -75,7 +70,6 @@ public class SuscripcionAlumnoEntrenadorServiceImpl implements SuscripcionAlumno
             String orderId = paypalResponse.get("order_id");
             log.info("✅ Orden PayPal creada: {}", orderId);
 
-            // Guardar suscripción en BD con el order_id ya disponible
             AlumnoSuscripcionEntrenador suscripcion = new AlumnoSuscripcionEntrenador();
             suscripcion.setUsuarioEstudiante(usuarioEstudiante);
             suscripcion.setUsuarioEntrenador(usuarioEntrenador);
@@ -101,23 +95,41 @@ public class SuscripcionAlumnoEntrenadorServiceImpl implements SuscripcionAlumno
 
     @Override
     @Transactional
-    public AlumnoSuscripcionEntrenador confirmarSuscripcion(String orderId, String vaultId) {
+    public AlumnoSuscripcionEntrenador confirmarSuscripcion(String orderId, String payerId) {
         try {
-            log.info("Confirmando suscripción - Order ID: {}", orderId);
+            log.info("Confirmando suscripción - Order ID: {}, PayerID: {}", orderId, payerId);
 
             // Buscar suscripción por order_id
             AlumnoSuscripcionEntrenador suscripcion = suscripcionRepository.findBySubscriptionId(orderId)
                     .orElseThrow(() -> new RuntimeException("Suscripción no encontrada para order_id: " + orderId));
 
-            // Verificar que la orden fue capturada exitosamente
+            // ── PASO 1: Verificar estado actual ───────────────────────────
             Map<String, Object> orderDetails = paypalOrderService.obtenerDetallesOrden(orderId);
             String status = (String) orderDetails.get("status");
+            log.info("Estado actual de la orden {}: {}", orderId, status);
 
-            if (!"COMPLETED".equals(status)) {
-                throw new RuntimeException("La orden no está completada. Estado: " + status);
+            // ── PASO 2: Si está APPROVED, hacer CAPTURE ───────────────────
+            // PayPal Orders v2: CREATE → usuario aprueba (APPROVED) → tú capturas (COMPLETED)
+            // Sin el capture el dinero no se mueve y el estado queda en APPROVED.
+            if ("APPROVED".equals(status)) {
+                log.info("Orden APPROVED — ejecutando capture para order_id: {}", orderId);
+                try {
+                    Map<String, Object> captureResult = paypalOrderService.capturarOrden(orderId);
+                    String nuevoStatus = (String) captureResult.get("status");
+                    log.info("Capture ejecutado — nuevo estado: {}", nuevoStatus);
+                    status = nuevoStatus;
+                } catch (Exception captureEx) {
+                    log.error("Error ejecutando capture: {}", captureEx.getMessage(), captureEx);
+                    throw new RuntimeException("Error al capturar el pago en PayPal: " + captureEx.getMessage(), captureEx);
+                }
             }
 
-            // Activar suscripción
+            // ── PASO 3: Verificar que quedó COMPLETED ─────────────────────
+            if (!"COMPLETED".equals(status)) {
+                throw new RuntimeException("La orden no pudo completarse. Estado final: " + status);
+            }
+
+            // ── PASO 4: Activar suscripción en BD ─────────────────────────
             suscripcion.setStatusSuscripcion(AlumnoSuscripcionEntrenador.StatusSuscripcion.active);
             suscripcion.setFechaInicioSuscripcion(LocalDate.now());
             suscripcion.setFechaProximoPago(LocalDate.now().plusMonths(1));
@@ -125,7 +137,7 @@ public class SuscripcionAlumnoEntrenadorServiceImpl implements SuscripcionAlumno
             AlumnoSuscripcionEntrenador suscripcionActivada = suscripcionRepository.save(suscripcion);
             log.info("✅ Suscripción activada - ID: {}", suscripcionActivada.getIdSuscripcion());
 
-            // Actualizar relación en Entrenador_Alumno a 'activo'
+            // ── PASO 5: Actualizar relación a 'activo' ────────────────────
             entrenadorAlumnoRepository.actualizarEstadoRelacion(
                     suscripcion.getUsuarioEntrenador(),
                     suscripcion.getUsuarioEstudiante(),
@@ -152,12 +164,9 @@ public class SuscripcionAlumnoEntrenadorServiceImpl implements SuscripcionAlumno
             AlumnoSuscripcionEntrenador suscripcion = suscripcionRepository.findById(idSuscripcion)
                     .orElseThrow(() -> new RuntimeException("Suscripción no encontrada"));
 
-            // Cancelar pero mantener activa hasta fecha_proximo_pago
-            // El scheduler la marcará como expired cuando venza el periodo
             suscripcion.setStatusSuscripcion(AlumnoSuscripcionEntrenador.StatusSuscripcion.cancelled);
             suscripcion.setFechaCancelacion(LocalDate.now());
             suscripcion.setMotivoCancelacion(motivo);
-            // fecha_fin_suscripcion = fecha_proximo_pago (el alumno tiene servicio hasta esa fecha)
             suscripcion.setFechaFinSuscripcion(suscripcion.getFechaProximoPago());
 
             suscripcionRepository.save(suscripcion);

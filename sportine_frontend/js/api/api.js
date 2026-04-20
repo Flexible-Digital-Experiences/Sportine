@@ -678,4 +678,238 @@ Object.assign(Api, {
     });
     return _handleResponse(response);
   },
+
+  // ── BUSCAR ENTRENADORES ────────────────────────────────────────
+  // GET /api/buscar-entrenadores?query=...
+  // Sin query → top entrenadores del mismo estado
+  async buscarEntrenadores(query) {
+    const url = query
+      ? `${BASE_URL}/api/buscar-entrenadores?query=${encodeURIComponent(query)}`
+      : `${BASE_URL}/api/buscar-entrenadores`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: _getHeaders(true),
+    });
+    return _handleResponse(response);
+  },
+ 
+  // ── VER PERFIL DE ENTRENADOR ───────────────────────────────────
+  // GET /api/buscar-entrenadores/ver/{usuario}
+  // Devuelve PerfilEntrenadorDTO con estadoRelacion, reseñas, especialidades
+  async verPerfilEntrenador(usuarioEntrenador) {
+    const response = await fetch(
+      `${BASE_URL}/api/buscar-entrenadores/ver/${usuarioEntrenador}`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(response);
+  },
+ 
+  // ── FORMULARIO DE SOLICITUD ────────────────────────────────────
+  // GET /api/Solicitudes/formulario/{usuarioEntrenador}
+  // Devuelve FormularioSolicitudDTO con deportesDisponibles
+  async obtenerFormularioSolicitud(usuarioEntrenador) {
+    const response = await fetch(
+      `${BASE_URL}/api/Solicitudes/formulario/${usuarioEntrenador}`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(response);
+  },
+ 
+  // ── INFO DE DEPORTE PARA EL ALUMNO ────────────────────────────
+  // GET /api/Solicitudes/deporte/{idDeporte}
+  // Devuelve InfoDeporteAlumnoDTO: { tieneNivelRegistrado, nivelActual }
+  async obtenerInfoDeporte(idDeporte) {
+    const response = await fetch(
+      `${BASE_URL}/api/Solicitudes/deporte/${idDeporte}`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(response);
+  },
+ 
+  // ── ENVIAR SOLICITUD ───────────────────────────────────────────
+  // POST /api/Solicitudes/enviar
+  // Body: { usuarioEntrenador, idDeporte, nivel, motivo }
+  async enviarSolicitud(datos) {
+    const response = await fetch(`${BASE_URL}/api/Solicitudes/enviar`, {
+      method: 'POST',
+      headers: _getHeaders(true),
+      body: JSON.stringify(datos),
+    });
+    return _handleResponse(response);
+  },
+ 
+  // ── VERIFICAR SOLICITUD PENDIENTE ──────────────────────────────
+  // GET /api/Solicitudes/pendiente/{usuarioEntrenador}
+  async verificarSolicitudPendiente(usuarioEntrenador) {
+    const response = await fetch(
+      `${BASE_URL}/api/Solicitudes/pendiente/${usuarioEntrenador}`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(response);
+  },
+ 
+  // ── MIS SOLICITUDES ENVIADAS ───────────────────────────────────
+  // GET /api/Solicitudes/enviadas
+  async obtenerSolicitudesEnviadas() {
+    const response = await fetch(`${BASE_URL}/api/Solicitudes/enviadas`, {
+      method: 'GET',
+      headers: _getHeaders(true),
+    });
+    return _handleResponse(response);
+  },
+ 
+  // ── ELIMINAR SOLICITUD ─────────────────────────────────────────
+  // DELETE /api/Solicitudes/{idSolicitud}
+  async eliminarSolicitud(idSolicitud) {
+    const response = await fetch(`${BASE_URL}/api/Solicitudes/${idSolicitud}`, {
+      method: 'DELETE',
+      headers: _getHeaders(true),
+    });
+    if (!response.ok) throw new Error('Error al eliminar solicitud');
+  },
+ 
+  // ── VERIFICAR SI ENTRENADOR PUEDE RECIBIR PAGOS ────────────────
+  // Usa el perfil: si onboarding_status === 'completed' puede recibir pagos
+  // GET /api/buscar-entrenadores/ver/{usuario} → estadoRelacion.puedeRecibirPagos
+  // En este caso lo inferimos del perfil. Si necesitas endpoint dedicado:
+  // GET /api/v2/entrenador/paypal/puede-recibir-pagos?usuario=...
+  async verificarEntrenadorPuedeRecibirPagos(usuarioEntrenador) {
+    const response = await fetch(
+      `${BASE_URL}/api/v2/entrenador/paypal/puede-recibir-pagos?usuario=${usuarioEntrenador}`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(response);
+  },
+ 
+  // ── CREAR SUSCRIPCIÓN (PAGO) ───────────────────────────────────
+  // POST /api/v2/estudiante/suscripcion/crear
+  // Params: usuarioEstudiante, usuarioEntrenador, idDeporte
+  // Devuelve: { success, order_id, approval_url }
+  async crearSuscripcion(usuarioEstudiante, usuarioEntrenador, idDeporte, source) {
+    const src = source || 'android';
+    const response = await fetch(
+      `${BASE_URL}/api/v2/estudiante/suscripcion/crear` +
+      `?usuarioEstudiante=${encodeURIComponent(usuarioEstudiante)}` +
+      `&usuarioEntrenador=${encodeURIComponent(usuarioEntrenador)}` +
+      `&idDeporte=${idDeporte}` +
+      `&source=${src}`,   // ✅ indica al backend si es web o android
+      { method: 'POST', headers: _getHeaders(true) }
+    );
+    return _handleResponse(response);
+  },
+ 
+  // ── CONFIRMAR SUSCRIPCIÓN ──────────────────────────────────────
+// POST /api/v2/estudiante/suscripcion/confirmar?token=...&payerId=...
+// El token viene de la URL de retorno de PayPal (?token=ABC&PayerID=XYZ)
+async confirmarSuscripcion(token, payerId) {
+  let url = `${BASE_URL}/api/v2/estudiante/suscripcion/confirmar?token=${encodeURIComponent(token)}`;
+  if (payerId) url += `&payerId=${encodeURIComponent(payerId)}`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: _getHeaders(true),
+  });
+  return _handleResponse(response);
+},
+
+// ── CANCELAR SUSCRIPCIÓN ───────────────────────────────────────
+// POST /api/v2/estudiante/suscripcion/cancelar?idSuscripcion=...&motivo=...
+async cancelarSuscripcionPorUsuario(idSuscripcion, motivo) {
+  const response = await fetch(
+    `${BASE_URL}/api/v2/estudiante/suscripcion/cancelar` +
+    `?idSuscripcion=${idSuscripcion}` +
+    `&motivo=${encodeURIComponent(motivo || 'Cancelada por el alumno')}`,
+    { method: 'POST', headers: _getHeaders(true) }
+  );
+  return _handleResponse(response);
+},
+ 
+  // ── ENVIAR CALIFICACIÓN ────────────────────────────────────────
+  // POST /api/calificaciones/enviar
+  // Body: { usuarioEntrenador, calificacion (1-5), comentario }
+  async enviarCalificacion(datos) {
+    const response = await fetch(`${BASE_URL}/api/calificaciones/enviar`, {
+      method: 'POST',
+      headers: _getHeaders(true),
+      body: JSON.stringify(datos),
+    });
+    return _handleResponse(response);
+  },
+
+  // ── SOLICITUDES DEL ENTRENADOR ─────────────────────────────────
+
+  // GET /api/entrenador/solicitudes/en-revision/{usuario}
+  async obtenerSolicitudesEntrenador(usuarioEntrenador) {
+    const response = await fetch(
+      `${BASE_URL}/api/entrenador/solicitudes/en-revision/${encodeURIComponent(usuarioEntrenador)}`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(response);
+  },
+
+  // POST /api/entrenador/solicitudes/responder/{usuario}
+  // Body: { idSolicitud, accion: "aceptar" | "rechazar" }
+  async responderSolicitudEntrenador(usuarioEntrenador, idSolicitud, accion) {
+    const response = await fetch(
+      `${BASE_URL}/api/entrenador/solicitudes/responder/${encodeURIComponent(usuarioEntrenador)}`,
+      {
+        method: 'POST',
+        headers: _getHeaders(true),
+        body: JSON.stringify({ idSolicitud, accion }),
+      }
+    );
+    return _handleResponse(response);
+  },
+
+  // ── MIS ALUMNOS ────────────────────────────────────────────────
+
+  // GET /api/entrenador/alumnos/{usuarioEntrenador}
+  async obtenerMisAlumnos(usuarioEntrenador) {
+    const response = await fetch(
+      `${BASE_URL}/api/entrenador/alumnos/${encodeURIComponent(usuarioEntrenador)}`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(response);
+  },
+
+  // ── INFO ALUMNO ────────────────────────────────────────────────
+
+  // GET /api/entrenador/alumno/detalle/{ue}/{ua}
+  async obtenerDetalleAlumno(usuarioEntrenador, usuarioAlumno) {
+    const response = await fetch(
+      `${BASE_URL}/api/entrenador/alumno/detalle/${encodeURIComponent(usuarioEntrenador)}/${encodeURIComponent(usuarioAlumno)}`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(response);
+  },
+
+  // PUT /api/entrenador/alumno/actualizar-nivel/{ue}/{ua}?idDeporte=&nuevoNivel=
+  async actualizarNivelAlumno(usuarioEntrenador, usuarioAlumno, idDeporte, nuevoNivel) {
+    const response = await fetch(
+      `${BASE_URL}/api/entrenador/alumno/actualizar-nivel/${encodeURIComponent(usuarioEntrenador)}/${encodeURIComponent(usuarioAlumno)}?idDeporte=${idDeporte}&nuevoNivel=${nuevoNivel}`,
+      { method: 'PUT', headers: _getHeaders(true) }
+    );
+    return _handleResponse(response);
+  },
+
+  // ── ONBOARDING PAYPAL ENTRENADOR ───────────────────────────────
+
+  // POST /api/v2/entrenador/paypal/onboarding/iniciar?usuario=
+  // Devuelve: { success, tracking_id, onboarding_url }
+  async iniciarOnboardingPayPal(usuario) {
+    const response = await fetch(
+      `${BASE_URL}/api/v2/entrenador/paypal/onboarding/iniciar?usuario=${encodeURIComponent(usuario)}`,
+      { method: 'POST', headers: _getHeaders(true) }
+    );
+    return _handleResponse(response);
+  },
+
+  // GET /api/v2/entrenador/paypal/verificar-onboarding?usuario=
+  // Devuelve: { success, completado, puede_recibir_pagos, message }
+  async verificarOnboardingEntrenador(usuario) {
+    const response = await fetch(
+      `${BASE_URL}/api/v2/entrenador/paypal/verificar-onboarding?usuario=${encodeURIComponent(usuario)}`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(response);
+  },
 });

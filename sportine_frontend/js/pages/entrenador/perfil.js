@@ -33,11 +33,6 @@ function calcularIniciales(nombre, apellidos) {
   return (n + a).toUpperCase();
 }
 
-/* ── Render ── */
-// ✅ INTEGRADO: Ahora recibe el objeto del backend directamente.
-// Los campos del DTO son: usuario, nombre, apellidos, sexo,
-// estado, ciudad, correo, costoMensualidad, limiteAlumnos,
-// descripcionPerfil, fotoPerfil, deportes[], totalAlumnos, totalAmigos
 function renderPerfil(p) {
   var iniciales = calcularIniciales(p.nombre, p.apellidos);
   var fullName  = (p.nombre || '') + ' ' + (p.apellidos || '');
@@ -64,8 +59,6 @@ function renderPerfil(p) {
   var badgeResenas = document.getElementById('badge-resenas');
   if (badgeResenas) badgeResenas.textContent = p.totalAmigos || 0;
 
-  // ✅ El backend no devuelve calificación en este endpoint todavía,
-  // se deja en guión hasta que se integre el módulo de reseñas
   var badgeCalif = document.getElementById('badge-calificacion');
   if (badgeCalif) badgeCalif.textContent = '— ⭐';
 
@@ -116,8 +109,6 @@ function renderPerfil(p) {
     clasesDinero.textContent = '$' + (p.costoMensualidad * (p.totalAlumnos || 0)).toLocaleString() + ' MXN / mes';
   }
 
-  // ✅ Deportes: el backend devuelve array de strings (nombres),
-  // como no tenemos emojis del backend usamos un mapa local
   var EMOJI_MAP = {
     'Natación':'🏊','Cardio':'🏃','Ciclismo':'🚴','Fútbol':'⚽',
     'Pesas':'🏋️','Tenis':'🎾','Básquetbol':'🏀','Boxeo':'🥊',
@@ -133,11 +124,8 @@ function renderPerfil(p) {
       + '<span class="deporte-chip-label">' + d.nombre + '</span></div>';
   }).join('');
 
-  // Banner premium (sin cambios, lógica local por ahora)
-  var bannerEl = document.getElementById('premium-banner');
-  if (bannerEl) bannerEl.style.display = 'flex';
-  var premiumBadge = document.getElementById('premium-badge');
-  if (premiumBadge) premiumBadge.style.display = 'none';
+  // ✅ CAMBIO: En lugar de mostrar banner premium, verificar PayPal
+  verificarPayPalPerfil();
 
   // Mostrar foto de Cloudinary si existe
   var avatarRing = document.getElementById('entre-avatar');
@@ -148,7 +136,30 @@ function renderPerfil(p) {
       imgExistente.style.display = 'block';
     }
   }
+}
 
+/* ── Verificar PayPal y mostrar banner correcto ── */
+async function verificarPayPalPerfil() {
+  var usuario = Session.getUsuario();
+  if (!usuario) return;
+  try {
+    var resp = await fetch(
+      BASE_URL + '/api/v2/entrenador/paypal/puede-recibir-pagos?usuario=' + encodeURIComponent(usuario),
+      { headers: { 'Authorization': 'Bearer ' + (localStorage.getItem('sp_token') || '') } }
+    );
+    if (!resp.ok) return;
+    var data = await resp.json();
+    var puedeRecibir = data.puede_recibir_pagos || data.puedeRecibirPagos || false;
+    var bannerPaypal    = document.getElementById('paypal-banner');
+    var bannerCompletado = document.getElementById('paypal-completado');
+    if (puedeRecibir) {
+      if (bannerCompletado) bannerCompletado.style.display = 'flex';
+      if (bannerPaypal)     bannerPaypal.style.display     = 'none';
+    } else {
+      if (bannerPaypal)     bannerPaypal.style.display     = 'flex';
+      if (bannerCompletado) bannerCompletado.style.display = 'none';
+    }
+  } catch (err) { /* silencioso */ }
 }
 
 /* ── Config Drawer ── */
@@ -204,11 +215,11 @@ function showConfigMenu() {
     { icon:'🏅', label:'Gestionar deportes',      action:'openGestionarDeportes()' },
     { icon:'📋', label:'Detalles de clases',      action:'openDetallesClases()' },
     { icon:'🔒', label:'Cambiar contraseña',      action:'openCambiarPass()' },
-    { icon:'👑', label:'Mejorar a Premium',       action:'openPremium()', highlight:true },
+    { icon:'🔗', label:'Conectar PayPal',         action:'openPayPalOnboarding()' },
     { icon:'🚪', label:'Cerrar sesión',           action:'confirmarLogout()', danger:true },
   ];
   var html = items.map(function(item) {
-    var color = item.danger ? '#EF4444' : item.highlight ? '#f89a02' : '#1A1A1A';
+    var color = item.danger ? '#EF4444' : '#1A1A1A';
     return '<button onclick="' + item.action + '" style="width:100%;display:flex;align-items:center;gap:14px;padding:16px;border:none;background:#fff;cursor:pointer;border-bottom:1px solid #F3F4F6;font-family:\'DM Sans\',sans-serif;font-size:0.95rem;font-weight:600;color:' + color + ';text-align:left">'
       + '<span style="font-size:1.2rem">' + item.icon + '</span>'
       + '<span style="flex:1">' + item.label + '</span>'
@@ -218,9 +229,14 @@ function showConfigMenu() {
   setConfigContent('Configuración', html);
 }
 
+/* ── PayPal Onboarding desde Config ── */
+window.openPayPalOnboarding = function() {
+  closeConfig();
+  window.location.href = 'onboarding-paypal.html';
+};
+
 /* ── Ver detalles del perfil ── */
 window.openVerDetalles = function() {
-  // ✅ INTEGRADO: Usa PERFIL_ACTUAL en lugar de MOCK_PERFIL
   var p = PERFIL_ACTUAL;
   if (!p) return;
   var iniciales = calcularIniciales(p.nombre, p.apellidos);
@@ -274,7 +290,6 @@ function detalleRow(label, val) {
 
 /* ── Modificar perfil ── */
 window.openEditPerfil = function() {
-  // ✅ INTEGRADO: Usa PERFIL_ACTUAL
   var p = PERFIL_ACTUAL;
   if (!p) return;
   var html = backBtn()
@@ -294,7 +309,6 @@ function field(label, id, val, type) {
     + '<input id="' + id + '" type="' + type + '" value="' + val + '" style="width:100%;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 14px;font-family:\'DM Sans\',sans-serif;font-size:0.9rem;outline:none"></div>';
 }
 
-// ✅ INTEGRADO: Ahora hace PUT real al backend
 window.guardarPerfil = function() {
   var usuario  = Session.getUsuario();
   var btn      = document.getElementById('btn-guardar-perfil');
@@ -307,7 +321,6 @@ window.guardarPerfil = function() {
 
   if (btn) { btn.disabled = true; btn.textContent = 'Guardando…'; }
 
-  // ── Llamada 1: actualizar nombre, apellidos, ciudad, correo ──
   var datosUsuario = {
     nombre:    nuevoNombre     || null,
     apellidos: nuevosApellidos || null,
@@ -315,19 +328,16 @@ window.guardarPerfil = function() {
     correo:    nuevoCorreo     || null,
   };
 
-  // ── Llamada 2: actualizar descripción ──
   var datosEntrenador = {
     descripcionPerfil: nuevaDesc || null,
     correo:            nuevoCorreo || null,
   };
 
-  // Ejecutar ambas en paralelo
   Promise.all([
     Api.actualizarDatosUsuario(usuario, datosUsuario),
     Api.actualizarPerfilEntrenador(usuario, datosEntrenador),
   ])
     .then(function() {
-      // Recargar perfil completo desde el backend
       return Api.obtenerPerfilEntrenador(usuario);
     })
     .then(function(perfilActualizado) {
@@ -343,9 +353,6 @@ window.guardarPerfil = function() {
 };
 
 /* ── Gestionar deportes ── */
-// ✅ INTEGRADO: La lista base se construye con los deportes actuales del backend.
-// Al guardar, compara el estado anterior con el nuevo y hace
-// POST por cada deporte agregado y DELETE por cada uno eliminado.
 window.openGestionarDeportes = function() {
   var TODOS = [
     {emoji:'🏊',nombre:'Natación'}, {emoji:'🏃',nombre:'Cardio'},
@@ -355,7 +362,6 @@ window.openGestionarDeportes = function() {
     {emoji:'🏅',nombre:'Atletismo'},
   ];
 
-  // ✅ Los deportes activos vienen de PERFIL_ACTUAL (strings del backend)
   var activos = (PERFIL_ACTUAL && PERFIL_ACTUAL.deportes) ? PERFIL_ACTUAL.deportes : [];
 
   var html = backBtn()
@@ -381,14 +387,11 @@ window.toggleDeporte = function(btn, nombre) {
   btn.style.color      = on ? '#1A1A1A' : '#1ea1db';
 };
 
-// ✅ INTEGRADO: Compara estado anterior vs nuevo y llama al
-// endpoint correcto por cada cambio (POST agregar / DELETE eliminar)
 window.guardarDeportes = function() {
   var usuario   = Session.getUsuario();
   var anteriores = (PERFIL_ACTUAL && PERFIL_ACTUAL.deportes) ? PERFIL_ACTUAL.deportes.slice() : [];
   var btn       = document.getElementById('btn-guardar-deportes');
 
-  // Leer selección actual del drawer
   var btns   = document.querySelectorAll('#cfg-body [data-active]');
   var nuevos = [];
   btns.forEach(function(b) {
@@ -398,7 +401,6 @@ window.guardarDeportes = function() {
     }
   });
 
-  // Calcular diferencia
   var agregar  = nuevos.filter(function(n) { return anteriores.indexOf(n) === -1; });
   var eliminar = anteriores.filter(function(n) { return nuevos.indexOf(n) === -1; });
 
@@ -409,7 +411,6 @@ window.guardarDeportes = function() {
 
   if (btn) { btn.disabled = true; btn.textContent = 'Guardando…'; }
 
-  // Construir todas las promesas
   var promesas = [];
   agregar.forEach(function(nombre) {
     promesas.push(Api.agregarDeporte(usuario, nombre));
@@ -420,7 +421,6 @@ window.guardarDeportes = function() {
 
   Promise.all(promesas)
     .then(function() {
-      // ✅ Recargar perfil completo desde el backend para tener el estado real
       return Api.obtenerPerfilEntrenador(usuario);
     })
     .then(function(perfilActualizado) {
@@ -447,7 +447,6 @@ window.openDetallesClases = function() {
   setConfigContent('Detalles de clases', html);
 };
 
-// ✅ INTEGRADO: Guarda costo y límite vía PUT
 window.guardarClases = function() {
   var usuario = Session.getUsuario();
   var btn     = document.getElementById('btn-guardar-clases');
@@ -503,7 +502,6 @@ window.guardarPass = function() {
     .then(function() {
       mostrarMensajeDrawer('✅ Contraseña actualizada correctamente', false);
       if (btn) { btn.disabled = false; btn.textContent = 'Cambiar contraseña'; }
-      // Limpiar campos
       document.getElementById('pass-0').value = '';
       document.getElementById('pass-1').value = '';
       document.getElementById('pass-2').value = '';
@@ -512,46 +510,6 @@ window.guardarPass = function() {
       mostrarMensajeDrawer('❌ ' + (err.message || 'Error al cambiar contraseña'), true);
       if (btn) { btn.disabled = false; btn.textContent = 'Cambiar contraseña'; }
     });
-};
-
-/* ── Premium ── */
-window.openPremium = function() {
-  var beneficios = [
-    '✅ Alumnos ilimitados','✅ Estadísticas avanzadas y reportes',
-    '✅ Videollamadas integradas','✅ Soporte prioritario 24/7',
-    '✅ Perfil destacado en búsquedas','✅ Certificado de entrenador verificado',
-  ];
-  var html = backBtn()
-    + '<div style="background:linear-gradient(135deg,#f89a02,#FF6B35);border-radius:18px;padding:24px;text-align:center;margin-bottom:20px">'
-    + '<div style="font-size:2.5rem;margin-bottom:8px">👑</div>'
-    + '<div style="font-family:Sora,sans-serif;font-weight:800;font-size:1.3rem;color:#fff;margin-bottom:4px">Sportine Premium</div>'
-    + '<div style="font-size:0.85rem;color:rgba(255,255,255,0.85)">Lleva tu carrera al siguiente nivel</div>'
-    + '</div>'
-    + '<div style="margin-bottom:20px">'
-    + beneficios.map(function(b) {
-        return '<div style="padding:10px 0;border-bottom:1px solid #F3F4F6;font-size:0.9rem;font-weight:500;color:#1A1A1A">' + b + '</div>';
-      }).join('')
-    + '</div>'
-    + '<div style="background:#FFF8EE;border-radius:12px;padding:16px;margin-bottom:20px;text-align:center">'
-    + '<div style="font-size:0.75rem;color:#9CA3AF;text-transform:uppercase;font-weight:700;margin-bottom:4px">Precio</div>'
-    + '<div style="font-family:Sora,sans-serif;font-weight:800;font-size:2rem;color:#f89a02">$199<span style="font-size:1rem;color:#6B7280">/mes</span></div>'
-    + '<div style="font-size:0.78rem;color:#9CA3AF;margin-top:4px">Cancela cuando quieras</div>'
-    + '</div>'
-    + '<button onclick="suscribirPremium()" style="width:100%;height:54px;background:linear-gradient(135deg,#f89a02,#FF6B35);color:#fff;border:none;border-radius:14px;font-family:\'DM Sans\',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;box-shadow:0 6px 20px rgba(248,154,2,0.4)">👑 Activar Premium</button>'
-    + '<p style="font-size:0.72rem;color:#9CA3AF;text-align:center;margin-top:10px">Al suscribirte aceptas los Términos de Servicio de Sportine</p>';
-  setConfigContent('Mejorar a Premium', html);
-};
-
-window.suscribirPremium = function() {
-  setConfigContent('¡Bienvenido a Premium!',
-    '<div style="text-align:center;padding:30px 0">'
-    + '<div style="font-size:4rem;margin-bottom:16px">👑</div>'
-    + '<div style="font-family:Sora,sans-serif;font-weight:800;font-size:1.2rem;margin-bottom:8px">¡Ya eres Premium!</div>'
-    + '<p style="font-size:0.88rem;color:#6B7280;margin-bottom:24px">Tu cuenta ha sido actualizada. Disfruta todos los beneficios.</p>'
-    + '<button onclick="closeConfig()" style="width:100%;height:50px;background:linear-gradient(135deg,#f89a02,#FF6B35);color:#fff;border:none;border-radius:12px;font-family:\'DM Sans\',sans-serif;font-weight:700;font-size:0.95rem;cursor:pointer">¡Genial! 🎉</button>'
-    + '</div>'
-  );
-  // TODO: POST /api/entrenador/premium/suscribir (pendiente de endpoint)
 };
 
 /* ── Cerrar sesión ── */
@@ -566,7 +524,7 @@ window.confirmarLogout = function() {
 };
 
 window.doLogout = function() {
-  Session.cerrar();   // ✅ Usa Session.cerrar() en lugar de removeItem manual
+  Session.cerrar();
   window.location.href = '../../pages/auth/login.html';
 };
 
@@ -583,7 +541,6 @@ function handleLogout() {
 function mostrarToast(texto, esError) {
   var existing = document.getElementById('sp-toast');
   if (existing) existing.remove();
-
   var toast = document.createElement('div');
   toast.id = 'sp-toast';
   toast.textContent = texto;
@@ -596,7 +553,6 @@ function mostrarToast(texto, esError) {
     'box-shadow:0 4px 16px rgba(0,0,0,0.2);',
   ].join('');
   document.body.appendChild(toast);
-
   setTimeout(function() {
     toast.style.opacity = '0';
     toast.style.transition = 'opacity 0.3s';
@@ -647,69 +603,51 @@ function initFotoPerfilUI() {
   fileInput.style.display = 'none';
   document.body.appendChild(fileInput);
 
-  avatarRing.addEventListener('click', function() {
-    fileInput.click();
-  });
+  avatarRing.addEventListener('click', function() { fileInput.click(); });
 
   fileInput.addEventListener('change', function() {
     var file = fileInput.files[0];
     if (!file) return;
-
     if (file.size > 5 * 1024 * 1024) {
       mostrarToast('La imagen no puede pesar más de 5MB', true);
       return;
     }
-
     var usuario = Session.getUsuario();
-
-    // Preview inmediato mientras sube
     var reader = new FileReader();
     reader.onload = function(e) {
       imgPreview.src = e.target.result;
       imgPreview.style.display = 'block';
     };
     reader.readAsDataURL(file);
-
     mostrarToast('⏳ Subiendo foto...');
-
     Api.actualizarFotoPerfilEntrenador(usuario, file)
       .then(function(perfilActualizado) {
-      PERFIL_ACTUAL = perfilActualizado;
-      imgPreview.src = perfilActualizado.fotoPerfil;
-      imgPreview.style.display = 'block';
-
-      // Ocultar las iniciales del texto
-      avatarRing.childNodes.forEach(function(node) {
-        if (node.nodeType === Node.TEXT_NODE) {
-          node.textContent = '';
-        }
-      });
-
-      mostrarToast('✅ Foto actualizada correctamente');
-    })
+        PERFIL_ACTUAL = perfilActualizado;
+        imgPreview.src = perfilActualizado.fotoPerfil;
+        imgPreview.style.display = 'block';
+        avatarRing.childNodes.forEach(function(node) {
+          if (node.nodeType === Node.TEXT_NODE) node.textContent = '';
+        });
+        mostrarToast('✅ Foto actualizada correctamente');
+      })
       .catch(function(err) {
         imgPreview.src = (PERFIL_ACTUAL && PERFIL_ACTUAL.fotoPerfil) || '';
         imgPreview.style.display = (PERFIL_ACTUAL && PERFIL_ACTUAL.fotoPerfil) ? 'block' : 'none';
         mostrarToast('❌ ' + (err.message || 'Error al subir la foto'), true);
       });
-
     fileInput.value = '';
   });
 }
 
 /* ── Init ── */
-// ✅ INTEGRADO: Carga el perfil real desde el backend al arrancar
 document.addEventListener('DOMContentLoaded', function() {
-
   var usuario = Session.getUsuario();
 
-  // Protección: si no hay sesión, redirigir al login
   if (!usuario || !Session.estaLogueado()) {
     window.location.href = '../../pages/auth/login.html';
     return;
   }
 
-  // Cargar perfil desde el backend
   Api.obtenerPerfilEntrenador(usuario)
     .then(function(perfil) {
       PERFIL_ACTUAL = perfil;
@@ -719,18 +657,16 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .catch(function(err) {
       console.error('Error al cargar perfil:', err);
-      // Si falla, igual construimos el drawer para que el usuario
-      // pueda al menos cerrar sesión
       buildConfigDrawer();
     });
 
-  // Botones — mismos listeners de antes
   var btnSettings = document.getElementById('btn-settings');
   if (btnSettings) btnSettings.addEventListener('click', openConfig);
 
-  var btnPremium = document.getElementById('btn-premium-banner');
-  if (btnPremium) btnPremium.addEventListener('click', function() {
-    openConfig(); setTimeout(window.openPremium, 60);
+  // ✅ CAMBIO: btn-premium-banner → redirige a onboarding PayPal
+  var btnPaypalBanner = document.getElementById('paypal-banner');
+  if (btnPaypalBanner) btnPaypalBanner.addEventListener('click', function() {
+    window.location.href = 'onboarding-paypal.html';
   });
 
   var btnCompletar = document.getElementById('btn-completar');

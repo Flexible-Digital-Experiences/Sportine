@@ -213,7 +213,7 @@ public class PayPalOrderServiceImpl implements PayPalOrderService {
             throw new RuntimeException("Error al crear orden de pago", e);
         }
     }
-
+    
     @Override
     public Map<String, Object> capturarOrden(String orderId) {
         try {
@@ -225,7 +225,9 @@ public class PayPalOrderServiceImpl implements PayPalOrderService {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + accessToken);
 
-            HttpEntity<String> request = new HttpEntity<>(headers);
+            // ✅ PayPal requiere un body vacío en el POST /capture
+            // Sin él devuelve 400 o ignora la petición
+            HttpEntity<String> request = new HttpEntity<>("{}", headers);
 
             ResponseEntity<String> response = restTemplate.postForEntity(
                     getBaseUrl() + "/v2/checkout/orders/" + orderId + "/capture",
@@ -233,31 +235,39 @@ public class PayPalOrderServiceImpl implements PayPalOrderService {
                     String.class
             );
 
+            log.info("Respuesta capture PayPal (status {}): {}", response.getStatusCode(), response.getBody());
+
             JsonObject jsonResponse = gson.fromJson(response.getBody(), JsonObject.class);
 
             Map<String, Object> result = new HashMap<>();
             result.put("id", jsonResponse.get("id").getAsString());
             result.put("status", jsonResponse.get("status").getAsString());
 
-            // Extraer capture ID
-            var purchaseUnits = jsonResponse.getAsJsonArray("purchase_units");
-            if (purchaseUnits.size() > 0) {
-                var firstUnit = purchaseUnits.get(0).getAsJsonObject();
-                var payments = firstUnit.getAsJsonObject("payments");
-                var captures = payments.getAsJsonArray("captures");
-                if (captures.size() > 0) {
-                    var firstCapture = captures.get(0).getAsJsonObject();
-                    result.put("capture_id", firstCapture.get("id").getAsString());
-                    result.put("capture_status", firstCapture.get("status").getAsString());
+            // Extraer capture ID si existe
+            if (jsonResponse.has("purchase_units")) {
+                var purchaseUnits = jsonResponse.getAsJsonArray("purchase_units");
+                if (purchaseUnits.size() > 0) {
+                    var firstUnit = purchaseUnits.get(0).getAsJsonObject();
+                    if (firstUnit.has("payments")) {
+                        var payments = firstUnit.getAsJsonObject("payments");
+                        if (payments.has("captures")) {
+                            var captures = payments.getAsJsonArray("captures");
+                            if (captures.size() > 0) {
+                                var firstCapture = captures.get(0).getAsJsonObject();
+                                result.put("capture_id", firstCapture.get("id").getAsString());
+                                result.put("capture_status", firstCapture.get("status").getAsString());
+                            }
+                        }
+                    }
                 }
             }
 
-            log.info("✅ Orden capturada exitosamente: {}", result);
+            log.info("✅ Orden capturada: id={}, status={}", result.get("id"), result.get("status"));
 
             return result;
 
         } catch (Exception e) {
-            log.error("Error capturando orden: {}", e.getMessage(), e);
+            log.error("Error capturando orden {}: {}", orderId, e.getMessage(), e);
             throw new RuntimeException("Error al capturar orden", e);
         }
     }
