@@ -10,8 +10,6 @@ var solicitudes = [];
 var solicitudesSeleccionadas = new Set();
 var modalOpenId = null;
 
-
-// ✅ FIX 1: getItem, no setItem
 function getUsuario() {
   return localStorage.getItem('sp_usuario') || '';
 }

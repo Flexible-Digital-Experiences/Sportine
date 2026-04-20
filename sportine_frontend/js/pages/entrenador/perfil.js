@@ -47,6 +47,9 @@ function renderPerfil(p) {
   var sidebarName = document.getElementById('sidebar-name');
   if (sidebarName) sidebarName.textContent = fullName;
 
+  var _roleEl = document.querySelector('.user-chip-role');
+  if (_roleEl) _roleEl.textContent = (p.sexo === 'Femenino') ? 'Entrenadora' : 'Entrenador';
+
   var perfilName = document.getElementById('perfil-name');
   if (perfilName) perfilName.textContent = fullName;
 
