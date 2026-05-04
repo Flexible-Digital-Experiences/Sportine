@@ -180,6 +180,7 @@ function showConfigMenu() {
     { icon:'💪', label:'Completar datos físicos',  action:'openDatosFisicos()' },
     { icon:'🔒', label:'Cambiar contraseña',       action:'openCambiarPass()' },
     { icon:'🚪', label:'Cerrar sesión',            action:'confirmarLogout()', danger:true },
+    { icon:'🗑️', label:'Eliminar cuenta', action:'openEliminarCuenta()', danger:true },
   ];
   var html = items.map(function(item) {
     return '<button onclick="' + item.action + '" style="width:100%;display:flex;align-items:center;gap:14px;padding:16px;border:none;background:#fff;cursor:pointer;border-bottom:1px solid #F3F4F6;font-family:\'DM Sans\',sans-serif;font-size:0.95rem;font-weight:600;color:' + (item.danger ? '#EF4444' : '#1A1A1A') + ';text-align:left">'
@@ -414,6 +415,44 @@ window.doLogout = function() {
   window.location.href = '../../pages/auth/login.html';
 };
 
+/* ── Eliminar cuenta ── */
+window.openEliminarCuenta = function() {
+  setConfigContent('Eliminar cuenta',
+    '<div style="text-align:center;padding:16px 0 8px">'
+    + '<div style="font-size:3rem;margin-bottom:12px">⚠️</div>'
+    + '<p style="font-family:Sora,sans-serif;font-weight:700;font-size:1rem;color:#DC2626;margin-bottom:8px">Acción irreversible</p>'
+    + '<p style="font-size:0.85rem;color:#6B7280;margin-bottom:20px">Esta acción es permanente y no se puede deshacer. Ingresa tu contraseña para confirmar.</p>'
+    + '</div>'
+    + '<div style="margin-bottom:16px">'
+    + '<label style="font-size:0.75rem;font-weight:700;color:#9CA3AF;text-transform:uppercase;display:block;margin-bottom:5px">Contraseña</label>'
+    + '<input id="eliminar-pass" type="password" style="width:100%;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 14px;font-family:\'DM Sans\',sans-serif;font-size:0.9rem;outline:none;box-sizing:border-box" placeholder="••••••••">'
+    + '</div>'
+    + '<button id="btn-confirmar-eliminar" onclick="doEliminarCuenta()" style="width:100%;height:50px;background:#DC2626;color:#fff;border:none;border-radius:12px;font-family:\'DM Sans\',sans-serif;font-weight:700;font-size:0.95rem;cursor:pointer;margin-bottom:10px">Eliminar mi cuenta</button>'
+    + '<button onclick="showConfigMenu()" style="width:100%;height:44px;background:none;border:none;color:#9CA3AF;font-family:\'DM Sans\',sans-serif;cursor:pointer">Cancelar</button>'
+  );
+};
+
+window.doEliminarCuenta = function() {
+  var input = document.getElementById('eliminar-pass');
+  var contrasena = input ? input.value.trim() : '';
+  if (!contrasena) {
+    mostrarMensajeDrawer('❌ Ingresa tu contraseña para confirmar.', true);
+    return;
+  }
+  var usuario = Session.getUsuario();
+  var btn = document.getElementById('btn-confirmar-eliminar');
+  if (btn) { btn.disabled = true; btn.textContent = 'Eliminando…'; }
+
+  Api.eliminarCuentaAlumno(usuario, contrasena)
+    .then(function() {
+      Session.cerrar();
+      window.location.href = '../../pages/auth/login.html';
+    })
+    .catch(function(err) {
+      mostrarMensajeDrawer('❌ ' + (err.message || 'Error al eliminar la cuenta'), true);
+      if (btn) { btn.disabled = false; btn.textContent = 'Eliminar mi cuenta'; }
+    });
+};
 window.showConfigMenu = showConfigMenu;
 window.openConfig     = openConfig;
 window.closeConfig    = closeConfig;

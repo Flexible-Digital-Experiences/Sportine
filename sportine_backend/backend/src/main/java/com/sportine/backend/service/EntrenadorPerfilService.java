@@ -41,4 +41,7 @@ public interface EntrenadorPerfilService {
      * @param nombreDeporte Nombre del deporte a eliminar
      */
     void eliminarDeporte(String usuario, String nombreDeporte);
+
+    // Eliminar cuenta del entrenador (soft delete vía rol)
+    void eliminarCuenta(String usuario, String contrasena);
 }

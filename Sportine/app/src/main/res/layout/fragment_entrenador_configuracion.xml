@@ -530,6 +530,22 @@
                     android:textAllCaps="false"
                     android:layout_marginBottom="30dp"/>
 
+                <!-- ✅ NUEVO: Eliminar cuenta -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEliminarCuenta"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Eliminar mi cuenta"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="16dp"
+                    app:backgroundTint="#DC2626"
+                    android:textColor="@android:color/white"
+                    app:elevation="4dp"
+                    android:textAllCaps="false"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"/>
+
                 <!-- Sección PayPal -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"

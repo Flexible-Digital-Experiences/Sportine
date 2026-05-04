@@ -185,6 +185,15 @@ public class UsuarioServiceImpl implements UsuarioService {
             rolNombre = rol != null ? rol.getRol() : "";
         }
 
+        // ✅ NUEVO: rechazar login de cuentas eliminadas
+        if ("ELIMINADO".equals(rolNombre)) {
+            return new LoginResponseDTO(
+                    false,
+                    "Esta cuenta ha sido eliminada",
+                    null, null, null, null, null, null, null, null
+            );
+        }
+
         Estado estado = estadoRepository.findById(usuario.getIdEstado())
                 .orElse(null);
         String nombreEstado = estado != null ? estado.getEstado() : "";

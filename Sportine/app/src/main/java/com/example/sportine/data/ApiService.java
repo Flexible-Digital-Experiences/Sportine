@@ -40,6 +40,7 @@ import com.example.sportine.models.TrainingFrequencyDTO;
 import com.example.sportine.models.Usuario;
 import com.example.sportine.models.PublicacionFeedDTO;
 import com.example.sportine.models.UsuarioDetalle;
+import com.example.sportine.models.EliminarCuentaRequest;
 import com.example.sportine.ui.entrenadores.dto.DeporteRequestDTO;
 import com.example.sportine.ui.entrenadores.dto.PerfilEntrenadorResponseDTO;
 import com.example.sportine.ui.usuarios.dto.ActualizarDatosAlumnoDTO;
@@ -58,6 +59,7 @@ import okhttp3.RequestBody;
 import retrofit2.http.Multipart;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
+import retrofit2.http.HTTP;
 
 import java.util.List;
 import java.util.Map;
@@ -569,4 +571,19 @@ public interface ApiService {
             @Path("usuario") String usuarioAlumno,
             @Path("idDeporte") Integer idDeporte,
             @Query("limite") int limite);
+
+    // ✅ NUEVO: Eliminar cuenta alumno
+// DELETE con body requiere @HTTP en lugar de @DELETE (limitación de Retrofit)
+    @HTTP(method = "DELETE", path = "/api/alumnos/{usuario}", hasBody = true)
+    Call<Map<String, String>> eliminarCuentaAlumno(
+            @Path("usuario") String usuario,
+            @Body EliminarCuentaRequest request
+    );
+
+    // ✅ NUEVO: Eliminar cuenta entrenador
+    @HTTP(method = "DELETE", path = "/api/entrenadores/{usuario}", hasBody = true)
+    Call<Map<String, String>> eliminarCuentaEntrenador(
+            @Path("usuario") String usuario,
+            @Body EliminarCuentaRequest request
+    );
 }
