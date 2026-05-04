@@ -66,4 +66,7 @@ public interface AlumnoPerfilService {
     void eliminarTarjeta(String usuario, Integer idTarjeta);
 
     String actualizarFotoPerfil(String usuario, MultipartFile foto);
+
+    // Eliminar cuenta del alumno (soft delete vía rol)
+    void eliminarCuenta(String usuario, String contrasena);
 }

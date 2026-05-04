@@ -38,6 +38,8 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
     private final SeguidoresRepository seguidoresRepository;
     private final EntrenadorAlumnoRepository entrenadorAlumnoRepository;
     private final CloudinaryService cloudinaryService;
+    private final UsuarioRolRepository usuarioRolRepository;
+    private final RolRepository rolRepository;
 
     // ========================================
     // MÉTODO OBTENER PERFIL
@@ -401,6 +403,40 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 .orElseThrow(() -> new RuntimeException("Tarjeta no encontrada o no pertenece al usuario"));
 
         tarjetaRepository.delete(tarjeta);
+    }
+
+    // ========================================================
+    // ✅ NUEVO: ELIMINAR CUENTA (soft delete vía rol)
+    // ========================================================
+
+    @Override
+    @Transactional
+    public void eliminarCuenta(String usuario, String contrasena) {
+
+        log.info("🗑️ Solicitud de eliminación de cuenta: {}", usuario);
+
+        // 1. Verificar que el usuario existe
+        Usuario usuarioEntity = usuarioRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // 2. Verificar contraseña
+        if (!usuarioEntity.getContrasena().equals(contrasena)) {
+            throw new RuntimeException("Contraseña incorrecta");
+        }
+
+        // 3. Buscar su fila en Usuario_rol
+        UsuarioRol usuarioRol = usuarioRolRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new RuntimeException("Rol del usuario no encontrado"));
+
+        // 4. Buscar el rol ELIMINADO
+        Rol rolEliminado = rolRepository.findByRol("ELIMINADO")
+                .orElseThrow(() -> new RuntimeException("Rol ELIMINADO no configurado en el sistema"));
+
+        // 5. Cambiar rol y guardar — la cuenta queda bloqueada
+        usuarioRol.setIdRol(rolEliminado.getIdRol());
+        usuarioRolRepository.save(usuarioRol);
+
+        log.info("✅ Cuenta eliminada (soft delete): {}", usuario);
     }
 
     // ========================================================

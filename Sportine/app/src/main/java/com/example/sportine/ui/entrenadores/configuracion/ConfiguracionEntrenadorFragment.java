@@ -10,11 +10,14 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,12 +33,14 @@ import com.bumptech.glide.Glide;
 import com.example.sportine.R;
 import com.example.sportine.data.ApiService;
 import com.example.sportine.data.RetrofitClient;
+import com.example.sportine.models.EliminarCuentaRequest;
 import com.example.sportine.ui.entrenadores.dto.PerfilEntrenadorResponseDTO;
 import com.google.android.material.button.MaterialButton;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -73,6 +78,8 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
     // Botones
     private MaterialButton btnModificar;
     private MaterialButton btnCerrarSesion;
+
+    private MaterialButton btnEliminarCuenta;
     private MaterialButton btnConectarPayPal;
 
 
@@ -176,6 +183,7 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
         btnModificar = view.findViewById(R.id.btnModificarentrena);
         btnEditarFoto = view.findViewById(R.id.btnEditarFoto);
         btnCerrarSesion = view.findViewById(R.id.btnCerrarSesion); // ✅ NUEVO
+        btnEliminarCuenta = view.findViewById(R.id.btnEliminarCuenta);
 
         Log.d(TAG, "✓ Componentes inicializados");
     }
@@ -215,7 +223,105 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
         } else {
             Log.e(TAG, "❌ btnCerrarSesion no encontrado");
         }
+
+        // ✅ NUEVO
+        if (btnEliminarCuenta != null) {
+            btnEliminarCuenta.setOnClickListener(v -> mostrarDialogoEliminarCuenta());
+        }
     }
+
+    // ========================================================
+    // ✅ NUEVO: ELIMINAR CUENTA
+    // ========================================================
+
+    private void mostrarDialogoEliminarCuenta() {
+        final EditText inputContrasena = new EditText(requireContext());
+        inputContrasena.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        inputContrasena.setHint("Contraseña");
+
+        LinearLayout container = new LinearLayout(requireContext());
+        container.setOrientation(LinearLayout.VERTICAL);
+        int pad = dpToPx(20);
+        container.setPadding(pad, dpToPx(8), pad, 0);
+        container.addView(inputContrasena);
+
+        AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                .setTitle("⚠️ Eliminar cuenta")
+                .setMessage("Esta acción es permanente y no se puede deshacer.\n\nIngresa tu contraseña para confirmar.")
+                .setView(container)
+                .setPositiveButton("Eliminar", null)
+                .setNegativeButton("Cancelar", null)
+                .create();
+
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(0xFFDC2626);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String contrasena = inputContrasena.getText().toString().trim();
+            if (contrasena.isEmpty()) {
+                inputContrasena.setError("Ingresa tu contraseña");
+                return;
+            }
+            dialog.dismiss();
+            eliminarCuenta(contrasena);
+        });
+    }
+
+    private void eliminarCuenta(String contrasena) {
+        Log.d(TAG, "🗑️ Enviando solicitud de eliminación de cuenta entrenador...");
+
+        EliminarCuentaRequest request = new EliminarCuentaRequest(contrasena);
+        Call<Map<String, String>> call = apiService.eliminarCuentaEntrenador(username, request);
+
+        call.enqueue(new Callback<Map<String, String>>() {
+            @Override
+            public void onResponse(Call<Map<String, String>> call,
+                                   Response<Map<String, String>> response) {
+                if (!isAdded()) return;
+
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "✅ Cuenta de entrenador eliminada correctamente");
+                    Toast.makeText(requireContext(),
+                            "Cuenta eliminada correctamente",
+                            Toast.LENGTH_LONG).show();
+                    cerrarSesionTrasEliminar();
+
+                } else if (response.code() == 401) {
+                    Toast.makeText(requireContext(),
+                            "Contraseña incorrecta",
+                            Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Log.e(TAG, "❌ Error al eliminar cuenta: " + response.code());
+                    Toast.makeText(requireContext(),
+                            "Error al eliminar la cuenta. Intenta de nuevo.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, String>> call, Throwable t) {
+                if (!isAdded()) return;
+                Log.e(TAG, "❌ Error de conexión: " + t.getMessage(), t);
+                Toast.makeText(requireContext(),
+                        "Error de conexión: " + t.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void cerrarSesionTrasEliminar() {
+        if (!isAdded()) return;
+        SharedPreferences prefs = requireContext()
+                .getSharedPreferences("SportinePrefs", Context.MODE_PRIVATE);
+        prefs.edit().clear().apply();
+        Intent intent = new Intent(requireContext(),
+                com.example.sportine.ui.usuarios.login.LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        requireActivity().finish();
+    }
+
 
     /**
      * Carga los datos del entrenador desde el backend
@@ -469,5 +575,10 @@ public class ConfiguracionEntrenadorFragment extends Fragment {
         requireActivity().finish();
 
         Log.d(TAG, "✓ Redirigido a LoginActivity");
+    }
+
+    private int dpToPx(int dp) {
+        if (!isAdded()) return 0;
+        return Math.round(dp * getResources().getDisplayMetrics().density);
     }
 }

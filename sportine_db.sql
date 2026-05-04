@@ -474,7 +474,7 @@ INSERT INTO Estado (estado) VALUES
     ('Oaxaca'), ('Puebla'), ('Querétaro'), ('Quintana Roo'), ('San Luis Potosí'), ('Sinaloa'),
     ('Sonora'), ('Tabasco'), ('Tamaulipas'), ('Tlaxcala'), ('Veracruz'), ('Yucatán'), ('Zacatecas');
 
-INSERT INTO Rol (rol) VALUES ('alumno'), ('entrenador');
+INSERT INTO Rol (rol) VALUES ('alumno'), ('entrenador'), ('ELIMINADO');
 
 INSERT INTO Deporte (nombre_deporte) VALUES
     ('Fútbol'),('Basketball'),('Natación'),('Running'),('Boxeo'),

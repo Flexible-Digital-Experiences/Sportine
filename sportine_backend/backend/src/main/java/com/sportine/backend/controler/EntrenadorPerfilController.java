@@ -2,14 +2,17 @@ package com.sportine.backend.controler;
 
 import com.sportine.backend.dto.ActualizarPerfilEntrenadorDTO;
 import com.sportine.backend.dto.DeporteRequestDTO;
+import com.sportine.backend.dto.EliminarCuentaDTO;
 import com.sportine.backend.dto.PerfilEntrenadorResponseDTO;
 import com.sportine.backend.service.EntrenadorPerfilService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/entrenadores")
@@ -91,5 +94,28 @@ public class EntrenadorPerfilController {
 
         entrenadorPerfilService.eliminarDeporte(usuario, nombreDeporte);
         return ResponseEntity.ok().build();
+    }
+
+    // ========================================================
+    // ✅ NUEVO: ELIMINAR CUENTA
+    // DELETE /api/entrenadores/{usuario}
+    // Body: { "contrasena": "..." }
+    // ========================================================
+
+    @DeleteMapping("/{usuario}")
+    public ResponseEntity<?> eliminarCuenta(
+            @PathVariable String usuario,
+            @RequestBody EliminarCuentaDTO dto) {
+        try {
+            entrenadorPerfilService.eliminarCuenta(usuario, dto.getContrasena());
+            return ResponseEntity.ok()
+                    .body(Map.of("mensaje", "Cuenta eliminada correctamente"));
+        } catch (RuntimeException e) {
+            HttpStatus status = e.getMessage().equals("Contraseña incorrecta")
+                    ? HttpStatus.UNAUTHORIZED
+                    : HttpStatus.BAD_REQUEST;
+            return ResponseEntity.status(status)
+                    .body(Map.of("mensaje", e.getMessage()));
+        }
     }
 }

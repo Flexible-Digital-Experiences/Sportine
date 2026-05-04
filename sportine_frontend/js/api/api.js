@@ -718,4 +718,21 @@ Object.assign(Api, {
   });
   return _handleResponse(r);
 },
+
+// ── ELIMINAR CUENTA ─────────────────────────────────────────
+  async eliminarCuentaAlumno(usuario, contrasena) {
+    const r = await fetch(`${BASE_URL}/api/alumnos/${usuario}`, {
+      method: 'DELETE', headers: _getHeaders(true),
+      body: JSON.stringify({ contrasena }),
+    });
+    return _handleResponse(r);
+  },
+
+  async eliminarCuentaEntrenador(usuario, contrasena) {
+    const r = await fetch(`${BASE_URL}/api/entrenadores/${usuario}`, {
+      method: 'DELETE', headers: _getHeaders(true),
+      body: JSON.stringify({ contrasena }),
+    });
+    return _handleResponse(r);
+  },
 });

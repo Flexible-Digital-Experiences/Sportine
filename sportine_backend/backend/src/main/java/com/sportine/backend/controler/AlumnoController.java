@@ -292,4 +292,27 @@ public class AlumnoController {
                     .body(Map.of("mensaje", "Error al procesar la imagen: " + e.getMessage()));
         }
     }
+
+    // ========================================================
+    // ✅ NUEVO: ELIMINAR CUENTA
+    // DELETE /api/alumnos/{usuario}
+    // Body: { "contrasena": "..." }
+    // ========================================================
+
+    @DeleteMapping("/{usuario}")
+    public ResponseEntity<?> eliminarCuenta(
+            @PathVariable String usuario,
+            @RequestBody EliminarCuentaDTO dto) {
+        try {
+            alumnoPerfilService.eliminarCuenta(usuario, dto.getContrasena());
+            return ResponseEntity.ok()
+                    .body(Map.of("mensaje", "Cuenta eliminada correctamente"));
+        } catch (RuntimeException e) {
+            HttpStatus status = e.getMessage().equals("Contraseña incorrecta")
+                    ? HttpStatus.UNAUTHORIZED
+                    : HttpStatus.BAD_REQUEST;
+            return ResponseEntity.status(status)
+                    .body(Map.of("mensaje", e.getMessage()));
+        }
+    }
 }

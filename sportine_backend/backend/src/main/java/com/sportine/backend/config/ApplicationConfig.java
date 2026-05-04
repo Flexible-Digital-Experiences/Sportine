@@ -54,6 +54,11 @@ public class ApplicationConfig {
             Rol rol = rolRepository.findById(usuarioRol.getIdRol())
                     .orElseThrow(() -> new RuntimeException("Definición de rol no encontrada"));
 
+            // ✅ NUEVO: bloquear cuentas eliminadas — el JWT filter no autenticará
+            if ("ELIMINADO".equals(rol.getRol())) {
+                throw new UsernameNotFoundException("Cuenta eliminada: " + username);
+            }
+
             // --- ¡CAMBIO 2: LA CORRECCIÓN! ---
             // Ya no regresamos 'usuario' (tu modelo).
             // Regresamos un 'User' (el 'gafete' de Spring Security)

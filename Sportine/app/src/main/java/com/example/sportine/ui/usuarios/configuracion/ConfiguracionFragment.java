@@ -10,12 +10,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +33,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.sportine.R;
 import com.example.sportine.data.ApiService;
 import com.example.sportine.data.RetrofitClient;
+import com.example.sportine.models.EliminarCuentaRequest;
 import com.example.sportine.ui.usuarios.dto.UsuarioDetalleDTO;
 import com.example.sportine.ui.usuarios.dto.PerfilAlumnoResponseDTO;
 import com.google.android.material.button.MaterialButton;
@@ -65,7 +68,10 @@ public class ConfiguracionFragment extends Fragment {
     private TextView tvCiudad;
     private TextView tvPassword;
     private ImageView btnTogglePassword;
-    private MaterialButton btnModificar, btnCerrarSesion;
+    private MaterialButton btnModificar;
+    private MaterialButton btnCerrarSesion;
+    // ✅ NUEVO
+    private MaterialButton btnEliminarCuenta;
     private MaterialCardView btnBack;
 
     private ApiService apiService;
@@ -110,13 +116,15 @@ public class ConfiguracionFragment extends Fragment {
         btnModificar = view.findViewById(R.id.btnModificar);
         btnBack = view.findViewById(R.id.btnBack);
         btnCerrarSesion = view.findViewById(R.id.btnCerrarSesion);
+        // ✅ NUEVO
+        btnEliminarCuenta = view.findViewById(R.id.btnEliminarCuenta);
     }
 
     private void configurarImagePicker() {
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == getActivity().RESULT_OK && result.getData() != null) {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                         selectedImageUri = result.getData().getData();
                         if (selectedImageUri != null) {
                             Log.d(TAG, "📸 Imagen seleccionada: " + selectedImageUri);
@@ -141,7 +149,109 @@ public class ConfiguracionFragment extends Fragment {
         if (btnTogglePassword != null) btnTogglePassword.setVisibility(View.GONE);
         if (btnEditarFoto != null) btnEditarFoto.setOnClickListener(v -> abrirSelectorImagen());
         if (btnCerrarSesion != null) btnCerrarSesion.setOnClickListener(v -> mostrarDialogoCerrarSesion());
+        // ✅ NUEVO
+        if (btnEliminarCuenta != null) btnEliminarCuenta.setOnClickListener(v -> mostrarDialogoEliminarCuenta());
     }
+
+    // ========================================================
+    // ✅ NUEVO: ELIMINAR CUENTA
+    // ========================================================
+
+    private void mostrarDialogoEliminarCuenta() {
+        // Campo de contraseña
+        final EditText inputContrasena = new EditText(requireContext());
+        inputContrasena.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        inputContrasena.setHint("Contraseña");
+
+        // Contenedor con padding
+        LinearLayout container = new LinearLayout(requireContext());
+        container.setOrientation(LinearLayout.VERTICAL);
+        int pad = dpToPx(20);
+        container.setPadding(pad, dpToPx(8), pad, 0);
+        container.addView(inputContrasena);
+
+        AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                .setTitle("⚠️ Eliminar cuenta")
+                .setMessage("Esta acción es permanente y no se puede deshacer.\n\nIngresa tu contraseña para confirmar.")
+                .setView(container)
+                .setPositiveButton("Eliminar", null)   // null → sobreescribimos abajo
+                .setNegativeButton("Cancelar", null)
+                .create();
+
+        dialog.show();
+
+        // Sobreescribir positivo para validar antes de cerrar
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(0xFFDC2626);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String contrasena = inputContrasena.getText().toString().trim();
+            if (contrasena.isEmpty()) {
+                inputContrasena.setError("Ingresa tu contraseña");
+                return;
+            }
+            dialog.dismiss();
+            eliminarCuenta(contrasena);
+        });
+    }
+
+    private void eliminarCuenta(String contrasena) {
+        Log.d(TAG, "🗑️ Enviando solicitud de eliminación de cuenta alumno...");
+
+        EliminarCuentaRequest request = new EliminarCuentaRequest(contrasena);
+        Call<Map<String, String>> call = apiService.eliminarCuentaAlumno(username, request);
+
+        call.enqueue(new Callback<Map<String, String>>() {
+            @Override
+            public void onResponse(Call<Map<String, String>> call,
+                                   Response<Map<String, String>> response) {
+                if (!isAdded()) return;
+
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "✅ Cuenta eliminada correctamente");
+                    Toast.makeText(requireContext(),
+                            "Cuenta eliminada correctamente",
+                            Toast.LENGTH_LONG).show();
+                    cerrarSesionTrasEliminar();
+
+                } else if (response.code() == 401) {
+                    Toast.makeText(requireContext(),
+                            "Contraseña incorrecta",
+                            Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Log.e(TAG, "❌ Error al eliminar cuenta: " + response.code());
+                    Toast.makeText(requireContext(),
+                            "Error al eliminar la cuenta. Intenta de nuevo.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Map<String, String>> call, Throwable t) {
+                if (!isAdded()) return;
+                Log.e(TAG, "❌ Error de conexión: " + t.getMessage(), t);
+                Toast.makeText(requireContext(),
+                        "Error de conexión: " + t.getMessage(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    /**
+     * Limpia sesión y redirige al login tras eliminar la cuenta
+     */
+    private void cerrarSesionTrasEliminar() {
+        if (!isAdded()) return;
+        SharedPreferences prefs = requireContext().getSharedPreferences("SportinePrefs", Context.MODE_PRIVATE);
+        prefs.edit().clear().apply();
+        Intent intent = new Intent(requireContext(), com.example.sportine.ui.usuarios.login.LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        requireActivity().finish();
+    }
+
+    // ========================================================
+    // MÉTODOS EXISTENTES SIN CAMBIOS
+    // ========================================================
 
     private void cargarDatosUsuario() {
         if (username == null) return;
@@ -149,7 +259,7 @@ public class ConfiguracionFragment extends Fragment {
         call.enqueue(new Callback<UsuarioDetalleDTO>() {
             @Override
             public void onResponse(Call<UsuarioDetalleDTO> call, Response<UsuarioDetalleDTO> response) {
-                if (!isAdded()) return; // ✅ BLINDAJE
+                if (!isAdded()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     usuarioActual = response.body();
                     mostrarDatosUsuario(usuarioActual);
@@ -160,7 +270,7 @@ public class ConfiguracionFragment extends Fragment {
             }
             @Override
             public void onFailure(Call<UsuarioDetalleDTO> call, Throwable t) {
-                if (!isAdded()) return; // ✅ BLINDAJE
+                if (!isAdded()) return;
                 Toast.makeText(requireContext(), "Error de conexión", Toast.LENGTH_LONG).show();
             }
         });
@@ -182,14 +292,14 @@ public class ConfiguracionFragment extends Fragment {
         call.enqueue(new Callback<PerfilAlumnoResponseDTO>() {
             @Override
             public void onResponse(Call<PerfilAlumnoResponseDTO> call, Response<PerfilAlumnoResponseDTO> response) {
-                if (!isAdded()) return; // ✅ BLINDAJE
+                if (!isAdded()) return;
                 if (response.isSuccessful() && response.body() != null) {
                     cargarFotoPerfil(response.body().getFotoPerfil());
                 }
             }
             @Override
             public void onFailure(Call<PerfilAlumnoResponseDTO> call, Throwable t) {
-                if (!isAdded()) return; // ✅ BLINDAJE
+                if (!isAdded()) return;
             }
         });
     }
@@ -203,18 +313,15 @@ public class ConfiguracionFragment extends Fragment {
     private void subirFotoPerfilACloudinary(Uri imageUri) {
         if (!isAdded()) return;
         Toast.makeText(requireContext(), "Subiendo imagen...", Toast.LENGTH_SHORT).show();
-
         try {
             File file = uriToFile(imageUri);
             if (file == null) return;
-
             RequestBody requestFile = RequestBody.create(MediaType.parse(requireContext().getContentResolver().getType(imageUri)), file);
             MultipartBody.Part body = MultipartBody.Part.createFormData("foto", file.getName(), requestFile);
-
             apiService.actualizarFotoPerfil(username, body).enqueue(new Callback<Map<String, String>>() {
                 @Override
                 public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
-                    if (!isAdded()) return; // ✅ BLINDAJE
+                    if (!isAdded()) return;
                     if (response.isSuccessful() && response.body() != null) {
                         String nuevaUrl = response.body().get("fotoPerfil");
                         Toast.makeText(requireContext(), "Foto actualizada", Toast.LENGTH_SHORT).show();
@@ -226,12 +333,11 @@ public class ConfiguracionFragment extends Fragment {
                 }
                 @Override
                 public void onFailure(Call<Map<String, String>> call, Throwable t) {
-                    if (!isAdded()) return; // ✅ BLINDAJE
+                    if (!isAdded()) return;
                     Toast.makeText(requireContext(), "Error de conexión", Toast.LENGTH_LONG).show();
                     cargarFotoPerfilAlumno();
                 }
             });
-
         } catch (Exception e) {
             Log.e(TAG, "Error: " + e.getMessage());
         }
@@ -275,9 +381,11 @@ public class ConfiguracionFragment extends Fragment {
     }
 
     private void cargarFotoPerfil(String urlFoto) {
-        if (!isAdded()) return; // ✅ BLINDAJE
+        if (!isAdded()) return;
         if (urlFoto != null && !urlFoto.isEmpty()) {
-            Glide.with(this).load(urlFoto).placeholder(R.drawable.ic_avatar_default).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).circleCrop().into(ivAvatarConfig);
+            Glide.with(this).load(urlFoto).placeholder(R.drawable.ic_avatar_default)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true)
+                    .circleCrop().into(ivAvatarConfig);
         } else {
             ivAvatarConfig.setImageResource(R.drawable.ic_avatar_default);
         }
@@ -294,7 +402,7 @@ public class ConfiguracionFragment extends Fragment {
     }
 
     private void cerrarSesion() {
-        if (!isAdded()) return; // ✅ BLINDAJE
+        if (!isAdded()) return;
         SharedPreferences prefs = requireContext().getSharedPreferences("SportinePrefs", Context.MODE_PRIVATE);
         prefs.edit().clear().apply();
         Toast.makeText(requireContext(), "Sesión cerrada correctamente", Toast.LENGTH_SHORT).show();
@@ -302,5 +410,10 @@ public class ConfiguracionFragment extends Fragment {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         requireActivity().finish();
+    }
+
+    private int dpToPx(int dp) {
+        if (!isAdded()) return 0;
+        return Math.round(dp * getResources().getDisplayMetrics().density);
     }
 }
