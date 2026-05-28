@@ -24,10 +24,10 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class FastApiClient {
 
-    @Value("${fastapi.url}")
+    @Value("${fastapi.url:http://localhost:8001}")
     private String fastApiUrl;
 
-    @Value("${fastapi.secret}")
+    @Value("${fastapi.secret:sportine_internal_secret_2025}")
     private String fastApiSecret;
 
     private final RestTemplate restTemplate = new RestTemplate();
