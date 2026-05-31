@@ -457,6 +457,40 @@ window.showConfigMenu = showConfigMenu;
 window.openConfig     = openConfig;
 window.closeConfig    = closeConfig;
 
+/* ── Sportine Score ── */
+function cargarSportineScore() {
+  Api.getSportineScore()
+    .then(function(data) {
+      var card = document.getElementById('card-sportine-score');
+      var valor = document.getElementById('sportine-score-valor');
+      var badge = document.getElementById('sportine-score-badge');
+      if (!card || !valor || !badge) return;
+
+      valor.textContent = data.sportine_score;
+
+      var nivel = data.nivel || '';
+      badge.textContent = nivel;
+
+      // Color del badge según nivel
+      if (nivel === 'Elite') {
+        badge.style.background = '#FEF3C7';
+        badge.style.color = '#f89a02';
+      } else if (nivel === 'Avanzado' || nivel === 'Intermedio') {
+        badge.style.background = '#E0F2FE';
+        badge.style.color = '#1ea1db';
+      } else {
+        badge.style.background = '#F3F4F6';
+        badge.style.color = '#6B7280';
+      }
+
+      card.style.display = 'block';
+    })
+    .catch(function(err) {
+      // Si IA no responde, la card no aparece. No es error crítico.
+      console.warn('Sportine Score no disponible:', err.message);
+    });
+}
+
 /* ── Init ── */
 document.addEventListener('DOMContentLoaded', function() {
   var usuario = Session.getUsuario();
@@ -472,6 +506,7 @@ document.addEventListener('DOMContentLoaded', function() {
       renderPerfil(PERFIL_ACTUAL);
       buildConfigDrawer();
       initFotoPerfilUI();
+      cargarSportineScore();
     })
     .catch(function(err) {
       console.error('Error al cargar perfil alumno:', err);
