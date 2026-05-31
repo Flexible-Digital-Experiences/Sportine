@@ -51,13 +51,19 @@ public class CorsConfig {
         // estos valores con la URL real del frontend desplegado.
         // Ejemplo: "https://sportine.com"
         //
+        // Rutas locales de prueba desactivadas para producción:
+        // config.setAllowedOrigins(List.of(
+        //         "http://localhost:5500",
+        //         "http://127.0.0.1:5500",
+        //         "http://localhost:5501",
+        //         "http://127.0.0.1:5501",
+        //         "http://localhost:3000",
+        //         "http://127.0.0.1:3000"
+        // ));
+
+        // Origen permitido exclusivamente para la dirección oficial:
         config.setAllowedOrigins(List.of(
-                "http://localhost:5500",
-                "http://127.0.0.1:5500",
-                "http://localhost:5501",
-                "http://127.0.0.1:5501",
-                "http://localhost:3000",
-                "http://127.0.0.1:3000"
+                "https://sportine-gamma.vercel.app"
         ));
 
         // ── Métodos HTTP permitidos ──────────────────────────────
