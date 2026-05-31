@@ -735,4 +735,12 @@ Object.assign(Api, {
     });
     return _handleResponse(r);
   },
+
+  // ── IA: SPORTINE SCORE ─────────────────────────────────────
+  async getSportineScore() {
+    const r = await fetch(`${BASE_URL}/api/alumno/sportine-score`, {
+      method: 'GET', headers: _getHeaders(true),
+    });
+    return _handleResponse(r);
+  },
 });
