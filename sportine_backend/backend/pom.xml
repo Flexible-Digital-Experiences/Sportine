@@ -125,5 +125,5 @@
 		</plugins>
 	</build>
 
-    <!--  -->
+    <!-- Forzando reconstrucción total tras mantenimiento de la nube -->
 </project>
