@@ -1,4 +1,4 @@
-package com.sportine.backend.repository;
+﻿package com.sportine.backend.repository;
 
 import com.sportine.backend.model.InformacionEntrenador;
 import jakarta.transaction.Transactional;
@@ -21,14 +21,14 @@ public interface InformacionEntrenadorRepository extends JpaRepository<Informaci
      */
     @Query(value = """
         SELECT COUNT(DISTINCT ea.usuario_alumno)
-        FROM Entrenador_Alumno ea
+        FROM entrenador_alumno ea
         WHERE ea.usuario_entrenador = :usuario
           AND ea.status_relacion = 'activo'
         """, nativeQuery = true)
     Integer contarAlumnosActivos(@Param("usuario") String usuario);
 
     /**
-     * Verificar si puede aceptar más alumnos
+     * Verificar si puede aceptar mÃ¡s alumnos
      */
     @Query(value = """
         SELECT 
@@ -37,8 +37,8 @@ public interface InformacionEntrenadorRepository extends JpaRepository<Informaci
                 WHEN COUNT(DISTINCT ea.usuario_alumno) < ie.limite_alumnos THEN TRUE
                 ELSE FALSE
             END as puede_aceptar
-        FROM Informacion_Entrenador ie
-        LEFT JOIN Entrenador_Alumno ea ON ie.usuario = ea.usuario_entrenador 
+        FROM informacion_entrenador ie
+        LEFT JOIN entrenador_alumno ea ON ie.usuario = ea.usuario_entrenador 
             AND ea.status_relacion = 'activo'
         WHERE ie.usuario = :usuario
         GROUP BY ie.usuario, ie.tipo_cuenta, ie.limite_alumnos
@@ -56,3 +56,5 @@ public interface InformacionEntrenadorRepository extends JpaRepository<Informaci
     Optional<InformacionEntrenador> findByMerchantId(String merchantId);
 
 }
+
+

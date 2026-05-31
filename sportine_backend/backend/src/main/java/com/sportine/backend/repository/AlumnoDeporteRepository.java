@@ -1,4 +1,4 @@
-package com.sportine.backend.repository;
+﻿package com.sportine.backend.repository;
 
 import com.sportine.backend.model.AlumnoDeporte;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,7 +20,7 @@ public interface AlumnoDeporteRepository extends JpaRepository<AlumnoDeporte, In
     void deleteByUsuario(String usuario);
 
     /**
-     * Busca la relación alumno-deporte
+     * Busca la relaciÃ³n alumno-deporte
      */
     @Query("SELECT ad FROM AlumnoDeporte ad " +
             "WHERE ad.usuario = :usuario AND ad.idDeporte = :idDeporte")
@@ -36,7 +36,7 @@ public interface AlumnoDeporteRepository extends JpaRepository<AlumnoDeporte, In
     @Transactional
     @Query(value = "INSERT INTO Alumno_Deporte (usuario, id_deporte, id_nivel, fecha_inicio) " +
             "VALUES (:usuario, :idDeporte, " +
-            "(SELECT id_nivel FROM Nivel WHERE nombre_nivel = :nombreNivel), :fechaInicio)",
+            "(SELECT id_nivel FROM nivel WHERE nombre_nivel = :nombreNivel), :fechaInicio)",
             nativeQuery = true)
     void insertarAlumnoDeporte(
             @Param("usuario") String usuario,
@@ -46,7 +46,7 @@ public interface AlumnoDeporteRepository extends JpaRepository<AlumnoDeporte, In
     );
 
     /**
-     * Actualizar el nivel del alumno en un deporte específico
+     * Actualizar el nivel del alumno en un deporte especÃ­fico
      */
     @Modifying
     @Transactional

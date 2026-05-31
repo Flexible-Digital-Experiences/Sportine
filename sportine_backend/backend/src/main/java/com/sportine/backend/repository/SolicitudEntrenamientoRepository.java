@@ -1,4 +1,4 @@
-package com.sportine.backend.repository;
+﻿package com.sportine.backend.repository;
 
 import com.sportine.backend.model.SolicitudEntrenamiento;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,11 +17,11 @@ public interface SolicitudEntrenamientoRepository extends JpaRepository<Solicitu
      */
     @Query(value = """
         SELECT COUNT(*) > 0
-        FROM Solicitudes_Entrenamiento
+        FROM solicitudes_entrenamiento
         WHERE usuario_alumno = :usuarioAlumno
           AND usuario_entrenador = :usuarioEntrenador
           AND id_deporte = :idDeporte
-          AND status_solicitud IN ('En revisión', 'Aprobada')
+          AND status_solicitud IN ('En revisiÃ³n', 'Aprobada')
         """, nativeQuery = true)
     boolean existeSolicitudActivaOPendiente(
             @Param("usuarioAlumno") String usuarioAlumno,
@@ -57,10 +57,10 @@ public interface SolicitudEntrenamientoRepository extends JpaRepository<Solicitu
             se.id_deporte as idDeporte,
             se.descripcion_solicitud as motivoSolicitud,
             se.fecha_solicitud as fechaSolicitud
-        FROM Solicitudes_Entrenamiento se
-        INNER JOIN Usuario u ON se.usuario_alumno = u.usuario
-        LEFT JOIN Informacion_Alumno ia ON u.usuario = ia.usuario
-        INNER JOIN Deporte d ON se.id_deporte = d.id_deporte
+        FROM solicitudes_entrenamiento se
+        INNER JOIN usuario u ON se.usuario_alumno = u.usuario
+        LEFT JOIN informacion_alumno ia ON u.usuario = ia.usuario
+        INNER JOIN deporte d ON se.id_deporte = d.id_deporte
         WHERE se.usuario_entrenador = :usuarioEntrenador
           AND se.status_solicitud = :statusSolicitud
         ORDER BY se.fecha_solicitud DESC
@@ -72,11 +72,11 @@ public interface SolicitudEntrenamientoRepository extends JpaRepository<Solicitu
 
     @Query(value = """
     SELECT COUNT(*) > 0
-    FROM Solicitudes_Entrenamiento
+    FROM solicitudes_entrenamiento
     WHERE usuario_alumno = :usuarioAlumno
       AND usuario_entrenador = :usuarioEntrenador
       AND id_deporte = :idDeporte
-      AND status_solicitud IN ('En_revisión', 'Aprobada')
+      AND status_solicitud IN ('En_revisiÃ³n', 'Aprobada')
     """, nativeQuery = true)
     Integer existeSolicitudActivaNative(
             @Param("usuarioAlumno") String usuarioAlumno,
@@ -86,3 +86,6 @@ public interface SolicitudEntrenamientoRepository extends JpaRepository<Solicitu
 
     List<SolicitudEntrenamiento> findByUsuarioAlumnoAndUsuarioEntrenadorAndStatusSolicitud(String usuarioAlumno, String usuarioEntrenador, SolicitudEntrenamiento.StatusSolicitud statusSolicitud);
 }
+
+
+

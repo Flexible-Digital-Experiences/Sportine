@@ -22,19 +22,19 @@ public interface SolicitudEntrenadorRepository extends JpaRepository<Usuario, St
         SELECT 
             d.id_deporte AS idDeporte,
             d.nombre_deporte AS nombreDeporte
-        FROM Entrenador_Deporte ed
-        INNER JOIN Deporte d ON ed.id_deporte = d.id_deporte
+        FROM entrenador_deporte ed
+        INNER JOIN deporte d ON ed.id_deporte = d.id_deporte
         WHERE ed.usuario = :usuarioEntrenador
           AND NOT EXISTS (
               SELECT 1 
-              FROM Entrenador_Alumno ea 
+              FROM entrenador_alumno ea 
               WHERE ea.usuario_alumno = :usuarioAlumno
                 AND ea.id_deporte = d.id_deporte
                 AND ea.status_relacion = 'activo'
           )
           AND NOT EXISTS (
               SELECT 1
-              FROM Solicitudes_Entrenamiento se
+              FROM solicitudes_entrenamiento se
               WHERE se.usuario_alumno = :usuarioAlumno
                 AND se.usuario_entrenador = :usuarioEntrenador
                 AND se.id_deporte = d.id_deporte
@@ -78,5 +78,8 @@ public interface SolicitudEntrenadorRepository extends JpaRepository<Usuario, St
             nativeQuery = true)
     Optional<String> obtenerNombreDeporte(@Param("idDeporte") Integer idDeporte);
 }
+
+
+
 
 

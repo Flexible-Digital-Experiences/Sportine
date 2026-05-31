@@ -18,11 +18,11 @@ public interface EntrenadorRepository extends JpaRepository<Usuario, String> {
             CONCAT(u.nombre, ' ', u.apellidos) as nombreCompleto,
             ie.foto_perfil as fotoPerfil,
             COALESCE(AVG(c.calificacion), 0.0) as ratingPromedio
-        FROM Usuario u
-        INNER JOIN Usuario_rol ur ON u.usuario = ur.usuario
-        INNER JOIN Rol r ON ur.id_rol = r.id_rol
-        LEFT JOIN Informacion_Entrenador ie ON u.usuario = ie.usuario
-        LEFT JOIN Calificaciones c ON u.usuario = c.usuario_calificado
+        FROM usuario u
+        INNER JOIN usuario_rol ur ON u.usuario = ur.usuario
+        INNER JOIN rol r ON ur.id_rol = r.id_rol
+        LEFT JOIN informacion_entrenador ie ON u.usuario = ie.usuario
+        LEFT JOIN calificaciones c ON u.usuario = c.usuario_calificado
         WHERE r.rol = 'ENTRENADOR'
         AND (:searchQuery IS NULL 
              OR LOWER(u.nombre) LIKE LOWER(CONCAT('%', :searchQuery, '%'))
@@ -46,3 +46,8 @@ public interface EntrenadorRepository extends JpaRepository<Usuario, String> {
         """, nativeQuery = true)
     List<String> obtenerEspecialidadesEntrenador(@Param("usuario") String usuario);
 }
+
+
+
+
+

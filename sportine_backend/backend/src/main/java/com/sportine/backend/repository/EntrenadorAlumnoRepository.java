@@ -145,10 +145,10 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
         GROUP_CONCAT(DISTINCT d.nombre_deporte ORDER BY d.nombre_deporte SEPARATOR ', ') as deportes,
         MIN(ea.fecha_inicio) as fechaInicio,
         ea.status_relacion as statusRelacion
-    FROM Entrenador_Alumno ea
-    INNER JOIN Usuario u ON ea.usuario_alumno = u.usuario
-    LEFT JOIN Informacion_Alumno ia ON u.usuario = ia.usuario
-    INNER JOIN Deporte d ON ea.id_deporte = d.id_deporte
+    FROM entrenador_alumno ea
+    INNER JOIN usuario u ON ea.usuario_alumno = u.usuario
+    LEFT JOIN informacion_alumno ia ON u.usuario = ia.usuario
+    INNER JOIN deporte d ON ea.id_deporte = d.id_deporte
     WHERE ea.usuario_entrenador = :usuarioEntrenador
     GROUP BY ea.usuario_alumno, u.nombre, u.apellidos, ia.foto_perfil, ia.fecha_nacimiento, ea.status_relacion
     ORDER BY MIN(ea.fecha_inicio) DESC
@@ -199,3 +199,7 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
             String usuarioEntrenador, String usuarioAlumno,
             Integer idDeporte, String statusRelacion);
 }
+
+
+
+

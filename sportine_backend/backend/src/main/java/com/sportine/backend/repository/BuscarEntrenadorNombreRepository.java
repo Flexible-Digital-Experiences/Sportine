@@ -1,4 +1,4 @@
-﻿package com.sportine.backend.repository;
+package com.sportine.backend.repository;
 
 import com.sportine.backend.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,12 +25,12 @@ public interface BuscarEntrenadorNombreRepository extends JpaRepository<Usuario,
             COALESCE(AVG(c.calificacion), 0.0) AS ratingPromedio,
             ie.limite_alumnos AS limiteAlumnos,
             COUNT(DISTINCT ea.id_relacion) AS alumnosActuales
-        FROM Usuario u
-        INNER JOIN Usuario_Rol ur ON u.usuario = ur.usuario
-        INNER JOIN Rol r ON ur.id_rol = r.id_rol
-        LEFT JOIN Informacion_Entrenador ie ON u.usuario = ie.usuario
-        LEFT JOIN Calificaciones c ON u.usuario = c.usuario_calificado
-        LEFT JOIN Entrenador_Alumno ea
+        FROM usuario u
+        INNER JOIN usuario_rol ur ON u.usuario = ur.usuario
+        INNER JOIN rol r ON ur.id_rol = r.id_rol
+        LEFT JOIN informacion_entrenador ie ON u.usuario = ie.usuario
+        LEFT JOIN calificaciones c ON u.usuario = c.usuario_calificado
+        LEFT JOIN entrenador_alumno ea
             ON u.usuario = ea.usuario_entrenador
             AND ea.status_relacion != 'finalizado'
         WHERE r.rol = 'entrenador'
@@ -55,12 +55,12 @@ public interface BuscarEntrenadorNombreRepository extends JpaRepository<Usuario,
             COALESCE(AVG(c.calificacion), 0.0) AS ratingPromedio,
             ie.limite_alumnos AS limiteAlumnos,
             COUNT(DISTINCT ea.id_relacion) AS alumnosActuales
-        FROM Usuario u
-        INNER JOIN Usuario_Rol ur ON u.usuario = ur.usuario
-        INNER JOIN Rol r ON ur.id_rol = r.id_rol
-        LEFT JOIN Informacion_Entrenador ie ON u.usuario = ie.usuario
-        LEFT JOIN Calificaciones c ON u.usuario = c.usuario_calificado
-        LEFT JOIN Entrenador_Alumno ea
+        FROM usuario u
+        INNER JOIN usuario_rol ur ON u.usuario = ur.usuario
+        INNER JOIN rol r ON ur.id_rol = r.id_rol
+        LEFT JOIN informacion_entrenador ie ON u.usuario = ie.usuario
+        LEFT JOIN calificaciones c ON u.usuario = c.usuario_calificado
+        LEFT JOIN entrenador_alumno ea
             ON u.usuario = ea.usuario_entrenador
             AND ea.status_relacion != 'finalizado'
         WHERE r.rol = 'entrenador'

@@ -1,4 +1,4 @@
-package com.sportine.backend.repository;
+﻿package com.sportine.backend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -31,12 +31,12 @@ public interface AlumnoDetalleRepository extends JpaRepository<EntrenadorAlumno,
         ea.status_relacion as estadoRelacion,
         ea.fecha_inicio as fechaInicio,
         ea.fin_mensualidad as finMensualidad
-    FROM Entrenador_Alumno ea
-    INNER JOIN Usuario u ON ea.usuario_alumno = u.usuario
-    LEFT JOIN Informacion_Alumno ia ON u.usuario = ia.usuario
-    INNER JOIN Deporte d ON ea.id_deporte = d.id_deporte
-    LEFT JOIN Alumno_Deporte ad ON u.usuario = ad.usuario AND d.id_deporte = ad.id_deporte
-    LEFT JOIN Nivel n ON ad.id_nivel = n.id_nivel
+    FROM entrenador_alumno ea
+    INNER JOIN usuario u ON ea.usuario_alumno = u.usuario
+    LEFT JOIN informacion_alumno ia ON u.usuario = ia.usuario
+    INNER JOIN deporte d ON ea.id_deporte = d.id_deporte
+    LEFT JOIN alumno_deporte ad ON u.usuario = ad.usuario AND d.id_deporte = ad.id_deporte
+    LEFT JOIN nivel n ON ad.id_nivel = n.id_nivel
     WHERE ea.usuario_entrenador = :usuarioEntrenador
       AND ea.usuario_alumno = :usuarioAlumno
     """, nativeQuery = true)

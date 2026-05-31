@@ -26,10 +26,10 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
         ie.costo_mensualidad as costoMensualidad,
         ie.limite_alumnos AS limiteAlumnos,
         COUNT(DISTINCT ea.usuario_alumno) AS alumnosActuales
-    FROM Usuario u
-    LEFT JOIN Estado e ON u.id_estado = e.id_estado
-    LEFT JOIN Informacion_Entrenador ie ON u.usuario = ie.usuario
-    LEFT JOIN Entrenador_Alumno ea ON u.usuario = ea.usuario_entrenador 
+    FROM usuario u
+    LEFT JOIN estado e ON u.id_estado = e.id_estado
+    LEFT JOIN informacion_entrenador ie ON u.usuario = ie.usuario
+    LEFT JOIN entrenador_alumno ea ON u.usuario = ea.usuario_entrenador 
         AND ea.status_relacion != 'finalizado'
     WHERE u.usuario = :usuario
     GROUP BY u.usuario, u.nombre, u.apellidos, u.ciudad, e.estado, u.correo,
@@ -42,7 +42,7 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
         SELECT 
             COALESCE(AVG(calificacion), 0.0) as ratingPromedio,
             COUNT(*) as totalResenas
-        FROM Calificaciones
+        FROM calificaciones
         WHERE usuario_calificado = :usuario
         """, nativeQuery = true)
     Optional<Map<String, Object>> obtenerCalificaciones(@Param("usuario") String usuario);
@@ -62,9 +62,9 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
             c.comentarios as comentario,
             CONCAT(u.nombre, ' ', u.apellidos) as nombreAlumno,
             COALESCE(ia.foto_perfil, '') as fotoAlumno
-        FROM Calificaciones c
-        INNER JOIN Usuario u ON c.usuario = u.usuario
-        LEFT JOIN Informacion_Alumno ia ON u.usuario = ia.usuario
+        FROM calificaciones c
+        INNER JOIN usuario u ON c.usuario = u.usuario
+        LEFT JOIN informacion_alumno ia ON u.usuario = ia.usuario
         WHERE c.usuario_calificado = :usuario
         ORDER BY c.id_calificacion DESC
         """, nativeQuery = true)
@@ -90,7 +90,7 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
 
     @Query(value = """
     SELECT COUNT(*)
-    FROM Calificaciones
+    FROM calificaciones
     WHERE usuario = :usuarioAlumno
       AND usuario_calificado = :usuarioEntrenador
     """, nativeQuery = true)
@@ -109,7 +109,7 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
         COALESCE(ase.status_suscripcion, '') as statusSuscripcion
     FROM entrenador_alumno ea
     INNER JOIN deporte d ON ea.id_deporte = d.id_deporte
-    LEFT JOIN Estudiante_Suscripcion_Entrenador ase 
+    LEFT JOIN estudiante_suscripcion_entrenador ase 
         ON ase.usuario_estudiante = :usuarioAlumno
         AND ase.usuario_entrenador = :usuarioEntrenador
         AND ase.id_deporte = ea.id_deporte
@@ -124,5 +124,7 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
             @Param("usuarioAlumno") String usuarioAlumno
     );
 }
+
+
 
 

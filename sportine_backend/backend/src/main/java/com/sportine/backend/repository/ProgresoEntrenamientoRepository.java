@@ -1,4 +1,4 @@
-package com.sportine.backend.repository;
+﻿package com.sportine.backend.repository;
 
 import com.sportine.backend.model.ProgresoEntrenamiento;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 /**
  * Repository para manejar el progreso de entrenamientos.
- * Registra cuándo el alumno inicia y completa cada entrenamiento.
+ * Registra cuÃ¡ndo el alumno inicia y completa cada entrenamiento.
  */
 @Repository
 public interface ProgresoEntrenamientoRepository extends JpaRepository<ProgresoEntrenamiento, Integer> {
@@ -60,7 +60,7 @@ public interface ProgresoEntrenamientoRepository extends JpaRepository<ProgresoE
     );
 
     /**
-     * Obtener progresos completados ordenados por fecha de finalización (para rachas)
+     * Obtener progresos completados ordenados por fecha de finalizaciÃ³n (para rachas)
      */
     @Query("SELECT p FROM ProgresoEntrenamiento p " +
             "WHERE p.usuario = :usuario " +
@@ -77,7 +77,7 @@ public interface ProgresoEntrenamientoRepository extends JpaRepository<ProgresoE
     Long countCompletadosByUsuario(@Param("usuario") String usuario);
 
     /**
-     * Obtener el progreso más reciente de un alumno
+     * Obtener el progreso mÃ¡s reciente de un alumno
      */
     @Query("SELECT p FROM ProgresoEntrenamiento p " +
             "WHERE p.usuario = :usuario " +
@@ -85,7 +85,7 @@ public interface ProgresoEntrenamientoRepository extends JpaRepository<ProgresoE
     List<ProgresoEntrenamiento> findTopByUsuarioOrderByFechaFinalizacionDesc(@Param("usuario") String usuario);
 
     /**
-     * Verificar si el alumno entrenó en una fecha específica
+     * Verificar si el alumno entrenÃ³ en una fecha especÃ­fica
      */
     @Query("SELECT COUNT(p) > 0 FROM ProgresoEntrenamiento p " +
             "WHERE p.usuario = :usuario " +
@@ -97,10 +97,10 @@ public interface ProgresoEntrenamientoRepository extends JpaRepository<ProgresoE
     );
 
     /**
-     * Contar días únicos con entrenamientos completados
+     * Contar dÃ­as Ãºnicos con entrenamientos completados
      */
     @Query(value = "SELECT COUNT(DISTINCT DATE(fecha_finalizacion)) " +
-            "FROM Progreso_Entrenamiento " +
+            "FROM progreso_entrenamiento " +
             "WHERE usuario = :usuario " +
             "AND completado = true",
             nativeQuery = true)
