@@ -38,11 +38,11 @@ public class SolicitudEntrenamiento {
     @Column(name = "status_solicitud", nullable = false)
     private StatusSolicitud statusSolicitud;
 
-    // âœ… ENUM SIN @Column - eso no funciona en enums
+    // ✅ ENUM SIN @Column - eso no funciona en enums
     public enum StatusSolicitud {
-        En_revisiÃ³n,  // Se guarda exactamente como "En_revisiÃ³n" en la BD
+        En_revisión,  // Se guarda exactamente como "En_revisión" en la BD
         Aprobada,
-        Rechazada
+        Rechazada;
     }
 
     @PrePersist
@@ -51,7 +51,7 @@ public class SolicitudEntrenamiento {
             fechaSolicitud = LocalDate.now();
         }
         if (statusSolicitud == null) {
-            statusSolicitud = StatusSolicitud.En_revisiÃ³n;
+            statusSolicitud = StatusSolicitud.En_revisión;
         }
     }
 }
