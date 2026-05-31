@@ -52,7 +52,12 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         InformacionAlumno infoAlumno = informacionAlumnoRepository.findByUsuario(usuario)
-                .orElseThrow(() -> new RuntimeException("Perfil de alumno no encontrado"));
+                .orElseGet(() -> {
+                    log.warn("⚠ No existe información del alumno, creando perfil básico automáticamente...");
+                    InformacionAlumno nuevaInfo = new InformacionAlumno();
+                    nuevaInfo.setUsuario(usuario);
+                    return informacionAlumnoRepository.save(nuevaInfo);
+                });
 
         // Obtener deportes como IDs y buscar nombres manualmente
         List<AlumnoDeporte> deportesEntity = alumnoDeporteRepository.findByUsuario(usuario);
@@ -179,7 +184,12 @@ public class AlumnoPerfilServiceImpl implements AlumnoPerfilService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         InformacionAlumno infoAlumno = informacionAlumnoRepository.findByUsuario(usuario)
-                .orElseThrow(() -> new RuntimeException("Perfil de alumno no encontrado"));
+                .orElseGet(() -> {
+                    log.warn("⚠ No existe información del alumno para actualizar, creando nueva entrada...");
+                    InformacionAlumno nuevaInfo = new InformacionAlumno();
+                    nuevaInfo.setUsuario(usuario);
+                    return nuevaInfo;
+                });
 
         // Actualizar datos básicos
         infoAlumno.setEstatura(dto.getEstatura());
