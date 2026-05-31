@@ -1,4 +1,4 @@
-﻿package com.sportine.backend.model;
+package com.sportine.backend.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-﻿package com.sportine.backend.repository;
+package com.sportine.backend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -1,4 +1,4 @@
-﻿package com.sportine.backend.repository;
+package com.sportine.backend.repository;
 
 import com.sportine.backend.model.HistorialSuscripcion;
 import org.springframework.data.jpa.repository.JpaRepository;
