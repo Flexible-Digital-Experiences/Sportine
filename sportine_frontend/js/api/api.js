@@ -5,7 +5,8 @@
 // puerto 8080 por defecto. Cuando lo subas a producción,
 // cambiarás esta URL a la dirección real del servidor.
 //
-const BASE_URL = 'http://localhost:8080';
+// const BASE_URL = 'http://localhost:8080'; // Dirección local desactivada
+const BASE_URL = 'https://sportine-production.up.railway.app';
 
 
 // ── Helper interno: construir headers ────────────────────────
