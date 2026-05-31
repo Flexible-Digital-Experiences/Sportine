@@ -25,4 +25,22 @@ public interface UsuarioRepository extends JpaRepository<Usuario, String> {
     Optional<Usuario> findByCorreo(String correo);
 
     boolean existsByCorreo(String correo);
+
+    @Query(value = "SELECT DISTINCT u.* FROM usuario u " +
+            "LEFT JOIN alumno_deporte ad ON u.usuario = ad.usuario " +
+            "LEFT JOIN entrenador_deporte ed ON u.usuario = ed.usuario_entrenador " +
+            "WHERE u.usuario != :miUsuario " +
+            "AND u.usuario NOT IN (SELECT usuario_seguido FROM seguidores WHERE usuario_seguidor = :miUsuario) " +
+            "AND u.usuario NOT IN (SELECT usuario_entrenador FROM entrenador_alumno WHERE usuario_alumno = :miUsuario) " +
+            "AND u.usuario NOT IN (SELECT usuario_alumno FROM entrenador_alumno WHERE usuario_entrenador = :miUsuario) " +
+            "AND (" +
+            "   u.id_estado = :idEstado " +
+            "   OR ad.id_deporte IN (:misDeportes) " +
+            "   OR ed.id_deporte IN (:misDeportes) " +
+            ") ORDER BY RAND() LIMIT 10", nativeQuery = true)
+    List<Usuario> buscarSugerenciasHibridas(
+            @Param("miUsuario") String miUsuario,
+            @Param("idEstado") Integer idEstado,
+            @Param("misDeportes") List<Integer> misDeportes
+    );
 }

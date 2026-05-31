@@ -10,6 +10,10 @@ import com.sportine.backend.repository.InformacionAlumnoRepository;
 import com.sportine.backend.repository.InformacionEntrenadorRepository;
 import com.sportine.backend.repository.SeguidoresRepository;
 import com.sportine.backend.repository.UsuarioRepository;
+import com.sportine.backend.repository.AlumnoDeporteRepository;
+import com.sportine.backend.repository.EntrenadorDeporteRepository;
+import com.sportine.backend.model.AlumnoDeporte;
+import com.sportine.backend.model.EntrenadorDeporte;
 import com.sportine.backend.service.NotificacionService;
 import com.sportine.backend.service.SeguidoresService;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +32,11 @@ public class SeguidoresServiceImpl implements SeguidoresService {
     private final UsuarioRepository usuarioRepository;
     private final NotificacionService notificacionService;
 
-    // 1️⃣ INYECTAMOS LOS REPOSITORIOS DE INFORMACIÓN
+    // 1️⃣ INYECTAMOS LOS REPOSITORIOS DE INFORMACIÓN Y DEPORTES
     private final InformacionAlumnoRepository informacionAlumnoRepository;
     private final InformacionEntrenadorRepository informacionEntrenadorRepository;
+    private final AlumnoDeporteRepository alumnoDeporteRepository;
+    private final EntrenadorDeporteRepository entrenadorDeporteRepository;
 
     @Override
     @Transactional
@@ -85,6 +91,37 @@ public class SeguidoresServiceImpl implements SeguidoresService {
                     dto.setSiguiendo(true); // En "Mis Amigos" siempre es true
                     return dto;
                 })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UsuarioDetalleDTO> obtenerSugerencias(String miUsuario) {
+        Optional<Usuario> userOpt = usuarioRepository.findByUsuario(miUsuario);
+        if (userOpt.isEmpty()) {
+            return List.of();
+        }
+        Usuario user = userOpt.get();
+        Integer idEstado = user.getIdEstado();
+
+        // Obtener deportes
+        List<Integer> misDeportes = new java.util.ArrayList<>();
+        List<AlumnoDeporte> ad = alumnoDeporteRepository.findByUsuario(miUsuario);
+        for (AlumnoDeporte a : ad) {
+            misDeportes.add(a.getIdDeporte());
+        }
+        List<EntrenadorDeporte> ed = entrenadorDeporteRepository.findByUsuario(miUsuario);
+        for (EntrenadorDeporte e : ed) {
+            misDeportes.add(e.getIdDeporte());
+        }
+
+        if (misDeportes.isEmpty()) {
+            misDeportes.add(-1); // Evitar error SQL IN () vacío
+        }
+
+        List<Usuario> sugerencias = usuarioRepository.buscarSugerenciasHibridas(miUsuario, idEstado, misDeportes);
+
+        return sugerencias.stream()
+                .map(u -> convertirADTO(u, miUsuario))
                 .collect(Collectors.toList());
     }
 

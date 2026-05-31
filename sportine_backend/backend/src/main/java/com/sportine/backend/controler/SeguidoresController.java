@@ -35,10 +35,10 @@ public class SeguidoresController {
     }
 
     @GetMapping("/amigos/buscar")
-    public ResponseEntity<List<UsuarioDetalleDTO>> buscarPersonas(@RequestParam("q") String query,
+    public ResponseEntity<List<UsuarioDetalleDTO>> buscarPersonas(@RequestParam(value = "q", required = false) String query,
                                                                   Principal principal) {
         if (query == null || query.trim().isEmpty()) {
-            return ResponseEntity.ok(List.of());
+            return ResponseEntity.ok(seguidoresService.obtenerSugerencias(principal.getName()));
         }
 
         return ResponseEntity.ok(seguidoresService.buscarPersonas(query, principal.getName()));

@@ -12,4 +12,6 @@ public interface SeguidoresService {
     List<UsuarioDetalleDTO> buscarPersonas(String query, String miUsuario);
 
     List<UsuarioDetalleDTO> obtenerMisAmigos(String miUsuario);
+
+    List<UsuarioDetalleDTO> obtenerSugerencias(String miUsuario);
 }
