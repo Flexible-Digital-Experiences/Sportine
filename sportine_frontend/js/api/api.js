@@ -20,6 +20,11 @@ function _getHeaders(incluirToken = false) {
 async function _handleResponse(response) {
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
+    // Si el backend envía un mapa de errores (ej. {"usuario": "error..."})
+    if (data && !data.mensaje && !data.message && typeof data === 'object') {
+      const primerError = Object.values(data)[0];
+      if (typeof primerError === 'string') throw new Error(primerError);
+    }
     const mensaje = data.mensaje || data.message || 'Error en el servidor';
     throw new Error(mensaje);
   }

@@ -31,7 +31,7 @@ public class UsuarioRegistroDTO {
     private String apellidos;
 
     @NotBlank(message = "El sexo es obligatorio")
-    @Pattern(regexp = "^(Masculino|Femenino)$", message = "El sexo debe ser: Masculino o Femenino")
+    @Pattern(regexp = "^(Masculino|Femenino|Prefiero no decir)$", message = "El sexo debe ser: Masculino, Femenino o Prefiero no decir")
     private String sexo;
 
     @NotNull(message = "El estado es obligatorio")
