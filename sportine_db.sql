@@ -6,44 +6,44 @@ USE sportine_db;
 -- 1. TABLAS BASE
 -- ============================================
 
-CREATE TABLE Estado (
+CREATE TABLE estado (
     id_estado INT PRIMARY KEY AUTO_INCREMENT,
     estado VARCHAR(100)
 );
 
-CREATE TABLE Usuario (
+CREATE TABLE usuario (
     usuario VARCHAR(255) PRIMARY KEY,
     correo VARCHAR(255) UNIQUE NOT NULL,
-    contraseña VARCHAR(255),
+    contrasena VARCHAR(255),
     nombre VARCHAR(255),
     apellidos VARCHAR(255),
     sexo VARCHAR(50),
     id_estado INT,
     ciudad VARCHAR(100),
-    FOREIGN KEY (id_estado) REFERENCES Estado(id_estado),
+    FOREIGN KEY (id_estado) REFERENCES estado(id_estado),
     INDEX idx_correo (correo)
 );
 
-CREATE TABLE Rol (
+CREATE TABLE rol (
     id_rol INT PRIMARY KEY AUTO_INCREMENT,
     rol VARCHAR(100)
 );
 
-CREATE TABLE Usuario_rol (
+CREATE TABLE usuario_rol (
     id_usuario_rol INT PRIMARY KEY AUTO_INCREMENT,
     id_rol INT,
     usuario VARCHAR(255),
-    FOREIGN KEY (id_rol) REFERENCES Rol(id_rol),
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
+    FOREIGN KEY (id_rol) REFERENCES rol(id_rol),
+    FOREIGN KEY (usuario) REFERENCES usuario(usuario),
     UNIQUE KEY unique_usuario_rol (usuario, id_rol)
 );
 
-CREATE TABLE Deporte (
+CREATE TABLE deporte (
     id_deporte INT PRIMARY KEY AUTO_INCREMENT,
     nombre_deporte VARCHAR(100) UNIQUE NOT NULL
 );
 
-CREATE TABLE Nivel (
+CREATE TABLE nivel (
     id_nivel INT PRIMARY KEY AUTO_INCREMENT,
     nombre_nivel VARCHAR(50) UNIQUE NOT NULL
 );
@@ -52,7 +52,7 @@ CREATE TABLE Nivel (
 -- 2. TABLAS DE INFORMACIÓN
 -- ============================================
 
-CREATE TABLE Informacion_Alumno (
+CREATE TABLE informacion_alumno (
     usuario VARCHAR(255) PRIMARY KEY,
     estatura FLOAT,
     peso FLOAT,
@@ -60,10 +60,10 @@ CREATE TABLE Informacion_Alumno (
     padecimientos VARCHAR(255),
     foto_perfil TEXT,
     fecha_nacimiento DATE,
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
+    FOREIGN KEY (usuario) REFERENCES usuario(usuario)
 );
 
-CREATE TABLE Informacion_Entrenador (
+CREATE TABLE informacion_entrenador (
     usuario VARCHAR(255) PRIMARY KEY,
     costo_mensualidad INT,
     descripcion_perfil VARCHAR(255),
@@ -77,7 +77,7 @@ CREATE TABLE Informacion_Entrenador (
     onboarding_link TEXT NULL,
     fecha_onboarding DATE NULL,
     permissions_granted TEXT NULL,
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
+    FOREIGN KEY (usuario) REFERENCES usuario(usuario),
     INDEX idx_merchant_id (merchant_id),
     INDEX idx_onboarding_status (onboarding_status)
 );
@@ -86,7 +86,7 @@ CREATE TABLE Informacion_Entrenador (
 -- 3. SUSCRIPCIONES - PLATFORM PARTNER PAYPAL
 -- ============================================
 
-CREATE TABLE Estudiante_Suscripcion_Entrenador (
+CREATE TABLE estudiante_suscripcion_entrenador (
     id_suscripcion INT PRIMARY KEY AUTO_INCREMENT,
     usuario_estudiante VARCHAR(255) NOT NULL,
     usuario_entrenador VARCHAR(255) NOT NULL,
@@ -106,9 +106,9 @@ CREATE TABLE Estudiante_Suscripcion_Entrenador (
     motivo_cancelacion TEXT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_estudiante) REFERENCES Usuario(usuario),
-    FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
-    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
+    FOREIGN KEY (usuario_estudiante) REFERENCES usuario(usuario),
+    FOREIGN KEY (usuario_entrenador) REFERENCES usuario(usuario),
+    FOREIGN KEY (id_deporte) REFERENCES deporte(id_deporte),
     INDEX idx_subscription_id (subscription_id),
     INDEX idx_estudiante (usuario_estudiante),
     INDEX idx_entrenador (usuario_entrenador),
@@ -116,7 +116,7 @@ CREATE TABLE Estudiante_Suscripcion_Entrenador (
     UNIQUE KEY unique_estudiante_entrenador_deporte_activo (usuario_estudiante, usuario_entrenador, id_deporte, status_suscripcion)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE Historial_Pagos_Estudiante_Entrenador (
+CREATE TABLE historial_pagos_estudiante_entrenador (
     id_pago INT PRIMARY KEY AUTO_INCREMENT,
     id_suscripcion INT NOT NULL,
     paypal_transaction_id VARCHAR(255) NULL,
@@ -132,13 +132,13 @@ CREATE TABLE Historial_Pagos_Estudiante_Entrenador (
     evento_webhook TEXT NULL,
     tipo_evento VARCHAR(100) NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_suscripcion) REFERENCES Estudiante_Suscripcion_Entrenador(id_suscripcion),
+    FOREIGN KEY (id_suscripcion) REFERENCES estudiante_suscripcion_entrenador(id_suscripcion),
     INDEX idx_suscripcion (id_suscripcion),
     INDEX idx_transaction_id (paypal_transaction_id),
     INDEX idx_status (status_pago)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE Comisiones_Sportine (
+CREATE TABLE comisiones_sportine (
     id_comision INT PRIMARY KEY AUTO_INCREMENT,
     id_pago INT NOT NULL,
     monto_comision DECIMAL(10,2) NOT NULL,
@@ -151,7 +151,7 @@ CREATE TABLE Comisiones_Sportine (
     paypal_payout_item_id VARCHAR(255) NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_pago) REFERENCES Historial_Pagos_Estudiante_Entrenador(id_pago),
+    FOREIGN KEY (id_pago) REFERENCES historial_pagos_estudiante_entrenador(id_pago),
     INDEX idx_pago (id_pago),
     INDEX idx_status (status_deposito)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -160,28 +160,28 @@ CREATE TABLE Comisiones_Sportine (
 -- 4. RELACIONES
 -- ============================================
 
-CREATE TABLE Alumno_Deporte (
+CREATE TABLE alumno_deporte (
     id_alumno_deporte INT PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(255),
     id_deporte INT,
     fecha_inicio DATE,
     id_nivel INT,
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
-    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
-    FOREIGN KEY (id_nivel) REFERENCES Nivel(id_nivel),
+    FOREIGN KEY (usuario) REFERENCES usuario(usuario),
+    FOREIGN KEY (id_deporte) REFERENCES deporte(id_deporte),
+    FOREIGN KEY (id_nivel) REFERENCES nivel(id_nivel),
     UNIQUE KEY unique_alumno_deporte (usuario, id_deporte)
 );
 
-CREATE TABLE Entrenador_Deporte (
+CREATE TABLE entrenador_deporte (
     id_entrenador_deporte INT PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(255),
     id_deporte INT,
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
-    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
+    FOREIGN KEY (usuario) REFERENCES usuario(usuario),
+    FOREIGN KEY (id_deporte) REFERENCES deporte(id_deporte),
     UNIQUE KEY unique_entrenador_deporte (usuario, id_deporte)
 );
 
-CREATE TABLE Entrenador_Alumno (
+CREATE TABLE entrenador_alumno (
     id_relacion INT PRIMARY KEY AUTO_INCREMENT,
     usuario_entrenador VARCHAR(255),
     usuario_alumno VARCHAR(255),
@@ -189,13 +189,13 @@ CREATE TABLE Entrenador_Alumno (
     fecha_inicio DATE DEFAULT (CURRENT_DATE),
     fin_mensualidad DATE NULL,
     status_relacion VARCHAR(50),
-    FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
-    FOREIGN KEY (usuario_alumno) REFERENCES Usuario(usuario),
-    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
+    FOREIGN KEY (usuario_entrenador) REFERENCES usuario(usuario),
+    FOREIGN KEY (usuario_alumno) REFERENCES usuario(usuario),
+    FOREIGN KEY (id_deporte) REFERENCES deporte(id_deporte),
     UNIQUE KEY unique_alumno_deporte_activo (usuario_alumno, id_deporte, status_relacion)
 );
 
-CREATE TABLE Solicitudes_Entrenamiento (
+CREATE TABLE solicitudes_entrenamiento (
     id_solicitud INT PRIMARY KEY AUTO_INCREMENT,
     usuario_alumno VARCHAR(255),
     usuario_entrenador VARCHAR(255),
@@ -203,16 +203,16 @@ CREATE TABLE Solicitudes_Entrenamiento (
     descripcion_solicitud VARCHAR(255),
     fecha_solicitud DATE,
     status_solicitud ENUM('En_revisión', 'Aprobada', 'Rechazada'),
-    FOREIGN KEY (usuario_alumno) REFERENCES Usuario(usuario),
-    FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
-    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte)
+    FOREIGN KEY (usuario_alumno) REFERENCES usuario(usuario),
+    FOREIGN KEY (usuario_entrenador) REFERENCES usuario(usuario),
+    FOREIGN KEY (id_deporte) REFERENCES deporte(id_deporte)
 );
 
 -- ============================================
 -- 5. MÓDULO DE ENTRENAMIENTO
 -- ============================================
 
-CREATE TABLE Entrenamiento (
+CREATE TABLE entrenamiento (
     id_entrenamiento INT PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(255),
     usuario_entrenador VARCHAR(255),
@@ -225,12 +225,12 @@ CREATE TABLE Entrenamiento (
     estado_entrenamiento ENUM('pendiente', 'en_progreso', 'finalizado'),
     creado_en DATETIME DEFAULT CURRENT_TIMESTAMP,
     actualizado_en DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
-    FOREIGN KEY (usuario_entrenador) REFERENCES Usuario(usuario),
-    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte)
+    FOREIGN KEY (usuario) REFERENCES usuario(usuario),
+    FOREIGN KEY (usuario_entrenador) REFERENCES usuario(usuario),
+    FOREIGN KEY (id_deporte) REFERENCES deporte(id_deporte)
 );
 
-CREATE TABLE Ejercicios_Asignados (
+CREATE TABLE ejercicios_asignados (
     id_asignado INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT NOT NULL,
     usuario VARCHAR(255) NOT NULL,
@@ -247,13 +247,13 @@ CREATE TABLE Ejercicios_Asignados (
     valor_completado_peso FLOAT DEFAULT NULL,
     tiene_exitosos BOOLEAN,
     notas_alumno TEXT DEFAULT NULL,
-    FOREIGN KEY (id_entrenamiento) REFERENCES Entrenamiento(id_entrenamiento),
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
+    FOREIGN KEY (id_entrenamiento) REFERENCES entrenamiento(id_entrenamiento),
+    FOREIGN KEY (usuario) REFERENCES usuario(usuario),
     INDEX idx_entrenamiento (id_entrenamiento),
     INDEX idx_usuario (usuario)
 );
 
-CREATE TABLE Resultado_Series_Ejercicio (
+CREATE TABLE resultado_series_ejercicio (
     id_resultado INT PRIMARY KEY AUTO_INCREMENT,
     id_asignado INT NOT NULL,
     numero_serie INT NOT NULL,
@@ -269,12 +269,12 @@ CREATE TABLE Resultado_Series_Ejercicio (
     status ENUM('pendiente', 'completado', 'parcial', 'omitido') DEFAULT 'pendiente',
     notas TEXT DEFAULT NULL,
     registrado_en DATETIME DEFAULT NULL,
-    FOREIGN KEY (id_asignado) REFERENCES Ejercicios_Asignados(id_asignado),
+    FOREIGN KEY (id_asignado) REFERENCES ejercicios_asignados(id_asignado),
     UNIQUE KEY unique_serie (id_asignado, numero_serie),
     INDEX idx_id_asignado (id_asignado)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE Progreso_Entrenamiento (
+CREATE TABLE progreso_entrenamiento (
     id_progreso INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT NOT NULL,
     usuario VARCHAR(255) NOT NULL,
@@ -289,13 +289,13 @@ CREATE TABLE Progreso_Entrenamiento (
     hc_velocidad_promedio_ms FLOAT NULL,
     hc_fuente_datos ENUM('health_connect', 'strava', 'manual') NULL,
     hc_sincronizado_en DATETIME NULL,
-    FOREIGN KEY (id_entrenamiento) REFERENCES Entrenamiento(id_entrenamiento),
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
+    FOREIGN KEY (id_entrenamiento) REFERENCES entrenamiento(id_entrenamiento),
+    FOREIGN KEY (usuario) REFERENCES usuario(usuario),
     INDEX idx_entrenamiento (id_entrenamiento),
     INDEX idx_usuario (usuario)
 );
 
-CREATE TABLE Feedback_Entrenamiento (
+CREATE TABLE feedback_entrenamiento (
     id_feedback INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT NOT NULL,
     usuario VARCHAR(255) NOT NULL,
@@ -304,15 +304,15 @@ CREATE TABLE Feedback_Entrenamiento (
     estado_animo VARCHAR(50) NULL,
     comentarios VARCHAR(255) NULL,
     fecha_feedback DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_entrenamiento) REFERENCES Entrenamiento(id_entrenamiento),
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
+    FOREIGN KEY (id_entrenamiento) REFERENCES entrenamiento(id_entrenamiento),
+    FOREIGN KEY (usuario) REFERENCES usuario(usuario)
 );
 
 -- ============================================
 -- 6. CONEXIONES CON APIs EXTERNAS
 -- ============================================
 
-CREATE TABLE Conexiones_Api_Externa (
+CREATE TABLE conexiones_api_externa (
     id_conexion INT PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(255) NOT NULL,
     proveedor ENUM('health_connect', 'strava', 'garmin') NOT NULL,
@@ -325,7 +325,7 @@ CREATE TABLE Conexiones_Api_Externa (
     proveedor_usuario_id VARCHAR(255) NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
+    FOREIGN KEY (usuario) REFERENCES usuario(usuario),
     UNIQUE KEY unique_usuario_proveedor (usuario, proveedor)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -333,7 +333,7 @@ CREATE TABLE Conexiones_Api_Externa (
 -- 7. MÉTRICAS POR DEPORTE
 -- ============================================
 
-CREATE TABLE Plantilla_Metricas_Deporte (
+CREATE TABLE plantilla_metricas_deporte (
     id_plantilla INT PRIMARY KEY AUTO_INCREMENT,
     id_deporte INT NOT NULL,
     nombre_metrica VARCHAR(100) NOT NULL,
@@ -342,12 +342,12 @@ CREATE TABLE Plantilla_Metricas_Deporte (
     fuente ENUM('health_connect', 'manual', 'calculada') NOT NULL,
     es_por_serie BOOLEAN DEFAULT FALSE,
     orden_display INT DEFAULT 0,
-    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
+    FOREIGN KEY (id_deporte) REFERENCES deporte(id_deporte),
     UNIQUE KEY unique_deporte_metrica (id_deporte, nombre_metrica),
     INDEX idx_deporte (id_deporte)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE Resultado_Metrica_Manual (
+CREATE TABLE resultado_metrica_manual (
     id_resultado_metrica INT PRIMARY KEY AUTO_INCREMENT,
     id_entrenamiento INT NOT NULL,
     id_plantilla INT NOT NULL,
@@ -356,15 +356,15 @@ CREATE TABLE Resultado_Metrica_Manual (
     numero_serie INT DEFAULT NULL,
     notas VARCHAR(500) DEFAULT NULL,
     registrado_en DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_entrenamiento) REFERENCES Entrenamiento(id_entrenamiento),
-    FOREIGN KEY (id_plantilla) REFERENCES Plantilla_Metricas_Deporte(id_plantilla),
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
+    FOREIGN KEY (id_entrenamiento) REFERENCES entrenamiento(id_entrenamiento),
+    FOREIGN KEY (id_plantilla) REFERENCES plantilla_metricas_deporte(id_plantilla),
+    FOREIGN KEY (usuario) REFERENCES usuario(usuario),
     INDEX idx_entrenamiento (id_entrenamiento),
     INDEX idx_usuario (usuario),
     INDEX idx_plantilla (id_plantilla)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE Estadisticas_Carrera_Usuario (
+CREATE TABLE estadisticas_carrera_usuario (
     id INT PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(255) NOT NULL,
     id_deporte INT NOT NULL,
@@ -374,12 +374,12 @@ CREATE TABLE Estadisticas_Carrera_Usuario (
     fecha_mejor_sesion DATE NULL,
     total_entrenamientos INT DEFAULT 0,
     ultima_actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
-    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
+    FOREIGN KEY (usuario) REFERENCES usuario(usuario),
+    FOREIGN KEY (id_deporte) REFERENCES deporte(id_deporte),
     UNIQUE KEY unique_usuario_deporte_metrica (usuario, id_deporte, nombre_metrica)
 );
 
-CREATE TABLE Logro_Desbloqueado (
+CREATE TABLE logro_desbloqueado (
     id_logro INT PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(255) NOT NULL,
     id_deporte INT NOT NULL,
@@ -390,9 +390,9 @@ CREATE TABLE Logro_Desbloqueado (
     publicado BOOLEAN DEFAULT FALSE,
     visto_en DATETIME NULL,
     desbloqueado_en DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
-    FOREIGN KEY (id_deporte) REFERENCES Deporte(id_deporte),
-    FOREIGN KEY (id_entrenamiento) REFERENCES Entrenamiento(id_entrenamiento),
+    FOREIGN KEY (usuario) REFERENCES usuario(usuario),
+    FOREIGN KEY (id_deporte) REFERENCES deporte(id_deporte),
+    FOREIGN KEY (id_entrenamiento) REFERENCES entrenamiento(id_entrenamiento),
     INDEX idx_usuario (usuario),
     INDEX idx_usuario_visto (usuario, visto_en)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -401,56 +401,56 @@ CREATE TABLE Logro_Desbloqueado (
 -- 8. MÓDULO SOCIAL
 -- ============================================
 
-CREATE TABLE Calificaciones (
+CREATE TABLE calificaciones (
     id_calificacion INT PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(255),
     usuario_calificado VARCHAR(255),
     calificacion INT,
     comentarios VARCHAR(255),
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario),
-    FOREIGN KEY (usuario_calificado) REFERENCES Usuario(usuario)
+    FOREIGN KEY (usuario) REFERENCES usuario(usuario),
+    FOREIGN KEY (usuario_calificado) REFERENCES usuario(usuario)
 );
 
-CREATE TABLE Publicacion (
+CREATE TABLE publicacion (
     id_publicacion INT PRIMARY KEY AUTO_INCREMENT,
     usuario VARCHAR(255),
     descripcion VARCHAR(255),
     fecha_publicacion DATETIME DEFAULT CURRENT_TIMESTAMP,
     imagen TEXT NULL,
     tipo INT DEFAULT 1 COMMENT '1=normal, 2=logro',
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
+    FOREIGN KEY (usuario) REFERENCES usuario(usuario)
 );
 
-CREATE TABLE Likes (
+CREATE TABLE likes (
     id_like INT PRIMARY KEY AUTO_INCREMENT,
     id_publicacion INT,
     usuario_like VARCHAR(255),
     fecha_like DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_publicacion) REFERENCES Publicacion(id_publicacion),
-    FOREIGN KEY (usuario_like) REFERENCES Usuario(usuario)
+    FOREIGN KEY (id_publicacion) REFERENCES publicacion(id_publicacion),
+    FOREIGN KEY (usuario_like) REFERENCES usuario(usuario)
 );
 
-CREATE TABLE Comentario (
+CREATE TABLE comentario (
     id_comentario INT PRIMARY KEY AUTO_INCREMENT,
     id_publicacion INT NOT NULL,
     usuario VARCHAR(255) NOT NULL,
     texto TEXT NOT NULL,
     fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_publicacion) REFERENCES Publicacion(id_publicacion),
-    FOREIGN KEY (usuario) REFERENCES Usuario(usuario)
+    FOREIGN KEY (id_publicacion) REFERENCES publicacion(id_publicacion),
+    FOREIGN KEY (usuario) REFERENCES usuario(usuario)
 );
 
-CREATE TABLE Seguidores (
+CREATE TABLE seguidores (
     id_seguimiento INT PRIMARY KEY AUTO_INCREMENT,
     usuario_seguidor VARCHAR(255),
     usuario_seguido VARCHAR(255),
     fecha_seguimiento DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_seguidor) REFERENCES Usuario(usuario),
-    FOREIGN KEY (usuario_seguido) REFERENCES Usuario(usuario),
+    FOREIGN KEY (usuario_seguidor) REFERENCES usuario(usuario),
+    FOREIGN KEY (usuario_seguido) REFERENCES usuario(usuario),
     UNIQUE KEY unique_seguimiento (usuario_seguidor, usuario_seguido)
 );
 
-CREATE TABLE Notificacion (
+CREATE TABLE notificacion (
     id_notificacion INT PRIMARY KEY AUTO_INCREMENT,
     usuario_destino VARCHAR(255),
     usuario_actor VARCHAR(255),
@@ -459,35 +459,35 @@ CREATE TABLE Notificacion (
     mensaje VARCHAR(255),
     leido BOOLEAN DEFAULT FALSE,
     fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_destino) REFERENCES Usuario(usuario),
-    FOREIGN KEY (usuario_actor) REFERENCES Usuario(usuario)
+    FOREIGN KEY (usuario_destino) REFERENCES usuario(usuario),
+    FOREIGN KEY (usuario_actor) REFERENCES usuario(usuario)
 );
 
 -- ============================================
 -- DATOS INICIALES
 -- ============================================
 
-INSERT INTO Estado (estado) VALUES
+INSERT INTO estado (estado) VALUES
     ('Ciudad de México'), ('Aguascalientes'), ('Baja California'), ('Baja California Sur'), ('Campeche'),
     ('Chiapas'), ('Chihuahua'), ('Coahuila'), ('Colima'), ('Durango'), ('Guanajuato'), ('Guerrero'),
     ('Hidalgo'), ('Jalisco'), ('México'), ('Michoacán'), ('Morelos'), ('Nayarit'), ('Nuevo León'),
     ('Oaxaca'), ('Puebla'), ('Querétaro'), ('Quintana Roo'), ('San Luis Potosí'), ('Sinaloa'),
     ('Sonora'), ('Tabasco'), ('Tamaulipas'), ('Tlaxcala'), ('Veracruz'), ('Yucatán'), ('Zacatecas');
 
-INSERT INTO Rol (rol) VALUES ('alumno'), ('entrenador'), ('ELIMINADO');
+INSERT INTO rol (rol) VALUES ('alumno'), ('entrenador'), ('ELIMINADO');
 
-INSERT INTO Deporte (nombre_deporte) VALUES
+INSERT INTO deporte (nombre_deporte) VALUES
     ('Fútbol'),('Basketball'),('Natación'),('Running'),('Boxeo'),
     ('Tenis'),('Gimnasio'),('Ciclismo'),('Béisbol');
 
-INSERT INTO Nivel (nombre_nivel) VALUES ('Principiante'), ('Intermedio'), ('Avanzado');
+INSERT INTO nivel (nombre_nivel) VALUES ('Principiante'), ('Intermedio'), ('Avanzado');
 
 -- ============================================
 -- PLANTILLAS DE MÉTRICAS POR DEPORTE
 -- ============================================
 
 -- FÚTBOL (id=1)
-INSERT INTO Plantilla_Metricas_Deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
+INSERT INTO plantilla_metricas_deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
 (1,'duracion_activa','Duración activa','min','health_connect',FALSE,1),
 (1,'calorias','Calorías quemadas','kcal','health_connect',FALSE,2),
 (1,'distancia','Distancia recorrida','m','health_connect',FALSE,3),
@@ -515,7 +515,7 @@ INSERT INTO Plantilla_Metricas_Deporte (id_deporte, nombre_metrica, etiqueta_dis
 (1,'despejes','Despejes','desp.','calculada',FALSE,25);
 
 -- BASKETBALL (id=2)
-INSERT INTO Plantilla_Metricas_Deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
+INSERT INTO plantilla_metricas_deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
 (2,'duracion_activa','Duración activa','min','health_connect',FALSE,1),
 (2,'calorias','Calorías quemadas','kcal','health_connect',FALSE,2),
 (2,'tiros_libres_intentados','Tiros libres (int.)','TL','calculada',TRUE,3),
@@ -539,7 +539,7 @@ INSERT INTO Plantilla_Metricas_Deporte (id_deporte, nombre_metrica, etiqueta_dis
 (2,'perdidas','Pérdidas de balón','perd','calculada',FALSE,21);
 
 -- NATACIÓN (id=3)
-INSERT INTO Plantilla_Metricas_Deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
+INSERT INTO plantilla_metricas_deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
 (3,'duracion_activa','Duración activa','min','health_connect',FALSE,1),
 (3,'calorias','Calorías quemadas','kcal','health_connect',FALSE,2),
 (3,'distancia','Distancia total','m','health_connect',FALSE,3),
@@ -554,7 +554,7 @@ INSERT INTO Plantilla_Metricas_Deporte (id_deporte, nombre_metrica, etiqueta_dis
 (3,'indice_eficiencia','Índice de eficiencia (SWOLF)','pts','calculada',FALSE,12);
 
 -- RUNNING (id=4)
-INSERT INTO Plantilla_Metricas_Deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
+INSERT INTO plantilla_metricas_deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
 (4,'duracion_activa','Duración activa','min','health_connect',FALSE,1),
 (4,'calorias','Calorías quemadas','kcal','health_connect',FALSE,2),
 (4,'distancia','Distancia total','m','health_connect',FALSE,3),
@@ -569,7 +569,7 @@ INSERT INTO Plantilla_Metricas_Deporte (id_deporte, nombre_metrica, etiqueta_dis
 (4,'cadencia_promedio','Cadencia promedio','pasos/m','calculada',FALSE,12);
 
 -- BOXEO (id=5)
-INSERT INTO Plantilla_Metricas_Deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
+INSERT INTO plantilla_metricas_deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
 (5,'duracion_activa','Duración activa','min','health_connect',FALSE,1),
 (5,'calorias','Calorías quemadas','kcal','health_connect',FALSE,2),
 (5,'rounds_completados','Rounds completados','rounds','calculada',FALSE,3),
@@ -589,7 +589,7 @@ INSERT INTO Plantilla_Metricas_Deporte (id_deporte, nombre_metrica, etiqueta_dis
 (5,'golpes_totales_conectados','Golpes totales (con.)','golpes','calculada',FALSE,17);
 
 -- TENIS (id=6)
-INSERT INTO Plantilla_Metricas_Deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
+INSERT INTO plantilla_metricas_deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
 (6,'duracion_activa','Duración activa','min','health_connect',FALSE,1),
 (6,'calorias','Calorías quemadas','kcal','health_connect',FALSE,2),
 (6,'distancia','Distancia recorrida','m','health_connect',FALSE,3),
@@ -614,7 +614,7 @@ INSERT INTO Plantilla_Metricas_Deporte (id_deporte, nombre_metrica, etiqueta_dis
 (6,'puntos_ganados_en_red','Puntos ganados en red','pts','calculada',FALSE,22);
 
 -- GIMNASIO (id=7)
-INSERT INTO Plantilla_Metricas_Deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
+INSERT INTO plantilla_metricas_deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
 (7,'duracion_activa','Duración activa','min','health_connect',FALSE,1),
 (7,'calorias','Calorías quemadas','kcal','health_connect',FALSE,2),
 (7,'volumen_total_kg','Volumen total','kg','calculada',FALSE,3),
@@ -630,7 +630,7 @@ INSERT INTO Plantilla_Metricas_Deporte (id_deporte, nombre_metrica, etiqueta_dis
 (7,'rpe_promedio','RPE promedio (esfuerzo)','/10','calculada',FALSE,13);
 
 -- CICLISMO (id=8)
-INSERT INTO Plantilla_Metricas_Deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
+INSERT INTO plantilla_metricas_deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
 (8,'duracion_activa','Duración activa','min','health_connect',FALSE,1),
 (8,'calorias','Calorías quemadas','kcal','health_connect',FALSE,2),
 (8,'distancia','Distancia','m','health_connect',FALSE,3),
@@ -647,7 +647,7 @@ INSERT INTO Plantilla_Metricas_Deporte (id_deporte, nombre_metrica, etiqueta_dis
 (8,'desnivel_positivo','Desnivel positivo acumulado','m','calculada',FALSE,14);
 
 -- BÉISBOL (id=9)
-INSERT INTO Plantilla_Metricas_Deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
+INSERT INTO plantilla_metricas_deporte (id_deporte, nombre_metrica, etiqueta_display, unidad, fuente, es_por_serie, orden_display) VALUES
 (9,'duracion_activa','Duración activa','min','health_connect',FALSE,1),
 (9,'calorias','Calorías quemadas','kcal','health_connect',FALSE,2),
 (9,'turnos_al_bate','Turnos al bate','AB','calculada',TRUE,3),
