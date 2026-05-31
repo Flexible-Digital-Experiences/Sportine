@@ -18,6 +18,9 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final CorsConfigurationSource corsConfigurationSource;
+    // ✅ SEGURIDAD: filtros nuevos
+    private final RateLimitFilter rateLimitFilter;
+    private final SecurityHeadersFilter securityHeadersFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -32,9 +35,6 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
 
                 // ── Archivos estáticos (HTML, JS, CSS, imágenes) ──────────
-                // Spring Security los bloqueaba con 403 porque no traen JWT.
-                // PayPal redirige al navegador a /pages/alumno/ver-entrenador.html
-                // y sin esto el backend rechaza la petición antes de servirla.
                 .requestMatchers(
                         "/pages/**",
                         "/js/**",
@@ -70,7 +70,13 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
-        // 5. Filtro JWT
+        // 5. Cadena de filtros (orden importa):
+        //    SecurityHeaders → RateLimit → JWT
+        //
+        //    SecurityHeaders va primero para que TODAS las respuestas
+        //    (incluyendo 429 y 401) lleven los headers de seguridad.
+        http.addFilterBefore(securityHeadersFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

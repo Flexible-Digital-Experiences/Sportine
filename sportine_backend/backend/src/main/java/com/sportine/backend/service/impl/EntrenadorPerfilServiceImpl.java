@@ -8,6 +8,7 @@ import com.sportine.backend.service.EntrenadorPerfilService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,17 +33,17 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
     private final EntrenadorAlumnoRepository entrenadorAlumnoRepository;
     private final UsuarioRolRepository usuarioRolRepository;
     private final RolRepository rolRepository;
+    // ✅ SEGURIDAD: BCrypt para verificar contraseña en eliminarCuenta()
+    private final PasswordEncoder passwordEncoder;
     @Autowired
     private Cloudinary cloudinary;
 
     @Override
     public PerfilEntrenadorResponseDTO obtenerPerfilEntrenador(String usuario) {
 
-        // 1. Obtener usuario
         Usuario usuarioEntity = usuarioRepository.findByUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // 2. Obtener o crear información del entrenador
         InformacionEntrenador infoEntrenador = informacionEntrenadorRepository.findByUsuario(usuario)
                 .orElseGet(() -> {
                     System.out.println("⚠ No existe información del entrenador, creando nueva entrada...");
@@ -53,10 +54,8 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
                     return informacionEntrenadorRepository.save(nuevo);
                 });
 
-        // 3. Obtener deportes que imparte (SOLO IDs)
         List<EntrenadorDeporte> deportesEntity = entrenadorDeporteRepository.findByUsuario(usuario);
 
-        // 4. Convertir IDs a nombres de deportes
         List<String> deportes = deportesEntity.stream()
                 .map(ed -> {
                     Deporte deporte = deporteRepository.findById(ed.getIdDeporte()).orElse(null);
@@ -64,18 +63,12 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
                 })
                 .collect(Collectors.toList());
 
-        // 5. Obtener estado
-        Estado estado = estadoRepository.findById(usuarioEntity.getIdEstado())
-                .orElse(null);
+        Estado estado = estadoRepository.findById(usuarioEntity.getIdEstado()).orElse(null);
         String nombreEstado = estado != null ? estado.getEstado() : "";
 
-        // 6. Contar amigos
         Integer totalAmigos = seguidoresRepository.contarAmigos(usuario);
-
-        // 7. Contar alumnos activos
         Integer totalAlumnos = entrenadorAlumnoRepository.contarAlumnosActivos(usuario);
 
-        // 8. Construir y retornar el DTO
         return new PerfilEntrenadorResponseDTO(
                 usuarioEntity.getUsuario(),
                 usuarioEntity.getNombre(),
@@ -105,13 +98,11 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
         System.out.println("Usuario: " + usuario);
         System.out.println("Datos recibidos: " + datos);
 
-        // 1. Validar que el usuario existe
         Usuario usuarioEntity = usuarioRepository.findByUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         System.out.println("✓ Usuario encontrado: " + usuarioEntity.getNombre());
 
-        // 2. Obtener o crear información del entrenador
         InformacionEntrenador infoEntrenador = informacionEntrenadorRepository
                 .findByUsuario(usuario)
                 .orElseGet(() -> {
@@ -120,10 +111,9 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
                     nuevo.setUsuario(usuario);
                     nuevo.setLimiteAlumnos(3);
                     nuevo.setCostoMensualidad(0);
-                    return nuevo; // No guardamos aún, se guardará después de actualizar
+                    return nuevo;
                 });
 
-        // 3. Actualizar campos si no son null
         if (datos.getCostoMensualidad() != null) {
             System.out.println("✓ Actualizando costo mensualidad: " + datos.getCostoMensualidad());
             infoEntrenador.setCostoMensualidad(datos.getCostoMensualidad());
@@ -134,19 +124,15 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
             infoEntrenador.setDescripcionPerfil(datos.getDescripcionPerfil());
         }
 
-
-        // 4. Actualizar límite de alumnos
         if (datos.getLimiteAlumnos() != null) {
             System.out.println("✓ Actualizando límite de alumnos: " + datos.getLimiteAlumnos());
             infoEntrenador.setLimiteAlumnos(datos.getLimiteAlumnos());
         }
 
-        // 5. Guardar cambios
         informacionEntrenadorRepository.save(infoEntrenador);
         System.out.println("✓✓✓ Datos del entrenador actualizados correctamente");
         System.out.println("=== FIN ACTUALIZACIÓN ===");
 
-        // 6. Actualizar deportes si se proporcionaron
         if (datos.getDeportes() != null && !datos.getDeportes().isEmpty()) {
             entrenadorDeporteRepository.deleteAll(
                     entrenadorDeporteRepository.findByUsuario(usuario)
@@ -160,7 +146,6 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
             }
         }
 
-        // 7. Retornar perfil actualizado
         return obtenerPerfilEntrenador(usuario);
     }
 
@@ -168,24 +153,20 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
     @Transactional
     public PerfilEntrenadorResponseDTO actualizarFotoPerfil(String usuario, MultipartFile file) {
 
-        // 1. Validar que se haya enviado un archivo
         if (file == null || file.isEmpty()) {
             throw new RuntimeException("No se proporcionó ninguna imagen");
         }
 
-        // 2. Validar tipo de archivo
         String contentType = file.getContentType();
         if (contentType == null || !contentType.startsWith("image/")) {
             throw new RuntimeException("El archivo debe ser una imagen");
         }
 
-        // 3. Obtener información del entrenador
         InformacionEntrenador infoEntrenador = informacionEntrenadorRepository
                 .findByUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("Perfil de entrenador no encontrado"));
 
         try {
-            // 4. Subir imagen a Cloudinary
             Map uploadResult = cloudinary.uploader().upload(
                     file.getBytes(),
                     ObjectUtils.asMap(
@@ -194,14 +175,10 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
                     )
             );
 
-            // 5. Obtener URL de la imagen subida
             String imageUrl = (String) uploadResult.get("secure_url");
-
-            // 6. Actualizar foto en la base de datos
             infoEntrenador.setFotoPerfil(imageUrl);
             informacionEntrenadorRepository.save(infoEntrenador);
 
-            // 7. Retornar perfil actualizado
             return obtenerPerfilEntrenador(usuario);
 
         } catch (IOException e) {
@@ -210,15 +187,12 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
     }
 
     // ============================================
-    // ✅ NUEVOS MÉTODOS: GESTIÓN DE DEPORTES
+    // GESTIÓN DE DEPORTES
     // ============================================
 
     @Override
     public List<String> obtenerCatalogoDeportes() {
-        // Obtener todos los deportes de la tabla Deporte
         List<Deporte> deportes = deporteRepository.findAll();
-
-        // Convertir a lista de nombres
         return deportes.stream()
                 .map(Deporte::getNombreDeporte)
                 .collect(Collectors.toList());
@@ -227,15 +201,12 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
     @Override
     @Transactional
     public void agregarDeporte(String usuario, String nombreDeporte) {
-        // 1. Validar que el usuario existe
         usuarioRepository.findByUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // 2. Buscar el deporte (sin limpiar comillas, ya viene limpio del DTO)
         Deporte deporte = deporteRepository.findByNombreDeporte(nombreDeporte)
                 .orElseThrow(() -> new RuntimeException("Deporte no encontrado: " + nombreDeporte));
 
-        // 3. Verificar que NO exista ya
         Optional<EntrenadorDeporte> deporteExistente =
                 entrenadorDeporteRepository.findByUsuarioAndIdDeporte(usuario, deporte.getIdDeporte());
 
@@ -243,36 +214,30 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
             throw new RuntimeException("Ya tienes este deporte en tu perfil");
         }
 
-        // 4. Crear y guardar nueva relación
         EntrenadorDeporte nuevoDeporte = new EntrenadorDeporte();
         nuevoDeporte.setUsuario(usuario);
         nuevoDeporte.setIdDeporte(deporte.getIdDeporte());
-
         entrenadorDeporteRepository.save(nuevoDeporte);
     }
 
     @Override
     @Transactional
     public void eliminarDeporte(String usuario, String nombreDeporte) {
-        // 1. Validar que el usuario existe
         usuarioRepository.findByUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // 2. Buscar el deporte en el catálogo usando el NUEVO método
         Deporte deporte = deporteRepository.findByNombreDeporte(nombreDeporte)
                 .orElseThrow(() -> new RuntimeException("Deporte no encontrado en el catálogo: " + nombreDeporte));
 
-        // 3. Buscar la relación Entrenador-Deporte usando el NUEVO método
         EntrenadorDeporte entrenadorDeporte =
                 entrenadorDeporteRepository.findByUsuarioAndIdDeporte(usuario, deporte.getIdDeporte())
                         .orElseThrow(() -> new RuntimeException("No tienes este deporte en tu perfil"));
 
-        // 4. Eliminar la relación
         entrenadorDeporteRepository.delete(entrenadorDeporte);
     }
 
     // ========================================================
-    // ✅ NUEVO: ELIMINAR CUENTA (soft delete vía rol)
+    // ELIMINAR CUENTA (soft delete vía rol)
     // ========================================================
 
     @Override
@@ -281,24 +246,20 @@ public class EntrenadorPerfilServiceImpl implements EntrenadorPerfilService {
 
         System.out.println("🗑️ Solicitud de eliminación de cuenta entrenador: " + usuario);
 
-        // 1. Verificar que el usuario existe
         Usuario usuarioEntity = usuarioRepository.findByUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // 2. Verificar contraseña
-        if (!usuarioEntity.getContrasena().equals(contrasena)) {
+        // ✅ SEGURIDAD: BCrypt en lugar de .equals() en texto plano
+        if (!passwordEncoder.matches(contrasena, usuarioEntity.getContrasena())) {
             throw new RuntimeException("Contraseña incorrecta");
         }
 
-        // 3. Buscar su fila en Usuario_rol
         UsuarioRol usuarioRol = usuarioRolRepository.findByUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("Rol del usuario no encontrado"));
 
-        // 4. Buscar el rol ELIMINADO
         Rol rolEliminado = rolRepository.findByRol("ELIMINADO")
                 .orElseThrow(() -> new RuntimeException("Rol ELIMINADO no configurado en el sistema"));
 
-        // 5. Cambiar rol y guardar — la cuenta queda bloqueada
         usuarioRol.setIdRol(rolEliminado.getIdRol());
         usuarioRolRepository.save(usuarioRol);
 
