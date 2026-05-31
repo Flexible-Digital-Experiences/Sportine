@@ -1,4 +1,12 @@
-const BASE_URL = 'http://localhost:8080';
+// ── Configuración global ─────────────────────────────────────
+//
+// BASE_URL: la dirección raíz de tu backend Spring Boot.
+// Cuando estás desarrollando en local, Spring Boot corre en el
+// puerto 8080 por defecto. Cuando lo subas a producción,
+// cambiarás esta URL a la dirección real del servidor.
+//
+// const BASE_URL = 'http://localhost:8080'; // Dirección local desactivada
+const BASE_URL = 'https://sportine-production.up.railway.app';
 
 function _getHeaders(incluirToken = false) {
   const headers = { 'Content-Type': 'application/json' };
@@ -278,20 +286,20 @@ const Api = {
 // ============================================================
 const Session = {
   guardar(datosLogin) {
-    localStorage.setItem('sp_token',    datosLogin.token);
-    localStorage.setItem('sp_usuario',  datosLogin.usuario);
-    localStorage.setItem('sp_nombre',   datosLogin.nombre);
-    localStorage.setItem('sp_apellidos',datosLogin.apellidos);
-    localStorage.setItem('sp_rol',      datosLogin.rol);
-    localStorage.setItem('sp_sexo',     datosLogin.sexo || 'Masculino');
+    localStorage.setItem('sp_token', datosLogin.token);
+    localStorage.setItem('sp_usuario', datosLogin.usuario);
+    localStorage.setItem('sp_nombre', datosLogin.nombre);
+    localStorage.setItem('sp_apellidos', datosLogin.apellidos);
+    localStorage.setItem('sp_rol', datosLogin.rol);
+    localStorage.setItem('sp_sexo', datosLogin.sexo || 'Masculino');
   },
-  getToken()    { return localStorage.getItem('sp_token'); },
-  getRol()      { return localStorage.getItem('sp_rol'); },
-  getUsuario()  { return localStorage.getItem('sp_usuario'); },
-  getNombre()   { return localStorage.getItem('sp_nombre'); },
-  estaLogueado(){ return !!localStorage.getItem('sp_token'); },
+  getToken() { return localStorage.getItem('sp_token'); },
+  getRol() { return localStorage.getItem('sp_rol'); },
+  getUsuario() { return localStorage.getItem('sp_usuario'); },
+  getNombre() { return localStorage.getItem('sp_nombre'); },
+  estaLogueado() { return !!localStorage.getItem('sp_token'); },
   cerrar() {
-    ['sp_token','sp_usuario','sp_nombre','sp_apellidos','sp_rol','sp_sexo']
+    ['sp_token', 'sp_usuario', 'sp_nombre', 'sp_apellidos', 'sp_rol', 'sp_sexo']
       .forEach(k => localStorage.removeItem(k));
   },
 };
@@ -612,9 +620,9 @@ Object.assign(Api, {
     return _handleResponse(r);
   },
   // ============================================================
-//   NUEVOS MÉTODOS PARA api.js — Estadísticas por deporte
-//   Agregar dentro del Object.assign(Api, { ... }) existente
-// ============================================================
+  //   NUEVOS MÉTODOS PARA api.js — Estadísticas por deporte
+  //   Agregar dentro del Object.assign(Api, { ... }) existente
+  // ============================================================
 
   // ── CARRERA POR DEPORTE ────────────────────────────────────
   // GET /api/alumno/estadisticas/carrera?idDeporte=
@@ -649,9 +657,9 @@ Object.assign(Api, {
     return _handleResponse(r);
   },
   // ============================================================
-//   NUEVOS MÉTODOS PARA api.js — Estadísticas entrenador
-//   Agregar dentro del Object.assign(Api, { ... }) existente
-// ============================================================
+  //   NUEVOS MÉTODOS PARA api.js — Estadísticas entrenador
+  //   Agregar dentro del Object.assign(Api, { ... }) existente
+  // ============================================================
 
   // ── DEPORTES QUE EL ENTRENADOR IMPARTE A UN ALUMNO ────────
   // GET /api/entrenador/estadisticas/alumno/{usuario}/deportes
@@ -712,14 +720,14 @@ Object.assign(Api, {
     return _handleResponse(r);
   },
   async marcarLogrosVistos(body) {
-  const r = await fetch(`${BASE_URL}/api/alumno/logros/marcar-vistos`, {
-    method: 'POST', headers: _getHeaders(true),
-    body: JSON.stringify(body),
-  });
-  return _handleResponse(r);
-},
+    const r = await fetch(`${BASE_URL}/api/alumno/logros/marcar-vistos`, {
+      method: 'POST', headers: _getHeaders(true),
+      body: JSON.stringify(body),
+    });
+    return _handleResponse(r);
+  },
 
-// ── ELIMINAR CUENTA ─────────────────────────────────────────
+  // ── ELIMINAR CUENTA ─────────────────────────────────────────
   async eliminarCuentaAlumno(usuario, contrasena) {
     const r = await fetch(`${BASE_URL}/api/alumnos/${usuario}`, {
       method: 'DELETE', headers: _getHeaders(true),
