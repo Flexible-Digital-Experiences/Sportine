@@ -1,4 +1,4 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "Informacion_Alumno")
+@Table(name = "informacion_alumno")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

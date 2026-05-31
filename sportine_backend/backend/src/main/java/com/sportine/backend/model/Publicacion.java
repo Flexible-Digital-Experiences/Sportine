@@ -1,10 +1,10 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "Publicacion")
+@Table(name = "publicacion")
 public class Publicacion {
 
     @Id
@@ -58,7 +58,7 @@ public class Publicacion {
         this.descripcion = descripcion;
     }
 
-    // Setter corregido (ahora sí lo encontrará tu servicio)
+    // Setter corregido (ahora sÃ­ lo encontrarÃ¡ tu servicio)
     public Date getFechaPublicacion() {
         return fechaPublicacion;
     }

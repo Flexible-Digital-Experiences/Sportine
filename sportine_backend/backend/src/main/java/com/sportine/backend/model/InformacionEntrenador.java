@@ -1,4 +1,4 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "Informacion_Entrenador")
+@Table(name = "informacion_entrenador")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -67,7 +67,7 @@ public class InformacionEntrenador {
         not_started, pending, completed, failed
     }
 
-    // Relación con Usuario
+    // RelaciÃ³n con Usuario
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario", insertable = false, updatable = false)
     private Usuario usuarioEntrenador;

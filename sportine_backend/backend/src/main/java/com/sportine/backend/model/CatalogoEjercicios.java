@@ -1,4 +1,4 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -6,11 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 /**
- * Entity que representa el catálogo de ejercicios disponibles.
- * Los entrenadores pueden seleccionar de este catálogo al crear entrenamientos.
+ * Entity que representa el catÃ¡logo de ejercicios disponibles.
+ * Los entrenadores pueden seleccionar de este catÃ¡logo al crear entrenamientos.
  */
 @Entity
-@Table(name = "Catalogo_Ejercicios")
+@Table(name = "catalogo_ejercicios")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,3 +33,4 @@ public class CatalogoEjercicios {
     @Column(name = "tipo_medida")
     private String tipoMedida; // "repeticiones", "duracion", "distancia", "peso", "mixto"
 }
+

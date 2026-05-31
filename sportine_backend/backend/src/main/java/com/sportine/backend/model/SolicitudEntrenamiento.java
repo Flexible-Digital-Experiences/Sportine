@@ -1,4 +1,4 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "Solicitudes_Entrenamiento")
+@Table(name = "solicitudes_entrenamiento")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,9 +38,9 @@ public class SolicitudEntrenamiento {
     @Column(name = "status_solicitud", nullable = false)
     private StatusSolicitud statusSolicitud;
 
-    // ✅ ENUM SIN @Column - eso no funciona en enums
+    // âœ… ENUM SIN @Column - eso no funciona en enums
     public enum StatusSolicitud {
-        En_revisión,  // Se guarda exactamente como "En_revisión" en la BD
+        En_revisiÃ³n,  // Se guarda exactamente como "En_revisiÃ³n" en la BD
         Aprobada,
         Rechazada
     }
@@ -51,7 +51,7 @@ public class SolicitudEntrenamiento {
             fechaSolicitud = LocalDate.now();
         }
         if (statusSolicitud == null) {
-            statusSolicitud = StatusSolicitud.En_revisión;
+            statusSolicitud = StatusSolicitud.En_revisiÃ³n;
         }
     }
 }

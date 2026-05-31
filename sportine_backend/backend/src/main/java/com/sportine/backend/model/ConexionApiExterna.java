@@ -1,4 +1,4 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Conexiones_Api_Externa")
+@Table(name = "conexiones_api_externa")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,7 +32,7 @@ public class ConexionApiExterna {
     @Column(name = "ultima_sincronizacion")
     private LocalDateTime ultimaSincronizacion;
 
-    // OAuth — solo para Strava y futuras APIs
+    // OAuth â€” solo para Strava y futuras APIs
     @Column(name = "oauth_access_token", columnDefinition = "TEXT")
     private String oauthAccessToken;
 

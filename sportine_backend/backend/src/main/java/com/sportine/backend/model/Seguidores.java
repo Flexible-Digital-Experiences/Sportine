@@ -1,11 +1,11 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Seguidores")
+@Table(name = "seguidores")
 @Data
 public class Seguidores {
 

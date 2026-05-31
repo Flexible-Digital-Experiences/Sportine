@@ -1,4 +1,4 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 @Entity
-@Table(name = "Plantilla_Metricas_Deporte")
+@Table(name = "plantilla_metricas_deporte")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -1,4 +1,4 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 @Data
 @Entity
-@Table(name = "Entrenador_Alumno")
+@Table(name = "entrenador_alumno")
 public class EntrenadorAlumno {
 
     @Id
@@ -33,5 +33,6 @@ public class EntrenadorAlumno {
     @Column(name = "fin_mensualidad")
     private LocalDate finMensualidad;
 }
+
 
 

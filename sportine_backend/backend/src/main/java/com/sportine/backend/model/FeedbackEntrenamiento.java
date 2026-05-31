@@ -1,4 +1,4 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * El alumno puede opcionalmente dejar comentarios al completar el entrenamiento.
  */
 @Entity
-@Table(name = "Feedback_Entrenamiento")
+@Table(name = "feedback_entrenamiento")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,13 +43,14 @@ public class FeedbackEntrenamiento {
     @Column(name = "fecha_feedback")
     private LocalDateTime fechaFeedback;
 
-    // Relación con Entrenamiento
+    // RelaciÃ³n con Entrenamiento
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_entrenamiento", insertable = false, updatable = false)
     private Entrenamiento entrenamiento;
 
-    // Relación con Usuario (alumno)
+    // RelaciÃ³n con Usuario (alumno)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario", insertable = false, updatable = false)
     private Usuario alumno;
 }
+

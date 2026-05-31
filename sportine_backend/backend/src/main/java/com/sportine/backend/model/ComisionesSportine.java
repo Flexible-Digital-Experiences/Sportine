@@ -1,4 +1,4 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Comisiones_Sportine")
+@Table(name = "comisiones_sportine")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

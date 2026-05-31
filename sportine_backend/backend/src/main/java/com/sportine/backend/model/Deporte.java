@@ -1,11 +1,11 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "Deporte")
+@Table(name = "deporte")
 public class Deporte {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

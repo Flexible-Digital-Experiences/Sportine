@@ -1,4 +1,4 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "Usuario")
+@Table(name = "usuario")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +18,7 @@ public class Usuario {
     @Column(name="correo")
     private String correo;
 
-    @Column(name = "contraseña")
+    @Column(name = "contraseÃ±a")
     private String contrasena;
 
     @Column(name = "nombre")
@@ -36,3 +36,4 @@ public class Usuario {
     @Column(name = "ciudad")
     private String ciudad;
 }
+

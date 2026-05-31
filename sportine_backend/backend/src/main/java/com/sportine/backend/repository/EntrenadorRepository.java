@@ -1,4 +1,4 @@
-package com.sportine.backend.repository;
+﻿package com.sportine.backend.repository;
 
 import com.sportine.backend.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,14 +33,14 @@ public interface EntrenadorRepository extends JpaRepository<Usuario, String> {
     List<Map<String, Object>> buscarEntrenadores(@Param("searchQuery") String searchQuery);
 
     /**
-     * Obtiene todas las especialidades (deportes) de un entrenador específico.
+     * Obtiene todas las especialidades (deportes) de un entrenador especÃ­fico.
      *
      * @param usuario El username del entrenador
      * @return Lista de deportes que imparte
      */
     @Query(value = """
         SELECT ed.deporte
-        FROM Entrenador_Deporte ed
+        FROM entrenador_deporte ed
         WHERE ed.usuario = :usuario
         ORDER BY ed.deporte
         """, nativeQuery = true)

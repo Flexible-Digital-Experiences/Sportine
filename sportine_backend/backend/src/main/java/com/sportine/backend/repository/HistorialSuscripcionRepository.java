@@ -1,4 +1,4 @@
-package com.sportine.backend.repository;
+﻿package com.sportine.backend.repository;
 
 import com.sportine.backend.model.HistorialSuscripcion;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,18 +16,18 @@ public interface HistorialSuscripcionRepository extends JpaRepository<HistorialS
      */
     @Query(value = """
         SELECT *
-        FROM Historial_Suscripciones
+        FROM historial_suscripciones
         WHERE usuario = :usuario
         ORDER BY fecha_pago DESC
         """, nativeQuery = true)
     List<HistorialSuscripcion> obtenerHistorialPorUsuario(@Param("usuario") String usuario);
 
     /**
-     * Obtener último pago de una suscripción
+     * Obtener Ãºltimo pago de una suscripciÃ³n
      */
     @Query(value = """
         SELECT *
-        FROM Historial_Suscripciones
+        FROM historial_suscripciones
         WHERE subscription_id = :subscriptionId
         ORDER BY fecha_pago DESC
         LIMIT 1

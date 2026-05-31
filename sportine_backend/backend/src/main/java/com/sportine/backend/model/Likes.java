@@ -1,10 +1,10 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "Likes")
+@Table(name = "likes")
 public class Likes {
 
     @Id
@@ -25,7 +25,7 @@ public class Likes {
     // --- Constructores, Getters y Setters ---
     public Likes() {}
 
-    // (Los Getters y Setters también cambian de nombre)
+    // (Los Getters y Setters tambiÃ©n cambian de nombre)
     public Integer getIdLike() {
         return idLike;
     }

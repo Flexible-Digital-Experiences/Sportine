@@ -1,4 +1,4 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Resultado_Series_Ejercicio")
+@Table(name = "resultado_series_ejercicio")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,7 +38,7 @@ public class ResultadoSeriesEjercicio {
     @Column(name = "distancia_esperada_metros")
     private Float distanciaEsperadaMetros;
 
-    // Valores completados — default 0 (nunca null después de registrar)
+    // Valores completados â€” default 0 (nunca null despuÃ©s de registrar)
     @Column(name = "reps_completadas", columnDefinition = "INT DEFAULT 0")
     private Integer repsCompletadas = 0;
 
@@ -53,7 +53,7 @@ public class ResultadoSeriesEjercicio {
 
     // Exitosos: reps que salieron bien (goles, tiros anotados, jabs conectados, regates, etc.)
     // NULL = no aplica para este ejercicio (press de banca, sentadilla, etc.)
-    // 0+  = sí aplica, cuántos salieron bien
+    // 0+  = sÃ­ aplica, cuÃ¡ntos salieron bien
     @Column(name = "exitosos")
     private Integer exitosos;
 

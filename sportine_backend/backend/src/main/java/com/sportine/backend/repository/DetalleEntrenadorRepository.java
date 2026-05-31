@@ -1,4 +1,4 @@
-package com.sportine.backend.repository;
+﻿package com.sportine.backend.repository;
 
 import com.sportine.backend.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -49,8 +49,8 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
 
     @Query(value = """
         SELECT d.nombre_deporte
-        FROM Entrenador_Deporte ed
-        INNER JOIN Deporte d ON ed.id_deporte = d.id_deporte
+        FROM entrenador_deporte ed
+        INNER JOIN deporte d ON ed.id_deporte = d.id_deporte
         WHERE ed.usuario = :usuario
         ORDER BY d.nombre_deporte
         """, nativeQuery = true)
@@ -76,8 +76,8 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
             ea.status_relacion as statusRelacion,
             ea.id_deporte as idDeporte,
             d.nombre_deporte as nombreDeporte
-        FROM Entrenador_Alumno ea
-        INNER JOIN Deporte d ON ea.id_deporte = d.id_deporte
+        FROM entrenador_alumno ea
+        INNER JOIN deporte d ON ea.id_deporte = d.id_deporte
         WHERE ea.usuario_entrenador = :usuarioEntrenador
           AND ea.usuario_alumno = :usuarioAlumno
         ORDER BY ea.id_relacion DESC
@@ -107,8 +107,8 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
         d.nombre_deporte as nombreDeporte,
         ea.fin_mensualidad as finMensualidad,
         COALESCE(ase.status_suscripcion, '') as statusSuscripcion
-    FROM Entrenador_Alumno ea
-    INNER JOIN Deporte d ON ea.id_deporte = d.id_deporte
+    FROM entrenador_alumno ea
+    INNER JOIN deporte d ON ea.id_deporte = d.id_deporte
     LEFT JOIN Estudiante_Suscripcion_Entrenador ase 
         ON ase.usuario_estudiante = :usuarioAlumno
         AND ase.usuario_entrenador = :usuarioEntrenador
@@ -124,3 +124,5 @@ public interface DetalleEntrenadorRepository extends JpaRepository<Usuario, Stri
             @Param("usuarioAlumno") String usuarioAlumno
     );
 }
+
+

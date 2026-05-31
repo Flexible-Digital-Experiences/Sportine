@@ -1,11 +1,11 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
     @Entity
-    @Table(name = "Estado")
+    @Table(name = "estado")
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -19,3 +19,4 @@ import lombok.NoArgsConstructor;
         @Column(name = "estado")
         private String estado;
 }
+

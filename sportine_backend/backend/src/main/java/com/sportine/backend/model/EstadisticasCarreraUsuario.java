@@ -1,4 +1,4 @@
-// ── EstadisticasCarreraUsuario.java ──────────────────────────────────────────
+﻿// â”€â”€ EstadisticasCarreraUsuario.java â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 package com.sportine.backend.model;
 
 import jakarta.persistence.*;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Estadisticas_Carrera_Usuario")
+@Table(name = "estadisticas_carrera_usuario")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -44,4 +44,5 @@ public class EstadisticasCarreraUsuario {
     @Column(name = "ultima_actualizacion")
     private LocalDateTime ultimaActualizacion;
 }
+
 

@@ -1,4 +1,4 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Progreso_Entrenamiento")
+@Table(name = "progreso_entrenamiento")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,7 +30,7 @@ public class ProgresoEntrenamiento {
     @Column(name = "completado")
     private Boolean completado;
 
-    // ── Campos de Health Connect ──────────────────────────────────
+    // â”€â”€ Campos de Health Connect â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     @Column(name = "hc_sesion_id")
     private String hcSesionId;
 
@@ -57,7 +57,7 @@ public class ProgresoEntrenamiento {
 
     @Column(name = "hc_sincronizado_en")
     private LocalDateTime hcSincronizadoEn;
-    // ─────────────────────────────────────────────────────────────
+    // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_entrenamiento", insertable = false, updatable = false)

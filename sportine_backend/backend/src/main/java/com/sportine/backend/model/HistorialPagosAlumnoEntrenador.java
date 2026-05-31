@@ -1,4 +1,4 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Historial_Pagos_Estudiante_Entrenador")
+@Table(name = "historial_pagos_estudiante_entrenador")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

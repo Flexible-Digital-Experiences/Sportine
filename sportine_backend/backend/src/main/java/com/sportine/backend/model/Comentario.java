@@ -1,10 +1,10 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "Comentario")
+@Table(name = "comentario")
 public class Comentario {
 
     @Id
@@ -15,13 +15,13 @@ public class Comentario {
     private Integer idPublicacion; // ID del post al que pertenece
 
     @Column(name = "usuario")
-    private String usuario; // Quién comentó
+    private String usuario; // QuiÃ©n comentÃ³
 
     @Column(name = "texto")
     private String texto;
 
     @Column(name = "fecha")
-    @Temporal(TemporalType.TIMESTAMP) // ¡Importante para la hora exacta!
+    @Temporal(TemporalType.TIMESTAMP) // Â¡Importante para la hora exacta!
     private Date fecha;
 
     // --- Constructores, Getters y Setters ---

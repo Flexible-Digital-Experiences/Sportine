@@ -1,4 +1,4 @@
-// ── LogroDesbloqueado.java ────────────────────────────────────────────────────
+﻿// â”€â”€ LogroDesbloqueado.java â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 package com.sportine.backend.model;
 
 import jakarta.persistence.*;
@@ -10,11 +10,11 @@ import java.time.LocalDateTime;
  * Registra cada logro desbloqueado por un alumno en su carrera deportiva.
  * Es independiente de Notificacion (que es para LIKE/COMENTARIO/SEGUIDOR).
  *
- * publicado = false → el alumno vio la noti pero aún no decidió si publicarlo
- * publicado = true  → el alumno eligió publicarlo en el feed social
+ * publicado = false â†’ el alumno vio la noti pero aÃºn no decidiÃ³ si publicarlo
+ * publicado = true  â†’ el alumno eligiÃ³ publicarlo en el feed social
  */
 @Entity
-@Table(name = "Logro_Desbloqueado")
+@Table(name = "logro_desbloqueado")
 @Data
 @NoArgsConstructor
 public class LogroDesbloqueado {
@@ -33,11 +33,11 @@ public class LogroDesbloqueado {
     @Column(name = "id_entrenamiento")
     private Integer idEntrenamiento;
 
-    /** Nombre interno de la métrica que disparó el logro */
+    /** Nombre interno de la mÃ©trica que disparÃ³ el logro */
     @Column(name = "nombre_metrica", length = 100)
     private String nombreMetrica;
 
-    /** Valor acumulado que alcanzó (el umbral superado) */
+    /** Valor acumulado que alcanzÃ³ (el umbral superado) */
     @Column(name = "valor_umbral")
     private Double valorUmbral;
 
@@ -45,11 +45,11 @@ public class LogroDesbloqueado {
     @Column(name = "mensaje", length = 500)
     private String mensaje;
 
-    /** FALSE = pendiente de ver/decidir, TRUE = ya publicó en el feed */
+    /** FALSE = pendiente de ver/decidir, TRUE = ya publicÃ³ en el feed */
     @Column(name = "publicado")
     private Boolean publicado = false;
 
-    /** NULL = no ha visto la noti todavía */
+    /** NULL = no ha visto la noti todavÃ­a */
     @Column(name = "visto_en")
     private LocalDateTime vistoEn;
 

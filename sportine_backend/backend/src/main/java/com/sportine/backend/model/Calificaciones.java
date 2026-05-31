@@ -1,4 +1,4 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Calificaciones")
+@Table(name = "calificaciones")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,11 +18,11 @@ public class Calificaciones {
     @Column(name = "id_calificacion")
     private Integer idCalificacion;
 
-    // Usuario que DA la calificación (alumno)
+    // Usuario que DA la calificaciÃ³n (alumno)
     @Column(name = "usuario")
     private String usuario;
 
-    // Usuario que RECIBE la calificación (entrenador) - NUEVO CAMPO
+    // Usuario que RECIBE la calificaciÃ³n (entrenador) - NUEVO CAMPO
     @Column(name = "usuario_calificado")
     private String usuarioCalificado;
 
@@ -41,3 +41,4 @@ public class Calificaciones {
     @JoinColumn(name = "usuario_calificado", insertable = false, updatable = false)
     private Usuario usuarioEntrenador;
 }
+

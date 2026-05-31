@@ -1,4 +1,4 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Resultado_Metrica_Manual")
+@Table(name = "resultado_metrica_manual")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,8 +31,8 @@ public class ResultadoMetricaManual {
     @Column(name = "valor_numerico", nullable = false)
     private Float valorNumerico;
 
-    // NULL = métrica global del entrenamiento
-    // 1, 2, 3... = métrica de esa serie específica
+    // NULL = mÃ©trica global del entrenamiento
+    // 1, 2, 3... = mÃ©trica de esa serie especÃ­fica
     @Column(name = "numero_serie")
     private Integer numeroSerie;
 

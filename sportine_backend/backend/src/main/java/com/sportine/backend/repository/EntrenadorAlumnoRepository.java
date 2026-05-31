@@ -1,4 +1,4 @@
-package com.sportine.backend.repository;
+﻿package com.sportine.backend.repository;
 
 import com.sportine.backend.model.EntrenadorAlumno;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @Repository
 public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlumno, Integer> {
 
-    // ========== MÉTODOS EXISTENTES ==========
+    // ========== MÃ‰TODOS EXISTENTES ==========
 
     /**
      * Obtener todos los alumnos de un entrenador
@@ -32,7 +32,7 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
     /**
      * Obtener todos los alumnos ACTIVOS de un entrenador
      * @param usuarioEntrenador Username del entrenador
-     * @param statusRelacion Estado de la relación (ej: "activo")
+     * @param statusRelacion Estado de la relaciÃ³n (ej: "activo")
      * @return Lista de relaciones activas
      */
     List<EntrenadorAlumno> findByUsuarioEntrenadorAndStatusRelacion(
@@ -43,7 +43,7 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
     /**
      * Obtener el entrenador de un alumno
      * @param usuarioAlumno Username del alumno
-     * @return Relación con el entrenador
+     * @return RelaciÃ³n con el entrenador
      */
     Optional<EntrenadorAlumno> findByUsuarioAlumnoAndStatusRelacion(
             String usuarioAlumno,
@@ -51,11 +51,11 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
     );
 
     /**
-     * Verificar si existe una relación activa entre entrenador y alumno
+     * Verificar si existe una relaciÃ³n activa entre entrenador y alumno
      * @param usuarioEntrenador Username del entrenador
      * @param usuarioAlumno Username del alumno
-     * @param statusRelacion Estado de la relación
-     * @return true si existe relación activa
+     * @param statusRelacion Estado de la relaciÃ³n
+     * @return true si existe relaciÃ³n activa
      */
     boolean existsByUsuarioEntrenadorAndUsuarioAlumnoAndStatusRelacion(
             String usuarioEntrenador,
@@ -67,7 +67,7 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
      * Contar alumnos activos de un entrenador
      * @param usuarioEntrenador Username del entrenador
      * @param statusRelacion Estado ("activo")
-     * @return Número de alumnos activos
+     * @return NÃºmero de alumnos activos
      */
     int countByUsuarioEntrenadorAndStatusRelacion(
             String usuarioEntrenador,
@@ -75,7 +75,7 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
     );
 
     /**
-     * Cuenta cuántos entrenadores ACTIVOS tiene contratados un alumno
+     * Cuenta cuÃ¡ntos entrenadores ACTIVOS tiene contratados un alumno
      */
     @Query("SELECT COUNT(ea) FROM EntrenadorAlumno ea " +
             "WHERE ea.usuarioAlumno = :usuario " +
@@ -89,12 +89,12 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
             "WHERE ea.usuarioAlumno = :usuario")
     Integer contarTodosEntrenadores(@Param("usuario") String usuario);
 
-    // ========== NUEVOS MÉTODOS PARA MENSUALIDADES ==========
+    // ========== NUEVOS MÃ‰TODOS PARA MENSUALIDADES ==========
 
     /**
      * Encontrar relaciones activas con mensualidad vencida
-     * @param statusRelacion Estado de la relación ("activo")
-     * @param fecha Fecha límite (hoy)
+     * @param statusRelacion Estado de la relaciÃ³n ("activo")
+     * @param fecha Fecha lÃ­mite (hoy)
      * @return Lista de relaciones vencidas
      */
     List<EntrenadorAlumno> findByStatusRelacionAndFinMensualidadBefore(
@@ -103,19 +103,19 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
     );
 
     /**
-     * Query nativa más eficiente para actualizar en lote
+     * Query nativa mÃ¡s eficiente para actualizar en lote
      * Actualiza todas las relaciones activas con mensualidad vencida
-     * @param fecha Fecha límite (hoy)
-     * @return Número de registros actualizados
+     * @param fecha Fecha lÃ­mite (hoy)
+     * @return NÃºmero de registros actualizados
      */
     @Modifying
-    @Query(value = "UPDATE Entrenador_Alumno SET status_relacion = 'pendiente' " +
+    @Query(value = "UPDATE entrenador_alumno SET status_relacion = 'pendiente' " +
             "WHERE status_relacion = 'activo' AND fin_mensualidad < :fecha",
             nativeQuery = true)
     int actualizarMensualidadesVencidasEnLote(@Param("fecha") LocalDate fecha);
 
     /**
-     * Obtener relaciones que vencen entre dos fechas (útil para alertas)
+     * Obtener relaciones que vencen entre dos fechas (Ãºtil para alertas)
      * @param fechaInicio Fecha de inicio del rango
      * @param fechaFin Fecha de fin del rango
      * @return Lista de relaciones que vencen en ese rango
@@ -156,7 +156,7 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
     List<Map<String, Object>> obtenerAlumnosPorEntrenador(@Param("usuarioEntrenador") String usuarioEntrenador);
 
     /**
-     * Verificar si existe relación entre entrenador, alumno y deporte específico
+     * Verificar si existe relaciÃ³n entre entrenador, alumno y deporte especÃ­fico
      */
     @Query("SELECT CASE WHEN COUNT(ea) > 0 THEN true ELSE false END " +
             "FROM EntrenadorAlumno ea " +
@@ -170,12 +170,12 @@ public interface EntrenadorAlumnoRepository extends JpaRepository<EntrenadorAlum
     );
 
     /**
-     * Actualizar estado de relación para un deporte específico
+     * Actualizar estado de relaciÃ³n para un deporte especÃ­fico
      */
     @Modifying
     @Transactional
     @Query(value = """
-    UPDATE Entrenador_Alumno 
+    UPDATE entrenador_alumno 
     SET status_relacion = :nuevoEstado,
         fin_mensualidad = CASE 
             WHEN :nuevoEstado = 'activo' THEN DATE_ADD(CURDATE(), INTERVAL 1 MONTH)

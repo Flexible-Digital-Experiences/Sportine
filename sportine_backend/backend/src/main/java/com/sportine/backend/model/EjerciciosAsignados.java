@@ -1,4 +1,4 @@
-package com.sportine.backend.model;
+﻿package com.sportine.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 @Entity
-@Table(name = "Ejercicios_Asignados")
+@Table(name = "ejercicios_asignados")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -42,7 +42,7 @@ public class EjerciciosAsignados {
     private Float distancia;
 
     /**
-     * Si TRUE, el alumno verá el campo "exitosos" en el bottom sheet
+     * Si TRUE, el alumno verÃ¡ el campo "exitosos" en el bottom sheet
      * (goles, tiros anotados, jabs conectados, regates exitosos, etc.)
      * El entrenador lo activa al crear el ejercicio.
      */

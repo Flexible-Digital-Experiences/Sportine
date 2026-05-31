@@ -1,4 +1,4 @@
-package com.sportine.backend.repository;
+﻿package com.sportine.backend.repository;
 
 import com.sportine.backend.model.Entrenamiento;
 import com.sportine.backend.model.ProgresoEntrenamiento;
@@ -14,7 +14,7 @@ import java.util.List;
 public interface EntrenamientoRepository extends JpaRepository<Entrenamiento, Integer> {
 
     // ==========================================
-    // MÉTODOS ORIGINALES (no tocar)
+    // MÃ‰TODOS ORIGINALES (no tocar)
     // ==========================================
 
     List<Entrenamiento> findByUsuarioAndFechaEntrenamiento(String usuario, LocalDate fechaEntrenamiento);
@@ -49,13 +49,13 @@ public interface EntrenamientoRepository extends JpaRepository<Entrenamiento, In
     Long countByUsuarioEntrenador(String usuarioEntrenador);
 
     // ==========================================
-    // QUERIES PARA ESTADÍSTICAS
+    // QUERIES PARA ESTADÃSTICAS
     // ==========================================
 
     /**
      * Contar entrenamientos completados (finalizados) de un alumno
      */
-    @Query("SELECT COUNT(e) FROM Entrenamiento e " +
+    @Query("SELECT COUNT(e) FROM entrenamiento e " +
             "WHERE e.usuario = :usuario " +
             "AND e.estadoEntrenamiento = com.sportine.backend.model.Entrenamiento$EstadoEntrenamiento.finalizado")
     Long countCompletadosByUsuario(@Param("usuario") String usuario);
@@ -63,7 +63,7 @@ public interface EntrenamientoRepository extends JpaRepository<Entrenamiento, In
     /**
      * Contar entrenamientos por deporte de un alumno
      */
-    @Query("SELECT COUNT(e) FROM Entrenamiento e " +
+    @Query("SELECT COUNT(e) FROM entrenamiento e " +
             "WHERE e.usuario = :usuario " +
             "AND e.idDeporte = :idDeporte " +
             "AND e.estadoEntrenamiento = com.sportine.backend.model.Entrenamiento$EstadoEntrenamiento.finalizado")
@@ -75,25 +75,25 @@ public interface EntrenamientoRepository extends JpaRepository<Entrenamiento, In
     /**
      * Obtener entrenamientos completados ordenados por fecha (para calcular rachas)
      */
-    @Query("SELECT e FROM Entrenamiento e " +
+    @Query("SELECT e FROM entrenamiento e " +
             "WHERE e.usuario = :usuario " +
             "AND e.estadoEntrenamiento = com.sportine.backend.model.Entrenamiento$EstadoEntrenamiento.finalizado " +
             "ORDER BY e.fechaEntrenamiento DESC")
     List<Entrenamiento> findCompletadosByUsuarioOrderByFecha(@Param("usuario") String usuario);
 
     /**
-     * Encontrar todos los deportes únicos que ha entrenado un alumno
+     * Encontrar todos los deportes Ãºnicos que ha entrenado un alumno
      */
-    @Query("SELECT DISTINCT e.idDeporte FROM Entrenamiento e " +
+    @Query("SELECT DISTINCT e.idDeporte FROM entrenamiento e " +
             "WHERE e.usuario = :usuario " +
             "AND e.idDeporte IS NOT NULL " +
             "AND e.estadoEntrenamiento = com.sportine.backend.model.Entrenamiento$EstadoEntrenamiento.finalizado")
     List<Integer> findDistinctDeportesByUsuario(@Param("usuario") String usuario);
 
     /**
-     * Contar entrenamientos completados del alumno con un entrenador específico
+     * Contar entrenamientos completados del alumno con un entrenador especÃ­fico
      */
-    @Query("SELECT COUNT(e) FROM Entrenamiento e " +
+    @Query("SELECT COUNT(e) FROM entrenamiento e " +
             "WHERE e.usuario = :usuario " +
             "AND e.usuarioEntrenador = :usuarioEntrenador " +
             "AND e.estadoEntrenamiento = com.sportine.backend.model.Entrenamiento$EstadoEntrenamiento.finalizado")
@@ -105,8 +105,8 @@ public interface EntrenamientoRepository extends JpaRepository<Entrenamiento, In
 
     @Query(value = """
     SELECT e.id_entrenamiento
-    FROM Entrenamiento e
-    JOIN Progreso_Entrenamiento p ON e.id_entrenamiento = p.id_entrenamiento
+    FROM entrenamiento e
+    JOIN progreso_entrenamiento p ON e.id_entrenamiento = p.id_entrenamiento
     WHERE e.usuario = :usuario
       AND e.id_deporte = :idDeporte
       AND e.estado_entrenamiento = 'finalizado'
@@ -122,4 +122,6 @@ public interface EntrenamientoRepository extends JpaRepository<Entrenamiento, In
     List<ProgresoEntrenamiento> findByIdEntrenamientoAndUsuario(
             Integer idEntrenamiento, String usuario);
 }
+
+
 
