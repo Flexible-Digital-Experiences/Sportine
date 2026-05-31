@@ -33,6 +33,7 @@ import com.example.sportine.models.SolicitudEnviadaDTO;
 import com.example.sportine.models.SolicitudPendienteDTO;
 import com.example.sportine.models.SolicitudRequestDTO;
 import com.example.sportine.models.SolicitudResponseDTO;
+import com.example.sportine.models.SportineScoreDTO;
 import com.example.sportine.models.SportsDistributionDTO;
 import com.example.sportine.models.StatisticsOverviewDTO;
 import com.example.sportine.models.StreakInfoDTO;
@@ -273,6 +274,10 @@ public interface ApiService {
     // ==========================================
     // ESTADÍSTICAS - ALUMNO
     // ==========================================
+
+    // ── IA: SPORTINE SCORE ─────────────────────────────────────
+    @GET("/api/alumno/sportine-score")
+    Call<SportineScoreDTO> getSportineScore();
 
     /**
      * Obtiene el resumen general de estadísticas del alumno

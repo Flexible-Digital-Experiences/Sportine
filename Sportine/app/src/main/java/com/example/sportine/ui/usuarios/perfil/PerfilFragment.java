@@ -30,6 +30,9 @@ import com.example.sportine.ui.usuarios.dto.PerfilAlumnoResponseDTO;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
+import com.example.sportine.models.SportineScoreDTO;
+import com.google.android.material.card.MaterialCardView;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -68,6 +71,11 @@ public class PerfilFragment extends Fragment {
     // Datos del usuario
     private String username;
     private String rol;
+
+    // IA
+    private MaterialCardView cardSportineScore;
+    private TextView tvSportineScoreValor;
+    private TextView tvSportineScoreNivel;
 
     @Nullable
     @Override
@@ -122,6 +130,11 @@ public class PerfilFragment extends Fragment {
         // Botones
         btnSettings = view.findViewById(R.id.btnSettings);
         btnCompletar = view.findViewById(R.id.btnCompletar);
+
+        //IA
+        cardSportineScore = view.findViewById(R.id.cardSportineScore);
+        tvSportineScoreValor = view.findViewById(R.id.tvSportineScoreValor);
+        tvSportineScoreNivel = view.findViewById(R.id.tvSportineScoreNivel);
     }
 
     /**
@@ -239,6 +252,7 @@ public class PerfilFragment extends Fragment {
                     Log.d(TAG, "  - Deportes: " + perfil.getDeportes());
 
                     mostrarDatosCompletosPerfil(perfil);
+                    cargarSportineScore();
 
                 } else if (response.code() == 404) {
                     Log.w(TAG, "⚠ Perfil no completado (404)");
@@ -568,4 +582,40 @@ public class PerfilFragment extends Fragment {
         tvTotalAmigos.setText(String.valueOf(amigos));
         tvTotalEntrenadores.setText(String.valueOf(entrenadores));
     }
+
+    private void cargarSportineScore() {
+        apiService.getSportineScore().enqueue(new Callback<SportineScoreDTO>() {
+            @Override
+            public void onResponse(Call<SportineScoreDTO> call, Response<SportineScoreDTO> response) {
+                if (!isAdded()) return;
+                if (response.isSuccessful() && response.body() != null) {
+                    SportineScoreDTO score = response.body();
+
+                    tvSportineScoreValor.setText(String.valueOf((int) score.getSportineScore()));
+                    tvSportineScoreNivel.setText(score.getNivel());
+
+                    // Color del badge según nivel
+                    String nivel = score.getNivel();
+                    if ("Elite".equals(nivel)) {
+                        tvSportineScoreNivel.setTextColor(0xFFf89a02);
+                        tvSportineScoreNivel.setBackgroundResource(R.drawable.bg_badge_score_orange);
+                    } else if ("Avanzado".equals(nivel) || "Intermedio".equals(nivel)) {
+                        tvSportineScoreNivel.setTextColor(0xFF1ea1db);
+                    } else {
+                        tvSportineScoreNivel.setTextColor(0xFF6B7280);
+                        tvSportineScoreNivel.setBackgroundResource(R.drawable.bg_badge_score_gray);
+                    }
+
+                    cardSportineScore.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SportineScoreDTO> call, Throwable t) {
+                // Si IA no responde, la card no aparece. No es error crítico.
+                Log.w(TAG, "Sportine Score no disponible: " + t.getMessage());
+            }
+        });
+    }
+
 }
