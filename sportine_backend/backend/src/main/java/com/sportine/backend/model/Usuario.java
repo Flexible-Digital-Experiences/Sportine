@@ -18,7 +18,7 @@ public class Usuario {
     @Column(name="correo")
     private String correo;
 
-    @Column(name = "contraseÃ±a")
+    @Column(name = "contrasena")
     private String contrasena;
 
     @Column(name = "nombre")
