@@ -83,7 +83,34 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
+  // Cargar dinámicamente los datos del usuario conectado
+  Api.obtenerPerfilAlumno(Session.getUsuario())
+    .then(function(perfil) {
+      const iniciales = (((perfil.nombre || '')[0] || '') + ((perfil.apellidos || '')[0] || '')).toUpperCase() || perfil.usuario.substring(0,2).toUpperCase();
+      const fullName = ((perfil.nombre || '') + ' ' + (perfil.apellidos || '')).trim() || perfil.usuario;
+
+      const sidebarName = document.getElementById('sidebar-name');
+      const sidebarRole = document.getElementById('sidebar-role');
+      const sidebarAvatar = document.getElementById('sidebar-avatar');
+      const topbarAvatar = document.getElementById('topbar-avatar');
+
+      if (sidebarName) sidebarName.textContent = fullName;
+      if (sidebarAvatar) sidebarAvatar.textContent = iniciales;
+      if (topbarAvatar) topbarAvatar.textContent = iniciales;
+      if (sidebarRole) sidebarRole.textContent = 'Alumno';
+    })
+    .catch(function(err) {
+      console.warn("No se pudo cargar el perfil:", err);
+      // Fallback a localStorage si falla la red
+      const nombreFallback = Session.getNombre() || Session.getUsuario();
+      const sidebarName = document.getElementById('sidebar-name');
+      if (sidebarName) sidebarName.textContent = nombreFallback;
+    });
+
   const searchInput = document.getElementById('amigo-search');
+
+  // Cargar las sugerencias híbridas por defecto al iniciar la pantalla
+  buscarEnBackend(searchInput.value);
 
   // Implementación de debounce para esperar a que deje de teclear
   searchInput.addEventListener('input', () => {
