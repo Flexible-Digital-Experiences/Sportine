@@ -6,12 +6,23 @@ async function renderResultados(lista) {
   const contenedor = document.getElementById('amigos-resultados');
 
   if (!lista || lista.length === 0) {
-    contenedor.innerHTML = `
-      <div class="empty-search">
-        <div class="empty-search-icon">👤</div>
-        <p class="empty-search-title">No se encontraron usuarios</p>
-        <p class="empty-search-sub">Intenta con otro nombre</p>
-      </div>`;
+    const isSugerencias = document.getElementById('amigo-search').value.trim() === '';
+    
+    if (isSugerencias) {
+      contenedor.innerHTML = `
+        <div class="empty-search" style="text-align: center; padding: 40px 20px;">
+          <div class="empty-search-icon" style="font-size: 3rem; margin-bottom: 10px;">👋</div>
+          <p class="empty-search-title" style="font-weight: 700; color: #1A1A1A;">Aún no hay sugerencias cerca de ti</p>
+          <p class="empty-search-sub" style="color: #6B7280; font-size: 0.9rem;">Busca amigos por su nombre o invita a otros a unirse.</p>
+        </div>`;
+    } else {
+      contenedor.innerHTML = `
+        <div class="empty-search" style="text-align: center; padding: 40px 20px;">
+          <div class="empty-search-icon" style="font-size: 3rem; margin-bottom: 10px;">👤</div>
+          <p class="empty-search-title" style="font-weight: 700; color: #1A1A1A;">No se encontraron usuarios</p>
+          <p class="empty-search-sub" style="color: #6B7280; font-size: 0.9rem;">Intenta con otro nombre.</p>
+        </div>`;
+    }
     return;
   }
 
@@ -62,10 +73,8 @@ window.alternarAmigo = async function (username, btnElement) {
 
 async function buscarEnBackend(query) {
   const q = query.trim();
-  if (!q) {
-    renderResultados([]);
-    return;
-  }
+  // Permitimos la búsqueda vacía porque el backend ahora devuelve sugerencias híbridas
+
 
   try {
     const resultados = await Api.buscarUsuarios(q);
