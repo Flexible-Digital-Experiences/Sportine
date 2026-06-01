@@ -11,7 +11,8 @@ Arquitectura:
        │  Pandas / NumPy / Scikit-learn
 """
 
-from fastapi import FastAPI
+from typing import Optional
+from fastapi import FastAPI, Depends, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
@@ -25,29 +26,36 @@ from app.routers import (
 )
 
 # ──────────────────────────────────────────────────────────────
+#  Candado de Seguridad (X-Internal-Secret)
+# ──────────────────────────────────────────────────────────────
+def verify_internal_secret(x_internal_secret: Optional[str] = Header(None)):
+    """Impide que cualquiera sin la llave secreta consulte los endpoints de IA."""
+    if x_internal_secret != settings.internal_secret:
+        raise HTTPException(status_code=401, detail="Acceso denegado: Llave secreta inválida")
+
+# ──────────────────────────────────────────────────────────────
 #  Instancia principal
 # ──────────────────────────────────────────────────────────────
 app = FastAPI(
     title="Sportine AI",
     description=(
         "Microservicio interno de IA y Ciencia de Datos para la plataforma Sportine. "
-        "Solo accesible desde Spring Boot mediante X-Internal-Secret."
+        "Protegido por llave de seguridad X-Internal-Secret."
     ),
     version="1.0.0",
-    # Docs solo en desarrollo
     docs_url="/docs" if settings.app_env == "development" else None,
     redoc_url="/redoc" if settings.app_env == "development" else None,
+    dependencies=[Depends(verify_internal_secret)]
 )
 
 # ──────────────────────────────────────────────────────────────
-#  CORS — solo Spring Boot puede llamar a FastAPI
-#  En local, Spring Boot corre en localhost:8080
+#  CORS — Acceso global (ya está protegido por X-Internal-Secret)
 # ──────────────────────────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8080"],  # Ajustar a la URL de Spring Boot en producción
+    allow_origins=["*"],  # Permite conexiones desde cualquier origen (Railway, Ngrok, etc.)
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
