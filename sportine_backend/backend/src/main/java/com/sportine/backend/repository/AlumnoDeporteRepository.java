@@ -34,7 +34,7 @@ public interface AlumnoDeporteRepository extends JpaRepository<AlumnoDeporte, In
      */
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO Alumno_Deporte (usuario, id_deporte, id_nivel, fecha_inicio) " +
+    @Query(value = "INSERT INTO alumno_deporte (usuario, id_deporte, id_nivel, fecha_inicio) " +
             "VALUES (:usuario, :idDeporte, " +
             "(SELECT id_nivel FROM nivel WHERE nombre_nivel = :nombreNivel), :fechaInicio)",
             nativeQuery = true)
