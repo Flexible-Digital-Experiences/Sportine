@@ -28,7 +28,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, String> {
 
     @Query(value = "SELECT DISTINCT u.* FROM usuario u " +
             "LEFT JOIN alumno_deporte ad ON u.usuario = ad.usuario " +
-            "LEFT JOIN entrenador_deporte ed ON u.usuario = ed.usuario_entrenador " +
+            "LEFT JOIN entrenador_deporte ed ON u.usuario = ed.usuario " +
             "WHERE u.usuario != :miUsuario " +
             "AND u.usuario NOT IN (SELECT usuario_seguido FROM seguidores WHERE usuario_seguidor = :miUsuario) " +
             "AND u.usuario NOT IN (SELECT usuario_entrenador FROM entrenador_alumno WHERE usuario_alumno = :miUsuario) " +
