@@ -358,12 +358,16 @@ window.guardarPerfil = function() {
 
 /* ── Gestionar deportes ── */
 window.openGestionarDeportes = function() {
-  var TODOS = [
-    {emoji:'🏊',nombre:'Natación'}, {emoji:'🏃',nombre:'Cardio'},
-    {emoji:'🚴',nombre:'Ciclismo'}, {emoji:'⚽',nombre:'Fútbol'},
-    {emoji:'🏋️',nombre:'Pesas'},   {emoji:'🎾',nombre:'Tenis'},
-    {emoji:'🏀',nombre:'Básquetbol'},{emoji:'🥊',nombre:'Boxeo'},
-    {emoji:'🏅',nombre:'Atletismo'},
+    var TODOS = [
+    {emoji:'⚽', nombre:'Fútbol'},
+    {emoji:'🏀', nombre:'Basketball'},
+    {emoji:'🏊', nombre:'Natación'},
+    {emoji:'🏃', nombre:'Running'},
+    {emoji:'🥊', nombre:'Boxeo'},
+    {emoji:'🎾', nombre:'Tenis'},
+    {emoji:'🏋️', nombre:'Gimnasio'},
+    {emoji:'🚴', nombre:'Ciclismo'},
+    {emoji:'⚾', nombre:'Béisbol'},
   ];
 
   var activos = (PERFIL_ACTUAL && PERFIL_ACTUAL.deportes) ? PERFIL_ACTUAL.deportes : [];
