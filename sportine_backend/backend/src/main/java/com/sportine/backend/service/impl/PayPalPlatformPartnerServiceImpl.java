@@ -128,7 +128,7 @@ public class PayPalPlatformPartnerServiceImpl implements PayPalPlatformPartnerSe
 
             // Partner config override (URLs de retorno)
             JsonObject partnerConfig = new JsonObject();
-            partnerConfig.addProperty("return_url", "sportine://onboarding/success");
+            partnerConfig.addProperty("return_url", sportineBaseUrl + "/api/v2/entrenador/paypal/onboarding/success");
             partnerConfig.addProperty("return_url_description", "Regresa a Sportine después de conectar PayPal");
             partnerConfig.addProperty("action_renewal_url", sportineBaseUrl + "/api/v2/entrenador/paypal/onboarding/action-required");
             requestBody.add("partner_config_override", partnerConfig);
