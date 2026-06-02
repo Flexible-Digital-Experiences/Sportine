@@ -105,7 +105,7 @@ public interface EntrenamientoRepository extends JpaRepository<Entrenamiento, In
 
     @Query(value = """
     SELECT e.id_entrenamiento
-    FROM Entrenamiento e
+    FROM entrenamiento e
     JOIN progreso_entrenamiento p ON e.id_entrenamiento = p.id_entrenamiento
     WHERE e.usuario = :usuario
       AND e.id_deporte = :idDeporte
