@@ -390,6 +390,13 @@ Object.assign(Api, {
     return _handleResponse(r);
   },
 
+  async recomendarEntrenadores() {
+  const r = await fetch(`${BASE_URL}/api/buscar-entrenadores/recomendar`, {
+      method: 'POST', headers: _getHeaders(true),
+    });
+    return _handleResponse(r);
+ },
+
   async verPerfilEntrenador(usuarioEntrenador) {
     const r = await fetch(`${BASE_URL}/api/buscar-entrenadores/ver/${usuarioEntrenador}`, {
       method: 'GET', headers: _getHeaders(true),

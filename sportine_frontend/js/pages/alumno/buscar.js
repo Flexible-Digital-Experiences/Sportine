@@ -94,16 +94,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // ── Cargar entrenadores ───────────────────────────────────
 async function cargarEntrenadores(query) {
-  console.log('[buscar] cargarEntrenadores query=', query);
   _mostrarSkeleton();
   try {
-    console.log('[buscar] llamando Api.buscarEntrenadores...');
-    var lista = await Api.buscarEntrenadores(query);
-    console.log('[buscar] respuesta:', lista);
+    let lista;
+    if (!query || query.trim() === '') {
+      // Sin búsqueda → usar recomendación IA
+      lista = await Api.recomendarEntrenadores();
+      document.getElementById('seccion-titulo').textContent = 'Entrenadores recomendados';
+    } else {
+      // Con búsqueda → búsqueda normal existente
+      lista = await Api.buscarEntrenadores(query);
+      document.getElementById('seccion-titulo').textContent = 'Resultados de búsqueda';
+    }
     _renderEntrenadores(lista);
-  } catch (err) {
-    console.error('[buscar] error:', err);
-    _mostrarError(err.message || 'No se pudo conectar con el servidor');
+  } catch (e) {
+    console.warn('IA no disponible, cargando lista normal:', e.message);
+    // Fallback: carga normal si FastAPI no responde
+    const lista = await Api.buscarEntrenadores(null);
+    _renderEntrenadores(lista);
   }
 }
 
@@ -204,6 +212,17 @@ function _renderEntrenadores(lista) {
       }
     }
 
+    // ── Badge de compatibilidad IA ──────────────────────────────
+    var scoreBadge = '';
+    if (e.scoreCompatibilidad != null) {
+      var score = Math.round(e.scoreCompatibilidad);
+      var scoreColor = score >= 80 ? '#1ea1db' : score >= 60 ? '#f89a02' : '#9CA3AF';
+      scoreBadge = '<span style="background:' + scoreColor + ';color:#fff;font-size:0.68rem;font-weight:700;'
+        + 'padding:3px 10px;border-radius:50px;font-family:\'DM Sans\',sans-serif;'
+        + 'display:inline-flex;align-items:center;gap:4px">'
+        + '✦ ' + score + '% compatible</span>';
+    }
+
     // Indicador de estado
     var dotColor = espacios > 0
       ? (pct >= 80 ? '#f59e0b' : '#22c55e')
@@ -226,7 +245,7 @@ function _renderEntrenadores(lista) {
       +   '<div style="font-family:Sora,sans-serif;font-weight:700;font-size:0.95rem;color:#1A1A1A;'
       +     'white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + _esc(e.nombreCompleto || '') + '</div>'
       +   '<div style="font-size:0.78rem;color:#6B7280;margin:3px 0">' + _esc(deportes) + '</div>'
-      +   '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">'
+      +   '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px">'
       +     '<div style="display:flex;align-items:center;gap:4px">'
       +       _estrellas(parseFloat(rating))
       +       '<span style="font-size:0.75rem;font-weight:700;color:#374151;margin-left:2px">' + rating + '</span>'
@@ -234,6 +253,8 @@ function _renderEntrenadores(lista) {
       +     '<span style="font-size:0.72rem;color:#9CA3AF">' + actuales + '/' + limite + ' alumnos</span>'
       +     badgeHtml
       +   '</div>'
+      // Badge compatibilidad en línea aparte si existe
+      +   (scoreBadge ? '<div style="margin-top:6px">' + scoreBadge + '</div>' : '')
       + '</div>'
       + '</div>';
   }).join('');
