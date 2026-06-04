@@ -5,8 +5,8 @@
 // puerto 8080 por defecto. Cuando lo subas a producción,
 // cambiarás esta URL a la dirección real del servidor.
 //
-// const BASE_URL = 'http://localhost:8080'; // Dirección local desactivada
-const BASE_URL = 'https://sportine-production.up.railway.app';
+// const BASE_URL = 'http://localhost:8080'; // Local — desactivada para producción
+const BASE_URL = 'https://sportine-production.up.railway.app'; // Producción
 
 function _getHeaders(incluirToken = false) {
   const headers = { 'Content-Type': 'application/json' };
@@ -759,6 +759,23 @@ Object.assign(Api, {
   // ── IA: SPORTINE SCORE ─────────────────────────────────────
   async getSportineScore() {
     const r = await fetch(`${BASE_URL}/api/alumno/sportine-score`, {
+      method: 'GET', headers: _getHeaders(true),
+    });
+    return _handleResponse(r);
+  },
+
+  // GET /api/alumno/estadisticas/prediccion?idDeporte=X&dias=30
+  async getPrediccionProgreso(idDeporte, dias = 30) {
+    const r = await fetch(
+      `${BASE_URL}/api/alumno/estadisticas/prediccion?idDeporte=${idDeporte}&dias=${dias}`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(r);
+  },
+
+  // GET /api/alumno/estadisticas/patrones
+  async getPatrones() {
+    const r = await fetch(`${BASE_URL}/api/alumno/estadisticas/patrones`, {
       method: 'GET', headers: _getHeaders(true),
     });
     return _handleResponse(r);
