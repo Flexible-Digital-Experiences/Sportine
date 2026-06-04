@@ -241,6 +241,10 @@ async function cargarDeporteSeleccionado(idDeporte) {
     cargarCarreraDeporte(idDeporte),
     cargarMetricasDeporte(idDeporte),
   ]);
+
+  // NUEVO: mostrar botón predicción IA
+  var btnPred = document.getElementById('btn-prediccion-ia');
+  if (btnPred) btnPred.style.display = 'block';
 }
 
 function _skeletonCards() {
@@ -445,6 +449,230 @@ function initToggleVista() {
   });
 }
 
+// ── IA: Modal de Predicción ──────────────────────────────────
+function abrirModalPrediccion() {
+  var overlay = document.getElementById('modal-prediccion-overlay');
+  var sheet   = document.getElementById('modal-prediccion-sheet');
+  if (!overlay || !sheet) return;
+
+  // Mostrar overlay
+  overlay.style.display = 'flex';
+  requestAnimationFrame(function() {
+    sheet.style.transform = 'translateY(0)';
+  });
+
+  // Cargar datos
+  cargarContenidoPrediccion();
+}
+
+function cerrarModalPrediccion(event, forzar) {
+  if (!forzar && event && event.target !== document.getElementById('modal-prediccion-overlay')) return;
+  var overlay = document.getElementById('modal-prediccion-overlay');
+  var sheet   = document.getElementById('modal-prediccion-sheet');
+  if (!overlay || !sheet) return;
+  sheet.style.transform = 'translateY(100%)';
+  setTimeout(function() { overlay.style.display = 'none'; }, 320);
+}
+
+async function cargarContenidoPrediccion() {
+  var contenido = document.getElementById('modal-pred-contenido');
+  if (!contenido) return;
+
+  // Loading state
+  contenido.innerHTML = '<div style="text-align:center;padding:48px 0">'
+    + '<div style="width:32px;height:32px;border-radius:50%;border:3px solid #E5E7EB;border-top-color:#1ea1db;animation:spin 0.8s linear infinite;margin:0 auto 16px"></div>'
+    + '<div style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;color:#9CA3AF">Calculando tu proyección...</div>'
+    + '</div>';
+
+  try {
+    var pred = await Api.getPrediccionProgreso(idDeporteSeleccionado, 30);
+    var predicciones = (pred.predicciones || []).filter(function(p) {
+      return p.prediccion && p.prediccion.proyeccion_30_dias && p.prediccion.proyeccion_30_dias.length > 0;
+    });
+
+    if (predicciones.length === 0) {
+      contenido.innerHTML = '<div style="text-align:center;padding:40px 16px">'
+        + '<div style="font-size:2.5rem;margin-bottom:12px">📊</div>'
+        + '<div style="font-family:\'Sora\',sans-serif;font-size:0.92rem;font-weight:700;color:#1A1A1A;margin-bottom:8px">Aún no hay suficientes datos</div>'
+        + '<div style="font-family:\'DM Sans\',sans-serif;font-size:0.82rem;color:#9CA3AF">Completa más entrenamientos para que la IA pueda calcular tu proyección con confianza.</div>'
+        + '</div>';
+      return;
+    }
+
+    renderGraficasPrediccion(predicciones, pred.usuario);
+
+  } catch (e) {
+    contenido.innerHTML = '<div style="text-align:center;padding:40px 16px">'
+      + '<div style="font-size:2rem;margin-bottom:12px">⚠️</div>'
+      + '<div style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;color:#9CA3AF">Servicio de IA no disponible en este momento.</div>'
+      + '</div>';
+    console.warn('Predicción IA no disponible:', e.message);
+  }
+}
+
+function renderGraficasPrediccion(predicciones, usuario) {
+  var contenido = document.getElementById('modal-pred-contenido');
+  if (!contenido) return;
+  var FONT = "'DM Sans', sans-serif";
+
+  contenido.innerHTML = '';
+
+  predicciones.forEach(function(p, idx) {
+    var proy = p.prediccion.proyeccion_30_dias || [];
+    var labels = proy.map(function(pt) { return 'Día ' + pt.dia; });
+    var valores = proy.map(function(pt) { return pt.valor_proyectado; });
+
+    // Confianza visual
+    var r2 = p.prediccion.r2_confianza;
+    var confianzaPct = Math.round(r2 * 100);
+    var confianzaColor = r2 >= 0.8 ? '#10B981' : r2 >= 0.65 ? '#f89a02' : '#6B7280';
+    var tendenciaDir = p.prediccion.tendencia_por_dia >= 0 ? '↑' : '↓';
+    var tendenciaColor = p.prediccion.tendencia_por_dia >= 0 ? '#10B981' : '#EF4444';
+
+    // Card wrapper
+    var card = document.createElement('div');
+    card.style.cssText = 'background:#fff;border-radius:18px;padding:18px 16px 14px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);';
+
+    // Header de la card
+    var header = '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px">';
+    header += '<div style="font-family:\'Sora\',sans-serif;font-size:0.85rem;font-weight:700;color:#1A1A1A">'
+      + (p.nombre_metrica || '').replace(/_/g, ' ')
+      + '</div>';
+    header += '<span style="font-family:\'DM Sans\',sans-serif;font-size:0.72rem;font-weight:700;color:' + confianzaColor + ';background:' + confianzaColor + '18;padding:3px 8px;border-radius:6px">'
+      + confianzaPct + '% confianza</span>';
+    header += '</div>';
+
+    // Mensaje y tendencia
+    var meta = '<div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap">';
+    if (p.mensaje) {
+      meta += '<div style="font-family:\'DM Sans\',sans-serif;font-size:0.77rem;color:#6B7280;flex:1">' + p.mensaje + '</div>';
+    }
+    if (p.dias_para_superar_record != null) {
+      meta += '<div style="font-family:\'DM Sans\',sans-serif;font-size:0.77rem;color:#1ea1db;white-space:nowrap">🎯 Récord en ' + p.dias_para_superar_record + ' días</div>';
+    }
+    meta += '</div>';
+
+    // Tendencia chip
+    var chip = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">';
+    chip += '<span style="font-size:0.82rem;font-weight:700;color:' + tendenciaColor + '">' + tendenciaDir + ' ';
+    chip += (Math.abs(p.prediccion.tendencia_por_dia) * 100).toFixed(2) + ' por día</span>';
+    chip += '</div>';
+
+    card.innerHTML = header + meta + chip;
+
+    // Canvas
+    var canvasWrap = document.createElement('div');
+    canvasWrap.style.cssText = 'position:relative;height:160px;';
+    var canvas = document.createElement('canvas');
+    canvas.id = 'chart-pred-' + idx;
+    canvasWrap.appendChild(canvas);
+    card.appendChild(canvasWrap);
+    contenido.appendChild(card);
+
+    // Destruir instancia previa si existe
+    if (chartsInstances['pred_' + idx]) chartsInstances['pred_' + idx].destroy();
+
+    chartsInstances['pred_' + idx] = new Chart(canvas.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Proyección',
+          data: valores,
+          borderColor: '#f89a02',
+          backgroundColor: 'rgba(248,154,2,0.08)',
+          borderWidth: 2.5,
+          borderDash: [6, 4],
+          pointRadius: 0,
+          fill: true,
+          tension: 0.4,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#1A1A1A',
+            titleFont: { family: FONT, size: 11 },
+            bodyFont:  { family: FONT, size: 12, weight: '700' },
+          },
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: {
+              font: { family: FONT, size: 9 },
+              color: '#9CA3AF',
+              maxTicksLimit: 6,
+            },
+          },
+          y: {
+            beginAtZero: false,
+            grid: { color: '#F3F4F6' },
+            ticks: { font: { family: FONT, size: 10 }, color: '#9CA3AF' },
+          },
+        },
+      },
+    });
+  });
+}
+
+// ── IA: Patrones ─────────────────────────────────────────────
+async function cargarPatronesIA() {
+  try {
+    var pat = await Api.getPatrones();
+
+    var cards = [];
+
+    if (pat.mejor_dia_semana) {
+      cards.push({ emoji: '📅', titulo: 'Mejor día', valor: pat.mejor_dia_semana });
+    }
+    if (pat.frecuencia_promedio_dias != null) {
+      cards.push({ emoji: '🔄', titulo: 'Frecuencia', valor: 'cada ' + pat.frecuencia_promedio_dias.toFixed(1) + ' días' });
+    }
+    if (pat.indice_consistencia_pct != null) {
+      cards.push({ emoji: '🎯', titulo: 'Consistencia', valor: pat.indice_consistencia_pct.toFixed(0) + '%' });
+    }
+    if (pat.correlacion_animo_calorias != null) {
+      var corr = pat.correlacion_animo_calorias;
+      var label = Math.abs(corr) >= 0.6
+        ? (corr > 0 ? 'Ánimo impulsa calorías' : 'Ánimo vs calorías inverso')
+        : 'Correlación ánimo-calorías débil';
+      cards.push({ emoji: '😊', titulo: 'Ánimo', valor: label });
+    }
+    if (pat.total_sesiones_analizadas) {
+      cards.push({ emoji: '📈', titulo: 'Analizadas', valor: pat.total_sesiones_analizadas + ' sesiones' });
+    }
+
+    if (cards.length === 0) return;
+
+    var wrap = document.getElementById('patrones-cards-wrap');
+    var seccion = document.getElementById('seccion-patrones-ia');
+    if (!wrap || !seccion) return;
+
+    var html = '';
+    cards.forEach(function(c) {
+      html += '<div style="';
+      html += 'background:#fff;border-radius:14px;padding:14px 16px;';
+      html += 'box-shadow:0 2px 10px rgba(0,0,0,0.05);';
+      html += 'display:flex;flex-direction:column;gap:2px;';
+      html += 'min-width:140px;flex:1;';
+      html += '">';
+      html += '<span style="font-size:1.3rem">' + c.emoji + '</span>';
+      html += '<span style="font-family:\'DM Sans\',sans-serif;font-size:0.72rem;color:#9CA3AF;font-weight:600;margin-top:6px">' + c.titulo.toUpperCase() + '</span>';
+      html += '<span style="font-family:\'Sora\',sans-serif;font-size:0.92rem;font-weight:700;color:#1A1A1A;line-height:1.2">' + c.valor + '</span>';
+      html += '</div>';
+    });
+    wrap.innerHTML = html;
+    seccion.style.display = 'block';
+
+  } catch (e) {
+    console.warn('Patrones IA no disponibles:', e.message);
+  }
+}
+
 // ── Init ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async function() {
 
@@ -498,4 +726,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     cargarDistribucionDeportes(),
     cargarChipsDeporte(),
   ]);
+
+  // IA: Patrones — independiente, no bloquea la carga principal
+  cargarPatronesIA();
 });
