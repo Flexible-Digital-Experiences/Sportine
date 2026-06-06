@@ -9,14 +9,6 @@ document.querySelectorAll('.toggle-pass').forEach(btn => {
   });
 });
 
-// Role pills (login)
-document.querySelectorAll('.role-pill').forEach(pill => {
-  pill.addEventListener('click', () => {
-    document.querySelectorAll('.role-pill').forEach(p => p.classList.remove('active'));
-    pill.classList.add('active');
-  });
-});
-
 // Role cards (registro)
 document.querySelectorAll('.role-card-btn').forEach(card => {
   card.addEventListener('click', () => {

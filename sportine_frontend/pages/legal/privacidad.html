@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Política de privacidad — Sportine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root { --azul:#1ea1db; --texto:#1A1A1A; --texto-sec:#6B7280; --borde:#E5E7EB; --bg:#FAFAFA; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--texto); line-height:1.65; }
+    header.legal-header { background:#fff; border-bottom:1px solid var(--borde); padding:14px 24px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:10; }
+    .legal-logo { font-family:'Sora',sans-serif; font-weight:800; font-size:1.25rem; color:var(--azul); text-decoration:none; }
+    .btn-back { background:none; border:1.5px solid var(--borde); border-radius:8px; padding:8px 14px; font-family:'DM Sans',sans-serif; font-weight:600; font-size:0.85rem; color:var(--texto-sec); cursor:pointer; text-decoration:none; transition:all 0.2s; }
+    .btn-back:hover { border-color:var(--azul); color:var(--azul); }
+    main { max-width:800px; margin:0 auto; padding:48px 24px 80px; }
+    h1 { font-family:'Sora',sans-serif; font-weight:800; font-size:2rem; margin-bottom:8px; }
+    .legal-meta { color:var(--texto-sec); font-size:0.9rem; margin-bottom:32px; padding-bottom:24px; border-bottom:1px solid var(--borde); }
+    h2 { font-family:'Sora',sans-serif; font-weight:700; font-size:1.1rem; margin-top:28px; margin-bottom:10px; color:var(--texto); }
+    p { font-size:0.95rem; color:#374151; margin-bottom:12px; }
+    ul { padding-left:22px; margin-bottom:12px; }
+    li { font-size:0.95rem; color:#374151; margin-bottom:6px; }
+    strong { font-weight:600; color:var(--texto); }
+    a { color:var(--azul); }
+    footer.legal-footer { text-align:center; padding:24px; border-top:1px solid var(--borde); color:var(--texto-sec); font-size:0.85rem; background:#fff; }
+  </style>
+</head>
+<body>
+  <header class="legal-header">
+    <a href="../../index.html" class="legal-logo">Sportine</a>
+    <a href="../../index.html" class="btn-back">← Volver al inicio</a>
+  </header>
+
+  <main>
+    <h1>Política de privacidad</h1>
+    <p class="legal-meta">Última actualización: junio de 2026</p>
+
+    <p><strong>Responsable del tratamiento:</strong> Flexible Digital Experiences (FDE), equipo de desarrollo del CECyT 9, IPN. Esta política aplica en cumplimiento con la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP) de México.</p>
+
+    <h2>1. Información que recopilamos</h2>
+    <ul>
+      <li><strong>De registro:</strong> nombre, apellidos, sexo, correo, nombre de usuario, contraseña (almacenada cifrada con BCrypt), estado y ciudad.</li>
+      <li><strong>De uso:</strong> entrenamientos asignados y completados, ejercicios, feedback de sesiones (cansancio, dificultad, estado de ánimo), publicaciones sociales, comentarios, likes y calificaciones a entrenadores.</li>
+      <li><strong>De salud (opcional):</strong> datos provenientes de Google Health Connect (calorías, pasos, distancia, velocidad) solo si el usuario decide vincular su cuenta. Esta integración requiere consentimiento explícito.</li>
+      <li><strong>De pagos:</strong> identificadores de transacción y suscripción de PayPal. Nunca almacenamos números de tarjeta ni credenciales bancarias.</li>
+    </ul>
+
+    <h2>2. Finalidad del tratamiento</h2>
+    <p>Usamos los datos para: operar la Plataforma (autenticación, perfil, asignación de rutinas); procesar pagos entre alumnos y entrenadores; generar estadísticas personales y proyecciones con módulos de IA; mejorar la experiencia y detectar problemas técnicos; cumplir obligaciones legales y fiscales aplicables.</p>
+
+    <h2>3. Inteligencia artificial</h2>
+    <p>Sportine utiliza modelos de inteligencia artificial para generar recomendaciones de ajuste de rutina, predicciones de progreso y análisis de patrones de entrenamiento. Estos modelos procesan los datos del usuario dentro de nuestra propia infraestructura. La IA no comparte tus datos con terceros ni los usa para entrenar modelos públicos.</p>
+
+    <h2>4. Con quién compartimos datos</h2>
+    <ul>
+      <li><strong>PayPal:</strong> datos mínimos necesarios para procesar pagos y comisiones a través de su Subscription API.</li>
+      <li><strong>Cloudinary:</strong> almacenamiento de imágenes de perfil y publicaciones del usuario.</li>
+      <li><strong>Google Health Connect:</strong> únicamente si el usuario activa la integración. Los datos de salud no se comparten con otros usuarios ni con servicios distintos.</li>
+      <li><strong>Autoridades:</strong> cuando exista un requerimiento legal válido emitido por autoridad competente.</li>
+    </ul>
+    <p>No vendemos datos personales a terceros bajo ninguna circunstancia.</p>
+
+    <h2>5. Cookies y almacenamiento local</h2>
+    <p>Usamos <code>localStorage</code> del navegador para guardar el token JWT y los datos básicos de sesión. No usamos cookies de rastreo publicitario ni compartimos información de navegación con redes de anuncios.</p>
+
+    <h2>6. Conservación de datos</h2>
+    <p>Conservamos los datos mientras la cuenta esté activa. Al eliminar tu cuenta, marcamos el rol como "ELIMINADO" para preservar la integridad referencial (entrenamientos pasados, calificaciones a entrenadores, etc.), pero la información sensible queda inaccesible desde la Plataforma. Puedes solicitar el borrado completo escribiendo al correo de contacto.</p>
+
+    <h2>7. Derechos ARCO</h2>
+    <p>Como titular de tus datos personales, tienes derecho a <strong>Acceder</strong>, <strong>Rectificar</strong>, <strong>Cancelar</strong> y <strong>Oponerte</strong> al tratamiento de los mismos, así como a limitar su uso o divulgación. Puedes ejercer estos derechos enviando una solicitud a: <a href="mailto:privacidad@sportine.com">privacidad@sportine.com</a> (correo de demostración académica).</p>
+
+    <h2>8. Seguridad</h2>
+    <p>Implementamos medidas razonables: contraseñas cifradas con BCrypt (strength 10), autenticación con tokens JWT firmados, HTTPS en todos los endpoints públicos, separación de servicios (el microservicio de IA no tiene permisos de escritura sobre la base de datos), y validación estricta en cada capa de la aplicación.</p>
+
+    <h2>9. Menores de edad</h2>
+    <p>La Plataforma está dirigida a personas mayores de 13 años. Los menores entre 13 y 17 deben contar con autorización de su padre, madre o tutor legal. No recopilamos conscientemente datos personales de menores de 13 años.</p>
+
+    <h2>10. Cambios a esta política</h2>
+    <p>Esta política puede actualizarse para reflejar mejoras en la Plataforma o cambios en la legislación aplicable. Te notificaremos las modificaciones significativas. La fecha de última actualización siempre aparece al inicio del documento.</p>
+
+    <h2>11. Contacto</h2>
+    <p>Para dudas sobre esta política o el ejercicio de derechos ARCO: <a href="mailto:privacidad@sportine.com">privacidad@sportine.com</a> (correo de demostración académica).</p>
+  </main>
+
+  <footer class="legal-footer">
+    © 2026 Sportine · Flexible Digital Experiences (FDE) · Proyecto integrador CECyT 9 — IPN
+  </footer>
+</body>
+</html>

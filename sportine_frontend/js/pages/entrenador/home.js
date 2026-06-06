@@ -338,6 +338,8 @@ window.openAsignar = function(usuarioAlumno) {
     '<div><div style="font-weight:700;font-size:0.9rem">' + _esc(nombreAlumno) + '</div>',
     '<div style="font-size:0.75rem;color:#6B7280">' + deporteAlumno + '</div></div></div>',
 
+    '<div id="as-ia-card" style="display:none;margin-bottom:18px"></div>',
+
     labelInput('Título del entrenamiento', 'as-titulo', 'text', 'Ej: Fuerza – Tren Superior'),
     labelInput('Objetivo', 'as-objetivo', 'text', 'Ej: Mejorar resistencia muscular'),
 
@@ -375,6 +377,9 @@ window.openAsignar = function(usuarioAlumno) {
   });
 
   window.agregarEjercicio();
+
+  // ── IA: cargar recomendación de ajuste de rutina (no bloqueante) ──
+  _cargarRecomendacionIA(usuarioAlumno);
 };
 
 // ── Agregar ejercicio ─────────────────────────────────────────
@@ -627,6 +632,107 @@ function _esc(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+// ============================================================
+// IA: Ajuste de rutina — Card de recomendación en modal Asignar
+// Módulo 3 de IA: GET /api/entrenador/estadisticas/ajuste-rutina/{usuario}
+// ============================================================
+
+var RECOMENDACION_IA_CONFIG = {
+  sugerir_descanso: {
+    color: '#dc2626', bg: '#fef2f2',
+    icon: '🛑', titulo: 'Descanso activo recomendado',
+  },
+  bajar_intensidad: {
+    color: '#ea580c', bg: '#fff7ed',
+    icon: '⬇️', titulo: 'Bajar intensidad',
+  },
+  revisar_motivacion: {
+    color: '#ca8a04', bg: '#fefce8',
+    icon: '💭', titulo: 'Revisar motivación',
+  },
+  subir_intensidad: {
+    color: '#16a34a', bg: '#f0fdf4',
+    icon: '⬆️', titulo: 'Subir intensidad',
+  },
+  mantener: {
+    color: '#0891b2', bg: '#ecfeff',
+    icon: '✅', titulo: 'Carga óptima',
+  },
+  sin_datos: {
+    color: '#6b7280', bg: '#f9fafb',
+    icon: 'ℹ️', titulo: 'Sin datos suficientes',
+  },
+};
+
+async function _cargarRecomendacionIA(usuarioAlumno) {
+  var card = document.getElementById('as-ia-card');
+  if (!card) return;
+
+  try {
+    var data = await Api.getAjusteRutina(usuarioAlumno);
+    var cfg = RECOMENDACION_IA_CONFIG[data.recomendacion];
+
+    // Mensaje personalizado cuando no hay datos suficientes — el mensaje
+    // de FastAPI en este caso es muy escueto, lo mejoramos en el front.
+    if (data.recomendacion === 'sin_datos') {
+      data.mensaje = 'Este alumno aún no tiene sesiones suficientes con feedback. '
+                   + 'Necesitamos al menos 2 sesiones completadas para generar un análisis. '
+                   + 'Puedes asignar el entrenamiento normalmente.';
+    }
+
+    // Si la recomendación es desconocida (un valor nuevo que aún no mapeamos
+    // en RECOMENDACION_IA_CONFIG), no mostramos nada — el form sigue funcionando.
+    if (!cfg) {
+      card.style.display = 'none';
+      return;
+    }
+
+    // Footer con métricas base (solo si hay sesiones analizadas)
+    var m = data.metricas_base || {};
+    var metricasHtml = '';
+    if (m.n_sesiones_analizadas) {
+      var partes = [];
+      if (m.prom_cansancio  != null) partes.push('Cansancio prom: ' + m.prom_cansancio.toFixed(1));
+      if (m.prom_dificultad != null) partes.push('Dificultad prom: ' + m.prom_dificultad.toFixed(1));
+      partes.push(m.n_sesiones_analizadas + ' sesiones analizadas');
+      metricasHtml =
+          '<div style="margin-top:10px;padding-top:10px;border-top:1px solid ' + cfg.color + '22;'
+        +      'font-size:0.72rem;color:' + cfg.color + ';font-weight:600">'
+        +   '📊 ' + partes.join(' · ')
+        + '</div>';
+    }
+
+    // Render del card
+    card.style.cssText =
+        'background:' + cfg.bg + ';'
+      + 'border-left:4px solid ' + cfg.color + ';'
+      + 'border-radius:12px;padding:14px 16px;margin-bottom:18px;'
+      + 'opacity:0;transition:opacity 0.35s ease;display:block';
+
+    card.innerHTML =
+        '<div style="display:flex;align-items:flex-start;gap:10px">'
+      +   '<div style="font-size:1.3rem;line-height:1;flex-shrink:0">' + cfg.icon + '</div>'
+      +   '<div style="flex:1;min-width:0">'
+      +     '<div style="font-family:Sora,sans-serif;font-weight:700;font-size:0.9rem;color:' + cfg.color + ';margin-bottom:4px">'
+      +       'Análisis Inteligente: ' + cfg.titulo
+      +     '</div>'
+      +     '<div style="font-size:0.82rem;color:#374151;line-height:1.45">'
+      +       _esc(data.mensaje || '')
+      +     '</div>'
+      +     metricasHtml
+      +   '</div>'
+      + '</div>';
+
+    requestAnimationFrame(function() { card.style.opacity = '1'; });
+
+  } catch (err) {
+    // IA no disponible (503 / red / FastAPI caído) → degradación silenciosa.
+    // El formulario sigue funcionando, solo no aparece la card.
+    console.warn('Recomendación IA no disponible:', err && err.message);
+    card.style.display = 'none';
+  }
 }
 
 // ── Panel de feedback ─────────────────────────────────────────

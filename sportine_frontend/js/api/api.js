@@ -780,4 +780,15 @@ Object.assign(Api, {
     });
     return _handleResponse(r);
   },
+
+  // ── IA: AJUSTE DE RUTINA (ENTRENADOR) ──────────────────────
+  // GET /api/entrenador/estadisticas/ajuste-rutina/{usuarioAlumno}?nSesiones=5
+  // Devuelve { usuario, recomendacion, mensaje, metricas_base: { prom_cansancio, prom_dificultad, prom_fc_max, n_sesiones_analizadas } }
+  async getAjusteRutina(usuarioAlumno, nSesiones = 5) {
+    const r = await fetch(
+      `${BASE_URL}/api/entrenador/estadisticas/ajuste-rutina/${encodeURIComponent(usuarioAlumno)}?nSesiones=${nSesiones}`,
+      { method: 'GET', headers: _getHeaders(true) }
+    );
+    return _handleResponse(r);
+  },
 });

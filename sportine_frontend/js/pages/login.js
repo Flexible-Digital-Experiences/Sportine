@@ -10,21 +10,6 @@
 ============================================================ */
 
 
-// ── Selector de rol (solo visual, no afecta el login) ────────
-//
-// Los pills de "Alumno / Entrenador" en el login son decorativos.
-// El backend determina el rol real del usuario al autenticarse.
-// Los dejamos funcionales para UX, pero el rol que importa
-// viene en la respuesta del backend.
-//
-document.querySelectorAll('.role-pill').forEach(pill => {
-  pill.addEventListener('click', () => {
-    document.querySelectorAll('.role-pill').forEach(p => p.classList.remove('active'));
-    pill.classList.add('active');
-  });
-});
-
-
 // ── Lógica principal de login ─────────────────────────────────
 const btn      = document.getElementById('btn-login');
 const errorMsg = document.getElementById('error-msg');
