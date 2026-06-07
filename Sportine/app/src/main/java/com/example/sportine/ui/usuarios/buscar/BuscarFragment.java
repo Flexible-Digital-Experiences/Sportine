@@ -64,7 +64,7 @@ public class BuscarFragment extends Fragment implements ResultadosEntrenadoresAd
         setupBuscador();
 
         // Cargar entrenadores iniciales (sin query = top del estado)
-        cargarEntrenadores(null);
+        cargarEntrenadoresRecomendados();
 
         return view;
     }
@@ -73,7 +73,7 @@ public class BuscarFragment extends Fragment implements ResultadosEntrenadoresAd
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                cargarEntrenadores(query);
+                cargarEntrenadoresNormal(query);
                 searchView.clearFocus();
                 return true;
             }
@@ -83,57 +83,63 @@ public class BuscarFragment extends Fragment implements ResultadosEntrenadoresAd
                 // Buscar mientras escribe
                 if (newText.length() > 2) {
                     // Solo buscar si tiene más de 2 caracteres
-                    cargarEntrenadores(newText);
+                    cargarEntrenadoresNormal(newText);
                 } else if (newText.isEmpty()) {
                     // Si borra todo, cargar top entrenadores
-                    cargarEntrenadores(null);
+                    cargarEntrenadoresNormal(null);
                 }
                 return true;
             }
         });
     }
 
-    private void cargarEntrenadores(String query) {
-        if (!isAdded()) return; // Verificar que el Fragment esté adjunto
-
-        // Cambiar título según si hay búsqueda o no
-        actualizarTituloSeccion(query);
-
-        apiService.buscarEntrenadores(query).enqueue(new Callback<List<EntrenadorCardDTO>>() {
+    private void cargarEntrenadoresRecomendados() {
+        // Intentar primero con IA
+        apiService.recomendarEntrenadores().enqueue(new Callback<List<EntrenadorCardDTO>>() {
             @Override
             public void onResponse(Call<List<EntrenadorCardDTO>> call,
                                    Response<List<EntrenadorCardDTO>> response) {
                 if (!isAdded()) return;
-
                 if (response.isSuccessful() && response.body() != null) {
                     List<EntrenadorCardDTO> entrenadores = response.body();
                     adapter.setEntrenadores(entrenadores);
-
-                    if (entrenadores.isEmpty()) {
-                        // No hay resultados - Mostrar empty state
-                        mostrarEmptyState(true);
-                    } else {
-                        // Hay resultados - Mostrar recycler
-                        mostrarEmptyState(false);
-                    }
+                    actualizarTituloSeccion(null); // "Entrenadores recomendados"
+                    mostrarEmptyState(entrenadores.isEmpty());
                 } else {
-                    // Error en la respuesta
-                    mostrarEmptyState(true);
-                    Toast.makeText(getContext(),
-                            "Error al buscar: " + response.code(),
-                            Toast.LENGTH_SHORT).show();
+                    // IA no disponible → fallback a búsqueda normal
+                    cargarEntrenadoresNormal(null);
                 }
             }
 
             @Override
             public void onFailure(Call<List<EntrenadorCardDTO>> call, Throwable t) {
                 if (!isAdded()) return;
+                // Fallback silencioso
+                cargarEntrenadoresNormal(null);
+            }
+        });
+    }
 
-                // Error de conexión
+    private void cargarEntrenadoresNormal(String query) {
+        actualizarTituloSeccion(query);
+        apiService.buscarEntrenadores(query).enqueue(new Callback<List<EntrenadorCardDTO>>() {
+            @Override
+            public void onResponse(Call<List<EntrenadorCardDTO>> call,
+                                   Response<List<EntrenadorCardDTO>> response) {
+                if (!isAdded()) return;
+                if (response.isSuccessful() && response.body() != null) {
+                    List<EntrenadorCardDTO> entrenadores = response.body();
+                    adapter.setEntrenadores(entrenadores);
+                    mostrarEmptyState(entrenadores.isEmpty());
+                } else {
+                    mostrarEmptyState(true);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<EntrenadorCardDTO>> call, Throwable t) {
+                if (!isAdded()) return;
                 mostrarEmptyState(true);
-                Toast.makeText(getContext(),
-                        "Error de conexión: " + t.getMessage(),
-                        Toast.LENGTH_SHORT).show();
             }
         });
     }

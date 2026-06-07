@@ -158,6 +158,19 @@
                     tools:text="Fútbol, Basketball" />
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/tvScoreCompatibilidad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+
         </LinearLayout>
 
         <!-- Indicador de estado (verde = disponible, amarillo = casi lleno) -->
