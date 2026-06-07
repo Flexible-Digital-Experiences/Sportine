@@ -1,5 +1,7 @@
 package com.example.sportine.ui.usuarios.buscar;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +52,29 @@ public class ResultadosEntrenadoresAdapter extends RecyclerView.Adapter<Resultad
 
         // Nombre del entrenador
         holder.tvNombre.setText(entrenador.getNombreCompleto());
+
+        TextView tvScore = holder.itemView.findViewById(R.id.tvScoreCompatibilidad);
+        if (tvScore != null) {
+            Double score = entrenador.getScoreCompatibilidad();
+            if (score != null) {
+                int s = (int) Math.round(score);
+                tvScore.setText("✦ " + s + "% compatible");
+                tvScore.setVisibility(View.VISIBLE);
+
+                if (s >= 80) {
+                    tvScore.setTextColor(Color.parseColor("#0070CC"));
+                    tvScore.setBackgroundResource(R.drawable.bg_badge_azul);
+                } else if (s >= 60) {
+                    tvScore.setTextColor(Color.parseColor("#B45309"));
+                    tvScore.setBackgroundResource(R.drawable.bg_badge_naranja);
+                } else {
+                    tvScore.setTextColor(Color.parseColor("#5F5E5A"));
+                    tvScore.setBackgroundResource(R.drawable.bg_badge_gris);
+                }
+            } else {
+                tvScore.setVisibility(View.GONE);
+            }
+        }
 
         // Rating con estrellas
         float rating = entrenador.getRatingPromedio() != null ?

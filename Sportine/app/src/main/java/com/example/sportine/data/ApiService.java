@@ -142,6 +142,10 @@ public interface ApiService {
     @GET("api/buscar-entrenadores/ver/{usuario}")
     Call<PerfilEntrenadorDTO> obtenerPerfilEntrenador(@Path("usuario") String usuario);
 
+    // POST /api/buscar-entrenadores/recomendar
+    @POST("/api/buscar-entrenadores/recomendar")
+    Call<List<EntrenadorCardDTO>> recomendarEntrenadores();
+
     // Solicitudes
 
     @GET("api/Solicitudes/formulario/{usuarioEntrenador}")

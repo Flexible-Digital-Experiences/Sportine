@@ -1,5 +1,7 @@
 package com.example.sportine.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class EntrenadorCardDTO {
@@ -106,5 +108,14 @@ public class EntrenadorCardDTO {
 
     public boolean estaLleno() {
         return getEspaciosDisponibles() <= 0;
+    }
+
+    // Agrega este campo al modelo existente
+    @SerializedName("scoreCompatibilidad")
+    private Double scoreCompatibilidad; // null en búsqueda normal, 0-100 en recomendación IA
+
+    public Double getScoreCompatibilidad() { return scoreCompatibilidad; }
+    public void setScoreCompatibilidad(Double scoreCompatibilidad) {
+        this.scoreCompatibilidad = scoreCompatibilidad;
     }
 }
